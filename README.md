@@ -18,6 +18,12 @@ sudo sh -c 'echo "experimental-features = nix-command flakes" >> /etc/nix/nix.co
 nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager && nix-channel --update
 ```
 
+- install home-manager
+
+```sh
+nix-shell '<home-manager>' -A install
+```
+
 - clone repo
 
 ```sh
