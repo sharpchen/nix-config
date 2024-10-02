@@ -18,10 +18,10 @@ alias du='du -h'
 alias history='history | nl'
 alias ds='du -sh * | sort -rh'
 alias cls='clear'
-alias now='date +"%T"'
+alias now='date "+%Y-%m-%d %H:%M:%S"'
 alias so='source ~/.bashrc'
 alias :q='exit'
-alias hms="home-manager switch --flake .#$USER"
+alias hms="home-manager switch --flake ~/.config/home-manager#$USER"
 
 PS1='[\u@\h \W]\$ '
 
