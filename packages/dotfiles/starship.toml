@@ -1,0 +1,68 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = true
+
+[aws]
+disabled = true
+
+[battery]
+disabled = true
+
+[cmd_duration]
+
+[directory]
+truncation_length = 3
+
+[dotnet]
+
+[env_var]
+disabled = true
+
+[elm]
+symbol = " "
+
+[git_branch]
+
+[git_commit]
+disabled = false
+commit_hash_length = 4
+tag_disabled = false
+
+[git_state]
+disabled = true
+
+[git_status]
+
+[golang]
+symbol = " "
+
+[kubernetes]
+symbol = "⎈ "
+
+[line_break]
+disabled = false
+
+[memory_usage]
+disabled = true
+
+[java]
+symbol = " "
+
+[julia]
+symbol = " "
+
+[nodejs]
+symbol = ""
+
+[package]
+symbol = "📦"
+
+[rust]
+symbol = " "
+
+[time]
+disabled = true
+
+[username]
+disabled = false
+
