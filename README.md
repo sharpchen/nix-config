@@ -34,5 +34,5 @@ git clone https://github.com/sharpchen/nix-config.git ~/.config/home-manager/
 - restore
 
 ```sh
-home-manager switch --flake .#sharpchen
+home-manager switch --flake ~/.config/home-manager#$USER
 ```
