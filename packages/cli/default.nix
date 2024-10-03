@@ -4,5 +4,6 @@
     ./package-manager/default.nix
     ./git.nix
     ./neovim.nix
+    ./tmux.nix
   ];
 }
