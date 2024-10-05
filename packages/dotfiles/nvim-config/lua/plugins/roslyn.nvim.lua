@@ -1,12 +1,10 @@
 return {
   'seblj/roslyn.nvim',
+  -- enabled = false,
   config = function()
     local util = require('lspconfig.util')
     require('roslyn').setup({
-      exe = {
-        'dotnet',
-        vim.fs.joinpath(vim.fn.stdpath('data') --[[@as string]], 'roslyn', 'Microsoft.CodeAnalysis.LanguageServer.dll'),
-      },
+      exe = vim.fn.system('echo -n $(readlink -f $(which Microsoft.CodeAnalysis.LanguageServer))'),
       config = {
         --[[ capabilities = require('cmp_nvim_lsp').default_capabilities(),
         root_dir = function(fname)

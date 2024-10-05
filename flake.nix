@@ -15,7 +15,7 @@
     let
       system = "x86_64-linux";
       pkgs = unstablePkgs.legacyPackages.${system};
-      stable = unstablePkgs.legacyPackages.${system};
+      stable = stablePkgs.legacyPackages.${system};
     in {
       homeConfigurations."sharpchen" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;

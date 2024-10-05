@@ -4,8 +4,6 @@
     roslyn-ls
     lua-language-server
     taplo
-    biome
-    # nodePackages."@vtsls/language-server"
     nixd
     lemminx 
     actionlint
@@ -15,8 +13,9 @@
     # nodePackages.vscode-html-languageservice
     # nodePackages.vscode-json-languageservice
     fsautocomplete
+    quick-lint-js
     markdownlint-cli2
-    (import ./vtsls.nix { pkgs = pkgs; })
+    typescript-language-server
   ];
   
 }

@@ -1,8 +1,9 @@
 {
-  pkgs ? import <nixpkgs>
+  pkgs,
+  ...
 }:
 let
-  inherit (pkgs) stdenv nodejs pnpm fetchFromGitHub;
+  inherit (pkgs) stdenv fetchFromGitHub;
 in
 stdenv.mkDerivation (finalAttrs: rec {
   pname = "@vtsls/language-server";
@@ -16,18 +17,22 @@ stdenv.mkDerivation (finalAttrs: rec {
   };
 
   nativeBuildInputs = [
-    nodejs
-    pnpm.configHook
+    pkgs.nodejs_18
+    pkgs.pnpm_8
   ];
 
   buildPhase = ''
     export NPM_CONFIG_REGISTRY="https://registry.npmmirror.com"
+    git submodule update --init
     pnpm install
     pnpm build
-    cp package/server/bin $out/bin/
   '';
 
-  pnpmDeps = pnpm.fetchDeps {
-    inherit (finalAttrs) pname version src;
-  };
+  installPhase = ''
+    mkdir -p $out/bin/vtsls
+    cd $src/packages/server
+    npm install --prod
+    cp -r node_modules/.bin/* $out/bin/
+  '';
+
 })

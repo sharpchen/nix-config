@@ -19,6 +19,11 @@
     pkgs.harper
     pkgs.nixd
   ];
+
+  home.sessionPath = [
+    "$HOME/.local/bin/"
+  ];
+
   targets.genericLinux.enable = true;
   
   programs.home-manager.enable = true;

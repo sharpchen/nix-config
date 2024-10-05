@@ -81,4 +81,6 @@ return {
       })
     end,
   },
+
+  'yioneko/nvim-vtsls',
 }

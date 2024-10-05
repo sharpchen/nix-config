@@ -1,16 +1,12 @@
 return {
   'williamboman/mason.nvim',
+  enabled = vim.fn.executable('nix') == 0,
   dependencies = {
+    'neovim/nvim-lspconfig',
     'williamboman/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
-    'yioneko/nvim-vtsls',
-    'Decodetalkers/csharpls-extended-lsp.nvim',
-    'Hoffs/omnisharp-extended-lsp.nvim',
   },
   config = function()
-    -- if vim.fn.executable('nix') == 1 then
-    --   return
-    -- end
     local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
     require('lspconfig.ui.windows').default_options.border = 'rounded'
     local function disable_semantic(client)
@@ -120,8 +116,8 @@ return {
         'yamlls',
         'volar',
         'tailwindcss',
-        'html',
-        -- 'csharp_ls',
+        'html-lsp',
+        'css-lsp',
         'stylua',
         'shfmt',
         'fsautocomplete',
