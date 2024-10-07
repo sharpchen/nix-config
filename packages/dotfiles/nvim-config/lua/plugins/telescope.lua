@@ -59,12 +59,15 @@ return {
       })
     end, { desc = 'find in all files in project' })
     vim.keymap.set('n', '<leader>fpf', function()
-      builtin.git_files({
+      local ok, _ = pcall(builtin.git_files, {
         layout_config = {
           preview_width = 0.5,
           width = 0.95,
         },
       })
+      if not ok then
+        vim.notify('Current project is a git repo.', vim.log.levels.WARN)
+      end
     end, { desc = 'find in all tracked files' })
 
     vim.keymap.set('n', '<leader>fg', function()
