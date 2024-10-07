@@ -4,12 +4,8 @@ return {
   config = function()
     local util = require('lspconfig.util')
     require('roslyn').setup({
-      exe = vim.fn.system('echo -n $(readlink -f $(which Microsoft.CodeAnalysis.LanguageServer))'),
+      exe = 'Microsoft.CodeAnalysis.LanguageServer',
       config = {
-        --[[ capabilities = require('cmp_nvim_lsp').default_capabilities(),
-        root_dir = function(fname)
-          return util.root_pattern('*.sln')(fname) or util.root_pattern('*.csproj')(fname)
-        end, ]]
         settings = {
           ['csharp|inlay_hints'] = {
             csharp_enable_inlay_hints_for_implicit_object_creation = true,

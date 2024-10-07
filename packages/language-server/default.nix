@@ -10,12 +10,10 @@
     ast-grep
     emmet-language-server
     nodePackages.bash-language-server
-    # nodePackages.vscode-html-languageservice
-    # nodePackages.vscode-json-languageservice
+    vscode-langservers-extracted
     fsautocomplete
     quick-lint-js
     markdownlint-cli2
-    typescript-language-server
-  ];
-  
+    typescript-language-server 
+  ]; 
 }
