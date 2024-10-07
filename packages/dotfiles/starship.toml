@@ -14,6 +14,7 @@ disabled = true
 truncation_length = 3
 
 [dotnet]
+symbol = " "
 
 [env_var]
 disabled = true
@@ -34,7 +35,7 @@ disabled = true
 [git_status]
 
 [golang]
-symbol = " "
+symbol = "󰟓 "
 
 [kubernetes]
 symbol = "⎈ "
@@ -58,11 +59,10 @@ symbol = ""
 symbol = "📦"
 
 [rust]
-symbol = " "
+symbol = "󱘗"
 
 [time]
 disabled = true
 
 [username]
 disabled = false
-
