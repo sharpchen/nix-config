@@ -1,6 +1,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 add_newline = true
+format = '$all'
 
 [aws]
 disabled = true
@@ -14,7 +15,8 @@ disabled = true
 truncation_length = 3
 
 [dotnet]
-symbol = " "
+symbol = ' '
+format = '[$symbol($version )($tfm)]($style)'
 
 [env_var]
 disabled = true
@@ -59,7 +61,7 @@ symbol = ""
 symbol = "📦"
 
 [rust]
-symbol = "󱘗"
+symbol = '󱘗'
 
 [time]
 disabled = true
