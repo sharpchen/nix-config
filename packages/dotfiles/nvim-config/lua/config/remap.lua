@@ -70,21 +70,23 @@ vim.keymap.set('n', 'gh', '<cmd>norm! 0<CR>', { noremap = true, silent = true, d
 vim.keymap.set('n', 'gl', '<cmd>norm! $<CR>', { noremap = true, silent = true, desc = 'go to end of line' })
 -- vim.keymap.set('n', 'gp', '<cmd>bp<CR>', { noremap = true, silent = true, desc = 'go to prev buffer' })
 vim.keymap.set('n', 'gn', '<cmd>bn<CR>', { noremap = true, silent = true, desc = 'go to next buffer' })
+vim.keymap.set('n', '<leader>g', '<cmd>LazyGit<CR>', { desc = 'open lazygit' })
 vim.iter({ { '(', ')' }, { '<', '>' }, { '[', ']' }, '`', '"', "'", '*' }):each(function(x)
-  if #x > 1 then
+  if type(x) == 'table' then
     vim.keymap.set(
       'n',
       ('<leader>[%s'):format(x[1]),
       ('viw<esc>a%s<esc>bi%s<esc>'):format(x[2], x[1]),
       { desc = ('surround word with %s%s'):format(x[1], x[2]) }
     )
+  else
+    vim.keymap.set(
+      'n',
+      ('<leader>[%s'):format(x),
+      ('viw<esc>a%s<esc>bi%s<esc>'):format(x, x),
+      { desc = ('surround word with %s'):format(x) }
+    )
   end
-  vim.keymap.set(
-    'n',
-    ('<leader>[%s'):format(x),
-    ('viw<esc>a%s<esc>bi%s<esc>'):format(x, x),
-    { desc = ('surround word with %s'):format(x) }
-  )
 end)
 
 if vim.uv.os_uname().sysname == 'Linux' then

@@ -66,13 +66,13 @@ return {
         },
       })
       if not ok then
-        vim.notify('Current project is a git repo.', vim.log.levels.WARN)
+        vim.notify('Current project is NOT a git repo.', vim.log.levels.WARN)
       end
     end, { desc = 'find in all tracked files' })
 
     vim.keymap.set('n', '<leader>fg', function()
       builtin.live_grep({ layout_config = { preview_width = 0.5, width = 0.95 } })
-    end, { desc = 'find in content' })
+    end, { desc = 'grep from files' })
 
     vim.keymap.set('n', '<leader>fc', function()
       local config_path = vim.uv.os_uname().sysname == 'Windows_NT' and '~/AppData/Local/nvim'

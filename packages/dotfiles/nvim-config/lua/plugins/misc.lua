@@ -8,7 +8,18 @@ return {
   },
   -- indent line match
   -- match same occurrences
-  'RRethy/vim-illuminate',
+  {
+    'RRethy/vim-illuminate',
+    config = function()
+      require('illuminate').configure({
+        filetypes_denylist = {
+          'dirbuf',
+          'dirvish',
+          'qf',
+        },
+      })
+    end,
+  },
   {
     'folke/todo-comments.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
