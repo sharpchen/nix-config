@@ -4,6 +4,7 @@
     nodePackages.prettier
     stylua
     csharpier
+    shfmt
   ];
 
   home.file.".prettierrc".text = /* json */
