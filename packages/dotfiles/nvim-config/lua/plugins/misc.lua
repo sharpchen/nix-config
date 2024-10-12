@@ -92,6 +92,10 @@ return {
       })
     end,
   },
-
   'yioneko/nvim-vtsls',
+  { 'nvchad/volt', lazy = true },
+  {
+    'nvchad/minty',
+    cmd = { 'Shades', 'Huefy' },
+  },
 }

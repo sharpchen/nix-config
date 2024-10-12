@@ -1,12 +1,13 @@
 return {
   'NvChad/nvim-colorizer.lua',
   config = function()
-    local foo = '#ca8aca'
     require('colorizer').setup({
       filetypes = {
         '*',
         '!lazy',
         '!cmp_menu',
+        css = { names = true },
+        html = { names = true },
       },
       user_default_options = {
         names = false,
