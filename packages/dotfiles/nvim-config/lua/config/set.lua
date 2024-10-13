@@ -119,8 +119,3 @@ vim.filetype.add({
     xaml = 'xaml',
   },
 })
-
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'help', 'man' },
-  command = 'only',
-})

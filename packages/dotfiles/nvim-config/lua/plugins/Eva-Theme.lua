@@ -10,11 +10,11 @@ return {
         dark = {
           operator = dark.punctuation,
           -- background = '#14161B',
-          typeparam = dark.type,
+          typeparam = dark.primitive,
         },
         light = {
           operator = light.punctuation,
-          typeparam = light.type,
+          typeparam = light.primitive,
         },
       },
       override_highlight = {
