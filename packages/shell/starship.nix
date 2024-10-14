@@ -4,7 +4,6 @@
     add_newline = true;
     shlvl = {
       disabled = false;
-      symbol = "ﰬ";
       style = "bright-red bold";
     };
     shell = {
