@@ -1,6 +1,4 @@
-local colo = { 'Eva-Dark', 'Eva-Light' }
-vim.cmd(('colo %s'):format(colo[math.random(1, #colo)]))
-
+vim.cmd('colo Eva-Dark')
 -- line number
 vim.opt.nu = true
 

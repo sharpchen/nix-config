@@ -5,6 +5,6 @@
   ];
 
   xdg.configFile.nvim = {
-    source = ../dotfiles/nvim-config;
+    source = ../../dotfiles/nvim-config;
   };
 }

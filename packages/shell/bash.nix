@@ -6,6 +6,6 @@
   ];
 
   home.file.".bashrc" = {
-    source = ../dotfiles/.bashrc;
+    source = ../../dotfiles/.bashrc;
   };
 }

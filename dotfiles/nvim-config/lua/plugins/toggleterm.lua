@@ -36,7 +36,7 @@ return {
             bufTerm:toggle()
           end
           if vim.o.shell == 'bash' then
-            bufTerm:send({ ("cd '%s'; history -d $(history 1)"):format(path), 'clear; history -d $(history 1)' })
+            bufTerm:send({ ("cd '%s'; \\history -d $(\\history 1)"):format(path), 'clear; \\history -d $(\\history 1)' })
           else
             bufTerm:send({ ("cd '%s'"):format(path), vim.o.shell == 'pwsh' and 'cls' or 'clear' })
           end

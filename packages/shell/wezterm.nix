@@ -4,5 +4,5 @@
     wezterm
   ];
 
-  home.file."~/.wezterm.lua".source = ../dotfiles/.wezterm.lua;
+  home.file."~/.wezterm.lua".source = ../../dotfiles/.wezterm.lua;
 }

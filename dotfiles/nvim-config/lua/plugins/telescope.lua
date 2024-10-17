@@ -76,7 +76,7 @@ return {
 
     vim.keymap.set('n', '<leader>fc', function()
       local config_path = vim.uv.os_uname().sysname == 'Windows_NT' and '~/AppData/Local/nvim'
-        or '~/.config/home-manager/packages/dotfiles/nvim-config/'
+        or '~/.config/home-manager/dotfiles/nvim-config/'
       builtin.find_files({
         cwd = config_path,
         layout_config = {
