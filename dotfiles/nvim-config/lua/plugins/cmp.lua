@@ -201,5 +201,8 @@ return {
     require('luasnip.loaders.from_vscode').lazy_load()
     regular_setup()
     setup_cmd()
+    require('cmp').setup.filetype('rip-substitute', {
+      enabled = false,
+    })
   end,
 }

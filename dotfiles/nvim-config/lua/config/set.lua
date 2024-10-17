@@ -20,6 +20,8 @@ vim.opt.undofile = true
 
 vim.opt.hlsearch = false -- disable search result highlight
 vim.opt.incsearch = true
+vim.cmd('set smartcase')
+vim.cmd('set ignorecase')
 
 vim.opt.termguicolors = true
 
@@ -28,7 +30,6 @@ vim.opt.signcolumn = 'yes'
 vim.opt.isfname:append('@-@')
 vim.opt.guicursor =
   'n-v-sm:block-blinkwait700-blinkoff400-blinkon250-Cursor,ci-ve:ver25,r-cr-o:hor20,i-c:ver100-blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
--- vim.opt.colorcolumn = '80'
 
 for type, icon in pairs({
   Error = '',

@@ -10,8 +10,8 @@ vim.keymap.set('v', '<M-Down>', ":m '>+1<CR>gv=gv", { silent = true })
 vim.keymap.set('v', '<M-Up>', ":m '<-2<CR>gv=gv", { silent = true })
 
 -- move current line up/down
-vim.keymap.set('n', '<M-j>', ':m .+1<CR>==', { silent = true })
-vim.keymap.set('n', '<M-k>', ':m .-2<CR>==', { silent = true })
+-- vim.keymap.set('n', '<M-j>', ':m .+1<CR>==', { silent = true })
+-- vim.keymap.set('n', '<M-k>', ':m .-2<CR>==', { silent = true })
 vim.keymap.set('n', '<M-Down>', ':m .+1<CR>==', { silent = true })
 vim.keymap.set('n', '<M-Up>', ':m .-2<CR>==', { silent = true })
 
@@ -53,8 +53,8 @@ vim.keymap.set(
   { desc = 'replace all occurrence of current word' }
 )
 
-vim.keymap.set('n', '<leader>/', ':set noignorecase<CR>/', { desc = 'case sensitive search' })
-vim.keymap.set('n', '/', ':set ignorecase<CR>/', { desc = 'case insensitive search' })
+-- vim.keymap.set('n', '<leader>/', ':set noignorecase<CR>/', { desc = 'case sensitive search' })
+-- vim.keymap.set('n', '/', ':set ignorecase<CR>/', { desc = 'case insensitive search' })
 -- vim.keymap.set('n', '\\', ':%s/', { desc = 'replace occurrence in current file' })
 vim.keymap.set('n', '<leader>a', 'ggVG', { desc = 'select all text' })
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })

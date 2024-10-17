@@ -84,6 +84,9 @@ return vim.fn.executable('nix') == 1
         require('lspconfig').html.setup({
           capabilities = lsp_capabilities,
         })
+        require('lspconfig').vimls.setup({
+          capabilities = lsp_capabilities,
+        })
       end,
     }
   or {}

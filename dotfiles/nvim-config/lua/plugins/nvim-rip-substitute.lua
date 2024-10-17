@@ -19,9 +19,5 @@ return {
       hideSearchReplaceLabels = true,
       border = 'rounded',
     },
-    keymaps = { -- normal & visual mode, if not stated otherwise
-      prevSubst = '<C-p>',
-      nextSubst = '<C-n>',
-    },
   },
 }
