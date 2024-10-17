@@ -15,5 +15,7 @@
     quick-lint-js
     markdownlint-cli2
     typescript-language-server 
+    vim-language-server
+    harper
   ]; 
 }

@@ -15,14 +15,14 @@
     homeDirectory = "/home/${username}";
     stateVersion = "24.05"; # Please read the comment before changing.
   };
-  home.packages = [
-    pkgs.harper
-    pkgs.nixd
-  ];
 
   home.sessionPath = [
     "$HOME/.local/bin/"
   ];
+
+  home.sessionVariables = {
+    EDITOR = "vim";
+  };
 
   targets.genericLinux.enable = true;
   
