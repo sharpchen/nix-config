@@ -4,10 +4,5 @@
     nushell
   ];
 
-  home.file.".config/nushell/config.nu".text = /* nu */
-      ''
-        $env.config = {
-          show_banner: false,
-        }
-      '';
+  home.file.".config/nushell/config.nu".source = ../../dotfiles/config.nu;
 }
