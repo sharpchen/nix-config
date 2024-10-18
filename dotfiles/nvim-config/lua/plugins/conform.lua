@@ -7,6 +7,7 @@ return {
         javascript = { 'prettier' },
         typescript = { 'prettier' },
         sh = { 'shfmt' },
+        yaml = { 'yamlfmt' },
       },
     })
 

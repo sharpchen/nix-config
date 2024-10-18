@@ -25,25 +25,12 @@ return {
     vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
     vim.o.foldlevelstart = 99
     vim.o.foldenable = true
-    require('ufo').setup()
-
     vim.keymap.set('n', 'zR', require('ufo').openAllFolds, { desc = 'unfold all levels' })
     vim.keymap.set('n', 'zM', require('ufo').closeAllFolds, { desc = 'fold all levels' })
-    -- local lsp_zero = require('lsp-zero')
-
-    --[[ lsp_zero.on_attach(function(_, bufnr)
-      lsp_zero.default_keymaps({ buffer = bufnr })
-    end)
-
-    lsp_zero.set_server_config({
-      capabilities = {
-        textDocument = {
-          foldingRange = {
-            dynamicRegistration = false,
-            lineFoldingOnly = true,
-          },
-        },
-      },
-    }) ]]
+    require('ufo').setup({
+      provider_selector = function(bufnr, filetype, buftype)
+        return { 'treesitter', 'indent' }
+      end,
+    })
   end,
 }

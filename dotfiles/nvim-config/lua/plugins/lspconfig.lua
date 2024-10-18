@@ -9,7 +9,6 @@ return vim.fn.executable('nix') == 1
           client.server_capabilities.semanticTokensProvider = nil
         end
         require('lspconfig').lua_ls.setup({
-          capabilities = lsp_capabilities,
           settings = {
             Lua = {
               hint = {
@@ -31,9 +30,7 @@ return vim.fn.executable('nix') == 1
             },
           },
         })
-        require('lspconfig').taplo.setup({
-          capabilities = lsp_capabilities,
-        })
+        require('lspconfig').taplo.setup({})
         -- require('lspconfig').biome.setup({
         --   capabilities = lsp_capabilities,
         -- })
@@ -75,17 +72,19 @@ return vim.fn.executable('nix') == 1
         require('lspconfig').bashls.setup({})
         require('lspconfig').emmet_language_server.setup({})
         require('lspconfig').ts_ls.setup({})
-        require('lspconfig').jsonls.setup({
-          capabilities = lsp_capabilities,
-        })
-        require('lspconfig').cssls.setup({
-          capabilities = lsp_capabilities,
-        })
-        require('lspconfig').html.setup({
-          capabilities = lsp_capabilities,
-        })
-        require('lspconfig').vimls.setup({
-          capabilities = lsp_capabilities,
+        require('lspconfig').jsonls.setup({})
+        require('lspconfig').cssls.setup({})
+        require('lspconfig').html.setup({})
+        require('lspconfig').vimls.setup({})
+        require('lspconfig').yamlls.setup({
+          settings = {
+            yaml = {
+              schemas = {
+                ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
+                ['https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json'] = '/*.k8s.yaml',
+              },
+            },
+          },
         })
       end,
     }
