@@ -83,5 +83,5 @@ nnoremap <A-.> :bn<CR>
 nnoremap <A-a> :bufdo bd<CR>
 nnoremap 0 ^
 nnoremap ^ 0
-nnoremap gh :norm! 0<CR>
-nnoremap gl :norm! $<CR>
+nnoremap <silent> gh :norm! 0<CR>
+nnoremap <silent> gl :norm! $<CR>
