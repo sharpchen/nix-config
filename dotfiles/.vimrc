@@ -28,6 +28,10 @@ set mouse=a
 
 set cursorline
 
+set langmenu=en_US
+
+let $LANG = 'en_US'
+
 colo habamax
 " Move selected lines down/up in visual mode
 xnoremap <silent> <M-j> :m '>+1<CR>gv=gv
