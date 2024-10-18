@@ -1,6 +1,6 @@
 # nix-config
 
-## Install on New Machine
+## Install on New Unix Machine
 
 - [install nix](https://nixos.org/download/)
 
@@ -36,3 +36,10 @@ git clone https://github.com/sharpchen/nix-config.git ~/.config/home-manager/
 ```sh
 home-manager switch --flake ~/.config/home-manager#$USER
 ```
+
+## Restore on Windows
+
+```sh
+pwsh ./windows.ps1
+```
+
