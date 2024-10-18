@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs;[
-    dotnet-sdk_8
+    dotnetCorePackages.sdk_8_0_4xx
   ];
 }
 
