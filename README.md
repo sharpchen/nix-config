@@ -40,6 +40,6 @@ home-manager switch --flake ~/.config/home-manager#$USER
 ## Restore on Windows
 
 ```sh
-pwsh ./windows.ps1
+pwsh -noprofile -f ./windows.ps1
 ```
 
