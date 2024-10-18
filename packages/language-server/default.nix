@@ -10,6 +10,7 @@
     ast-grep
     emmet-language-server
     nodePackages.bash-language-server
+    nodePackages.yaml-language-server
     vscode-langservers-extracted
     fsautocomplete
     quick-lint-js

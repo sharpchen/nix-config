@@ -5,6 +5,7 @@
     stylua
     csharpier
     shfmt
+    yamlfmt
   ];
 
   home.file.".prettierrc".text = /* json */
