@@ -12,7 +12,8 @@ config.use_fancy_tab_bar = false
 config.tab_and_split_indices_are_zero_based = true
 config.color_scheme = "tokyonight"
 config.cursor_blink_rate = 500
-config.font_size = 13
+config.font_size = 12
+config.hide_tab_bar_if_only_one_tab = true
 config.font =
 	wezterm.font_with_fallback({ "JetBrains Mono", "Nerd Font Symbols", "Noto Color Emoji", "Symbols Nerd Font Mono" })
 config.font_rules = {
