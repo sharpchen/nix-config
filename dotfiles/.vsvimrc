@@ -41,7 +41,6 @@ nnoremap <leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>
 
 nnoremap J mzJ`z
 
-" -- jump half page up/down
 nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
 
@@ -66,7 +65,7 @@ nnoremap <A-.> :vsc Window.NextDocumentWindow<CR>
 nnoremap <A-,> :vsc Window.PreviousDocumentWindow<CR>
 nnoremap <A-a> :vsc Window.CloseAllDocuments<CR>
 nnoremap gr :vsc Edit.FindAllReferences<CR>
-nnoremap gd :vsc Edit.GoToDefinition<CR>
+nnoremap gd :vsc Edit.GoToImplementation<CR>
 nnoremap 0 ^
 nnoremap ^ 0
 nnoremap gh :norm 0<CR>
