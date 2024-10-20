@@ -10,17 +10,17 @@ scoop bucket add nerd-fonts
 #endregion
 
 $packages = @(
-   git,
-   vswhere,
-   vim,
-   neovim,
-   bat,
-   tokei,
-   pnpm,
-   adb,
-   gcc,
-   ripgrep,
-   lazygit,
+   "git",
+   "vswhere",
+   "vim",
+   "neovim",
+   "bat",
+   "tokei",
+   "pnpm",
+   "adb",
+   "gcc",
+   "ripgrep",
+   "lazygit",
 )
 
 scoop install ($packages -join " ")
