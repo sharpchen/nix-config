@@ -8,8 +8,8 @@ if (Test-Path $devenv) {
       param (
         [System.IO.DirectoryInfo]`$path = [System.IO.DirectoryInfo]::new([System.Environment]::CurrentDirectory)
       ) 
-      `$slns = (Get-ChildItem *.sln)
-      `$csproj = (Get-ChildItem *.csproj)
+      `$slns = (Get-ChildItem ([System.IO.Path]::Combine(`$path.FullName, '*.sln')))
+      `$proj = (Get-ChildItem ([System.IO.Path]::Combine(`$path.FullName, '*proj')))
       if (`$slns) {
           if (`$slns -is [System.IO.FileInfo]) {
               & `"$devenv`" "`$(`$slns.FullName)`"
@@ -17,15 +17,15 @@ if (Test-Path $devenv) {
               & `"$devenv`" "`$(`$slns[0].FullName)`"
           }
           return
-      } elseif (`$csproj) {
-          if (`$csproj -is [System.IO.FileInfo]) {
-              & `"$devenv`" "`$(`$csproj.FullName)`"
-          } elseif (`$csproj -is [Array]) {
-              & `"$devenv`" "`$(`$csproj[0].FullName)`"
+      } elseif (`$proj) {
+          if (`$proj -is [System.IO.FileInfo]) {
+              & `"$devenv`" "`$(`$proj.FullName)`"
+          } elseif (`$proj -is [Array]) {
+              & `"$devenv`" "`$(`$proj[0].FullName)`"
           }
           return
       }
-      Write-Warning "`$(`$path.FullName)` contains no *.csproj or *.sln"
+      Write-Warning "`$(`$path.FullName)` contains no *proj or *.sln"
       
       #& `"$devenv`" "`$(`$path.FullName)`"
 "@
@@ -45,5 +45,5 @@ if (Test-Path $devenv) {
     Write-Output 'Please open a new session to refresh PATH in case you add it too many times'
   }
 } else {
-    Write-Error 'This machine does not have visual studio correctly installed."
+    Write-Error 'This machine does not have visual studio correctly installed.'
 }
