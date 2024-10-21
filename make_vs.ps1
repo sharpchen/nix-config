@@ -1,14 +1,33 @@
+# This file generates a vs.exe to open directory with visual studio
 #Requires -RunAsAdministrator
 $devenv = (vswhere -latest -property productPath)
 if (Test-Path $devenv) {
-  #if (-not Test-Path ([System.IO.Path]::Combine($devenv.Parent.FullName, 'vs.exe'))) {
   Install-Module -Name ps2exe -Scope CurrentUser -Confirm
   $scriptPath = [System.IO.Path]::Combine($env:TEMP, "vs_alias.ps1")
   $scriptContent = @"
       param (
-        [System.IO.DirectoryInfo]`$dir = [System.IO.DirectoryInfo]::new([System.Environment]::CurrentDirectory)
+        [System.IO.DirectoryInfo]`$path = [System.IO.DirectoryInfo]::new([System.Environment]::CurrentDirectory)
       ) 
-      & `"$devenv`" "`$(`$dir.FullName)`"
+      `$slns = (Get-ChildItem *.sln)
+      `$csproj = (Get-ChildItem *.csproj)
+      if (`$slns) {
+          if (`$slns -is [System.IO.FileInfo]) {
+              & `"$devenv`" "`$(`$slns.FullName)`"
+          } elseif (`$slns -is [Array]) {
+              & `"$devenv`" "`$(`$slns[0].FullName)`"
+          }
+          return
+      } elseif (`$csproj) {
+          if (`$csproj -is [System.IO.FileInfo]) {
+              & `"$devenv`" "`$(`$csproj.FullName)`"
+          } elseif (`$csproj -is [Array]) {
+              & `"$devenv`" "`$(`$csproj[0].FullName)`"
+          }
+          return
+      }
+      Write-Warning "`$(`$path.FullName)` contains no *.csproj or *.sln"
+      
+      #& `"$devenv`" "`$(`$path.FullName)`"
 "@
   Write-Output $scriptContent
   $scriptContent | Out-File -FilePath $scriptPath -Force
@@ -16,7 +35,6 @@ if (Test-Path $devenv) {
   $vsExePath = [System.IO.Path]::Combine($devenvParent, 'vs.exe')
   $buildCommand = "ps2exe `"$scriptPath`" `"$vsExePath`" -verbose"
   powershell -NoProfile -Command $buildCommand
-  return
   if (-not ($env:PATH -split ';' | Where-Object { $_ -eq $devenvParent }).Count) {
     [System.Environment]::SetEnvironmentVariable(
       "Path", 
@@ -26,4 +44,6 @@ if (Test-Path $devenv) {
     Write-Output "$devenvParent added to PATH."
     Write-Output 'Please open a new session to refresh PATH in case you add it too many times'
   }
+} else {
+    Write-Error 'This machine does not have visual studio correctly installed."
 }
