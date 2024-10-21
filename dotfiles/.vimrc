@@ -79,10 +79,10 @@ nnoremap <leader>d "_d
 vnoremap <leader>d "_d
 
 nnoremap <leader>a ggVG
-nnoremap <A-c> :bd<CR>
-nnoremap <A-,> :bp<CR>
-nnoremap <A-.> :bn<CR>
-nnoremap <A-a> :bufdo bd<CR>
+nnoremap <silent> <A-c> :bd<CR>
+nnoremap <silent> <A-,> :bp<CR>
+nnoremap <silent> <A-.> :bn<CR>
+nnoremap <silent> <A-a> :bufdo bd<CR>
 nnoremap 0 ^
 nnoremap ^ 0
 nnoremap <silent> gh :norm! 0<CR>
