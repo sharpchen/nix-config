@@ -26,3 +26,4 @@ $packages = @(
 scoop install ($packages -join " ")
 
 & ./dotfiles.ps1
+& ./make_vs.ps1
