@@ -39,7 +39,15 @@ home-manager switch --flake ~/.config/home-manager#$USER
 
 ## Restore on Windows
 
+### Whole machine
+
 ```sh
-pwsh -noprofile -f ./windows.ps1
+pwsh -noprofile -f ./install.ps1
+```
+
+### Dotfiles only
+
+```sh
+pwsh -noprofile -f ./dotfiles.ps1
 ```
 
