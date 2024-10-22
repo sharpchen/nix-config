@@ -134,19 +134,31 @@ local function regular_setup()
     }),
     formatting = {
       fields = { 'kind', 'abbr', 'menu' },
-      format = function(entry, vim_item)
-        ---@type string
-        local kind = vim_item.kind
-        vim_item.kind = kind_icons[vim_item.kind] .. ' '
-        vim_item.menu = ({
-          buffer = '[buf]',
-          nvim_lsp = '[lsp]',
-          luasnip = '[luasnip]',
-          nvim_lua = '[lua]',
-          latex_symbols = '[LaTeX]',
-        })[entry.source.name]
-        vim_item.menu = kind:lower()
-        return vim_item
+      format = function(entry, item)
+        local entryItem = entry:get_completion_item()
+        local color = entryItem.documentation
+        if color and type(color) == 'string' and color:match('^#%x%x%x%x%x%x$') then
+          -- check if color is hexcolor
+          local hl = 'hex-' .. color:sub(2)
+          if #vim.api.nvim_get_hl(0, { name = hl }) == 0 then
+            vim.api.nvim_set_hl(0, hl, { fg = color })
+          end
+          item.menu = ' '
+          item.menu_hl_group = hl
+        else
+          ---@type string
+          local kind = item.kind
+          item.kind = kind_icons[item.kind] .. ' '
+          item.menu = ({
+            buffer = '[buf]',
+            nvim_lsp = '[lsp]',
+            luasnip = '[luasnip]',
+            nvim_lua = '[lua]',
+            latex_symbols = '[LaTeX]',
+          })[entry.source.name]
+          item.menu = kind:lower()
+        end
+        return item
       end,
     },
     sorting = {

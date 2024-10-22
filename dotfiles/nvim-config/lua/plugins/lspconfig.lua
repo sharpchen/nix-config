@@ -57,6 +57,7 @@ return vim.fn.executable('nix') == 1
               codeActions = {
                 forceStable = true,
               },
+              userDictPath = '~/.config/home-manager/dotfiles/harper_dict.txt',
             },
           },
         })

@@ -29,7 +29,7 @@ return {
     local function get_ctx()
       local lang = cursor_lang()
       assert(lang, 'lang not found')
-      local cs = require('Comment.ft').get(lang)
+      local cs = require('Comment.ft').get(lang == 'c_sharp' and 'cs' or lang)
       assert(cs, 'comment string not found')
       return cs, lang
     end

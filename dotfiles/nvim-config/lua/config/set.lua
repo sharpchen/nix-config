@@ -1,4 +1,3 @@
-vim.cmd('colo Eva-Dark')
 -- line number
 vim.opt.nu = true
 
@@ -118,3 +117,10 @@ vim.filetype.add({
     xaml = 'xaml',
   },
 })
+
+vim.o.shell = vim
+  .iter({ 'pwsh', 'bash', 'nu', 'zsh' })
+  :filter(function(x)
+    return vim.fn.executable(x) == 1
+  end)
+  :peek()

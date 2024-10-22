@@ -1,5 +1,6 @@
 require('config.remap')
-require('config.lazy')
 require('config.set')
+require('config.lazy')
 require('config.neovide')
 require('config.wsl')
+vim.cmd('colo Eva-Dark')

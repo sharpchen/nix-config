@@ -3,12 +3,6 @@ return {
   version = '*',
   init = function() end,
   config = function()
-    vim.o.shell = vim
-      .iter({ 'bash', 'nu', 'pwsh', 'zsh' })
-      :filter(function(x)
-        return vim.fn.executable(x) == 1
-      end)
-      :peek()
     require('toggleterm').setup({
       start_in_insert = true,
       direction = 'float',
