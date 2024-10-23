@@ -37,7 +37,7 @@ if (Test-Path $devenv) {
   powershell -NoProfile -Command $buildCommand
   if (-not ($env:PATH -split ';' | Where-Object { $_ -eq $devenvParent }).Count) {
     [System.Environment]::SetEnvironmentVariable(
-      "Path", 
+      'Path', 
       $env:PATH + ';' + $devenvParent,
       [System.EnvironmentVariableTarget]::User
     )
