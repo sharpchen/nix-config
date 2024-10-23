@@ -2,25 +2,34 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
-config.animation_fps = 60
+config.color_scheme = "tokyonight"
+
 config.default_prog = { "nu" }
+
+config.animation_fps = 60
+
 config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 config.window_decorations = "RESIZE"
 config.hide_tab_bar_if_only_one_tab = false
 config.tab_bar_at_bottom = true
 config.use_fancy_tab_bar = false
 config.tab_and_split_indices_are_zero_based = true
-config.color_scheme = "tokyonight"
+
 config.cursor_blink_rate = 500
-config.font_size = 12
+config.cursor_blink_ease_in = 'Constant'
+config.cursor_blink_ease_out = 'Constant'
+
 config.hide_tab_bar_if_only_one_tab = true
+
+local font = "Noto Mono"
+config.font_size = 12
 config.font =
-	wezterm.font_with_fallback({ "JetBrains Mono", "Nerd Font Symbols", "Noto Color Emoji", "Symbols Nerd Font Mono" })
+	wezterm.font_with_fallback({ font, "Nerd Font Symbols", "Noto Color Emoji", "Symbols Nerd Font Mono" })
 config.font_rules = {
 	{
 		intensity = "Bold",
 		italic = false,
-		font = wezterm.font("JetBrains Mono", { weight = "Bold" }),
+		font = wezterm.font(font, { weight = "Bold" }),
 	},
 }
 local mux = wezterm.mux
