@@ -99,4 +99,5 @@ return {
     cmd = { 'Shades', 'Huefy' },
   },
   'rebelot/kanagawa.nvim',
+  'Mofiqul/vscode.nvim',
 }
