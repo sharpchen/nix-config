@@ -70,7 +70,7 @@ vim.keymap.set('n', 'gh', '<cmd>norm! 0<CR>', { noremap = true, silent = true, d
 vim.keymap.set('n', 'gl', '<cmd>norm! $<CR>', { noremap = true, silent = true, desc = 'go to end of line' })
 -- vim.keymap.set('n', 'gp', '<cmd>bp<CR>', { noremap = true, silent = true, desc = 'go to prev buffer' })
 vim.keymap.set('n', 'gn', '<cmd>bn<CR>', { noremap = true, silent = true, desc = 'go to next buffer' })
-vim.keymap.set('n', '<leader>g', '<cmd>LazyGit<CR>', { desc = 'open lazygit' })
+
 vim.iter({ { '(', ')' }, { '<', '>' }, { '[', ']' }, '`', '"', "'", '*' }):each(function(x)
   if type(x) == 'table' then
     vim.keymap.set(

@@ -3,4 +3,5 @@ require('config.set')
 require('config.lazy')
 require('config.neovide')
 require('config.wsl')
-vim.cmd('colo Eva-Dark')
+local colo = { 'Eva-Dark', 'kanagawa-dragon' }
+vim.cmd(('colo %s'):format(colo[math.random(1, #colo)]))

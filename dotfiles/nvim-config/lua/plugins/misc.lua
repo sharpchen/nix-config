@@ -98,4 +98,5 @@ return {
     'nvchad/minty',
     cmd = { 'Shades', 'Huefy' },
   },
+  'rebelot/kanagawa.nvim',
 }

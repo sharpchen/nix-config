@@ -21,7 +21,7 @@ return {
     local function cursor_lang()
       local curline = vim.fn.line('.')
       local lang = vim.treesitter.get_parser():language_for_range({ curline, 0, curline, 0 }):lang()
-      return lang
+      return lang == 'c_sharp' and 'cs' or lang
     end
 
     ---@return string | string[]
@@ -29,7 +29,7 @@ return {
     local function get_ctx()
       local lang = cursor_lang()
       assert(lang, 'lang not found')
-      local cs = require('Comment.ft').get(lang == 'c_sharp' and 'cs' or lang)
+      local cs = require('Comment.ft').get(lang)
       assert(cs, 'comment string not found')
       return cs, lang
     end
