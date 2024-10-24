@@ -1,0 +1,7 @@
+GC
+MVVM
+AXAML
+param
+avalonia
+namespace
+ViewModel
