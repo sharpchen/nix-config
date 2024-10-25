@@ -4,3 +4,4 @@ $env.config = {
 $env.LANG = "en_US.UTF-8"
 
 alias lg = lazygit
+alias :q = exit
