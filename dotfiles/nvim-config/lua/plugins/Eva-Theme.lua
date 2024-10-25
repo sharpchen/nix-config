@@ -2,6 +2,7 @@ return {
   'sharpchen/Eva-Theme.nvim',
   lazy = false,
   priority = 1000,
+  build = 'EvaCompile',
   config = function()
     local light = require('Eva-Theme.palette').light_base
     local dark = require('Eva-Theme.palette').dark_base
