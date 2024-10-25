@@ -40,7 +40,6 @@ $scoopFonts = @(
    'Cascadia-Code',
    'jetbrainsmono-nl',
    'notosansmono',
-   'oxygenmono'
 )
 
 $wingetPackages = @(
