@@ -2,7 +2,7 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
-config.color_scheme = "tokyonight"
+config.color_scheme = "kanagawabones"
 
 config.default_prog = { "nu" }
 
@@ -21,7 +21,7 @@ config.cursor_blink_ease_out = 'Constant'
 
 config.hide_tab_bar_if_only_one_tab = true
 
-local font = "Noto Mono"
+local font = 'Noto Sans Mono'
 config.font_size = 12
 config.font =
 	wezterm.font_with_fallback({ font, "Nerd Font Symbols", "Noto Color Emoji", "Symbols Nerd Font Mono" })
