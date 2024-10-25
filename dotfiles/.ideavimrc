@@ -1,0 +1,12 @@
+source ~/.vimrc
+set ideajoin
+set surround
+set NERDTree
+set commentary
+
+nmap <M-CR> :action ToggleFullScreen<CR>
+nmap <C-M-CR> :action ToggleDistractionFreeMode<CR>
+nmap <leader>ff :action GotoFile<CR>
+nmap <leader>fg :action FindInPath<CR>
+nmap <leader>s :norm! viwy<CR> :%s/\<<C-r>"\>//g<left><left>
+nmap <leader>so :source ~/.ideavimrc<CR>
