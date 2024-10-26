@@ -87,3 +87,4 @@ nnoremap 0 ^
 nnoremap ^ 0
 nnoremap <silent> gh :norm! 0<CR>
 nnoremap <silent> gl :norm! $<CR>
+nnoremap <silent> <leader>so :source ~/.vimrc<CR>
