@@ -18,5 +18,6 @@
     typescript-language-server 
     vim-language-server
     harper
+    ast-grep
   ]; 
 }
