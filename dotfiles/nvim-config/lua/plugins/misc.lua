@@ -85,7 +85,7 @@ return {
   },
   {
     'sharpchen/template-string.nvim',
-    enabled = false,
+    -- enabled = false,
     config = function()
       require('template-string').setup({
         remove_template_string = true,
