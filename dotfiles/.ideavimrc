@@ -10,3 +10,6 @@ nmap <leader>ff :action GotoFile<CR>
 nmap <leader>fg :action FindInPath<CR>
 nmap <leader>s :norm! viwy<CR> :%s/\<<C-r>"\>//g<left><left>
 nmap <leader>so :source ~/.ideavimrc<CR>
+nmap <leader>b :NERDTreeToggle<CR>
+nmap <leader>k :action ReformatCode<CR>
+nmap <leader>ca :action ShowIntentionActions<CR>
