@@ -1,6 +1,7 @@
 return vim.fn.executable('nix') == 1
     and {
       'neovim/nvim-lspconfig',
+      event = { 'BufReadPre', 'BufNewFile' },
       config = function()
         local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
         lsp_capabilities.textDocument.completion.completionItem.snippetSupport = true
@@ -31,11 +32,36 @@ return vim.fn.executable('nix') == 1
           },
         })
         require('lspconfig').taplo.setup({})
-        -- require('lspconfig').biome.setup({
-        --   capabilities = lsp_capabilities,
-        -- })
+
+        require('lspconfig').ts_ls.setup({
+          init_options = {
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = require('utils.static').lsp.vue_language_server,
+                languages = { 'vue', 'markdown' },
+              },
+            },
+          },
+          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+        })
+
+        require('lspconfig').volar.setup({
+          filetypes = { 'markdown' },
+        })
+
         -- require('lspconfig').vtsls.setup({
         --   settings = {
+        --     complete_function_calls = true,
+        --     vtsls = {
+        --       enableMoveToFileCodeAction = true,
+        --       autoUseWorkspaceTsdk = true,
+        --     },
+        --     tsserver = {
+        --       globalPlugins = {
+        --         vue,
+        --       },
+        --     },
         --     typescript = {
         --       inlayHints = {
         --         parameterNames = { enabled = 'literal' },
@@ -72,7 +98,6 @@ return vim.fn.executable('nix') == 1
         require('lspconfig').fsautocomplete.setup({})
         require('lspconfig').bashls.setup({})
         require('lspconfig').emmet_language_server.setup({})
-        require('lspconfig').ts_ls.setup({})
         require('lspconfig').jsonls.setup({})
         require('lspconfig').cssls.setup({})
         require('lspconfig').html.setup({})

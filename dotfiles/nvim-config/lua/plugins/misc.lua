@@ -1,15 +1,7 @@
 return {
-  'nvim-treesitter/playground',
-  {
-    'folke/tokyonight.nvim',
-    lazy = false,
-    priority = 1000,
-    opts = {},
-  },
-  -- indent line match
-  -- match same occurrences
   {
     'RRethy/vim-illuminate',
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       require('illuminate').configure({
         filetypes_denylist = {
@@ -22,6 +14,7 @@ return {
   },
   {
     'folke/todo-comments.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = {
       -- your configuration comes here
@@ -33,6 +26,7 @@ return {
   {
     'utilyre/barbecue.nvim',
     name = 'barbecue',
+    event = { 'BufReadPre', 'BufNewFile' },
     version = '*',
     dependencies = {
       'SmiteshP/nvim-navic',
@@ -69,8 +63,8 @@ return {
     end,
   },
   'rebelot/heirline.nvim',
-  'ThePrimeagen/vim-be-good',
-  'LunarVim/bigfile.nvim',
+  { 'ThePrimeagen/vim-be-good', lazy = true },
+  { 'LunarVim/bigfile.nvim', event = { 'BufReadPre', 'BufNewFile' } },
   {
     'tree-sitter-grammars/tree-sitter-test',
     -- compile on your own on Windows
@@ -85,6 +79,7 @@ return {
   },
   {
     'sharpchen/template-string.nvim',
+    ft = { 'cs', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue', 'svelte', 'html' },
     -- enabled = false,
     config = function()
       require('template-string').setup({

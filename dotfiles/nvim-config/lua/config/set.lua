@@ -30,12 +30,7 @@ vim.opt.isfname:append('@-@')
 vim.opt.guicursor =
   'n-v-sm:block-blinkwait700-blinkoff400-blinkon250-Cursor,ci-ve:ver25,r-cr-o:hor20,i-c:ver100-blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
 
-for type, icon in pairs({
-  Error = '',
-  Warn = '',
-  Hint = '',
-  Info = '',
-}) do
+for type, icon in pairs(require('utils.const').lsp.diagnostic_icons) do
   local hl = 'DiagnosticSign' .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end

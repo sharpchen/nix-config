@@ -1,5 +1,6 @@
 return {
   'numToStr/Comment.nvim',
+  event = { 'BufReadPre', 'BufNewFile' },
   init = function()
     vim.keymap.del({ 'n', 'x', 'o' }, 'gc')
     vim.keymap.del('n', 'gcc')

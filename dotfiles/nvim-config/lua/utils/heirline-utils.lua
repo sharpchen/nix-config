@@ -49,31 +49,4 @@ function M.file_size()
   return string.format('%.2g%s', fsize / math.pow(1024, i), suffix[i + 1])
 end
 
-local function set_os_icon()
-  local icons = require('nvim-web-devicons').get_icons_by_operating_system()
-  if vim.uv.os_uname().sysname == 'Windows_NT' then
-    vim.g.os_fullname = 'Windows_NT'
-    vim.g.os_shortname = 'windows'
-    vim.g.os_icon = icons['windows'].icon
-    return
-  end
-  local f = io.open('/etc/os-release', 'r')
-  if f == nil then
-    return
-  end
-  local content = f:read('*a') --[[@as string]]
-  local distro_fullname = content:match('PRETTY_NAME="([^"]+)"')
-  local short
-  for word in string.gmatch(distro_fullname, '%S+') do
-    short = word:lower()
-    break
-  end
-  f:close()
-  vim.g.os_fullname = distro_fullname
-  vim.g.os_shortname = short
-  vim.g.os_icon = icons[short].icon
-end
-
-set_os_icon()
-
 return M

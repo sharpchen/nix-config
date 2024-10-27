@@ -1,5 +1,6 @@
 return {
   'seblj/roslyn.nvim',
+  ft = 'cs',
   -- enabled = false,
   config = function()
     local util = require('lspconfig.util')

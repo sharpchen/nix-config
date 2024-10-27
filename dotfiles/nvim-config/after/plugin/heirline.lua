@@ -1,4 +1,5 @@
 local utils = require('heirline.utils')
+local const = require('utils.const')
 local conditions = require('heirline.conditions')
 local myutils = require('utils.heirline-utils')
 vim.cmd('set laststatus=3') -- share single statusline for all buffers
@@ -153,19 +154,20 @@ local FileEncoding = {
 }
 local System = {
   init = function(self)
-    self.icon_color = require('nvim-web-devicons').get_icons_by_operating_system()[vim.g.os_shortname].color
+    self.icon_color =
+      require('nvim-web-devicons').get_icons_by_operating_system()[require('utils.static').OS_short].color
   end,
-  provider = vim.g.os_icon .. ' ' .. vim.bo.fileformat,
+  provider = require('utils.static').OS_icon .. ' ' .. vim.bo.fileformat,
   hl = function(self)
     return { fg = self.icon_color, bg = 'statusline' }
   end,
 }
 local Diagnostic = {
   static = {
-    error_icon = '',
-    warn_icon = '',
-    hint_icon = '',
-    info_icon = '',
+    error_icon = const.lsp.diagnostic_icons.Error,
+    warn_icon = const.lsp.diagnostic_icons.Warn,
+    hint_icon = const.lsp.diagnostic_icons.Hint,
+    info_icon = const.lsp.diagnostic_icons.Info,
   },
   init = function(self)
     self.error_count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })

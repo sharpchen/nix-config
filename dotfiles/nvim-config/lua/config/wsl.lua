@@ -1,7 +1,7 @@
 local function set_windows_clipboard()
   local bin = vim.fn.expand('~/.local/bin')
   if vim.fn.isdirectory(bin) == 0 then
-    os.execute('mkdir -p ' .. bin)
+    vim.fn.mkdir(bin, 'p')
   end
   local win32yank_path = vim.fn.expand('~/.local/bin/win32yank.exe')
   if vim.uv.fs_stat(win32yank_path) == nil then
@@ -41,7 +41,7 @@ local function set_windows_clipboard()
       on_start = function()
         vim.notify('Installing win32yank...', vim.log.levels.INFO)
       end,
-      on_stderr = function (_, val)
+      on_stderr = function(_, val)
         vim.notify(vim.fn.escape(val, '"'), vim.log.levels.ERROR)
       end,
       on_exit = function()

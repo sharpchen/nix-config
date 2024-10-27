@@ -125,6 +125,5 @@ return {
         'actionlint',
       },
     })
-    -- vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<CR>')
   end,
 }
