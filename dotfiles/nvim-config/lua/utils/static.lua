@@ -1,3 +1,4 @@
+local async = require('utils').async
 ---@class Static
 ---@field OS_distro string full name of system
 ---@field OS_short string short name for system
@@ -14,7 +15,7 @@ local M = {
 }
 
 if not M.env.is_windows then
-  require('utils').async.cmd({ 'bash', '-c', 'echo -n $(readlink -f $(which vue-language-server))' }, function(result)
+  async.cmd({ 'bash', '-c', 'echo -n $(readlink -f $(which vue-language-server))' }, function(result)
     local folder = vim.fs.dirname(vim.fs.dirname(result))
     M.lsp.vue_language_server = vim.fs.joinpath(folder, 'lib/node_modules/@vue/language-server')
   end)
@@ -28,6 +29,7 @@ if vim.uv.os_uname().sysname == 'Windows_NT' then
   M.OS_icon = icons['windows'].icon
   return
 end
+
 local f = io.open('/etc/os-release', 'r')
 if f == nil then
   return
