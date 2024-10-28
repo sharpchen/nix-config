@@ -4,5 +4,6 @@ MVVM
 AXAML
 param
 avalonia
+filetype
 namespace
 ViewModel
