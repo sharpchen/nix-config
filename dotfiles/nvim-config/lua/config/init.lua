@@ -5,4 +5,5 @@ require('utils.static')
 require('config.neovide')
 require('config.wsl')
 local colo = { 'Eva-Dark', 'kanagawa-dragon', 'vscode' }
-vim.cmd(('colo %s'):format(colo[math.random(1, #colo)]))
+math.randomseed(os.time())
+vim.cmd(('colo %s'):format(colo[math.random(#colo)]))

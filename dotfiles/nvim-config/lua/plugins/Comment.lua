@@ -1,5 +1,7 @@
 return {
-  'numToStr/Comment.nvim',
+  -- 'numToStr/Comment.nvim',
+  'sharpchen/Comment.nvim',
+  branch = 'fix-csharp',
   event = { 'BufReadPre', 'BufNewFile' },
   init = function()
     vim.keymap.del({ 'n', 'x', 'o' }, 'gc')
@@ -18,40 +20,32 @@ return {
       api.toggle.blockwise(vim.fn.visualmode())
     end, { desc = 'toggle comment blockwise' })
 
-    ---@return string?
-    local function cursor_lang()
-      local curline = vim.fn.line('.')
-      local lang = vim.treesitter.get_parser():language_for_range({ curline, 0, curline, 0 }):lang()
-      return lang == 'c_sharp' and 'cs' or lang
-    end
-
     ---@return string | string[]
     ---@return string
     local function get_ctx()
-      local lang = cursor_lang()
-      assert(lang, 'lang not found')
-      local cs = require('Comment.ft').get(lang)
+      local ft = require('utils.static').buf.cursor_ft()
+      assert(ft, 'lang not found')
+      local cs = require('Comment.ft').get(ft)
       assert(cs, 'comment string not found')
-      return cs, lang
+      return cs, ft
     end
 
     ---@param suffix string
     ---@return function
     local function comment_eol(suffix)
       return function()
-        local success, cs, lang = pcall(get_ctx)
-        if not success then
+        local ok, cs, ft = pcall(get_ctx)
+        if not ok then
           vim.notify('getting context failed', vim.log.levels.ERROR)
           return
         end
-        local ori_cs = type(cs) == 'string' and cs or cs[1]
-        -- vim.notify(('Current comment string: %s\nCurrent lang: %s'):format(vim.inspect(cs), lang))
-        local pos = ori_cs:find('%%s')
-        local sub = pos and ori_cs:sub(1, pos - 1) .. ' ' .. suffix .. ori_cs:sub(pos) or ori_cs .. suffix
-        require('Comment.ft').set(lang, sub)
+        local line_cs = type(cs) == 'string' and cs or cs[1]
+        local pos = line_cs:find('%%s')
+        local sub = pos and line_cs:sub(1, pos - 1) .. ' ' .. suffix .. line_cs:sub(pos) or line_cs .. suffix
+        require('Comment.ft').set(ft, sub)
         require('Comment.api').insert.linewise.eol()
         vim.api.nvim_feedkeys(esc, 'x', false)
-        require('Comment.ft').set(lang, cs)
+        require('Comment.ft').set(ft, cs)
       end
     end
     vim.keymap.set('n', 'gva', comment_eol('[!code ++]'), { desc = '[!code ++]' })

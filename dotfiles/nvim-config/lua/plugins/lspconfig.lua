@@ -4,11 +4,9 @@ return vim.fn.executable('nix') == 1
       event = { 'BufReadPre', 'BufNewFile' },
       config = function()
         local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+        local lsp = require('utils.static').lsp
         lsp_capabilities.textDocument.completion.completionItem.snippetSupport = true
         require('lspconfig.ui.windows').default_options.border = 'rounded'
-        local function disable_semantic(client)
-          client.server_capabilities.semanticTokensProvider = nil
-        end
         require('lspconfig').lua_ls.setup({
           settings = {
             Lua = {
@@ -34,20 +32,30 @@ return vim.fn.executable('nix') == 1
         require('lspconfig').taplo.setup({})
 
         require('lspconfig').ts_ls.setup({
+          on_attach = function(client, _)
+            if vim.bo.filetype == 'markdown' then
+              lsp.event.disable_formatter(client)
+            end
+          end,
           init_options = {
             plugins = {
               {
                 name = '@vue/typescript-plugin',
-                location = require('utils.static').lsp.vue_language_server,
+                location = lsp.path.vue_language_server,
                 languages = { 'vue', 'markdown' },
               },
             },
           },
-          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'markdown' },
         })
 
         require('lspconfig').volar.setup({
-          filetypes = { 'markdown' },
+          filetypes = { 'markdown', 'vue' },
+          on_attach = function(client, _)
+            if vim.bo.filetype == 'markdown' then
+              lsp.event.disable_formatter(client)
+            end
+          end,
         })
 
         -- require('lspconfig').vtsls.setup({
@@ -91,7 +99,7 @@ return vim.fn.executable('nix') == 1
           filetypes = { 'xaml', 'axaml' },
         })
         require('lspconfig').nixd.setup({
-          on_init = disable_semantic,
+          on_init = lsp.event.disable_semantic,
         })
         require('lspconfig').quick_lint_js.setup({})
         require('lspconfig').ast_grep.setup({})

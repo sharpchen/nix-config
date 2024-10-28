@@ -22,10 +22,14 @@ return {
         )
       else
         vim.lsp.buf.format({ async = false, timeout_ms = 2000, bufnr = bufnr })
-        local names = {}
-        for _, server in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-          table.insert(names, server.name)
-        end
+        local names = vim
+          .iter(vim.lsp.get_clients({ bufnr = bufnr }))
+          :filter(function(client)
+            return not not client.server_capabilities.documentFormattingProvider
+          end)
+          :map(function(client)
+            return client.name
+          end)
         vim.notify(string.format('formmatted by lsp: %s', table.concat(names, ',')))
       end
     end
