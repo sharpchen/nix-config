@@ -9,5 +9,10 @@ New-Item -ItemType SymbolicLink -Path "~/.wezterm.lua" -Target $([System.IO.Path
 New-Item -ItemType SymbolicLink -Path ([System.IO.Path]::Combine($env:APPDATA, "nushell/config.nu")) -Target ([System.IO.Path]::Combine((Get-Location).Path, "dotfiles/config.nu")) -Force
 New-Item -ItemType SymbolicLink -Path ([System.IO.Path]::Combine($env:LOCALAPPDATA, "lazygit/config.yml")) -Target ([System.IO.Path]::Combine((Get-Location).Path, "dotfiles/lazygit.config.yml")) -Force
 New-Item -ItemType SymbolicLink -Path $Profile -Target $([System.IO.Path]::Combine((Get-Location).Path, "dotfiles/pwsh.profile.ps1")) -Force
+New-Item -ItemType SymbolicLink `
+    -Path `
+        [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName([System.IO.Path]::GetDirectoryName((Get-Command scoop).Source)), `
+        'persist/librewolf/Profiles/Default/librewolf.overrides.cfg')  `
+    -Target $([System.IO.Path]::Combine((Get-Location).Path, "dotfiles/librewolf.cfg")) -Force
 
 Write-Output "Restore finished."
