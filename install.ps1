@@ -33,7 +33,9 @@ $scoopPackages = @(
    'nodejs-lts',
    'wiztree',
    '7zip',
-   'carnac'
+   'carnac',
+   'librewolf',
+   'abdownloadmanager'
 )
 
 $scoopFonts = @(
