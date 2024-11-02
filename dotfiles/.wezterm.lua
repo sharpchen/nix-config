@@ -21,7 +21,7 @@ config.cursor_blink_ease_out = 'Constant'
 
 config.hide_tab_bar_if_only_one_tab = true
 
-local font = 'Noto Sans Mono'
+local font = 'JetBrains Mono NL'
 config.font_size = 12
 config.font =
 	wezterm.font_with_fallback({ font, "Nerd Font Symbols", "Noto Color Emoji", "Symbols Nerd Font Mono" })
@@ -62,16 +62,16 @@ wezterm.on("update-right-status", function(window, _)
 end)
 
 local act = wezterm.action
-config.leader = { key = "s", mods = "ALT", timeout_miliseconds = 2000 }
+config.leader = { key = "a", mods = "CTRL", timeout_miliseconds = 2000 }
 config.keys = {
 	{
 		mods = "LEADER",
-		key = "c",
+		key = "a",
 		action = wezterm.action.SpawnTab("CurrentPaneDomain"),
 	},
 	{
 		mods = "LEADER",
-		key = "x",
+		key = "c",
 		action = wezterm.action.CloseCurrentPane({ confirm = true }),
 	},
 	{
@@ -86,7 +86,7 @@ config.keys = {
 	},
 	{
 		mods = "LEADER",
-		key = "|",
+		key = "\\",
 		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
 	{
