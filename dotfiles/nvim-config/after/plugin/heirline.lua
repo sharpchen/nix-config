@@ -403,7 +403,7 @@ require('heirline').setup({
   },
 })
 
-vim.keymap.set('n', '<leader><leader>h', function()
+vim.api.nvim_create_user_command('Heirline', function()
   local Path = require('plenary.path')
   vim.cmd(('source %s'):format(Path:new({ vim.fn.stdpath('config'), 'after/plugin/heirline.lua' })))
-end)
+end, { desc = 'reload heirline' })

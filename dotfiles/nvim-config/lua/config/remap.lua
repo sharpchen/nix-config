@@ -1,8 +1,5 @@
 vim.g.mapleader = ' '
 
--- switch back to explorer
--- vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
-
 -- move selected lines up/down
 vim.keymap.set('v', '<M-j>', ":m '>+1<CR>gv=gv", { silent = true })
 vim.keymap.set('v', '<M-k>', ":m '<-2<CR>gv=gv", { silent = true })
@@ -53,23 +50,22 @@ vim.keymap.set(
   { desc = 'replace all occurrence of current word' }
 )
 
--- vim.keymap.set('n', '<leader>/', ':set noignorecase<CR>/', { desc = 'case sensitive search' })
--- vim.keymap.set('n', '/', ':set ignorecase<CR>/', { desc = 'case insensitive search' })
--- vim.keymap.set('n', '\\', ':%s/', { desc = 'replace occurrence in current file' })
 vim.keymap.set('n', '<leader>a', 'ggVG', { desc = 'select all text' })
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
+vim.keymap.set('n', '<leader>h', function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }))
+end)
 
 vim.keymap.set('n', '<A-c>', '<cmd>bd<CR>', { desc = 'close current buffer' })
 vim.keymap.set('n', '<A-,>', '<cmd>bp<CR>', { desc = 'move to previous buffer' })
 vim.keymap.set('n', '<A-.>', '<cmd>bn<CR>', { desc = 'move to next buffer' })
 vim.keymap.set('n', '<A-a>', '<cmd>bufdo bd<CR>', { desc = 'close all buffers' })
+vim.keymap.set('n', '<leader><leader>', 'diw')
 
 vim.keymap.set('n', '0', '^', { noremap = true, silent = true, desc = 'go to start of line' })
 vim.keymap.set('n', '^', '0', { noremap = true, silent = true, desc = 'go to first word bound of line' })
 vim.keymap.set('n', 'gh', '<cmd>norm! 0<CR>', { noremap = true, silent = true, desc = 'go to start of line' })
 vim.keymap.set('n', 'gl', '<cmd>norm! $<CR>', { noremap = true, silent = true, desc = 'go to end of line' })
--- vim.keymap.set('n', 'gp', '<cmd>bp<CR>', { noremap = true, silent = true, desc = 'go to prev buffer' })
-vim.keymap.set('n', 'gn', '<cmd>bn<CR>', { noremap = true, silent = true, desc = 'go to next buffer' })
 
 vim.iter({ { '(', ')' }, { '<', '>' }, { '[', ']' }, '`', '"', "'", '*' }):each(function(x)
   if type(x) == 'table' then
@@ -112,7 +108,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
   end,
 })
-vim.keymap.set('n', '<leader><leader>i', function()
+vim.keymap.set('n', '<leader>ti', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }))
 end, { desc = 'toggle inlay hint' })
 

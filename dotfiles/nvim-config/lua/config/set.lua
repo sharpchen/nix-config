@@ -19,8 +19,8 @@ vim.opt.undofile = true
 
 vim.opt.hlsearch = false -- disable search result highlight
 vim.opt.incsearch = true
-vim.cmd('set smartcase')
-vim.cmd('set ignorecase')
+vim.opt.smartcase = true
+vim.opt.ignorecase = true
 
 vim.opt.termguicolors = true
 
