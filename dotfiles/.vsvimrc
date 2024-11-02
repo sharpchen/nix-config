@@ -82,3 +82,4 @@ nnoremap gcc :vsc Edit.ToggleLineComment<CR><Esc>
 vnoremap gc :vsc Edit.ToggleLineComment<CR><Esc><Esc><Esc><Esc><Esc><Esc><Esc><Esc><Esc><Esc>
 nnoremap <leader>so :source ~/.vsvimrc<CR>
 nnoremap <leader>k :vsc Edit.FormatDocument<CR>
+nnoremap <leader><leader> diw

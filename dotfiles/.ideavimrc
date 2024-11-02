@@ -13,3 +13,5 @@ nmap <leader>so :source ~/.ideavimrc<CR>
 nmap <leader>b :NERDTreeToggle<CR>
 nmap <leader>k :action ReformatCode<CR>
 nmap <leader>ca :action ShowIntentionActions<CR>
+nmap <F2> :action RenameElement<CR>
+inoremap <C-v> <Esc>"+pa
