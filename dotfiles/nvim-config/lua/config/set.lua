@@ -1,7 +1,5 @@
 -- line number
 vim.opt.nu = true
-
--- relative line number
 vim.opt.rnu = true
 
 vim.opt.tabstop = 4

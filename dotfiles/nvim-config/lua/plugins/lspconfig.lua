@@ -4,7 +4,7 @@ return vim.fn.executable('nix') == 1
       event = { 'BufReadPre', 'BufNewFile' },
       config = function()
         local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-        local lsp = require('utils.static').lsp
+        local lsp = require('utils.lsp')
         lsp_capabilities.textDocument.completion.completionItem.snippetSupport = true
         require('lspconfig.ui.windows').default_options.border = 'rounded'
         require('lspconfig').lua_ls.setup({

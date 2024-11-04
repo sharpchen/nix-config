@@ -50,6 +50,21 @@ vim.keymap.set(
   { desc = 'replace all occurrence of current word' }
 )
 
+vim.keymap.set('n', '<leader>cp', function()
+  local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'pascal')
+  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
+end)
+
+vim.keymap.set('n', '<leader>cs', function()
+  local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'snake')
+  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
+end)
+
+vim.keymap.set('n', '<leader>cc', function()
+  local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'camel')
+  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
+end)
+
 vim.keymap.set('n', '<leader>a', 'ggVG', { desc = 'select all text' })
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
 vim.keymap.set('n', '<leader>h', function()

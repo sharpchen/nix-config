@@ -1,3 +1,4 @@
+require('utils.extension')
 local M = {}
 M.async = {
   ---simple async cmd to fetch single result.

@@ -5,29 +5,6 @@ local async = require('utils').async
 ---@field OS_icon string icon of system
 local M = {}
 
-M.env = {
-  is_windows = vim.uv.os_uname().sysname == 'Windows_NT',
-  -- do not use it on plugin loading
-  has_nix = vim.fn.executable('nix') == 1,
-}
-
-M.lsp = {
-  path = {
-    vue_language_server = '',
-  },
-  event = {
-    ---@param client vim.lsp.Client
-    disable_formatter = function(client, _)
-      client.server_capabilities.documentFormattingProvider = false
-      client.server_capabilities.documentRangeFormattingProvider = false
-    end,
-    ---@param client vim.lsp.Client
-    disable_semantic = function(client)
-      client.server_capabilities.semanticTokensProvider = nil
-    end,
-  },
-}
-
 M.buf = {
   ---returns filetype of under cursor
   ---@return string
@@ -46,15 +23,15 @@ M.ts = {
   end,
 }
 
-if not M.env.is_windows then
+if not require('utils.env').is_windows then
   async.cmd({ 'bash', '-c', 'echo -n $(readlink -f $(which vue-language-server))' }, function(result)
     local folder = vim.fs.dirname(vim.fs.dirname(result))
-    M.lsp.path.vue_language_server = vim.fs.joinpath(folder, 'lib/node_modules/@vue/language-server')
+    require('utils.lsp').path.vue_language_server = vim.fs.joinpath(folder, 'lib/node_modules/@vue/language-server')
   end)
 end
 
 local icons = require('nvim-web-devicons').get_icons_by_operating_system()
-if M.env.is_windows then
+if require('utils.env').is_windows then
   M.OS_distro = 'Windows_NT'
   M.OS_short = 'windows'
   M.OS_icon = icons['windows'].icon
