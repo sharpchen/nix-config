@@ -13,5 +13,9 @@
     vim-language-server
     harper
     ast-grep
+    postgres-lsp
+    sqlfluff
+    eslint
+    ruff
   ]; 
 }
