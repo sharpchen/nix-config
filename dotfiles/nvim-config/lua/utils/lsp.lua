@@ -1,7 +1,8 @@
+local async = require('utils').async
 local M = {}
 
 M.path = {
-  vue_language_server = '',
+  vue_language_server = string.empty,
 }
 
 M.event = {
@@ -19,6 +20,13 @@ M.event = {
 ---@return vim.lsp.Client[]
 M.attached_clients = function()
   return vim.lsp.get_clients({ bufnr = 0 })
+end
+
+if not require('utils.env').is_windows then
+  async.cmd({ 'bash', '-c', 'echo -n $(readlink -f $(which vue-language-server))' }, function(result)
+    local folder = vim.fs.dirname(vim.fs.dirname(result))
+    M.path.vue_language_server = vim.fs.joinpath(folder, 'lib/node_modules/@vue/language-server')
+  end)
 end
 
 return M

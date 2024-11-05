@@ -102,7 +102,7 @@ return vim.fn.executable('nix') == 1
           on_init = lsp.event.disable_semantic,
         })
         require('lspconfig').quick_lint_js.setup({})
-        require('lspconfig').ast_grep.setup({})
+        -- require('lspconfig').ast_grep.setup({})
         require('lspconfig').fsautocomplete.setup({})
         require('lspconfig').bashls.setup({})
         require('lspconfig').emmet_language_server.setup({})
@@ -110,6 +110,7 @@ return vim.fn.executable('nix') == 1
         require('lspconfig').cssls.setup({})
         require('lspconfig').html.setup({})
         require('lspconfig').vimls.setup({})
+        require('lspconfig').postgres_lsp.setup({})
         require('lspconfig').yamlls.setup({
           settings = {
             yaml = {

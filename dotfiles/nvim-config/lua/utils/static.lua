@@ -1,4 +1,3 @@
-local async = require('utils').async
 ---@class Static
 ---@field OS_distro string full name of system
 ---@field OS_short string short name for system
@@ -22,13 +21,6 @@ M.ts = {
     return vim.treesitter.get_parser():language_for_range({ curline, 0, curline, 0 }):lang()
   end,
 }
-
-if not require('utils.env').is_windows then
-  async.cmd({ 'bash', '-c', 'echo -n $(readlink -f $(which vue-language-server))' }, function(result)
-    local folder = vim.fs.dirname(vim.fs.dirname(result))
-    require('utils.lsp').path.vue_language_server = vim.fs.joinpath(folder, 'lib/node_modules/@vue/language-server')
-  end)
-end
 
 local icons = require('nvim-web-devicons').get_icons_by_operating_system()
 if require('utils.env').is_windows then

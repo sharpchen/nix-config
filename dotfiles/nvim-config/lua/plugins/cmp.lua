@@ -141,17 +141,19 @@ local function regular_setup()
           item.menu = ' '
           item.menu_hl_group = hl
         else
-          ---@type string
-          local kind = item.kind
+          local kind_name = item.kind --[[@as string]]
           item.kind = require('utils.const').lsp.completion_kind_icons[item.kind] .. ' '
-          item.menu = ({
-            buffer = '[buf]',
-            nvim_lsp = '[lsp]',
-            luasnip = '[luasnip]',
-            nvim_lua = '[lua]',
-            latex_symbols = '[LaTeX]',
-          })[entry.source.name]
-          item.menu = kind:lower()
+          item.menu = ('%s %s'):format(
+            ({
+              buffer = '[buf]',
+              nvim_lsp = '[lsp]',
+              luasnip = '[luasnip]',
+              nvim_lua = '[lua]',
+              latex_symbols = '[LaTeX]',
+              ['vim-dadbod-completion'] = '[db]',
+            })[entry.source.name],
+            kind_name:lower()
+          )
         end
         return item
       end,

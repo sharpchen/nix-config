@@ -9,6 +9,8 @@ return {
         typescript = { 'prettier' },
         sh = { 'shfmt' },
         yaml = { 'yamlfmt' },
+        sql = { 'sqlfluff' },
+        plsql = { 'sqlfluff' },
       },
     })
 
