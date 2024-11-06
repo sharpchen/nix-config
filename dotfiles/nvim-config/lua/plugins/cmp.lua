@@ -143,17 +143,14 @@ local function regular_setup()
         else
           local kind_name = item.kind --[[@as string]]
           item.kind = require('utils.const').lsp.completion_kind_icons[item.kind] .. ' '
-          item.menu = ('%s %s'):format(
-            ({
-              buffer = '[buf]',
-              nvim_lsp = '[lsp]',
-              luasnip = '[luasnip]',
-              nvim_lua = '[lua]',
-              latex_symbols = '[LaTeX]',
-              ['vim-dadbod-completion'] = '[db]',
-            })[entry.source.name],
-            kind_name:lower()
-          )
+          item.menu = ('%s %s'):format(({
+            buffer = '[buf]',
+            nvim_lsp = '[lsp]',
+            luasnip = '[luasnip]',
+            nvim_lua = '[lua]',
+            latex_symbols = '[LaTeX]',
+            ['vim-dadbod-completion'] = '[db]',
+          })[entry.source.name] or string.empty, kind_name:lower())
         end
         return item
       end,

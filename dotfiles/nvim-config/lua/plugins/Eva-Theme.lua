@@ -10,12 +10,12 @@ return os.getenv('eva') == nil
         require('Eva-Theme').setup({
           override_palette = {
             dark = {
-              operator = dark.punctuation,
+              -- operator = dark.punctuation,
               -- background = '#14161B',
               typeparam = dark.primitive,
             },
             light = {
-              operator = light.punctuation,
+              -- operator = light.punctuation,
               typeparam = light.primitive,
             },
           },

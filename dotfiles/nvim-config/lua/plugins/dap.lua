@@ -1,9 +1,11 @@
 return {
   'mfussenegger/nvim-dap',
   event = { 'BufReadPre' },
+  lazy = true,
   dependencies = {
     'rcarriga/nvim-dap-ui',
     'theHamsta/nvim-dap-virtual-text',
+    'nvim-neotest/nvim-nio',
   },
 
   config = function()
@@ -37,9 +39,14 @@ return {
       ui.close()
     end
 
+    vim.fn.sign_define('DapBreakpoint', { text = '●', texthl = 'Error', linehl = '', numhl = '' })
+    vim.fn.sign_define('DapBreakpointCondition', { text = '●', texthl = 'Conditional', linehl = '', numhl = '' })
+    vim.fn.sign_define('DapLogPoint', { text = '◆', texthl = 'String', linehl = '', numhl = '' })
+    vim.fn.sign_define('DapStopped', { text = '', texthl = 'Function' })
+
     dap.adapters.coreclr = {
       type = 'executable',
-      command = dap_utils.path.netcoredbg,
+      command = 'netcoredbg',
       args = { '--interpreter=vscode' },
     }
     dap.configurations.cs = {
