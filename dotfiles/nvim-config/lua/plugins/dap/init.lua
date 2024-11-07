@@ -1,7 +1,6 @@
 return {
   'mfussenegger/nvim-dap',
   event = { 'BufReadPre' },
-  lazy = true,
   dependencies = {
     'rcarriga/nvim-dap-ui',
     'theHamsta/nvim-dap-virtual-text',
@@ -44,20 +43,6 @@ return {
     vim.fn.sign_define('DapLogPoint', { text = '◆', texthl = 'String', linehl = '', numhl = '' })
     vim.fn.sign_define('DapStopped', { text = '', texthl = 'Function' })
 
-    dap.adapters.coreclr = {
-      type = 'executable',
-      command = 'netcoredbg',
-      args = { '--interpreter=vscode' },
-    }
-    dap.configurations.cs = {
-      {
-        type = 'coreclr',
-        name = 'launch - netcoredbg',
-        request = 'launch',
-        program = function()
-          return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/', 'file')
-        end,
-      },
-    }
+    require('plugins.dap.netcoredbg')
   end,
 }

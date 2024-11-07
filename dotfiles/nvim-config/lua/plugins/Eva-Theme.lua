@@ -33,4 +33,18 @@ return os.getenv('eva') == nil
     }
   or {
     dir = '~/projects/Eva-Theme.nvim',
+    lazy = false,
+    priority = 1000,
+    build = ':EvaCompile',
+    config = function()
+      local color = require('Eva-Theme.palette').dark_base
+      require('Eva-Theme').setup({
+        override_highlight = {
+          dark = {
+            ['WinBar'] = { bg = color.background },
+            ['WinBarNC'] = { bg = color.background },
+          },
+        },
+      })
+    end,
   }
