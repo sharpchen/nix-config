@@ -4,4 +4,6 @@ local M = {
   has_nix = vim.fn.executable('nix') == 1,
 }
 
+M.new_line = M.is_windows and '\r\n' or '\n'
+
 return M
