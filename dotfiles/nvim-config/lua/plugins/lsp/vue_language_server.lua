@@ -1,6 +1,6 @@
 local lsp = require('utils.lsp')
 
-require('lspconfig').ts_ls.config_def = vim.tbl_deep_extend('error', require('lspconfig').ts_ls.config_def, {
+require('lspconfig').ts_ls.setup({
   filetypes = { 'vue', 'markdown' },
   init_options = {
     plugins = {

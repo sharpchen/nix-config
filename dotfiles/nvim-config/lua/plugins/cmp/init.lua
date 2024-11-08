@@ -1,7 +1,7 @@
 return {
   'hrsh7th/nvim-cmp',
   branch = 'main',
-  event = { 'BufReadPre', 'BufNewFile' },
+  event = { 'BufReadPre', 'BufNewFile', 'CmdlineEnter' },
   version = false,
   dependencies = {
     'hrsh7th/cmp-nvim-lsp',

@@ -12,6 +12,7 @@ dap.configurations.cs = {
     name = 'launch - netcoredbg',
     request = 'launch',
     program = function()
+      --TODO: rebuild project first
       local DirectoryInfo = require('utils.io').DirectoryInfo
       local dir = DirectoryInfo.new(vim.fs.joinpath(vim.uv.cwd(), '/bin/Debug/'))
       local debug_dirs = dir:get_directories()

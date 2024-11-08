@@ -11,6 +11,14 @@ return {
         yaml = { 'yamlfmt' },
         sql = { 'sqlfluff' },
         plsql = { 'sqlfluff' },
+        python = {
+          -- To fix auto-fixable lint errors.
+          'ruff_fix',
+          -- To run the Ruff formatter.
+          'ruff_format',
+          -- To organize the imports.
+          'ruff_organize_imports',
+        },
       },
     })
 
@@ -20,7 +28,10 @@ return {
       if formatter then
         conform.format({ bufnr = bufnr, timeout_ms = 2000, async = false })
         vim.notify(
-          string.format('formmatted by formatter: %s', type(formatter) == 'function' and formatter()[1] or formatter[1])
+          string.format(
+            'formmatted by formatter: %s',
+            type(formatter) == 'function' and formatter(bufnr)[1] or formatter[1]
+          )
         )
       else
         local clients = vim.iter(vim.lsp.get_clients({ bufnr = bufnr })):filter(function(client)

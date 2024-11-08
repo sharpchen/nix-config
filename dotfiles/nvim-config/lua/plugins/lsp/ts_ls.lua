@@ -5,6 +5,4 @@ require('lspconfig').ts_ls.setup({
       lsp.event.disable_formatter(client)
     end
   end,
-
-  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact' },
 })
