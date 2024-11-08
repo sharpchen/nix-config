@@ -5,6 +5,7 @@ return {
   config = function()
     require('sniprun').setup({
       display = {
+        selected_interpreters = { 'Lua_nvim' },
         'VirtualText',
         'Classic',
       },

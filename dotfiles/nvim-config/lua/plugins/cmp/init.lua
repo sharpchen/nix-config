@@ -1,8 +1,6 @@
 return {
-  --[[ 'hrsh7th/nvim-cmp',
-  branch = 'main', ]]
-  'yioneko/nvim-cmp',
-  branch = 'perf',
+  'hrsh7th/nvim-cmp',
+  branch = 'main',
   event = { 'BufReadPre', 'BufNewFile' },
   version = false,
   dependencies = {

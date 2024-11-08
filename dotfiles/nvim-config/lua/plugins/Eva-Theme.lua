@@ -11,7 +11,7 @@ return os.getenv('eva') == nil
           override_palette = {
             dark = {
               -- operator = dark.punctuation,
-              -- background = '#14161B',
+              background = '#14161B',
               typeparam = dark.primitive,
             },
             light = {

@@ -1,4 +1,4 @@
-local async = require('utils').async
+local async = require('utils.async')
 local M = {
   path = {
     netcoredbg = string.empty,

@@ -1,7 +1,7 @@
 require('config.remap')
 require('config.set')
 require('config.lazy')
-require('utils.static')
+require('utils')
 require('config.neovide')
 require('config.wsl')
 local colo = { 'Eva-Dark', 'kanagawa-dragon', 'vscode' }

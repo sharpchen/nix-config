@@ -3,7 +3,7 @@ require('cmp').setup.global({
   formatting = {
     fields = { 'kind', 'abbr', 'menu' },
     format = function(entry, item)
-      local entryItem = entry:get_completion_item()
+      local entryItem = entry.completion_item
       local color = entryItem.documentation
       if color and type(color) == 'string' and color:match('^#%x%x%x%x%x%x$') then
         -- check if color is hexcolor
@@ -16,7 +16,7 @@ require('cmp').setup.global({
       else
         local kind_name = item.kind --[[@as string]]
         item.kind = require('utils.const').lsp.completion_kind_icons[item.kind] .. ' '
-        item.menu = ('%s %s'):format(kind_name:lower(), ({
+        item.menu = ('%s %s'):format(require('utils.text').case.convert(kind_name, 'camel'), ({
           buffer = '[buf]',
           nvim_lsp = '[lsp]',
           luasnip = '[luasnip]',
