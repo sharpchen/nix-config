@@ -21,8 +21,9 @@ alias cls='clear'
 alias now='date "+%Y-%m-%d %H:%M:%S"'
 alias so='source ~/.bashrc'
 alias :q='exit'
-alias hms="home-manager switch --flake ~/.config/home-manager#$USER"
+alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
 alias lg=lazygit
+alias proj='cd $(ls -d ~/projects/* ~/.config/* | fzf)'
 
 PS1='[\u@\h \W]\$ '
 
