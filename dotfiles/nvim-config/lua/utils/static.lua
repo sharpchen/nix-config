@@ -9,6 +9,9 @@ M.buf = {
   ---@return string
   cursor_ft = function()
     local lang = M.ts.cursor_lang()
+    if lang == 'powershell' then
+      return 'ps1'
+    end
     return lang == 'c_sharp' and 'cs' or lang
   end,
 }

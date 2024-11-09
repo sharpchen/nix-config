@@ -1,7 +1,7 @@
 return {
   -- 'numToStr/Comment.nvim',
   'sharpchen/Comment.nvim',
-  branch = 'fix-csharp',
+  branch = 'sum',
   event = { 'BufReadPre', 'BufNewFile' },
   init = function()
     vim.keymap.del({ 'n', 'x', 'o' }, 'gc')
