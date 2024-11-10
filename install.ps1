@@ -33,6 +33,8 @@ $scoopPackages = @(
    'nodejs-lts',
    'wiztree',
    '7zip',
+   'fzf',
+   'vscodium',
    'carnac',
    'librewolf',
    'abdownloadmanager'
