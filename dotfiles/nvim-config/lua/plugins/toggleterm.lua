@@ -30,7 +30,11 @@ return {
             bufTerm:toggle()
           end
           if vim.o.shell == 'bash' then
-            bufTerm:send({ ("cd '%s'; \\history -d $(\\history 1)"):format(path), 'clear; \\history -d $(\\history 1)' })
+            local delete_history = [[\history -d $(\history 1);]]
+            bufTerm:send({ ("cd '%s'; %s"):format(path, delete_history), ('clear; %s'):format(delete_history) })
+          elseif vim.o.shell:match('^nu') ~= nil then
+            local delete_history = [[open $nu.history-path | lines | drop 1 | save -f $nu.history-path;]]
+            bufTerm:send({ ("cd '%s'; %s"):format(path, delete_history), ('clear; %s'):format(delete_history) })
           else
             bufTerm:send({ ("cd '%s'"):format(path), vim.o.shell == 'pwsh' and 'cls' or 'clear' })
           end
@@ -41,6 +45,7 @@ return {
         vim.cmd('execute "normal! i"')
       end
     end)
+
     vim.api.nvim_create_autocmd({ 'TermEnter' }, {
       callback = function()
         for _, buffers in ipairs(vim.fn.getbufinfo()) do

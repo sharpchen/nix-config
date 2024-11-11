@@ -38,9 +38,7 @@ return {
           return not not client.server_capabilities.documentFormattingProvider
         end)
 
-        if not clients:any(function(client)
-          return not not client
-        end) then
+        if #clients:totable() == 0 then
           return
         end
 

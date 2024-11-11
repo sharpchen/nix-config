@@ -134,7 +134,7 @@ vim.api.nvim_create_autocmd('FileType', {
     local init_bufnr = vim.fn.bufnr('#')
     vim.keymap.set('n', '<C-n>', function()
       if vim.fn.line('.') == vim.fn.line('$') then
-        vim.notify('E553: No more items', vim.log.levels.ERROR)
+        vim.notify('E553: No more items', vim.log.levels.INFO)
         return
       end
       vim.cmd('wincmd p') -- jump to current displayed file
@@ -158,7 +158,7 @@ vim.api.nvim_create_autocmd('FileType', {
 
     vim.keymap.set('n', '<C-p>', function()
       if vim.fn.line('.') == 1 then
-        vim.notify('E553: No more items', vim.log.levels.ERROR)
+        vim.notify('E553: No more items', vim.log.levels.INFO)
         return
       end
       vim.cmd('wincmd p') -- jump to current displayed file
