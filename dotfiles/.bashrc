@@ -5,6 +5,15 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+PS1='[\u@\h \W]\$ '
+
+# enable vi mode
+set -o vi
+set show-mode-in-prompt on # enable mode indicator
+# set cursor as indicator
+set vi-cmd-mode-string "\1\e[2 q\2"
+set vi-ins-mode-string "\1\e[6 q\2"
+
 alias ls='ls --color=auto -h'
 alias ll='ls -la'
 alias grep='grep --color=auto -i'
@@ -24,7 +33,5 @@ alias :q='exit'
 alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
 alias lg=lazygit
 alias proj='cd $(ls -d ~/projects/* ~/.config/* | fzf)'
-
-PS1='[\u@\h \W]\$ '
 
 eval "$(starship init bash)"
