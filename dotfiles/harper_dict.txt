@@ -20,4 +20,5 @@ namespace
 ViewModel
 evaluable
 lspconfig
+Powershell
 DirectoryInfo
