@@ -1,3 +1,10 @@
+function prompt {
+    if ($IsWindows) {
+        return "PS $($pwd.ProviderPath -replace 'C:\Users\[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1))"
+    }
+    return "PS $($pwd.ProviderPath -replace '/home/[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1)) "
+}
+
 if (-not (Get-Module -ListAvailable -Name PSReadLine)) {
     Install-Module -Name PSReadLine -Force -Scope CurrentUser
 }
