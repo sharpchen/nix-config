@@ -37,7 +37,8 @@ $scoopPackages = @(
    'vscodium',
    'carnac',
    'librewolf',
-   'abdownloadmanager'
+   'abdownloadmanager',
+   'mpv'
 )
 
 $scoopFonts = @(
