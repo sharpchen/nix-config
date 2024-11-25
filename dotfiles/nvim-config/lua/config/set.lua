@@ -112,7 +112,7 @@ vim.filetype.add({
 })
 
 vim.o.shell = vim
-  .iter({ 'nu', 'pwsh', 'bash', 'zsh' })
+  .iter({ 'pwsh', 'bash', 'nu', 'zsh' })
   :filter(function(x)
     return vim.fn.executable(x) == 1
   end)
