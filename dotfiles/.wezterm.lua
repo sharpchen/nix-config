@@ -4,7 +4,7 @@ local config = wezterm.config_builder()
 
 config.color_scheme = "kanagawabones"
 
-config.default_prog = { "nu" }
+config.default_prog = { "pwsh" }
 
 config.animation_fps = 60
 
