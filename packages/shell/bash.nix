@@ -1,4 +1,4 @@
-{ pkgs, ...}:
+{ pkgs, ... }:
 {
   home.packages = with pkgs;[
     bash
@@ -7,5 +7,9 @@
 
   home.file.".bashrc" = {
     source = ../../dotfiles/.bashrc;
+  };
+
+  home.file.".inputrc" = {
+    source = ../../dotfiles/.inputrc;
   };
 }
