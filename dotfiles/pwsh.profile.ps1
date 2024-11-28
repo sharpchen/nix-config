@@ -1,6 +1,13 @@
 function prompt {
     if ($IsWindows) {
-        return "PS $($pwd.ProviderPath -replace 'C:\Users\[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1))"
+        $pattern = 'C:\\Users\\[a-zA-Z0-9]+'
+        $path = if ($pwd.ProviderPath -match $pattern) {
+            "~$($pwd.ProviderPath -replace $pattern, '')" 
+        } else { 
+            $pwd.ProviderPath 
+        }
+
+        return "PS $path$('>' * ($nestedPromptLevel + 1)) "
     }
     return "PS $($pwd.ProviderPath -replace '/home/[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1)) "
 }
@@ -17,7 +24,7 @@ if ($IsWindows) {
 
     ## project search
     function proj {
-        sl (gci '~/Projects' -Directory | foreach FullName | fzf)
+        cd (gci '~/Projects' -Directory | foreach FullName | fzf)
     }
 }
 
