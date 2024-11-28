@@ -24,7 +24,16 @@ if ($IsWindows) {
 Import-Module PSReadLine -ErrorAction SilentlyContinue
 
 Set-PSReadLineOption -EditMode Vi
-Set-PSReadLineOption -ViModeIndicator Prompt # Cursor
+$OnViModeChange = {
+    if ($args[0] -eq 'Command') {
+    # Set the cursor to a blinking block.
+        Write-Host -NoNewLine "`e[2 q"
+    } else {
+    # Set the cursor to a blinking line.
+        Write-Host -NoNewLine "`e[5 q"
+    }
+}
+Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler $OnViModeChange
 
 $syntaxColors = @{
     Parameter = 'Magenta'
@@ -34,6 +43,7 @@ $syntaxColors = @{
     Command = 'Blue'
     Number = 'Yellow'
     Member = 'Red'
+    String = 'Green'
 }
 
 if ((gmo -Name PSReadLine).Version -lt '2.0.0') {
@@ -51,7 +61,8 @@ Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 Set-PSReadlineKeyHandler -Key 'Ctrl+p' -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key 'Ctrl+n' -Function HistorySearchForward
 
-Set-Alias lg lazygit
+sal lg lazygit
+sal dn dotnet
 
 function :q {
     exit
