@@ -3,7 +3,7 @@
     ./misc.nix
     ./git.nix
     ./neovim.nix
-    ./vim.nix
+    # ./vim.nix
     ./tmux.nix
   ];
 }
