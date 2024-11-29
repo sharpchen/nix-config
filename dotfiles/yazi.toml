@@ -32,7 +32,7 @@ ueberzug_offset = [ 0, 0, 0, 0 ]
 [opener]
 edit = [
 	{ run = '${EDITOR:-vi} "$@"', desc = "$EDITOR", block = true, for = "unix" },
-	{ run = 'nvim --clean -c "source ~/.vimrc" %*', orphan = true, for = "windows" },
+	{ run = 'nvim --clean -c "source ~/.vimrc" %*', block = true, orphan = true, for = "windows" },
 ]
 open = [
 	{ run = 'xdg-open "$1"',                desc = "Open", for = "linux" },
@@ -86,6 +86,25 @@ image_bound      = [ 0, 0 ]
 suppress_preload = false
 
 [plugin]
+
+prepend_preloaders = [
+    { mime = "video/*", run = "video-ffmpeg" },
+]
+
+prepend_previewers = [
+    { mime = "video/*", run = "video-ffmpeg" },
+    { mime = "text/csv", run = "miller"},
+    { name = "*.md", run = "glow" },
+	# Archive previewer
+	{ mime = "application/*zip",            run = "ouch" },
+	{ mime = "application/x-tar",           run = "ouch" },
+	{ mime = "application/x-bzip2",         run = "ouch" },
+	{ mime = "application/x-7z-compressed", run = "ouch" },
+	{ mime = "application/x-rar",           run = "ouch" },
+	{ mime = "application/x-xz",            run = "ouch" },
+    # torrent
+    { mime = "application/x-bittorrent", run = "torrent-preview" }
+]
 
 fetchers = [
 	# Mimetype

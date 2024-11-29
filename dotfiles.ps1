@@ -25,4 +25,13 @@ New-Item -Path "~/.config/wezterm/wezterm.lua" -Target ([IO.Path]::Combine($pwd,
 
 # yazi
 New-Item -Path ([IO.Path]::Combine($env:APPDATA, 'yazi/config/yazi.toml')) -Target ([IO.Path]::Combine($pwd, 'dotfiles/yazi.toml')) -ItemType SymbolicLink -Force
+New-Item -Path ([IO.Path]::Combine($env:APPDATA, 'yazi/config/keymap.toml')) -Target ([IO.Path]::Combine($pwd, 'dotfiles/yazi.keymap.toml')) -ItemType SymbolicLink -Force
+if (gcm ya) {
+    ya pack -a 'Reledia/glow'
+    ya pack -a 'ndtoan96/ouch'
+    ya pack -a 'Reledia/miller'
+    ya pack -a 'Tyarel8/video-ffmpeg'
+    ya pack -a 'kirasok/torrent-preview'
+    ya pack -a 'yazi-rs/plugins:max-preview'
+}
 
