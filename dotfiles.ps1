@@ -1,5 +1,12 @@
 # this file is for restoring dotfiles on windows
 
+if (Get-Command scoop) {
+    $scoopRoot = [IO.Path]::GetDirectoryName([IO.Path]::GetDirectoryName((Get-Command scoop).Source))
+    # librewolf overrides
+    New-Item -Path ([IO.Path]::Combine($scoopRoot, 'persist/librewolf/Profiles/Default/librewolf.overrides.cfg')) -Target ([IO.Path]::Combine($pwd, "dotfiles/librewolf.cfg")) -ItemType SymbolicLink -Force
+    [Environment]::SetEnvironmentVariable('YAZI_FILE_ONE', ([IO.Path]::Combine($scoopRoot, 'apps\git\current\usr\bin\file.exe')), 'User')
+}
+
 # git
 New-Item -Path "~/.gitconfig" -Target ([IO.Path]::Combine($pwd, "dotfiles/.gitconfig")) -ItemType SymbolicLink -Force
 New-Item -Path "~/.gitconfig_windows" -Target ([IO.Path]::Combine($pwd, "dotfiles/.gitconfig-windows")) -ItemType SymbolicLink -Force
@@ -14,10 +21,8 @@ New-Item -Path "~/.ideavimrc" -Target ([IO.Path]::Combine($pwd, "dotfiles/.ideav
 New-Item -Path '~/.bashrc' -Target ([IO.Path]::Combine($pwd, "dotfiles/.bashrc")) -ItemType SymbolicLink -Force
 New-Item -Path $Profile -Target ([IO.Path]::Combine($pwd, "dotfiles/pwsh.profile.ps1")) -ItemType SymbolicLink -Force
 New-Item -Path ([IO.Path]::Combine($env:APPDATA, "nushell/config.nu")) -Target ([IO.Path]::Combine($pwd, "dotfiles/config.nu")) -ItemType SymbolicLink -Force
-New-Item -Path "~/.wezterm.lua" -Target ([IO.Path]::Combine($pwd, "dotfiles/.wezterm.lua")) -ItemType SymbolicLink -Force
+New-Item -Path "~/.config/wezterm/wezterm.lua" -Target ([IO.Path]::Combine($pwd, "dotfiles/.wezterm.lua")) -ItemType SymbolicLink -Force
 
-if (Get-Command scoop) {
-    $scoopRoot = [IO.Path]::GetDirectoryName([IO.Path]::GetDirectoryName((Get-Command scoop).Source))
-    # librewolf overrides
-    New-Item -Path ([IO.Path]::Combine($scoopRoot, 'persist/librewolf/Profiles/Default/librewolf.overrides.cfg')) -Target ([IO.Path]::Combine($pwd, "dotfiles/librewolf.cfg")) -ItemType SymbolicLink -Force
-}
+# yazi
+New-Item -Path ([IO.Path]::Combine($env:APPDATA, 'yazi/config/yazi.toml')) -Target ([IO.Path]::Combine($pwd, 'dotfiles/yazi.toml')) -ItemType SymbolicLink -Force
+

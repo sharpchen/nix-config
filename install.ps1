@@ -21,7 +21,6 @@ RefreshPath
 $scoopPackages = @(
    'git',
    'vswhere',
-   'vim',
    'neovim',
    'bat',
    'tokei',
@@ -38,7 +37,17 @@ $scoopPackages = @(
    'carnac',
    'librewolf',
    'abdownloadmanager',
-   'mpv'
+   'mpv',
+   'ffmpeg',
+   'yazi',
+   'imagemagick',
+   'poppler',
+   'jq',
+   'fd',
+   'transmission-cli',
+   'miller',
+   'ouch',
+   'glow'
 )
 
 $scoopFonts = @(
