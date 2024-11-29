@@ -33,5 +33,6 @@ alias :q='exit'
 alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
 alias lg=lazygit
 alias proj='cd $(ls -d ~/projects/* ~/.config/* | fzf)'
+alias vim='nvim --clean "source ~/.vimrc"'
 
 eval "$(starship init bash)"
