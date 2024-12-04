@@ -71,11 +71,8 @@ Set-PSReadlineKeyHandler -Key 'Ctrl+n' -Function HistorySearchForward
 
 sal lg lazygit
 sal dn dotnet
+
 function vim {
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$args
-    )
     nvim --clean -c "source ~/.vimrc" @args
 }
 
