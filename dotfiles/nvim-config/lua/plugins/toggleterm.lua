@@ -4,6 +4,7 @@ return {
   enabled = false,
   config = function()
     require('toggleterm').setup({
+      shell = 'pwsh',
       start_in_insert = true,
       direction = 'float',
       float_opts = {

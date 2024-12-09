@@ -42,7 +42,7 @@ return {
       },
       window = {
         completion = cmp.config.window.bordered(),
-        -- documentation = false,
+        documentation = cmp.config.window.bordered(),
       },
     })
 
