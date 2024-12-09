@@ -4,6 +4,7 @@ UI
 str
 lsp
 lua
+cli
 MVVM
 AXAML
 param
@@ -24,6 +25,7 @@ namespace
 ViewModel
 evaluable
 lspconfig
+HashTable
 Powershell
 powershell
 DirectoryInfo
