@@ -69,7 +69,7 @@ vim.keymap.set('n', '<leader>a', 'ggVG', { desc = 'select all text' })
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
 vim.keymap.set('n', '<leader>h', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }))
-end)
+end, { desc = 'toggle inlay hint' })
 
 vim.keymap.set('n', '<A-c>', '<cmd>bd<CR>', { desc = 'close current buffer' })
 vim.keymap.set('n', '<A-,>', '<cmd>bp<CR>', { desc = 'move to previous buffer' })

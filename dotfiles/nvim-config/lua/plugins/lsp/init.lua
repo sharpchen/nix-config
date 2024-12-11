@@ -13,7 +13,7 @@ return vim.fn.executable('nix') == 1
         require('plugins.lsp.yamlls')
 
         require('plugins.lsp.ts_ls')
-        require('plugins.lsp.vtsls')
+        -- require('plugins.lsp.vtsls')
         require('lspconfig').quick_lint_js.setup({})
         require('plugins.lsp.vue_language_server')
 
