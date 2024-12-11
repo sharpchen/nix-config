@@ -7,7 +7,8 @@
     pnpm
     quick-lint-js
     emmet-language-server
-    typescript-language-server 
+    # typescript-language-server 
+    vtsls
     vue-language-server
     vscode-langservers-extracted
   ];
