@@ -85,5 +85,14 @@ return {
         },
       })
     end, { desc = 'find nvim config file' })
+
+    vim.keymap.set('n', '<leader>fh', function()
+      builtin.help_tags({
+        layout_config = {
+          preview_width = 0.5,
+          width = 0.95,
+        },
+      })
+    end, { desc = 'find help tags' })
   end,
 }

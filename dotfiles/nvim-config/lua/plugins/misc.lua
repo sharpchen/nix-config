@@ -87,7 +87,7 @@ return {
       })
     end,
   },
-  'yioneko/nvim-vtsls',
+  { 'yioneko/nvim-vtsls', ft = { 'typescript', 'javascript' } },
   { 'nvchad/volt', lazy = true },
   {
     'nvchad/minty',

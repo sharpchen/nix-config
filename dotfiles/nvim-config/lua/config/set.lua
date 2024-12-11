@@ -114,6 +114,6 @@ vim.filetype.add({
 vim.o.shell = vim
   .iter({ 'pwsh -noprofile', 'bash', 'nu', 'zsh' })
   :filter(function(x)
-    return vim.fn.executable(x) == 1
+    return vim.fn.executable(vim.split(x, ' ')[1]) == 1
   end)
   :peek()
