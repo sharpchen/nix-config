@@ -4,7 +4,7 @@
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
     unstablePkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    stablePkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    stablePkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "unstablePkgs";
@@ -27,7 +27,7 @@
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
-        extraSpecialArgs = { inherit stable;  };
+        extraSpecialArgs = { inherit stable; };
       };
     };
 }
