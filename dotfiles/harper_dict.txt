@@ -5,6 +5,7 @@ str
 lsp
 lua
 cli
+ETS
 MVVM
 AXAML
 param
