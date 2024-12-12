@@ -1,11 +1,17 @@
 # this file is for restoring dotfiles on windows
 
+if (-not $IsWindows) { Write-Error 'This script is only allowed to be executed on windows' return }
+
 if (gcm scoop) {
     $scoopRoot = [IO.Path]::GetDirectoryName([IO.Path]::GetDirectoryName((gcm scoop).Source))
     # librewolf overrides
     ni ([IO.Path]::Combine($scoopRoot, 'persist/librewolf/Profiles/Default/librewolf.overrides.cfg')) -Target ([IO.Path]::Combine($pwd, "dotfiles/librewolf.cfg")) -ItemType SymbolicLink -Force
     [Environment]::SetEnvironmentVariable('YAZI_FILE_ONE', ([IO.Path]::Combine($scoopRoot, 'apps\git\current\usr\bin\file.exe')), 'User')
 }
+
+$nvimConfig = [IO.Path]::Combine($env:LOCALAPPDATA, 'nvim/')
+if (gci $nvimConfig) { ri -rec $nvimConfig }
+ni $nvimConfig -Target ([IO.Path]::Combine($pwd, 'dotfiles/nvim-config/')) -ItemType SymbolicLink -Force
 
 # git
 ni "~/.gitconfig" -Target ([IO.Path]::Combine($pwd, "dotfiles/.gitconfig")) -ItemType SymbolicLink -Force
