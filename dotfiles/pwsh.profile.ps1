@@ -80,3 +80,9 @@ function :q {
     exit
 }
 
+if (gcm home-manager) {
+    function hms {
+       home-manager switch --flake ~/.config/home-manager#$env:USERNAME 
+    }
+}
+
