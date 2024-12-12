@@ -22,6 +22,7 @@
     fzf
     yazi
     fd ouch miller transmission_4 imagemagick mpv glow jq ffmpeg poppler
+    nix-prefetch-github
   ];
 
   home.file.".config/lazygit/config.yml".source = ../../dotfiles/lazygit.config.yml;
