@@ -12,8 +12,11 @@ return vim.fn.executable('nix') == 1
         require('plugins.lsp.lua_ls')
         require('plugins.lsp.yamlls')
 
-        require('plugins.lsp.ts_ls')
-        -- require('plugins.lsp.vtsls')
+        if vim.fn.executable('vtsls') == 1 then
+          require('plugins.lsp.vtsls')
+        else
+          require('plugins.lsp.ts_ls')
+        end
         require('lspconfig').quick_lint_js.setup({})
         require('plugins.lsp.vue_language_server')
 
@@ -22,7 +25,10 @@ return vim.fn.executable('nix') == 1
           filetypes = { 'xaml', 'axaml' },
         })
         require('lspconfig').nixd.setup({
-          on_init = lsp.event.disable_semantic,
+          on_init = function(client)
+            lsp.event.disable_semantic(client)
+            lsp.event.disable_formatter(client)
+          end,
         })
         require('lspconfig').bashls.setup({})
         require('lspconfig').emmet_language_server.setup({})

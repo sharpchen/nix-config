@@ -3,11 +3,12 @@ local lsp = require('utils.lsp')
 if vim.fn.executable('vtsls') == 1 then
   require('lspconfig').vtsls.setup({
     on_attach = function(client, _)
+      vim.notify('hello???')
       if vim.bo.filetype == 'markdown' then
         lsp.event.disable_formatter(client)
       end
     end,
-    filetypes = { 'vue', 'markdown' },
+    filetypes = { 'vue', 'markdown', 'typescript', 'javascript' },
     settings = {
       complete_function_calls = true,
       vtsls = {
