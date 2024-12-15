@@ -4,6 +4,10 @@ require('config.lazy')
 require('utils')
 require('config.neovide')
 require('config.wsl')
-local colo = { 'Eva-Dark', 'kanagawa-dragon', 'vscode' }
-math.randomseed(os.time())
-vim.cmd(('colo %s'):format(colo[math.random(#colo)]))
+if require('utils.env').is_windows then
+  vim.cmd[[colo vscode]]
+else
+  local colo = { 'Eva-Dark', 'kanagawa-dragon', 'vscode' }
+  math.randomseed(os.time())
+  vim.cmd(('colo %s'):format(colo[math.random(#colo)]))
+end

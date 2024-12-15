@@ -62,7 +62,6 @@ return {
       })
     end,
   },
-  'rebelot/heirline.nvim',
   { 'ThePrimeagen/vim-be-good', lazy = true },
   { 'LunarVim/bigfile.nvim', event = { 'BufReadPre', 'BufNewFile' } },
   {
@@ -93,6 +92,4 @@ return {
     'nvchad/minty',
     cmd = { 'Shades', 'Huefy' },
   },
-  'rebelot/kanagawa.nvim',
-  'Mofiqul/vscode.nvim',
 }
