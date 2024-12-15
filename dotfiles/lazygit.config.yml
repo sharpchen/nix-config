@@ -281,7 +281,7 @@ os:
   openDirInEditor: ""
   # A built-in preset that sets all of the above settings. Supported presets
   # are defined in the getPreset function in editor_presets.go.
-  editPreset: ""
+  editPreset: "nvim"
   # Command for opening a file, as if the file is double-clicked. Should
   # contain "{{filename}}", but doesn't support "{{line}}".
   open: ""
