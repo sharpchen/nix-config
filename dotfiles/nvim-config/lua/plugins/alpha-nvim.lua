@@ -1,7 +1,7 @@
 return {
   'goolord/alpha-nvim',
   event = 'VimEnter',
-  enabled = true,
+  enabled = false,
   dependencies = { 'folke/persistence.nvim', 'jvgrootveld/telescope-zoxide' },
   init = false,
   opts = function()

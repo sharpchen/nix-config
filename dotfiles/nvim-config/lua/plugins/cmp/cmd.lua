@@ -22,22 +22,22 @@ local keymap = {
   },
 }
 
-cmp.setup.cmdline('/', {
-  mapping = cmp.mapping.preset.cmdline(keymap),
-  sources = {
-    { name = 'buffer' },
-    {
-      name = 'spell',
-      option = {
-        keep_all_entries = false,
-        enable_in_context = function()
-          return true
-        end,
-        preselect_correct_word = true,
-      },
-    },
-  },
-})
+-- cmp.setup.cmdline('/', {
+--   mapping = cmp.mapping.preset.cmdline(keymap),
+--   sources = {
+--     { name = 'buffer' },
+--     {
+--       name = 'spell',
+--       option = {
+--         keep_all_entries = false,
+--         enable_in_context = function()
+--           return true
+--         end,
+--         preselect_correct_word = true,
+--       },
+--     },
+--   },
+-- })
 
 cmp.setup.cmdline(':', {
   mapping = cmp.mapping.preset.cmdline(keymap),
