@@ -11,18 +11,25 @@
     };
   };
 
-  outputs = { stablePkgs, unstablePkgs, home-manager, ... }:
+  outputs =
+    {
+      stablePkgs,
+      unstablePkgs,
+      home-manager,
+      ...
+    }:
     let
       system = "x86_64-linux";
       pkgs = unstablePkgs.legacyPackages.${system};
       stable = stablePkgs.legacyPackages.${system};
-    in {
+    in
+    {
       homeConfigurations."sharpchen" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
         modules = [
-          ./home.nix 
+          ./home.nix
         ];
 
         # Optionally use extraSpecialArgs

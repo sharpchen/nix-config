@@ -21,7 +21,17 @@
     tokei
     fzf
     yazi
-    fd ouch miller transmission_4 imagemagick mpv glow jq ffmpeg poppler
+    fd
+    ouch
+    miller
+    transmission_4
+    imagemagick
+    mpv
+    glow
+    jq
+    ffmpeg
+    poppler
+    nix-prefetch
     nix-prefetch-github
   ];
 

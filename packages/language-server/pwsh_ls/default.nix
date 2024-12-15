@@ -1,52 +1,51 @@
-{ pkgs }:#buildDotnetModule, powershell, dotnetCorePackages, lib, fetchFromGitHub, stdenvNoCC, ... }:
-
+{
+  stdenvNoCC,
+  fetchzip,
+  lib,
+  powershell,
+  makeWrapper,
+  bash,
+}:
 let
-  # pkgs = import <nixpkgs> {};
-in 
-pkgs.buildDotnetModule rec {
-  pname = "PowerShellEditorServices";
+  owner = "PowerShell";
+  repo = "PowerShellEditorServices";
+in
+stdenvNoCC.mkDerivation rec {
+  pname = "powershell-editor-services";
   version = "4.1.0";
 
-  src = pkgs.fetchFromGitHub {
-    owner = "PowerShell";
-    repo = pname;
-    rev = "v${version}";
-    hash = "sha256-nOVPs/lnS3vm+mef796g5AnVV0UDoIeuifgkWCTNDyo=";
+  src = fetchzip {
+    name = "${repo}";
+    url = "https://github.com/${owner}/${repo}/releases/download/v${version}/${repo}.zip";
+    hash = "sha256-B6RF4RoJB+C5i6puZhfy6FZzyZ9eMo81dd0XsaIEK6Q=";
+    stripRoot = false;
   };
 
+  nativeBuildInputs = [ makeWrapper ];
   buildInputs = [
-    pkgs.powershell
-    (pkgs.callPackage ({}: pkgs.buildDotnetGlobalTool {
-      pname = "ib";
-      version = "5.12.1";
-      nugetHash = "sha256-cwSm0s1EFKL2Fe262cjiPpP9eWY136ikp2dy2k1wvaA=";
-      meta = {
-        homepage = "https://github.com/nightroman/Invoke-Build";
-        license = pkgs.lib.licenses.asl20;
-        platforms = ["x86_64-linux"];
-      };
-    }) {})
-    (pkgs.callPackage ../platyPS/default.nix { inherit pkgs; })
   ];
 
-  projectFile = "${pname}.sln";
-  nugetDeps = ./deps.nix;
-  dotnet-sdk = pkgs.dotnetCorePackages.sdk_8_0_1xx;
-
-  buildPhase = ''
-    cd $src; 
-    pwsh -noprofile -c "Set-Content $src/${pname}.build.ps1 -Value (gc $src/${pname} | % { \$_ -cmatch '#Requires' ? [string]::Empty : \$_ })"
-    ib
+  installPhase = ''
+    mkdir -p $out/{lib,bin}
+    mv * $out/lib/
+    cat > $out/bin/${pname} <<EOF
+    #! ${bash}/bin/bash -e
+    exec "${powershell}/bin/pwsh" -noprofile -nologo -c "$out/lib/${repo}/Start-EditorServices.ps1 \$@"
+    EOF
+    chmod +x $out/bin/*
   '';
 
-  meta = with pkgs.lib; {
+  postInstall = ''
+    wrapProgram $out/bin/${pname} --set PATH "$PATH:$out/bin"
+  '';
+
+  meta = {
     description = "A common platform for PowerShell development support in any editor or application!";
     homepage = "https://github.com/PowerShell/PowerShellEditorServices";
-    license = with licenses; [
-      mit
-    ];
-    # maintainers = with maintainers; [ gepbird thiagokokada ];
+    changelog = "https://github.com/PowerShell/PowerShellEditorServices/releases/tag/v${version}";
     platforms = [ "x86_64-linux" ];
-    # mainProgram = "osu!";
+    license = lib.licenses.mit;
+    maintainers = with lib.maintainers; [ sharpchen ];
+    mainProgram = pname;
   };
 }

@@ -1,8 +1,16 @@
-{ config, pkgs, stable, ... }:
+{
+  config,
+  pkgs,
+  stable,
+  ...
+}:
 {
   nix = {
     package = pkgs.nixVersions.latest;
-    settings.experimental-features = ["nix-command" "flakes"];
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     gc = {
       automatic = true;
     };
@@ -25,9 +33,8 @@
   };
 
   targets.genericLinux.enable = true;
-  
+
   programs.home-manager.enable = true;
 
   xdg.enable = true;
 }
-

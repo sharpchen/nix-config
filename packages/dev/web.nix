@@ -1,19 +1,19 @@
 { pkgs, ... }:
 {
-  home.packages = with pkgs;[
+  home.packages = with pkgs; [
     nodejs_22
     nodePackages.ts-node
     nodePackages.prettier
     pnpm
     quick-lint-js
     emmet-language-server
-    # typescript-language-server 
+    # typescript-language-server
     vtsls
     vue-language-server
     vscode-langservers-extracted
   ];
 
-  home.file.".prettierrc".text = /* json */
+  home.file.".prettierrc".text = # json
     ''
       {
         "singleQuote": true,
@@ -28,8 +28,9 @@
     '';
 
   home.file.".npmrc" = {
-    text = /* ini */''
-      registry=https://registry.npmmirror.com
-    '';
+    text = # ini
+      ''
+        registry=https://registry.npmmirror.com
+      '';
   };
 }

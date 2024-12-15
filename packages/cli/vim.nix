@@ -2,7 +2,13 @@
 {
   home.packages = [
     (pkgs.vim.overrideAttrs (oldAttrs: {
-      buildInputs = (oldAttrs.buildInputs ++ [ pkgs.xorg.libX11 pkgs.xorg.libXt ]);
+      buildInputs = (
+        oldAttrs.buildInputs
+        ++ [
+          pkgs.xorg.libX11
+          pkgs.xorg.libXt
+        ]
+      );
     }))
   ];
 

@@ -17,7 +17,7 @@
       style_root = "bright-red bold";
     };
     dotnet = {
-      symbol  = ".NET SDK: ";
+      symbol = ".NET SDK: ";
       format = " [$symbol($version )(targets $tfm )]($style)";
     };
     git_branch = {
