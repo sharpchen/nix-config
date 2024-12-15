@@ -37,8 +37,10 @@ return vim.fn.executable('nix') == 1
         require('lspconfig').html.setup({})
         require('lspconfig').vimls.setup({})
         require('lspconfig').postgres_lsp.setup({})
+
         require('lspconfig').powershell_es.setup({
           bundle_path = lsp.path.pwsh_es,
+          settings = { powershell = { codeFormatting = { Preset = 'OTBS' } } },
         })
       end,
     }

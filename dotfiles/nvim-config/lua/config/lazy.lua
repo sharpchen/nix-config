@@ -11,15 +11,33 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local plugins_for_windows = vim.iter({
-  'firenvim', 'telescope', 'cmp.init', 'telescope-file-browser', 'colorizer', 'Comment', 'lazygit', 'gitsigns', 'colo.vscode', 'colo.kanagawa', 'nvim-rip-substitute'
-}):map(function(x) return { import = 'plugins.' .. x } end):totable()
+local plugins_for_windows = vim
+  .iter({
+    'firenvim',
+    'cmp.init',
+    'telescope',
+    'telescope-file-browser',
+    'colorizer',
+    'Comment',
+    'lazygit',
+    'gitsigns',
+    'colo.vscode',
+    'colo.kanagawa',
+    'nvim-rip-substitute',
+  })
+  :map(function(x)
+    return { import = 'plugins.' .. x }
+  end)
+  :totable()
 
 require('lazy').setup({
   git = {
     url_format = 'git@github.com:%s.git',
   },
-  spec = require('utils.env').is_windows and plugins_for_windows or { import = 'plugins' },
+  spec = require('utils.env').is_windows and plugins_for_windows
+    or { { import = 'plugins' }, {
+      import = 'plugins.colo',
+    } },
   ui = {
     border = 'none',
   },
