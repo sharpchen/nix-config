@@ -3,6 +3,7 @@ local M = {}
 
 M.path = {
   vue_language_server = string.empty,
+  pwsh_es = string.empty,
 }
 
 M.event = {
@@ -22,10 +23,19 @@ M.attached_clients = function()
   return vim.lsp.get_clients({ bufnr = 0 })
 end
 
+--- Generate a command array that query the store path of a nix package
+---@param pkg string package name
+---@return string[]
+local function mk_store_query(pkg)
+  return { 'bash', '-c', ([[nix-store -q --outputs "$(type -fP %s)"]]):format(pkg) }
+end
+
 if not require('utils.env').is_windows then
-  async.cmd({ 'bash', '-c', 'echo -n $(readlink -f $(which vue-language-server))' }, function(result)
-    local folder = vim.fs.dirname(vim.fs.dirname(result))
-    M.path.vue_language_server = vim.fs.joinpath(folder, 'lib/node_modules/@vue/language-server')
+  async.cmd(mk_store_query('vue-language-server'), function(result)
+    M.path.vue_language_server = vim.fs.joinpath(result, 'lib/node_modules/@vue/language-server')
+  end)
+  async.cmd(mk_store_query('powershell-editor-services'), function(result)
+    M.path.pwsh_es = vim.fs.joinpath(result, 'lib')
   end)
 end
 

@@ -11,6 +11,7 @@ return {
         yaml = { 'yamlfmt' },
         sql = { 'sqlfluff' },
         plsql = { 'sqlfluff' },
+        nix = { 'nixfmt' },
         python = {
           -- To fix auto-fixable lint errors.
           'ruff_fix',

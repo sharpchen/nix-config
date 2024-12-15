@@ -9,6 +9,7 @@ M.cmd = function(cmd, cb)
     if out.code ~= 0 then
       vim.schedule(function()
         vim.notify(('async job for `%s` exited with code %s.'):format(table.concat(cmd, ' '), tostring(out.code)))
+        vim.notify((('error: %s'):format(out.stderr)))
       end)
       return
     end

@@ -17,5 +17,5 @@
     sqlfluff
     eslint
     ruff
-  ]; 
+  ] ++ [ (callPackage ./pwsh_ls/default.nix { inherit (pkgs) stdenvNoCC fetchzip lib; }) ];
 }
