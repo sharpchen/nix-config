@@ -53,7 +53,7 @@ $scoopPackages = @(
 $scoopFonts = @(
    'Cascadia-Code',
    'jetbrainsmono-nl',
-   'notosansmono',
+   'notosansmono'
 )
 
 $wingetPackages = @(
