@@ -32,7 +32,7 @@ alias so='source ~/.bashrc'
 alias :q='exit'
 alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
 alias lg=lazygit
-alias proj='cd $(ls -d ~/projects/* ~/.config/* | fzf)'
+alias proj='cd $(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)'
 alias vim='nvim --clean "source ~/.vimrc"'
 alias dn=dotnet
 
