@@ -108,8 +108,16 @@ vim.filetype.add({
   extension = {
     axaml = 'axaml',
     xaml = 'xaml',
+    props = 'msbuild',
+    tasks = 'msbuild',
+    targets = 'msbuild',
+  },
+  pattern = {
+    [ [[.*\..*proj]] ] = 'msbuild',
   },
 })
+
+vim.treesitter.language.register('xml', { 'axaml', 'xaml', 'msbuild' })
 
 vim.o.shell = vim
   .iter({ 'pwsh -noprofile', 'bash', 'nu', 'zsh' })

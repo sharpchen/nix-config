@@ -25,7 +25,6 @@ return {
       },
       filetype = 'nu',
     }
-    vim.treesitter.language.register('xml', { 'axaml', 'xaml' })
     configs.setup({
       ensure_installed = {
         'c',

@@ -20,5 +20,8 @@
       eslint
       ruff
     ]
-    ++ [ (callPackage ./pwsh_ls/default.nix { inherit (pkgs) stdenvNoCC fetchzip lib; }) ];
+    ++ [
+      (callPackage ./pwsh_ls/default.nix { inherit (pkgs) stdenvNoCC fetchzip lib; })
+      (callPackage ./msbuild_ls/default.nix { inherit pkgs; })
+    ];
 }

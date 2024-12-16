@@ -90,7 +90,7 @@ local ViMode = {
     },
   },
   provider = function(self)
-    return ' ' .. self.mode_names[self.mode]
+    return ' ' .. (self.mode_names[self.mode] or 'UNKNOWN')
   end,
   hl = function(self)
     local mode = self.mode:sub(1, 1) -- get only the first mode character

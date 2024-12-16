@@ -35,7 +35,7 @@ if not require('utils.env').is_windows then
     M.path.vue_language_server = vim.fs.joinpath(result, 'lib/node_modules/@vue/language-server')
   end)
   async.cmd(mk_store_query('powershell-editor-services'), function(result)
-    M.path.pwsh_es = vim.fs.joinpath(result, 'lib')
+    M.path.pwsh_es = vim.fs.joinpath(result, 'lib/powershell-editor-services')
   end)
 end
 

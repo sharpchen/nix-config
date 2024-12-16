@@ -24,6 +24,7 @@ local plugins_for_windows = vim
     'colo.vscode',
     'colo.kanagawa',
     'nvim-rip-substitute',
+    'nvim-autopairs',
   })
   :map(function(x)
     return { import = 'plugins.' .. x }
