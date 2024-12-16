@@ -24,18 +24,6 @@ pkgs.buildDotnetModule rec {
   inherit dotnet-sdk;
   useDotnetFromEnv = true;
 
-  # installPhase = ''
-  #   mkdir $out/{bin,lib}
-  #   dotnet publish src/LanguageServer/LanguageServer.csproj -o $out/bin
-  # '';
-
-  # postInstall = ''
-  #   cat > $out/bin/msbuild-project-tools-server <<EOF
-  #   #!${bash}/bin/bash -e
-  #   exec
-  #   EOF
-  # '';
-
   meta = with pkgs.lib; {
     description = "";
     homepage = "";
