@@ -3,7 +3,6 @@ local lsp = require('utils.lsp')
 if vim.fn.executable('vtsls') == 1 then
   require('lspconfig').vtsls.setup({
     on_attach = function(client, _)
-      vim.notify('hello???')
       if vim.bo.filetype == 'markdown' then
         lsp.event.disable_formatter(client)
       end
