@@ -1,5 +1,6 @@
 return {
   'd7omdev/nuget.nvim',
+  enabled = false,
   event = { 'BufReadPre', 'BufNewFile' },
   dependencies = {
     'nvim-lua/plenary.nvim',
