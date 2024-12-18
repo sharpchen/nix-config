@@ -15,8 +15,6 @@ local plugins_for_windows = vim
   .iter({
     'firenvim',
     'cmp.init',
-    'telescope',
-    'telescope-file-browser',
     'colorizer',
     'Comment',
     'lazygit',
@@ -25,6 +23,8 @@ local plugins_for_windows = vim
     'colo.kanagawa',
     'nvim-rip-substitute',
     'nvim-autopairs',
+    'oil',
+    'fzf-lua',
   })
   :map(function(x)
     return { import = 'plugins.' .. x }
