@@ -3,32 +3,26 @@
   fetchzip,
   lib,
   powershell,
-  bash,
+  runtimeShell,
 }:
-let
-  owner = "PowerShell";
-  repo = "PowerShellEditorServices";
-in
 stdenvNoCC.mkDerivation rec {
   pname = "powershell-editor-services";
   version = "4.1.0";
 
   src = fetchzip {
-    name = repo;
-    url = "https://github.com/${owner}/${repo}/releases/download/v${version}/${repo}.zip";
+    url = "https://github.com/PowerShell/PowerShellEditorServices/releases/download/v${version}/PowerShellEditorServices.zip";
     hash = "sha256-B6RF4RoJB+C5i6puZhfy6FZzyZ9eMo81dd0XsaIEK6Q=";
     stripRoot = false;
   };
 
   installPhase = ''
-    mkdir -p $out/{lib,bin}
-    mkdir -p $out/lib/powershell-editor-services/
+    mkdir -p $out/lib/powershell-editor-services/ $out/bin
     mv * $out/lib/powershell-editor-services/
     cat > $out/bin/powershell-editor-services <<EOF
-    #! ${bash}/bin/bash -e
-    exec "${powershell}/bin/pwsh" -noprofile -nologo -c "$out/lib/PowerShellEditorServices/Start-EditorServices.ps1 \$@"
+    #! ${runtimeShell} -e
+    exec ${lib.getExe' powershell "pwsh"} -noprofile -nologo -c "$out/lib/PowerShellEditorServices/Start-EditorServices.ps1 \$@"
     EOF
-    chmod +x $out/bin/*
+    chmod +x $out/bin/powershell-editor-services
   '';
 
   meta = with lib; {

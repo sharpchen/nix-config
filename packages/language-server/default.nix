@@ -21,7 +21,15 @@
       ruff
     ]
     ++ [
-      (callPackage ./pwsh_ls/default.nix { inherit (pkgs) stdenvNoCC fetchzip lib; })
+      (callPackage ./pwsh_ls/default.nix {
+        inherit (pkgs)
+          stdenvNoCC
+          fetchzip
+          lib
+          runtimeShell
+          powershell
+          ;
+      })
       (callPackage ./msbuild_ls/default.nix { inherit pkgs; })
     ];
 }
