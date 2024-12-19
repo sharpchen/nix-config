@@ -28,9 +28,11 @@
     "$HOME/.local/bin/"
   ];
 
-  home.sessionVariables = {
-    EDITOR = "vim";
-  };
+  # home.sessionVariables = {
+  #   # systemd.user.sessionVariables = {
+  #   EDITOR = "nvim --clean -c \"source ~/.vimrc\"";
+  #   XDG_RUNTIME_DIR = "$HOME/.cache/";
+  # };
 
   targets.genericLinux.enable = true;
 
