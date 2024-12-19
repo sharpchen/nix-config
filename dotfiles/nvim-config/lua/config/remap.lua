@@ -81,6 +81,7 @@ vim.keymap.set('n', '0', '^', { noremap = true, silent = true, desc = 'go to sta
 vim.keymap.set('n', '^', '0', { noremap = true, silent = true, desc = 'go to first word bound of line' })
 vim.keymap.set('n', 'gh', '<cmd>norm! 0<CR>', { noremap = true, silent = true, desc = 'go to start of line' })
 vim.keymap.set('n', 'gl', '<cmd>norm! $<CR>', { noremap = true, silent = true, desc = 'go to end of line' })
+vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
 
 vim.iter({ { '(', ')' }, { '<', '>' }, { '[', ']' }, '`', '"', "'", '*' }):each(function(x)
   if type(x) == 'table' then

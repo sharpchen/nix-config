@@ -47,7 +47,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
 
 local ViMode = {
   init = function(self)
-    self.mode = vim.fn.mode(1) -- :h mode()
+    self.mode = vim.api.nvim_get_mode().mode
   end,
   static = {
     mode_names = {
@@ -98,10 +98,12 @@ local ViMode = {
   end,
   update = {
     'ModeChanged',
-    pattern = '*:*',
+    'TermEnter',
+    'TermLeave',
+    pattern = '*',
     callback = vim.schedule_wrap(function()
       -- vim.notify(vim.api.nvim_get_mode().mode)
-      vim.cmd('redrawstatus')
+      vim.cmd.redrawstatus()
     end),
   },
 }
@@ -177,7 +179,7 @@ local Diagnostic = {
   end,
   on_click = {
     callback = function()
-      vim.cmd('Telescope diagnostics')
+      vim.cmd('FzfLua diagnostics_document')
     end,
     name = 'heirline_diagnostics',
   },
