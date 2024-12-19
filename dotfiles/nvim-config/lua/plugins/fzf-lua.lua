@@ -19,7 +19,7 @@ return {
     vim.keymap.set('n', '<leader>ca', fzf.lsp_code_actions, { noremap = true, silent = true, desc = 'code actions' })
     vim.keymap.set('n', '<leader>fe', fzf.diagnostics_document, { desc = 'document diagnostics' })
     vim.keymap.set('n', '<leader>fr', function()
-      fzf.files({ cmd = 'fd -d 1', cwd = vim.uv.cwd() })
+      vim.cmd(('Oil %s'):format(vim.uv.cwd()))
     end, { desc = 'root folder' })
   end,
 }

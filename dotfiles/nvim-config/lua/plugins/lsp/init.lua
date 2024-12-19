@@ -39,7 +39,13 @@ return {
 
     require('lspconfig').powershell_es.setup({
       bundle_path = lsp.path.pwsh_es,
-      settings = { powershell = { codeFormatting = { Preset = 'OTBS' } } },
+      settings = {
+        powershell = {
+          codeFormatting = {
+            Preset = 'OTBS',
+          },
+        },
+      },
     })
     require('lspconfig').msbuild_project_tools_server.setup({
       cmd = {

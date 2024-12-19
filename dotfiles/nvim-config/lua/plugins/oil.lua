@@ -204,7 +204,7 @@ return {
     })
 
     vim.keymap.set('n', '<leader>fb', function()
-      require('fzf-lua').files({ cmd = 'fd -t=d', cwd = require('oil').get_current_dir() })
+      require('fzf-lua').files({ cmd = 'fd -d 1', cwd = require('oil').get_current_dir() })
     end, { desc = 'fuzzy find folders' })
   end,
 }

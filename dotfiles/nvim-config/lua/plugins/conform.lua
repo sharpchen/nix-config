@@ -26,8 +26,8 @@ return {
     local function format(bufnr)
       local conform = require('conform')
       local formatter = conform.formatters[vim.bo.filetype] or conform.formatters_by_ft[vim.bo.filetype]
-      if formatter then
-        conform.format({ bufnr = bufnr, timeout_ms = 2000, async = false })
+      local ok = conform.format({ bufnr = bufnr, timeout_ms = 2000, async = false })
+      if ok then
         vim.notify(
           string.format(
             'formmatted by formatter: %s',
@@ -35,16 +35,9 @@ return {
           )
         )
       else
-        local clients = vim.iter(vim.lsp.get_clients({ bufnr = bufnr })):filter(function(client)
-          return not not client.server_capabilities.documentFormattingProvider
-        end)
-
-        if #clients:totable() == 0 then
-          return
-        end
-
         vim.lsp.buf.format({ async = false, timeout_ms = 2000, bufnr = bufnr })
-        local names = clients
+        local names = vim
+          .iter(vim.lsp.get_clients({ bufnr = bufnr }))
           :map(function(client)
             return client.name
           end)
