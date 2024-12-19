@@ -1,6 +1,8 @@
 # this file is for restoring dotfiles on windows
 
-if (-not $IsWindows) { Write-Error 'This script is only allowed to be executed on windows' return }
+if (-not $IsWindows) {
+    Write-Error 'This script is only allowed to be executed on windows' return 
+}
 
 if (gcm scoop) {
     $scoopRoot = [IO.Path]::GetDirectoryName([IO.Path]::GetDirectoryName((gcm scoop).Source))
@@ -10,7 +12,9 @@ if (gcm scoop) {
 }
 
 $nvimConfig = [IO.Path]::Combine($env:LOCALAPPDATA, 'nvim/')
-if (gci $nvimConfig) { ri -rec $nvimConfig }
+if (gci $nvimConfig) {
+    ri -rec $nvimConfig 
+}
 ni $nvimConfig -Target ([IO.Path]::Combine($pwd, 'dotfiles/nvim-config/')) -ItemType SymbolicLink -Force
 
 # git

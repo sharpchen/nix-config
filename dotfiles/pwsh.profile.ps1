@@ -34,10 +34,10 @@ Import-Module PSReadLine -ErrorAction SilentlyContinue
 Set-PSReadLineOption -EditMode Vi
 $OnViModeChange = {
     if ($args[0] -eq 'Command') {
-    # Set the cursor to a blinking block.
+        # Set the cursor to a blinking block.
         Write-Host -NoNewLine "`e[2 q"
     } else {
-    # Set the cursor to a blinking line.
+        # Set the cursor to a blinking line.
         Write-Host -NoNewLine "`e[5 q"
     }
 }
@@ -82,7 +82,7 @@ function :q {
 
 if ((gcm 'home-manager' -ErrorAction SilentlyContinue)) {
     function hms {
-       home-manager switch --flake ~/.config/home-manager#$env:USERNAME 
+        home-manager switch --flake ~/.config/home-manager#$env:USERNAME 
     }
 }
 
