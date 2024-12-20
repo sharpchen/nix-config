@@ -1,4 +1,5 @@
 local async = require('utils.async')
+local mk_store_query = require('utils.env').mk_store_query
 local M = {}
 
 M.path = {
@@ -21,13 +22,6 @@ M.event = {
 ---@return vim.lsp.Client[]
 M.attached_clients = function()
   return vim.lsp.get_clients({ bufnr = 0 })
-end
-
---- Generate a command array that query the store path of a nix package
----@param pkg string package name
----@return string[]
-local function mk_store_query(pkg)
-  return { 'bash', '-c', ([[nix-store -q --outputs "$(type -fP %s)"]]):format(pkg) }
 end
 
 if not require('utils.env').is_windows then

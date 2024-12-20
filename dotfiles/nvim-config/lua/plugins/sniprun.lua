@@ -12,10 +12,15 @@ return {
       interpreter_options = {
         Generic = {
           error_truncate = 'long', -- strongly recommended to figure out what's going on
-          nix_config = { -- any key name is ok
+          nix = { -- any key name is ok
             supported_filetypes = { 'nix' },
             extension = '.nix',
             interpreter = 'nix eval --raw -f',
+          },
+          ps1 = {
+            supported_filetypes = { 'ps1' },
+            extension = '.ps1',
+            interpreter = 'pwsh -noprofile -nologo -f',
           },
         },
       },

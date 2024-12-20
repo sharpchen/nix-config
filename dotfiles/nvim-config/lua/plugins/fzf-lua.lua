@@ -2,7 +2,18 @@ return {
   'ibhagwan/fzf-lua',
   config = function()
     local fzf = require('fzf-lua')
-    fzf.setup({})
+    fzf.setup({
+      actions = {
+        files = {
+          true,
+          ['alt-e'] = function(_, opts)
+            local f = vim.fs.joinpath(opts.cwd, opts.last_query)
+            local e = vim.api.nvim_replace_termcodes('<Esc>:e ', true, true, true)
+            vim.api.nvim_feedkeys(e .. f, 'L', false)
+          end,
+        },
+      },
+    })
 
     vim.keymap.set('n', '<leader>fc', function()
       local config_path = require('utils.env').is_windows and vim.fn.stdpath('config')
@@ -16,8 +27,11 @@ return {
     vim.keymap.set('n', '<leader>fpf', fzf.git_files, { desc = 'find in all tracked files' })
     vim.keymap.set('n', '<leader>fh', fzf.help_tags, { desc = 'help tags' })
     vim.keymap.set('n', '<leader>ff', fzf.files, { desc = 'find files' })
-    vim.keymap.set('n', '<leader>ca', fzf.lsp_code_actions, { noremap = true, silent = true, desc = 'code actions' })
+    vim.keymap.set('n', '<leader>ca', fzf.lsp_code_actions, { desc = 'code actions' })
     vim.keymap.set('n', '<leader>fe', fzf.diagnostics_document, { desc = 'document diagnostics' })
+    vim.keymap.set('n', '<leader>fd', function()
+      fzf.files({ cmd = 'fd -t=d', cwd = vim.uv.cwd() })
+    end, { desc = 'search folders' })
     vim.keymap.set('n', '<leader>fr', function()
       vim.cmd(('Oil %s'):format(vim.uv.cwd()))
     end, { desc = 'root folder' })

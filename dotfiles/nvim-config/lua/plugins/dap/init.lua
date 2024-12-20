@@ -10,7 +10,6 @@ return {
   config = function()
     local dap = require('dap')
     local ui = require('dapui')
-    local dap_utils = require('utils.dap')
     require('dapui').setup()
 
     vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'toggle breakpoint' })
@@ -44,5 +43,7 @@ return {
     vim.fn.sign_define('DapStopped', { text = '', texthl = 'Function' })
 
     require('plugins.dap.netcoredbg')
+    require('plugins.dap.bashdb')
+    require('plugins.dap.vscode-js-debug')
   end,
 }
