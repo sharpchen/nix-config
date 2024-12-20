@@ -26,10 +26,16 @@ alias :q='exit'
 alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
 alias lg=lazygit
 alias proj='cd $(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)'
-alias vim='nvim --clean "source ~/.vimrc"'
+alias vim='nvim --clean -c "source ~/.vimrc"'
 alias dn=dotnet
+
+#######################################
+# Get nix store path of a package
+# Arguments:
+#   $1 main program
+#######################################
 nsp() {
-    nix-store -q --outputs "$(type -fP $1)"
+    nix-store -q --outputs "$(type -fP "$1")"
 }
 
 eval "$(starship init bash)"
