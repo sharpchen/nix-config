@@ -19,6 +19,7 @@
       sqlfluff
       eslint
       ruff
+      bashdb
     ]
     ++ [
       (callPackage ./pwsh_ls/default.nix {

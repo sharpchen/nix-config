@@ -11,6 +11,7 @@
     vtsls
     vue-language-server
     vscode-langservers-extracted
+    vscode-js-debug
   ];
 
   home.file.".prettierrc".text = # json
