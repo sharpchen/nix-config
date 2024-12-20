@@ -28,5 +28,8 @@ alias lg=lazygit
 alias proj='cd $(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)'
 alias vim='nvim --clean "source ~/.vimrc"'
 alias dn=dotnet
+nsp() {
+    nix-store -q --outputs "$(type -fP $1)"
+}
 
 eval "$(starship init bash)"
