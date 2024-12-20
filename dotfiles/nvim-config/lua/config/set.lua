@@ -15,6 +15,8 @@ vim.opt.backup = false
 -- vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir'
 vim.opt.undofile = true
 
+vim.opt.conceallevel = 0 -- do not hide identifiers with highlight group with conceal=true
+
 vim.opt.hlsearch = false -- disable search result highlight
 vim.opt.incsearch = true
 vim.opt.smartcase = true

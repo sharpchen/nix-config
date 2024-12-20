@@ -1,6 +1,6 @@
 local lsp = require('utils.lsp')
 
-if vim.fn.executable('vtsls') == 1 then
+--[[ if vim.fn.executable('vtsls') == 1 then
   require('lspconfig').vtsls.setup({
     on_attach = function(client, _)
       if vim.bo.filetype == 'markdown' then
@@ -57,7 +57,7 @@ else
       },
     },
   })
-end
+end ]]
 
 require('lspconfig').volar.setup({
   filetypes = { 'markdown', 'vue' },
