@@ -7,6 +7,8 @@ M.path = {
   pwsh_es = string.empty,
 }
 
+M.use_vtsls = vim.fn.executable('vtsls') == 1
+
 M.event = {
   ---@param client vim.lsp.Client
   disable_formatter = function(client, _)

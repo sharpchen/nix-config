@@ -11,15 +11,17 @@ return {
     require('plugins.lsp.lua_ls')
     require('plugins.lsp.yamlls')
 
-    if vim.fn.executable('vtsls') == 1 then
+    if lsp.use_vtsls then
       require('plugins.lsp.vtsls')
     else
       require('plugins.lsp.ts_ls')
     end
     require('lspconfig').quick_lint_js.setup({})
     require('plugins.lsp.vue_language_server')
-
+    require('plugins.lsp.pwsh_es')
+    require('plugins.lsp.msbuild_ls')
     require('plugins.lsp.harper_ls')
+
     require('lspconfig').lemminx.setup({
       filetypes = { 'xaml', 'axaml' },
     })
@@ -36,28 +38,5 @@ return {
     require('lspconfig').html.setup({})
     require('lspconfig').vimls.setup({})
     require('lspconfig').postgres_lsp.setup({})
-
-    require('lspconfig').powershell_es.setup({
-      bundle_path = lsp.path.pwsh_es,
-      settings = {
-        powershell = {
-          codeFormatting = {
-            Preset = 'OTBS',
-          },
-        },
-      },
-    })
-    require('lspconfig').msbuild_project_tools_server.setup({
-      cmd = {
-        'MSBuildProjectTools.LanguageServer.Host',
-      },
-      filetypes = { 'msbuild' },
-      on_attach = function(client)
-        client.server_capabilities.completionProvider = {
-          resolveProvider = false,
-          triggerCharacters = { '<' },
-        }
-      end,
-    })
   end,
 }
