@@ -27,8 +27,10 @@ nix-shell '<home-manager>' -A install
 - clone repo
 
 ```sh
+mkdir -p ~/.config/home-manager/ && \
 rm -rf ~/.config/home-manager/* && \
-git clone https://github.com/sharpchen/nix-config.git ~/.config/home-manager/
+curl -L https://github.com/sharpchen/nix-config/archive/refs/heads/main.tar.gz \
+| tar -xz -C ~/.config/home-manager/ --strip-components=1
 ```
 
 - restore
