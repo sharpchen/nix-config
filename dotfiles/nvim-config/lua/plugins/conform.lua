@@ -26,7 +26,7 @@ return {
     local function format(bufnr)
       local conform = require('conform')
       local formatter = conform.formatters[vim.bo.filetype] or conform.formatters_by_ft[vim.bo.filetype]
-      local ok = conform.format({ bufnr = bufnr, timeout_ms = 2000, async = false })
+      local ok = conform.format({ bufnr = bufnr, timeout_ms = 5000, async = false })
       if ok then
         vim.notify(
           string.format(
@@ -35,7 +35,7 @@ return {
           )
         )
       else
-        vim.lsp.buf.format({ async = false, timeout_ms = 2000, bufnr = bufnr })
+        vim.lsp.buf.format({ async = false, timeout_ms = 5000, bufnr = bufnr })
         local names = vim
           .iter(vim.lsp.get_clients({ bufnr = bufnr }))
           :map(function(client)
