@@ -22,6 +22,9 @@
       system = "x86_64-linux";
       pkgs = unstablePkgs.legacyPackages.${system};
       stable = stablePkgs.legacyPackages.${system};
+      allowUnfree = {
+        nixpkgs.config.allowUnfree = true;
+      };
     in
     {
       homeConfigurations."sharpchen" = home-manager.lib.homeManagerConfiguration {
@@ -30,8 +33,8 @@
         # the path to your home.nix.
         modules = [
           ./home.nix
+          allowUnfree
         ];
-
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
         extraSpecialArgs = { inherit stable; };
