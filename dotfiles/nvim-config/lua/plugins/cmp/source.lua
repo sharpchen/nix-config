@@ -25,6 +25,10 @@ require('cmp').setup.global({
     { name = 'buffer' },
     { name = 'nvim_lsp_signature_help' },
     {
+      name = 'dictionary',
+      keyword_length = 2,
+    },
+    {
       name = 'spell',
       option = {
         keep_all_entries = false,

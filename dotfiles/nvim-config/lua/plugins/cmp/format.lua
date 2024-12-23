@@ -24,6 +24,7 @@ require('cmp').setup.global({
           spell = '[spell]',
           path = '[path]',
           latex_symbols = '[LaTeX]',
+          dictionary = '[dict]',
           ['vim-dadbod-completion'] = '[db]',
         })[entry.source.name] or string.empty)
       end

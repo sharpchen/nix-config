@@ -1,13 +1,13 @@
 local async = require('utils.async')
 local mk_store_query = require('utils.env').mk_store_query
-local M = {}
+local M = {
+  use_vtsls = vim.fn.executable('vtsls') == 1,
+}
 
 M.path = {
   vue_language_server = string.empty,
   pwsh_es = string.empty,
 }
-
-M.use_vtsls = vim.fn.executable('vtsls') == 1
 
 M.event = {
   ---@param client vim.lsp.Client

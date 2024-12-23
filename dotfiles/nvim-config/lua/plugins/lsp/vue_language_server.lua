@@ -18,4 +18,5 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.cmd(('LspStop %s'):format(require('utils.lsp').use_vtsls and 'vtsls' or 'ts_ls'))
     end
   end,
+  desc = [[disable language server for js/ts when it's not a node project]],
 })

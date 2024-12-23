@@ -6,6 +6,7 @@ return {
   dependencies = {
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-buffer',
+    'uga-rosa/cmp-dictionary',
     'hrsh7th/cmp-path',
     'hrsh7th/cmp-cmdline',
     'f3fora/cmp-spell',
@@ -46,6 +47,10 @@ return {
       },
     })
 
+    require('cmp_dictionary').setup({
+      paths = { '~/.config/home-manager/en.dict' },
+      exact_length = 2,
+    })
     require('plugins.cmp.format')
     require('plugins.cmp.source')
     require('plugins.cmp.sort')
