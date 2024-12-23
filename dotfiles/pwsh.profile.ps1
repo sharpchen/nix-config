@@ -24,7 +24,7 @@ if ($IsWindows) {
 
     ## project search
     function proj {
-        cd (gci '~/Projects' -Directory | foreach FullName | fzf)
+        Set-Location (Get-ChildItem '~/Projects' -Directory | ForEach-Object FullName | fzf)
     }
 
 }
@@ -54,8 +54,8 @@ $syntaxColors = @{
     String = 'Green'
 }
 
-if ((gmo -Name PSReadLine).Version -lt '2.0.0') {
-    $syntaxColors.Keys | foreach {
+if ((Get-Module -Name PSReadLine).Version -lt '2.0.0') {
+    $syntaxColors.Keys | ForEach-Object {
         Set-PSReadlineOption -TokenKind $_ -ForegroundColor $syntaxColors[$_]
     }
 } else {
@@ -69,8 +69,8 @@ Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 Set-PSReadlineKeyHandler -Key 'Ctrl+p' -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key 'Ctrl+n' -Function HistorySearchForward
 
-sal lg lazygit
-sal dn dotnet
+Set-Alias lg lazygit
+Set-Alias dn dotnet
 
 function vim {
     nvim --clean -c "source ~/.vimrc" @args
@@ -80,7 +80,7 @@ function :q {
     exit
 }
 
-if ((gcm 'home-manager' -ErrorAction SilentlyContinue)) {
+if ((Get-Command 'home-manager' -ErrorAction SilentlyContinue)) {
     function hms {
         home-manager switch --flake ~/.config/home-manager#$env:USERNAME 
     }
