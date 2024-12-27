@@ -29,7 +29,7 @@ pkgs.buildDotnetModule rec {
     homepage = "";
     license = licenses.mit;
     maintainers = with maintainers; [ sharpchen ];
-    platforms = [ "x86_64-linux" ];
+    platforms = platforms.unix;
     mainProgram = "MSBuildProjectTools.LanguageServer.Host";
   };
 }
