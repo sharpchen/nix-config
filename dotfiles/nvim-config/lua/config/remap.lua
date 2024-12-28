@@ -65,6 +65,16 @@ vim.keymap.set('n', '<leader>cc', function()
   vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
 end)
 
+vim.keymap.set('n', '<M-u>', function()
+  local sub = vim.fn.expand('<cword>'):upper()
+  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
+end)
+
+vim.keymap.set('n', '<M-l>', function()
+  local sub = vim.fn.expand('<cword>'):lower()
+  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
+end)
+
 vim.keymap.set('n', '<leader>a', 'ggVG', { desc = 'select all text' })
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
 vim.keymap.set('n', '<leader>h', function()
