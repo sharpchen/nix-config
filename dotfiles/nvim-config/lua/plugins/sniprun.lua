@@ -5,10 +5,10 @@ return {
   config = function()
     require('sniprun').setup({
       display = {
-        selected_interpreters = { 'Lua_nvim', 'Generic' },
         'VirtualText',
         'Classic',
       },
+      selected_interpreters = { 'Lua_nvim', 'Generic' },
       interpreter_options = {
         Generic = {
           error_truncate = 'long', -- strongly recommended to figure out what's going on

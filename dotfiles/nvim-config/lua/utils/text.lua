@@ -112,11 +112,11 @@ local snake_lexer = vim.tbl_extend('error', {
 snake_lexer:chain(camel_lexer):chain(pascal_lexer)
 local case_lexer = snake_lexer
 
----@param name string
+---@param word string
 ---@param to 'pascal' | 'camel' | 'snake'
 ---@return string
-M.case.convert = function(name, to)
-  local tokens = case_lexer:handle(name)
+M.case.convert = function(word, to)
+  local tokens = case_lexer:handle(word)
 
   if to == 'pascal' then
     return vim.iter(tokens):fold(string.empty, function(sum, current)
@@ -147,7 +147,8 @@ M.case.convert = function(name, to)
       '_'
     )
   else
-    error(("can't handle conversion to %s"):format(to))
+    vim.notify(string.format([[can't handle conversion from %s to %s case]], word, to))
+    return word
   end
 end
 
