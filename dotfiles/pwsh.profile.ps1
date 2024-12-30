@@ -35,10 +35,10 @@ Set-PSReadLineOption -EditMode Vi
 $OnViModeChange = {
     if ($args[0] -eq 'Command') {
         # Set the cursor to a blinking block.
-        Write-Host -NoNewLine "`e[2 q"
+        Write-Host -NoNewline "`e[2 q"
     } else {
         # Set the cursor to a blinking line.
-        Write-Host -NoNewLine "`e[5 q"
+        Write-Host -NoNewline "`e[5 q"
     }
 }
 Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler $OnViModeChange
@@ -56,24 +56,24 @@ $syntaxColors = @{
 
 if ((Get-Module -Name PSReadLine).Version -lt '2.0.0') {
     $syntaxColors.Keys | ForEach-Object {
-        Set-PSReadlineOption -TokenKind $_ -ForegroundColor $syntaxColors[$_]
+        Set-PSReadLineOption -TokenKind $_ -ForegroundColor $syntaxColors[$_]
     }
 } else {
     Set-PSReadLineOption -Colors $syntaxColors
 }
 
-Set-PSReadlineKeyHandler -Key "Ctrl+ " -Function MenuComplete
-Set-PSReadlineKeyHandler -Key Tab -Function Complete
-Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
-Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
-Set-PSReadlineKeyHandler -Key 'Ctrl+p' -Function HistorySearchBackward
-Set-PSReadlineKeyHandler -Key 'Ctrl+n' -Function HistorySearchForward
+Set-PSReadLineKeyHandler -Key 'Ctrl+ ' -Function MenuComplete
+Set-PSReadLineKeyHandler -Key Tab -Function Complete
+Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+Set-PSReadLineKeyHandler -Key 'Ctrl+p' -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Key 'Ctrl+n' -Function HistorySearchForward
 
 Set-Alias lg lazygit
 Set-Alias dn dotnet
 
 function vim {
-    nvim --clean -c "source ~/.vimrc" @args
+    nvim --clean -c 'source ~/.vimrc' @args
 }
 
 function :q {
