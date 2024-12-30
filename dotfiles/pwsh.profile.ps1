@@ -99,7 +99,7 @@ function iparam {
         [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
         [string]$Command,
         [switch]$Positional,
-        [switch]$Pipeline,
+        [switch]$Pipeline
     )
     if ($Positional) {
         help $Command | Select-String 'Position\??\s*\d' -Context 3, 5
