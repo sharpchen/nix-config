@@ -87,9 +87,9 @@ vim.keymap.set('n', '<A-.>', '<cmd>bn<CR>', { desc = 'move to next buffer' })
 vim.keymap.set('n', '<A-a>', '<cmd>bufdo bd<CR>', { desc = 'close all buffers' })
 vim.keymap.set('n', '<leader><leader>', 'diw')
 
-vim.keymap.set('n', '0', '^', { noremap = true, silent = true, desc = 'go to start of line' })
-vim.keymap.set('n', '^', '0', { noremap = true, silent = true, desc = 'go to first word bound of line' })
-vim.keymap.set('n', 'gh', '<cmd>norm! 0<CR>', { noremap = true, silent = true, desc = 'go to start of line' })
+-- vim.keymap.set('n', '0', '^', { noremap = true, silent = true, desc = 'go to start of line' })
+-- vim.keymap.set('n', '^', '0', { noremap = true, silent = true, desc = 'go to first word bound of line' })
+vim.keymap.set('n', 'gh', '<cmd>norm! ^<CR>', { noremap = true, silent = true, desc = 'go to start of line' })
 vim.keymap.set('n', 'gl', '<cmd>norm! $<CR>', { noremap = true, silent = true, desc = 'go to end of line' })
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
 
@@ -97,14 +97,14 @@ vim.iter({ { '(', ')' }, { '<', '>' }, { '[', ']' }, '`', '"', "'", '*' }):each(
   if type(x) == 'table' then
     vim.keymap.set(
       'n',
-      ('<leader>[%s'):format(x[1]),
+      ('[%s'):format(x[1]),
       ('viw<esc>a%s<esc>bi%s<esc>'):format(x[2], x[1]),
       { desc = ('surround word with %s%s'):format(x[1], x[2]) }
     )
   else
     vim.keymap.set(
       'n',
-      ('<leader>[%s'):format(x),
+      ('[%s'):format(x),
       ('viw<esc>a%s<esc>bi%s<esc>'):format(x, x),
       { desc = ('surround word with %s'):format(x) }
     )
@@ -134,9 +134,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
   end,
 })
-vim.keymap.set('n', '<leader>ti', function()
-  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }))
-end, { desc = 'toggle inlay hint' })
 
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'qf',

@@ -17,7 +17,7 @@ end
 
 if not M.is_windows then
   async.cmd(vim.list_extend(bash_prefix, { [[fd -t=d aspell-dict-en /nix/store]] }), function(res)
-    vim.notify(vim.inspect(res))
+    -- vim.notify(vim.inspect(res))
   end)
 end
 
