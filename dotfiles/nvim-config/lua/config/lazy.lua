@@ -14,7 +14,6 @@ vim.opt.rtp:prepend(lazypath)
 local plugins_for_windows = vim
   .iter({
     'firenvim',
-    'cmp.init',
     'colorizer',
     'Comment',
     'lazygit',
@@ -32,8 +31,11 @@ local plugins_for_windows = vim
   :totable()
 
 require('lazy').setup({
+  lockfile = jit.os:find('Windows') and vim.fn.stdpath('config') .. '/lazy-lock.json'
+    or '~/.config/home-manager/dotfiles/nvim-config/lazy-lock.json',
   git = {
     url_format = 'git@github.com:%s.git',
+    timeout = 60 * 10,
   },
   spec = require('utils.env').is_windows and plugins_for_windows
     or { { import = 'plugins' }, {

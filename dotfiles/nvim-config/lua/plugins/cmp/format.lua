@@ -4,7 +4,17 @@ require('cmp').setup.global({
     fields = { 'kind', 'abbr', 'menu' },
     format = function(entry, item)
       local entryItem = entry.completion_item
-      local color = entryItem.documentation
+      local color = entryItem.documentation --[[@as string]]
+      local completion_item = entry.completion_item
+      local highlights_info = require('colorful-menu').highlights(completion_item, vim.bo.filetype)
+
+      -- error, such as missing parser, fallback to use raw label.
+      if highlights_info == nil then
+        item.abbr = completion_item.label
+      else
+        item.abbr_hl_group = highlights_info.highlights
+        item.abbr = highlights_info.text
+      end
       if color and type(color) == 'string' and color:match('^#%x%x%x%x%x%x$') then
         -- check if color is hexcolor
         local hl = 'hex-' .. color:sub(2)

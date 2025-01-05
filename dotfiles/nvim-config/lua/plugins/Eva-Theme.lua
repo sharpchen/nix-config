@@ -11,7 +11,7 @@ return os.getenv('eva') == nil
           override_palette = {
             dark = {
               -- operator = dark.punctuation,
-              background = '#14161B',
+              -- background = '#14161B',
               typeparam = dark.primitive,
             },
             light = {
@@ -28,10 +28,10 @@ return os.getenv('eva') == nil
               }
             end,
             LspInlayHint = function(_, p)
-              return {
-                fg = p.comment,
-                bg = nil,
-              }
+              return { fg = p.comment, bg = nil }
+            end,
+            CursorLine = function(_, p)
+              return { bg = p.panelBackground }
             end,
           },
         })
@@ -42,37 +42,5 @@ return os.getenv('eva') == nil
     lazy = false,
     priority = 1000,
     build = ':EvaCompile',
-    config = function()
-      local light = require('Eva-Theme.palette').light_base
-      local dark = require('Eva-Theme.palette').dark_base
-      require('Eva-Theme').setup({
-        override_palette = {
-          dark = {
-            -- operator = dark.punctuation,
-            background = '#14161B',
-            typeparam = dark.primitive,
-          },
-          light = {
-            -- operator = light.punctuation,
-            typeparam = light.primitive,
-          },
-        },
-        override_highlight = {
-          ['@lsp.type.enumMember'] = function(v, p)
-            vim.notify(p.name)
-            return {
-              fg = require('Eva-Theme.utils').is_dark(v) and require('Eva-Theme.palette').dark_base.digit
-                or require('Eva-Theme.palette').light_base.digit,
-              bold = true,
-            }
-          end,
-          LspInlayHint = function(v, p)
-            return {
-              fg = p.comment,
-              bg = nil,
-            }
-          end,
-        },
-      })
-    end,
+    config = function() end,
   }

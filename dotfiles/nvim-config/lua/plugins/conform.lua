@@ -38,6 +38,9 @@ return {
         vim.lsp.buf.format({ async = false, timeout_ms = 5000, bufnr = bufnr })
         local names = vim
           .iter(vim.lsp.get_clients({ bufnr = bufnr }))
+          :filter(function(client)
+            return not not client.server_capabilities.documentFormattingProvider
+          end)
           :map(function(client)
             return client.name
           end)

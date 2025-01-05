@@ -1,11 +1,14 @@
 return {
   'neovim/nvim-lspconfig',
+  -- dir = '~/projects/nvim-lspconfig/',
   event = { 'BufReadPre', 'BufNewFile' },
   config = function()
     local lsp = require('utils.lsp')
-    local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-    lsp_capabilities.textDocument.completion.completionItem.snippetSupport = true
     require('lspconfig.ui.windows').default_options.border = 'rounded'
+    local lspconfig = require('lspconfig')
+    lspconfig.util.default_config = vim.tbl_extend('force', lspconfig.util.default_config, {
+      capabilities = require('blink.cmp').get_lsp_capabilities(),
+    })
 
     require('lspconfig').taplo.setup({})
     require('plugins.lsp.lua_ls')

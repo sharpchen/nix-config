@@ -34,7 +34,8 @@ return {
     opts = {},
   },
   {
-    'DaikyXendo/nvim-material-icon',
+    -- 'DaikyXendo/nvim-material-icon',
+    'sharpchen/nvim-material-icon',
     config = function()
       local xaml_icon, xaml_color = require('nvim-web-devicons').get_icon_color('', 'xaml')
       require('nvim-web-devicons').set_icon({
@@ -42,22 +43,6 @@ return {
           icon = xaml_icon,
           color = xaml_color,
           name = 'axaml',
-        },
-      })
-      require('nvim-web-devicons').setup({
-        override_by_extension = {
-          ['c++'] = {
-            icon = '',
-            color = '#0188d1',
-            cterm_color = '32',
-            name = 'cpp',
-          },
-          ['h++'] = {
-            icon = '',
-            color = '#0188d1',
-            cterm_color = '32',
-            name = 'hpp',
-          },
         },
       })
     end,
@@ -78,7 +63,16 @@ return {
   },
   {
     'sharpchen/template-string.nvim',
-    ft = { 'cs', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue', 'svelte', 'html' },
+    ft = {
+      'cs',
+      'javascript',
+      'typescript',
+      'javascriptreact',
+      'typescriptreact',
+      'vue',
+      'svelte',
+      'html',
+    },
     -- enabled = false,
     config = function()
       require('template-string').setup({

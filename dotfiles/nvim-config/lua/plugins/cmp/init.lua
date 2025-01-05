@@ -1,5 +1,6 @@
 return {
   'hrsh7th/nvim-cmp',
+  enabled = false,
   branch = 'main',
   event = { 'BufReadPre', 'BufNewFile', 'CmdlineEnter' },
   version = false,
@@ -13,6 +14,7 @@ return {
     'hrsh7th/cmp-nvim-lua',
     'saadparwaiz1/cmp_luasnip',
     'hrsh7th/cmp-nvim-lsp-signature-help',
+    'xzbdmw/colorful-menu.nvim',
     {
       'L3MON4D3/LuaSnip',
       dependencies = { 'rafamadriz/friendly-snippets' },
