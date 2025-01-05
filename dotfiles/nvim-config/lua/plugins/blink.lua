@@ -1,5 +1,5 @@
 return {
-  'saghen/blink.cmp',
+  'Saghen/blink.cmp',
   version = '*',
   build = 'export CARGO_NET_GIT_FETCH_WITH_CLI=true; nix run .#build-plugin',
   dependencies = {
@@ -9,7 +9,38 @@ return {
       build = 'make install_jsregexp',
     },
     'rafamadriz/friendly-snippets',
-    'xzbdmw/colorful-menu.nvim',
+    {
+      'xzbdmw/colorful-menu.nvim',
+      opts = {
+        ls = {
+          lua_ls = {
+            -- Maybe you want to dim arguments a bit.
+            auguments_hl = '@variable.parameter',
+          },
+          ts_ls = {
+            extra_info_hl = '@comment',
+          },
+          vtsls = {
+            extra_info_hl = '@comment',
+          },
+          ['rust-analyzer'] = {
+            -- Such as (as Iterator), (use std::io).
+            extra_info_hl = '@comment',
+          },
+          clangd = {
+            -- Such as "From <stdio.h>".
+            extra_info_hl = '@comment',
+          },
+        },
+        -- If the built-in logic fails to find a suitable highlight group,
+        -- this highlight is applied to the label.
+        fallback_highlight = '@variable',
+        -- If provided, the plugin truncates the final displayed text to
+        -- this width (measured in display cells). Any highlights that extend
+        -- beyond the truncation point are ignored. Default 60.
+        max_width = 60,
+      },
+    },
   },
   ---@module 'blink.cmp'
   ---@type blink.cmp.Config
@@ -96,25 +127,10 @@ return {
             label = {
               width = { fill = true, max = 60 },
               text = function(ctx)
-                local highlights_info = require('colorful-menu').highlights(ctx.item, vim.bo.filetype)
-                return highlights_info ~= nil and highlights_info.text or ctx.label
+                return require('colorful-menu').blink_components_text(ctx)
               end,
               highlight = function(ctx)
-                local highlights_info = require('colorful-menu').highlights(ctx.item, vim.bo.filetype)
-                local highlights = {}
-                if highlights_info ~= nil then
-                  for _, info in ipairs(highlights_info.highlights) do
-                    table.insert(highlights, {
-                      info.range[1],
-                      info.range[2],
-                      group = ctx.deprecated and 'BlinkCmpLabelDeprecated' or info[1],
-                    })
-                  end
-                end
-                for _, idx in ipairs(ctx.label_matched_indices) do
-                  table.insert(highlights, { idx, idx + 1, group = 'BlinkCmpLabelMatch' })
-                end
-                return highlights
+                return require('colorful-menu').blink_components_highlight(ctx)
               end,
             },
           },
