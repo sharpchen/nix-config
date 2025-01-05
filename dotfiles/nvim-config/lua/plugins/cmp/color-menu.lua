@@ -1,21 +1,21 @@
--- You don't need to set these options.
 require('colorful-menu').setup({
-  ft = {
-    lua = {
+  ls = {
+    lua_ls = {
       -- Maybe you want to dim arguments a bit.
-      auguments_hl = '@comment',
+      auguments_hl = '@variable.parameter',
     },
-    typescript = {
-      -- Or "vtsls", their information is different, so we
-      -- need to know in advance.
-      ls = 'typescript-language-server',
-    },
-    rust = {
-      -- such as (as Iterator), (use std::io).
+    ts_ls = {
       extra_info_hl = '@comment',
     },
-    c = {
-      -- such as "From <stdio.h>"
+    vtsls = {
+      extra_info_hl = '@comment',
+    },
+    ['rust-analyzer'] = {
+      -- Such as (as Iterator), (use std::io).
+      extra_info_hl = '@comment',
+    },
+    clangd = {
+      -- Such as "From <stdio.h>".
       extra_info_hl = '@comment',
     },
   },
