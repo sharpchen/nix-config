@@ -2,8 +2,8 @@
 #Requires -RunAsAdministrator
 $devenv = (vswhere -latest -property productPath)
 if (Test-Path $devenv) {
-    Install-Module -Name ps2exe -Scope CurrentUser -Confirm
-    $scriptPath = [System.IO.Path]::Combine($env:TEMP, "vs_alias.ps1")
+    Install-Module -Name ps2exe -Scope CurrentUser
+    $scriptPath = [System.IO.Path]::Combine($env:TEMP, 'vs_alias.ps1')
     $scriptContent = @"
       param (
         [System.IO.DirectoryInfo]`$path = [System.IO.DirectoryInfo]::new([System.Environment]::CurrentDirectory)

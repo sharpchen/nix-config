@@ -4,12 +4,12 @@
 
 function RefreshPath {
     $env:Path = 
-     [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User)
-        + ';' 
-        + [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine)
+    [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User)
+    + ';' 
+    + [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine)
 }
 # install scoop
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Confirm
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
 scoop bucket add extras
@@ -19,52 +19,52 @@ RefreshPath
 #endregion
 
 $scoopPackages = @(
-   'git',
-   'vswhere',
-   'neovim',
-   'bat',
-   'tokei',
-   'pnpm',
-   'adb',
-   'gcc',
-   'ripgrep',
-   'lazygit',
-   'nodejs-lts',
-   'wiztree',
-   '7zip',
-   'fzf',
-   'vscodium',
-   'carnac',
-   'librewolf',
-   'abdownloadmanager',
-   'mpv',
-   'ffmpeg',
-   'yazi',
-   'imagemagick',
-   'poppler',
-   'jq',
-   'fd',
-   'transmission-cli',
-   'miller',
-   'ouch',
-   'glow'
+    'git',
+    'vswhere',
+    'neovim',
+    'bat',
+    'tokei',
+    'pnpm',
+    'adb',
+    'gcc',
+    'ripgrep',
+    'lazygit',
+    'nodejs-lts',
+    'wiztree',
+    '7zip',
+    'fzf',
+    'vscodium',
+    'carnac',
+    'librewolf',
+    'abdownloadmanager',
+    'mpv',
+    'ffmpeg',
+    'yazi',
+    'imagemagick',
+    'poppler',
+    'jq',
+    'fd',
+    'transmission-cli',
+    'miller',
+    'ouch',
+    'glow'
 )
 
 $scoopFonts = @(
-   'Cascadia-Code',
-   'jetbrainsmono-nl',
-   'notosansmono'
+    'Cascadia-Code',
+    'jetbrainsmono-nl',
+    'notosansmono'
 )
 
 $wingetPackages = @(
-   'wez.wezterm',
-   'Microsoft.PowerShell',
-   'Microsoft.VisualStudio.2022.Community',
-   'File-New-Project.EarTrumpet',
-   'dotPDN.PaintDotNet',
-   'Ditto.Ditto',
-   'Microsoft.PowerToys',
-   'Google.Chrome'
+    'wez.wezterm',
+    'Microsoft.PowerShell',
+    'Microsoft.VisualStudio.2022.Community',
+    'File-New-Project.EarTrumpet',
+    'dotPDN.PaintDotNet',
+    'Ditto.Ditto',
+    'Microsoft.PowerToys',
+    'Google.Chrome'
 )
 
 & ./dotfiles.ps1
