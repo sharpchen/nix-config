@@ -20,6 +20,7 @@
       eslint
       ruff
       bashdb
+      marksman
     ]
     ++ [
       (callPackage ./pwsh_ls/default.nix {
