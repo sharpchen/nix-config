@@ -19,6 +19,18 @@ M.event = {
   disable_semantic = function(client)
     client.server_capabilities.semanticTokensProvider = nil
   end,
+  --- attach to navic
+  ---@param client vim.lsp.Client
+  ---@param bufnr integer
+  attach_navic = function(client, bufnr)
+    if client.server_capabilities.documentSymbolProvider then
+      require('nvim-navic').attach(client, bufnr)
+    end
+  end,
+
+  default_attach = function(client, bufnr)
+    M.event.attach_navic(client, bufnr)
+  end,
 }
 
 ---@return vim.lsp.Client[]

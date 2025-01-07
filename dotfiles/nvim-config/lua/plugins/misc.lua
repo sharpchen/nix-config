@@ -31,7 +31,13 @@ return {
     dependencies = {
       'SmiteshP/nvim-navic',
     },
-    opts = {},
+    opts = {
+      attach_navic = false,
+      symbols = {
+        separator = '▸',
+      },
+      kinds = require('utils.const').lsp.completion_kind_icons,
+    },
   },
   {
     -- 'DaikyXendo/nvim-material-icon',
