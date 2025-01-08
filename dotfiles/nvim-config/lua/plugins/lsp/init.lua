@@ -28,6 +28,7 @@ return {
     require('plugins.lsp.pwsh_es')
     require('plugins.lsp.msbuild_ls')
     require('plugins.lsp.harper_ls')
+    require('plugins.lsp.query_ls')
 
     require('lspconfig').lemminx.setup({
       filetypes = { 'xaml', 'axaml' },

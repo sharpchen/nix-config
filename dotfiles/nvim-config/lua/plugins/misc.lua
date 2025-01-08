@@ -42,6 +42,7 @@ return {
   {
     -- 'DaikyXendo/nvim-material-icon',
     'sharpchen/nvim-material-icon',
+    branch = 'rm-invalid-icon',
     config = function()
       local xaml_icon, xaml_color = require('nvim-web-devicons').get_icon_color('', 'xaml')
       require('nvim-web-devicons').set_icon({

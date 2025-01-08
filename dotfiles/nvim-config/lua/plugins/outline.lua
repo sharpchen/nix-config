@@ -21,6 +21,12 @@ return {
           Array = { icon = '[]', hl = 'Variable' },
         },
       },
+      providers = {
+        priority = { 'markdown', 'lsp', 'norg' },
+        markdown = {
+          filetypes = { 'markdown' },
+        },
+      },
     })
   end,
 }

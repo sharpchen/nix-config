@@ -29,6 +29,7 @@ return {
     vim.keymap.set('n', '<leader>ff', fzf.files, { desc = 'find files' })
     vim.keymap.set('n', '<leader>ca', fzf.lsp_code_actions, { desc = 'code actions' })
     vim.keymap.set('n', '<leader>fe', fzf.diagnostics_document, { desc = 'document diagnostics' })
+    vim.keymap.set('n', '<leader>fo', fzf.oldfiles, { desc = 'search recent files' })
     vim.keymap.set('n', '<leader>fd', function()
       fzf.files({ cmd = 'fd -t=d', cwd = vim.uv.cwd() })
     end, { desc = 'search folders' })

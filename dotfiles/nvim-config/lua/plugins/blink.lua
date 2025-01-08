@@ -1,12 +1,15 @@
 return {
   'Saghen/blink.cmp',
   version = '*',
-  build = 'export CARGO_NET_GIT_FETCH_WITH_CLI=true; nix run .#build-plugin',
+  build = 'export CARGO_NET_GIT_FETCH_WITH_CLI=true; nix run .#build-plugin --accept-flake-config',
   dependencies = {
     {
       'L3MON4D3/LuaSnip',
       dependencies = { 'rafamadriz/friendly-snippets' },
       build = 'make install_jsregexp',
+      config = function()
+        require('luasnip.loaders.from_vscode').lazy_load()
+      end,
     },
     'rafamadriz/friendly-snippets',
     {
@@ -62,7 +65,7 @@ return {
         if ok and node and vim.tbl_contains({ 'comment', 'line_comment', 'block_comment' }, node:type()) then
           return { 'buffer' }
         end
-        return { 'lsp', 'path', 'snippets', 'buffer', 'luasnip' }
+        return { 'lsp', 'path', 'snippets', 'buffer' }
       end,
       providers = {
         dadbod = {
@@ -77,18 +80,7 @@ return {
       },
     },
     snippets = {
-      expand = function(snippet)
-        require('luasnip').lsp_expand(snippet)
-      end,
-      active = function(filter)
-        if filter and filter.direction then
-          return require('luasnip').jumpable(filter.direction)
-        end
-        return require('luasnip').in_snippet()
-      end,
-      jump = function(direction)
-        require('luasnip').jump(direction)
-      end,
+      preset = 'luasnip',
     },
     signature = {
       enabled = true,
@@ -99,7 +91,7 @@ return {
         enabled = true,
       },
       list = {
-        selection = 'preselect',
+        selection = { preselect = true, auto_insert = true },
       },
       documentation = {
         auto_show = true,

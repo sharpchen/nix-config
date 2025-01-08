@@ -5,7 +5,16 @@ require('lspconfig').ts_ls.setup({
       lsp.event.disable_formatter(client)
     end
   end,
-  filetypes = { 'vue', 'markdown' },
+  filetypes = {
+    'javascript',
+    'javascriptreact',
+    'javascript.jsx',
+    'typescript',
+    'typescriptreact',
+    'typescript.tsx',
+    'vue',
+    'markdown',
+  },
   init_options = {
     plugins = {
       {
