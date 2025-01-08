@@ -21,6 +21,7 @@
       ruff
       bashdb
       marksman
+      ts_query_ls
     ]
     ++ [
       (callPackage ./pwsh_ls/default.nix {
