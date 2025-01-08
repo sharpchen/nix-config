@@ -1,41 +1,75 @@
 # this file is for restoring dotfiles on windows
 
 if (-not $IsWindows) {
-    Write-Error 'This script is only allowed to be executed on windows' return 
+    Write-Error 'This script is only allowed to be executed on windows' 
+    return 
 }
 
-if (Get-Command scoop) {
+function mklink {
+    [CmdletBinding(DefaultParameterSetName = 'Special')]
+    param (
+        [Parameter(Position = 0, ParameterSetName = 'Normal', Mandatory)]
+        [string]$Path,
+
+        [Parameter(Position = 1, ParameterSetName = 'Normal', Mandatory)]
+        [Parameter(ParameterSetName = 'Special', Mandatory)]
+        [string]$Target,
+
+
+        [Parameter(ParameterSetName = 'Special', Mandatory)]
+        [string]$ChildPath,
+
+        [ValidateSet('LOCALAPPDATA', 'APPDATA', 'HOME')]
+        [Parameter(ParameterSetName = 'Special', Mandatory)]
+        [string]$SpecialParent
+    )
+    
+    $Target = Resolve-Path $Target
+    if ($PSCmdlet.ParameterSetName -eq 'Normal') {
+        mkdir (Split-Path $Path) -ErrorAction SilentlyContinue
+        New-Item -ItemType SymbolicLink -Force -Value $Target -Path $Path
+    } else {
+        if ($SpecialParent -eq 'HOME') {
+            New-Item -ItemType SymbolicLink -Force -Value $Target -Path (Join-Path $HOME $ChildPath)
+        } else {
+            New-Item -ItemType SymbolicLink -Force -Value $Target -Path (Join-Path (Get-Item -Path "env:/$SpecialParent").Value $ChildPath)
+        }
+    }
+
+}
+
+
+if (Get-Command scoop -ErrorAction SilentlyContinue) {
     $scoopRoot = [IO.Path]::GetDirectoryName([IO.Path]::GetDirectoryName((Get-Command scoop).Source))
     # librewolf overrides
-    New-Item ([IO.Path]::Combine($scoopRoot, 'persist/librewolf/Profiles/Default/librewolf.overrides.cfg')) -Target ([IO.Path]::Combine($pwd, 'dotfiles/librewolf.cfg')) -ItemType SymbolicLink -Force
+    mklink (Join-Path $scoopRoot 'persist/librewolf/Profiles/Default/librewolf.overrides.cfg') ./dotfiles/librewolf.cfg
     [Environment]::SetEnvironmentVariable('YAZI_FILE_ONE', ([IO.Path]::Combine($scoopRoot, 'apps\git\current\usr\bin\file.exe')), 'User')
 }
 
-$nvimConfig = [IO.Path]::Combine($env:LOCALAPPDATA, 'nvim/')
-if (Get-ChildItem $nvimConfig) {
+$nvimConfig = Join-Path $env:LOCALAPPDATA 'nvim'
+if (Test-Path $nvimConfig) {
     Remove-Item -Recurse $nvimConfig 
 }
-New-Item $nvimConfig -Target ([IO.Path]::Combine($pwd, 'dotfiles/nvim-config/')) -ItemType SymbolicLink -Force
+mklink $nvimConfig ./dotfiles/nvim-config
 
 # git
-New-Item '~/.gitconfig' -Target ([IO.Path]::Combine($pwd, 'dotfiles/.gitconfig')) -ItemType SymbolicLink -Force
-New-Item '~/.gitconfig_windows' -Target ([IO.Path]::Combine($pwd, 'dotfiles/.gitconfig-windows')) -ItemType SymbolicLink -Force
-New-Item ([IO.Path]::Combine($env:LOCALAPPDATA, 'lazygit/config.yml')) -Target ([IO.Path]::Combine($pwd, 'dotfiles/lazygit.config.yml')) -ItemType SymbolicLink -Force
+mklink ~/.gitconfig ./dotfiles/.gitconfig
+mklink ~/.gitconfig_windows ./dotfiles/.gitconfig-windows
+mklink -SpecialParent LOCALAPPDATA -ChildPath 'lazygit/config.yml' -Target ./dotfiles/lazygit.config.yml
 
 # vim
-New-Item '~/.vimrc' -Target ([IO.Path]::Combine($pwd, 'dotfiles/.vimrc')) -ItemType SymbolicLink -Force
-New-Item '~/.vsvimrc' -Target ([IO.Path]::Combine($pwd, 'dotfiles/.vsvimrc')) -ItemType SymbolicLink -Force
-New-Item '~/.ideavimrc' -Target ([IO.Path]::Combine($pwd, 'dotfiles/.ideavimrc')) -ItemType SymbolicLink -Force
+mklink ~/.vimrc ./dotfiles/.vimrc
+mklink ~/.vsvimrc ./dotfiles/.vsvimrc
+mklink ~/.ideavimrc ./dotfiles/.ideavimrc
 
 # shell
-New-Item '~/.bashrc' -Target ([IO.Path]::Combine($pwd, 'dotfiles/.bashrc')) -ItemType SymbolicLink -Force
-New-Item $Profile -Target ([IO.Path]::Combine($pwd, 'dotfiles/pwsh.profile.ps1')) -ItemType SymbolicLink -Force
-New-Item ([IO.Path]::Combine($env:APPDATA, 'nushell/config.nu')) -Target ([IO.Path]::Combine($pwd, 'dotfiles/config.nu')) -ItemType SymbolicLink -Force
-New-Item '~/.config/wezterm/wezterm.lua' -Target ([IO.Path]::Combine($pwd, 'dotfiles/.wezterm.lua')) -ItemType SymbolicLink -Force
+mklink ~/.bashrc ./dotfiles/.bashrc
+mklink $PROFILE ./dotfiles/pwsh.profile.ps1
+mklink ~/.config/wezterm/wezterm.lua ./dotfiles/.wezterm.lua
 
 # yazi
-New-Item ([IO.Path]::Combine($env:APPDATA, 'yazi/config/yazi.toml')) -Target ([IO.Path]::Combine($pwd, 'dotfiles/yazi.toml')) -ItemType SymbolicLink -Force
-New-Item ([IO.Path]::Combine($env:APPDATA, 'yazi/config/keymap.toml')) -Target ([IO.Path]::Combine($pwd, 'dotfiles/yazi.keymap.toml')) -ItemType SymbolicLink -Force
+mklink -SpecialParent APPDATA -ChildPath 'yazi/config/yazi.toml' -Target ./dotfiles/yazi.toml
+mklink -SpecialParent APPDATA -ChildPath 'yazi/config/keymap.toml' -Target ./dotfiles/yazi.keymap.toml
 if (Get-Command ya) {
     ya pack -a 'Reledia/glow'
     ya pack -a 'ndtoan96/ouch'
@@ -45,3 +79,4 @@ if (Get-Command ya) {
     ya pack -a 'yazi-rs/plugins:max-preview'
 }
 
+mklink ~/.wslconfig ./dotfiles/.wslconfig
