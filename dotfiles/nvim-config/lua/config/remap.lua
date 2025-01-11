@@ -92,6 +92,11 @@ vim.keymap.set('n', '<leader><leader>', 'diw')
 vim.keymap.set('n', 'gh', '<cmd>norm! ^<CR>', { noremap = true, silent = true, desc = 'go to start of line' })
 vim.keymap.set('n', 'gl', '<cmd>norm! $<CR>', { noremap = true, silent = true, desc = 'go to end of line' })
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
+vim.keymap.set('n', '<leader>z', function()
+  local line = vim.api.nvim_get_current_line()
+  vim.api.nvim_set_current_line(string.format([[(%s)]], line))
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<End>', true, false, true), 'n', false)
+end)
 
 vim.iter({ { '(', ')' }, { '<', '>' }, { '[', ']' }, '`', '"', "'", '*' }):each(function(x)
   if type(x) == 'table' then
@@ -158,7 +163,7 @@ vim.api.nvim_create_autocmd('FileType', {
             )
           or 'cn'
       )
-      vim.cmd('normal! zz')
+      vim.api.nvim_feedkeys('zz', 'n', false)
       if vim.bo.filetype ~= 'qf' then
         vim.cmd('wincmd p')
       end
@@ -182,7 +187,7 @@ vim.api.nvim_create_autocmd('FileType', {
             )
           or 'cN'
       )
-      vim.cmd('normal! zz')
+      vim.api.nvim_feedkeys('zz', 'n', false)
       if vim.bo.filetype ~= 'qf' then
         vim.cmd('wincmd p')
       end

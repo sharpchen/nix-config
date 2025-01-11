@@ -65,7 +65,7 @@ return {
         if ok and node and vim.tbl_contains({ 'comment', 'line_comment', 'block_comment' }, node:type()) then
           return { 'buffer' }
         end
-        return { 'lsp', 'path', 'snippets', 'buffer' }
+        return { 'snippets', 'lsp', 'path', 'buffer' }
       end,
       providers = {
         dadbod = {
@@ -105,6 +105,7 @@ return {
           columns = {
             { 'kind_icon', 'label', gap = 1 },
             { 'kind' },
+            { 'source_name' },
           },
           components = {
             kind_icon = {
