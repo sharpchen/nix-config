@@ -6,7 +6,7 @@ if (-not $IsWindows) {
 }
 
 function mklink {
-    [CmdletBinding(DefaultParameterSetName = 'Special')]
+    [CmdletBinding(DefaultParameterSetName = 'Normal')]
     param (
         [Parameter(Position = 0, ParameterSetName = 'Normal', Mandatory)]
         [string]$Path,
@@ -37,7 +37,6 @@ function mklink {
     }
 
 }
-
 
 if (Get-Command scoop -ErrorAction SilentlyContinue) {
     $scoopRoot = [IO.Path]::GetDirectoryName([IO.Path]::GetDirectoryName((Get-Command scoop).Source))
@@ -70,7 +69,7 @@ mklink ~/.config/wezterm/wezterm.lua ./dotfiles/.wezterm.lua
 # yazi
 mklink -SpecialParent APPDATA -ChildPath 'yazi/config/yazi.toml' -Target ./dotfiles/yazi.toml
 mklink -SpecialParent APPDATA -ChildPath 'yazi/config/keymap.toml' -Target ./dotfiles/yazi.keymap.toml
-if (Get-Command ya) {
+if (Get-Command ya -ErrorAction SilentlyContinue) {
     ya pack -a 'Reledia/glow'
     ya pack -a 'ndtoan96/ouch'
     ya pack -a 'Reledia/miller'
