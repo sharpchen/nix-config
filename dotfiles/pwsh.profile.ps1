@@ -101,16 +101,60 @@ function adbin {
 }
 
 function iparam {
+    [CmdletBinding(DefaultParameterSetName = 'Attribute')]
+    [OutputType([string], ParameterSetName = 'ParameterSet')]
+    [OutputType([void], ParameterSetName = 'Attribute')]
     param (
         [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
+        [ValidateScript({ Get-Command $_ -ErrorAction SilentlyContinue })]
         [string]$Command,
+        [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Positional,
-        [switch]$Pipeline
+        [Parameter(ParameterSetName = 'Attribute')]
+        [switch]$Pipeline,
+
+        [Parameter(ParameterSetName = 'ParameterSet')]
+        [switch]$ParameterSet
     )
-    if ($Positional) {
-        help $Command | Select-String 'Position\??\s*\d' -Context 3, 5
-    } elseif ($Pipeline) {
-        help $Command | Select-String 'Accept pipeline input\??\s*true.*$' -Context 5, 4
+    if($PSCmdlet.ParameterSetName -eq 'Attribute') {
+
+        if ($Positional) {
+            help $Command | Select-String 'Position\??\s*\d' -Context 3, 5
+        } elseif ($Pipeline) {
+            help $Command | Select-String 'Accept pipeline input\??\s*true.*$' -Context 5, 4
+        }
+    } else {
+        $CommonParams = @( 
+            'Verbose', 
+            'Debug',
+            'ErrorAction', 
+            'WarningAction', 
+            'InformationAction', 
+            'ProgressAction',
+            'ErrorVariable',
+            'WarningVariable',
+            'InformationVariable', 
+            'OutVariable', 
+            'OutBuffer',
+            'PipelineVariable',
+            'WhatIf',
+            'Confirm'
+        )
+        $cmd = Get-Command $Command
+        $cmd = $cmd -is [System.Management.Automation.AliasInfo] ? (Get-Command $cmd.Definition) : $cmd
+        ($cmd.ParameterSets | ForEach-Object {
+            $out = [pscustomobject]@{ 
+                Name = $_.Name
+                Parameters = $_.Parameters | Where-Object Name -NotIn $CommonParams 
+            }
+            $joinParams = @{
+                Property = 'Name'
+                Separator = "$([System.Environment]::NewLine)`t" 
+                OutputPrefix = "$($out.Name):$([System.Environment]::NewLine)`t"
+                OutputSuffix = "`n"
+            }
+            $out.Parameters | Join-String @joinParams
+        }) -join "`n"
     }
 }
 
