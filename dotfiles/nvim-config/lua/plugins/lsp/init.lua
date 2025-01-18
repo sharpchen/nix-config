@@ -47,5 +47,6 @@ return {
     require('lspconfig').vimls.setup({})
     require('lspconfig').postgres_lsp.setup({})
     require('lspconfig').marksman.setup({})
+    require('lspconfig').eslint.setup({})
   end,
 }

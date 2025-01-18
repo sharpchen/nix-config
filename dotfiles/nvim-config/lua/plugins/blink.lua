@@ -53,7 +53,7 @@ return {
       nerd_font_variant = 'mono',
     },
     enabled = function()
-      return not vim.list_contains({ 'lazy', 'rip-substitute' }, vim.bo.filetype)
+      return not vim.list_contains({ 'lazy', 'rip-substitute', 'DressingInput' }, vim.bo.filetype)
         and vim.bo.buftype ~= 'prompt'
         and vim.b.completion ~= false
     end,
@@ -68,6 +68,25 @@ return {
         return { 'snippets', 'lsp', 'path', 'buffer' }
       end,
       providers = {
+        snippets = {
+          min_keyword_length = 2,
+          score_offset = 3,
+          should_show_items = function(ctx)
+            return ctx.trigger.initial_kind ~= 'trigger_character'
+          end,
+        },
+        lsp = {
+          min_keyword_length = 1,
+          score_offset = 3,
+        },
+        -- path = {
+        --   min_keyword_length = 3,
+        --   score_offset = 2,
+        -- },
+        buffer = {
+          min_keyword_length = 3,
+          score_offset = 1,
+        },
         dadbod = {
           name = 'Dadbod',
           module = 'vim_dadbod_completion.blink',
@@ -89,7 +108,7 @@ return {
     },
     signature = {
       enabled = true,
-      window = { border = 'solid' },
+      window = { border = 'single' },
     },
     completion = {
       ghost_text = {
@@ -101,11 +120,20 @@ return {
       documentation = {
         auto_show = true,
         window = {
-          border = 'solid',
+          border = 'single',
+        },
+      },
+      accept = {
+        auto_brackets = {
+          enabled = true,
+          kind_resolution = {
+            enabled = true,
+            blocked_filetypes = { 'ps1', 'sh' },
+          },
         },
       },
       menu = {
-        border = 'solid',
+        border = 'single',
         draw = {
           columns = {
             { 'kind_icon', 'label', gap = 1 },

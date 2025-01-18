@@ -121,9 +121,6 @@ vim.filetype.add({
 
 vim.treesitter.language.register('xml', { 'axaml', 'xaml', 'msbuild' })
 
--- vim.o.shell = vim
---   .iter({ 'pwsh -noprofile', 'bash', 'nu', 'zsh' })
---   :filter(function(x)
---     return vim.fn.executable(vim.split(x, ' ')[1]) == 1
---   end)
---   :peek()
+if jit.os:find('Windows') and vim.fn.executable('pwsh') == 1 then
+  vim.o.shell = 'pwsh'
+end

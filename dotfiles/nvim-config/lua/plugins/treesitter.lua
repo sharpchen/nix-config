@@ -17,14 +17,6 @@ return {
       requires_generate_from_grammar = false,
       filetype = 'fsharp',
     }
-    parser_config.nu = {
-      install_info = {
-        url = 'https://github.com/nushell/tree-sitter-nu',
-        files = { 'src/parser.c' },
-        branch = 'main',
-      },
-      filetype = 'nu',
-    }
     configs.setup({
       ensure_installed = {
         'c',

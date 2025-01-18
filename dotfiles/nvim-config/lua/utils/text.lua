@@ -2,6 +2,23 @@ local M = {
   case = {},
 }
 
+--- replace termcode
+---@param str string termcode seq
+---@return string
+local function translate_termcode(str)
+  return vim.api.nvim_replace_termcodes(str, true, false, true)
+end
+
+local termcode = {
+  Esc = translate_termcode('<Esc>'),
+  CR = translate_termcode('<CR>'),
+}
+M.termcode = setmetatable(termcode, {
+  __call = function(_, str)
+    return translate_termcode(str)
+  end,
+})
+
 ---@param name string
 ---@return boolean
 M.case.is_camel = function(name)

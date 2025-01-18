@@ -36,5 +36,19 @@ return {
     vim.keymap.set('n', '<leader>fr', function()
       vim.cmd(('Oil %s'):format(vim.uv.cwd()))
     end, { desc = 'root folder' })
+
+    vim.api.nvim_create_autocmd('ModeChanged', {
+      pattern = 't:n',
+      callback = function(args)
+        local is_file = vim.fn.filereadable(vim.api.nvim_buf_get_name(args.buf))
+        local is_writable = vim.bo[args.buf].modifiable and not vim.bo[args.buf].readonly
+        if is_file and is_writable then
+          vim.defer_fn(function()
+            vim.api.nvim_feedkeys(require('utils.text').termcode('i<Esc>'), 'n', false)
+          end, 200)
+        end
+      end,
+      desc = 'invoke ufo after opening buf from fzf-lua',
+    })
   end,
 }

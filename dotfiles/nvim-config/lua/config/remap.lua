@@ -92,15 +92,15 @@ vim.keymap.set('n', '<leader><leader>', 'diw')
 vim.keymap.set('n', 'gh', '<cmd>norm! ^<CR>', { noremap = true, silent = true, desc = 'go to start of line' })
 vim.keymap.set('n', 'gl', '<cmd>norm! $<CR>', { noremap = true, silent = true, desc = 'go to end of line' })
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
-vim.keymap.set('n', '<leader>z', function()
-  local line = vim.api.nvim_get_current_line()
-  vim.api.nvim_set_current_line(string.format([[(%s)]], line))
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<End>', true, false, true), 'n', false)
-end, { desc = 'brace line with ()' })
-vim.keymap.set('n', '<leader>;', function()
-  local line = vim.api.nvim_get_current_line()
-  vim.api.nvim_set_current_line(string.format([[%s;]], line))
-end, { desc = 'append ; at the end of line' })
+vim.keymap.set('n', '<leader>z', 'I(<Esc>A)', { noremap = true, desc = 'brace line with ()' })
+vim.keymap.set('n', '<leader>;', 'mzA;<Esc>`z', { noremap = true, desc = 'append ; at the end of line' })
+vim.keymap.set('n', '<leader>,', 'mzA,<Esc>`z', { noremap = true, desc = 'append ; at the end of line' })
+
+vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, desc = 'go to window downward' })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, desc = 'go to window upward' })
+vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, desc = 'go to window left' })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, desc = 'go to window right' })
+vim.keymap.set('n', '<C-q>', '<C-w>q', { noremap = true, desc = 'close current window' })
 
 vim.iter({ { '(', ')' }, { '<', '>' }, { '[', ']' }, '`', '"', "'", '*' }):each(function(x)
   if type(x) == 'table' then
@@ -144,57 +144,68 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+---@param next boolean
+local function mv_qf_item(next, bufnr)
+  local is_top = vim.fn.line('.') == 1
+  local is_bottom = vim.fn.line('.') == vim.fn.line('$')
+  local is_not_init_buf = (vim.fn.bufnr('%') ~= bufnr and vim.bo.filetype ~= 'qf')
+
+  -- go back to file so we can delete the buf
+  vim.cmd('wincmd p')
+
+  if is_not_init_buf then
+    -- delete and go back to qf
+    vim.cmd('bd | wincmd p')
+  end
+
+  if is_top and not next then
+    vim.api.nvim_feedkeys('G', 'n', false)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true), 'n', false)
+  elseif is_bottom and next then
+    vim.api.nvim_feedkeys('gg', 'n', false)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true), 'n', false)
+  else
+    vim.cmd(next and 'cn' or 'cN')
+  end
+
+  -- center location
+  vim.api.nvim_feedkeys('zz', 'n', false)
+
+  -- resize qf(should stay in file)
+  vim.cmd(
+    string.format(
+      'res %s',
+      math.floor(
+        (vim.o.lines - vim.o.cmdheight - (vim.o.laststatus == 0 and 0 or 1) - (vim.o.tabline == '' and 0 or 1)) / 3 * 2
+          + 0.5
+      ) - 1
+    )
+  )
+  -- make sure go back to qf
+  if vim.bo.filetype ~= 'qf' then
+    vim.cmd('wincmd p')
+  end
+end
+
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'qf',
   callback = function(event)
     local opts = { buffer = event.buf, silent = true }
     local init_bufnr = vim.fn.bufnr('#')
     vim.keymap.set('n', '<C-n>', function()
-      if vim.fn.line('.') == vim.fn.line('$') then
-        vim.notify('E553: No more items', vim.log.levels.INFO)
-        return
-      end
-      vim.cmd('wincmd p') -- jump to current displayed file
-      vim.cmd(
-        (vim.fn.bufnr('%') ~= init_bufnr and vim.bo.filetype ~= 'qf')
-            and ('bd | wincmd p | cn | res %d'):format(
-              math.floor(
-                (vim.o.lines - vim.o.cmdheight - (vim.o.laststatus == 0 and 0 or 1) - (vim.o.tabline == '' and 0 or 1))
-                    / 3
-                    * 2
-                  + 0.5
-              ) - 1
-            )
-          or 'cn'
-      )
-      vim.api.nvim_feedkeys('zz', 'n', false)
-      if vim.bo.filetype ~= 'qf' then
-        vim.cmd('wincmd p')
-      end
+      mv_qf_item(true, init_bufnr)
     end, opts)
 
     vim.keymap.set('n', '<C-p>', function()
-      if vim.fn.line('.') == 1 then
-        vim.notify('E553: No more items', vim.log.levels.INFO)
-        return
-      end
-      vim.cmd('wincmd p') -- jump to current displayed file
-      vim.cmd(
-        (vim.fn.bufnr('%') ~= init_bufnr and vim.bo.filetype ~= 'qf')
-            and ('bd | wincmd p | cN | res %d'):format(
-              math.floor(
-                (vim.o.lines - vim.o.cmdheight - (vim.o.laststatus == 0 and 0 or 1) - (vim.o.tabline == '' and 0 or 1))
-                    / 3
-                    * 2
-                  + 0.5
-              ) - 1
-            )
-          or 'cN'
-      )
-      vim.api.nvim_feedkeys('zz', 'n', false)
-      if vim.bo.filetype ~= 'qf' then
-        vim.cmd('wincmd p')
-      end
+      mv_qf_item(false, init_bufnr)
+    end, opts)
+
+    vim.keymap.set('n', '<C-j>', function()
+      mv_qf_item(true, init_bufnr)
+    end, opts)
+
+    vim.keymap.set('n', '<C-k>', function()
+      mv_qf_item(false, init_bufnr)
     end, opts)
   end,
 })
