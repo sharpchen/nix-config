@@ -69,7 +69,7 @@ return {
     end,
   },
   {
-    'sharpchen/template-string.nvim',
+    'axelvc/template-string.nvim',
     ft = {
       'cs',
       'javascript',
@@ -89,6 +89,12 @@ return {
   },
   { 'yioneko/nvim-vtsls', ft = { 'typescript', 'javascript' } },
   { 'nvchad/volt', lazy = true },
+  {
+    'nvzone/typr',
+    cmd = 'TyprStats',
+    dependencies = 'nvzone/volt',
+    opts = {},
+  },
   {
     'nvchad/minty',
     cmd = { 'Shades', 'Huefy' },

@@ -96,7 +96,11 @@ vim.keymap.set('n', '<leader>z', function()
   local line = vim.api.nvim_get_current_line()
   vim.api.nvim_set_current_line(string.format([[(%s)]], line))
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<End>', true, false, true), 'n', false)
-end)
+end, { desc = 'brace line with ()' })
+vim.keymap.set('n', '<leader>;', function()
+  local line = vim.api.nvim_get_current_line()
+  vim.api.nvim_set_current_line(string.format([[%s;]], line))
+end, { desc = 'append ; at the end of line' })
 
 vim.iter({ { '(', ')' }, { '<', '>' }, { '[', ']' }, '`', '"', "'", '*' }):each(function(x)
   if type(x) == 'table' then

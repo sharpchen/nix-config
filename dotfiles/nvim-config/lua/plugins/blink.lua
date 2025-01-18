@@ -72,6 +72,11 @@ return {
           name = 'Dadbod',
           module = 'vim_dadbod_completion.blink',
         },
+        -- cmdline = {
+        --   enabled = function()
+        --     return vim.fn.getcmdline():sub(1, 1) ~= '!'
+        --   end,
+        -- },
         -- lazydev = {
         --   name = 'LazyDev',
         --   module = 'lazydev.integrations.blink',

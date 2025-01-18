@@ -2,13 +2,21 @@ return {
   -- 'numToStr/Comment.nvim',
   'sharpchen/Comment.nvim',
   branch = 'sum',
+  dependencies = {
+    'JoosepAlviste/nvim-ts-context-commentstring',
+    opts = {
+      enable_autocmd = false,
+    },
+  },
   event = { 'BufReadPre', 'BufNewFile' },
   init = function()
     vim.keymap.del({ 'n', 'x', 'o' }, 'gc')
     vim.keymap.del('n', 'gcc')
   end,
   config = function()
-    require('Comment').setup()
+    require('Comment').setup({
+      pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+    })
 
     local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
     local api = require('Comment.api')
