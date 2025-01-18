@@ -79,3 +79,5 @@ if (Get-Command ya -ErrorAction SilentlyContinue) {
 }
 
 mklink ~/.wslconfig ./dotfiles/.wslconfig
+mklink (Join-Path (Split-Path (scoop which mpv)) "portable_config/mpv.conf") ./dotfiles/mpv.conf
+mklink (Join-Path (Split-Path (scoop which mpv)) "portable_config/input.conf") ./dotfiles/mpv.input.conf
