@@ -23,7 +23,7 @@ if ($IsWindows) {
     Import-Module -Name Microsoft.WinGet.CommandNotFound
 
     ## project search
-    function proj {
+    function pj {
         Set-Location (Get-ChildItem '~/Projects' -Directory | ForEach-Object FullName | fzf)
     }
 
@@ -155,6 +155,67 @@ function iparam {
             }
             $out.Parameters | Join-String @joinParams
         }) -join "`n"
+    }
+}
+
+function mkvideo {
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [ValidateScript({ Test-Path $_ })]
+        [string]$Path,
+        [string]$Destination,
+        [ValidateScript({ Test-Path $_ })]
+        [string]$Cover
+    )
+    
+    begin {
+        Get-Command ffmpeg -ea Stop | Out-Null
+        Get-Command ffprobe -ea Stop | Out-Null
+        $Destination ??= $PWD.Path
+
+        if (-not (Test-Path $Destination)) {
+            New-Item -ItemType Directory -Path $Destination -ea SilentlyContinue | Out-Null
+        }
+
+        [System.Collections.Generic.List[string]]$info = @()
+    }
+
+    end {
+        $current = 0.0
+        $allMusic = @($input)
+        if (-not $Cover) {
+            $Cover = [System.IO.Path]::GetTempFileName()
+            ffmpeg -hide_banner -i $allMusic[0] -an -vcodec copy $Cover | Out-Null
+        }
+        foreach ($music in $allMusic) {
+            Write-Progress -Activity 'Creating Videos' -Status $music -PercentComplete (($current++ / $allMusic.Length) * 100)
+            $filename = Split-Path $music -Leaf
+            if ($filename -match '^(?<Index>\d+)\.?(?<Name>.*)\..*$') {
+                $index = $matches.Index
+                $musicName = $matches.Name.Trim()
+            } else {
+                Write-Error "Cannot get index for $filename" -ea Stop
+            }
+
+            $mediaInfo = ffprobe -v error -show_format -show_streams -hide_banner -of json -i $music | ConvertFrom-Json
+            $duration = [uint]$mediaInfo.format.duration + 1
+            $videoname = "$index. 「$musicName」"
+            $info.Add($videoname)
+
+            # ffmpeg -i $music -c:v copy -c:a flac -sample_fmt s32 -ar 48000 (Join-Path $Destination $videoname) | Out-Null
+            ffmpeg -v error -framerate 24 -loop 1 -i $Cover -i $music -strict -2 -t $duration -c:v libx264 -c:a copy -hide_banner (Join-Path $Destination "$videoname.mp4") | Out-Null
+            Write-Progress -Activity 'Creating Videos' -Status $music -PercentComplete (($current / $allMusic.Length) * 100)
+        }
+
+        $head = "$($mediaInfo.format.tags.ALBUM) ($($mediaInfo.format.tags.DATE)) - $($mediaInfo.format.tags.ARTIST)"
+        $info.InsertRange(0, [string[]]@($head, [string]::Empty))
+        $info -join [System.Environment]::NewLine > (Join-Path $Destination "$head.txt")
+    }
+
+    clean {
+        if ((Split-Path $Cover).StartsWith([System.IO.Path]::GetTempPath())) {
+            Remove-Item -Path $Cover
+        }
     }
 }
 
