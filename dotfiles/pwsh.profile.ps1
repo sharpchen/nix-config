@@ -71,12 +71,22 @@ Set-PSReadLineKeyHandler -Key 'Ctrl+n' -Function HistorySearchForward
 Set-PSReadLineKeyHandler -Chord ' , ' -Function DeleteWord -ViMode Command
 Set-PSReadLineKeyHandler -Chord 'g,h' -Function GotoFirstNonBlankOfLine -ViMode Command
 Set-PSReadLineKeyHandler -Chord 'g,l' -Function EndofLine -ViMode Command
+Set-PSReadLineKeyHandler -Chord ' ,z' -ViMode Command -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::GotoFirstNonBlankOfLine() 
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert('(')
+    [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert(')')
+}
 
 Set-Alias lg lazygit
 Set-Alias dn dotnet
 
 function vim {
     nvim --clean -c 'source ~/.vimrc' @args
+}
+
+function n {
+    nvim @args
 }
 
 function :q {
@@ -221,7 +231,7 @@ function mkvideo {
 
 if ((Get-Command 'home-manager' -ErrorAction SilentlyContinue)) {
     function hms {
-        home-manager switch --flake ~/.config/home-manager#$env:USERNAME 
+        home-manager switch --flake "~/.config/home-manager#$env:USERNAME"
     }
 }
 
