@@ -90,3 +90,6 @@ nnoremap <silent> gh :norm! 0<CR>
 nnoremap <silent> gl :norm! $<CR>
 nnoremap <silent> <leader>so :source ~/.vimrc<CR>
 nnoremap <leader><leader> diw
+nnoremap <leader>z I(<Esc>A)
+nnoremap <leader>; mzA;<Esc>`z
+nnoremap <leader>, mzA,<Esc>`z
