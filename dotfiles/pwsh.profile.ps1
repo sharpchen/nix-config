@@ -85,7 +85,7 @@ function vim {
     nvim --clean -c 'source ~/.vimrc' @args
 }
 
-function n {
+function v {
     nvim @args
 }
 
