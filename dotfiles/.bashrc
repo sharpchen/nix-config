@@ -28,7 +28,7 @@ alias lg=lazygit
 alias pj='cd $(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)'
 alias vim='nvim --clean -c "source ~/.vimrc"'
 alias dn=dotnet
-alias n=nvim
+alias v=nvim
 
 #######################################
 # Get nix store path of a package
