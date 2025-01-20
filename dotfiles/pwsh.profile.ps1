@@ -195,7 +195,7 @@ function mkvideo {
         $allMusic = @($input)
         if (-not $Cover) {
             $Cover = [System.IO.Path]::GetTempFileName()
-            ffmpeg -hide_banner -i $allMusic[0] -an -vcodec copy $Cover | Out-Null
+            ffmpeg -hide_banner -i $allMusic[0] -an -vcodec copy $Cover *>$null
         }
         foreach ($music in $allMusic) {
             Write-Progress -Activity 'Creating Videos' -Status $music -PercentComplete (($current++ / $allMusic.Length) * 100)
@@ -212,8 +212,8 @@ function mkvideo {
             $videoname = "$index. 「$musicName」"
             $info.Add($videoname)
 
-            # ffmpeg -i $music -c:v copy -c:a flac -sample_fmt s32 -ar 48000 (Join-Path $Destination $videoname) | Out-Null
-            ffmpeg -v error -framerate 24 -loop 1 -i $Cover -i $music -strict -2 -t $duration -c:v libx264 -c:a copy -hide_banner (Join-Path $Destination "$videoname.mp4") | Out-Null
+            # ffmpeg -i $music -c:v copy -c:a flac -sample_fmt s32 -ar 48000 (Join-Path $Destination $videoname) *>$null
+            ffmpeg -v error -framerate 24 -loop 1 -i $Cover -i $music -strict -2 -t $duration -c:v libx264 -c:a copy -hide_banner (Join-Path $Destination "$videoname.mp4") *>$null
             Write-Progress -Activity 'Creating Videos' -Status $music -PercentComplete (($current / $allMusic.Length) * 100)
         }
 
