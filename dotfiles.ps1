@@ -63,7 +63,11 @@ mklink ~/.ideavimrc ./dotfiles/.ideavimrc
 
 # shell
 mklink ~/.bashrc ./dotfiles/.bashrc
-mklink $PROFILE ./dotfiles/pwsh.profile.ps1
+
+# pwsh
+mklink $PROFILE ./dotfiles/pwsh.profile/pwsh.profile.ps1
+mklink (Join-Path (Split-Path $PROFILE) 'Profile') ./dotfiles/pwsh.profile/Profile/
+
 mklink ~/.config/wezterm/wezterm.lua ./dotfiles/.wezterm.lua
 
 # yazi
@@ -79,5 +83,5 @@ if (Get-Command ya -ErrorAction SilentlyContinue) {
 }
 
 mklink ~/.wslconfig ./dotfiles/.wslconfig
-mklink (Join-Path (Split-Path (scoop which mpv)) "portable_config/mpv.conf") ./dotfiles/mpv.conf
-mklink (Join-Path (Split-Path (scoop which mpv)) "portable_config/input.conf") ./dotfiles/mpv.input.conf
+mklink (Join-Path (Split-Path (scoop which mpv)) 'portable_config/mpv.conf') ./dotfiles/mpv.conf
+mklink (Join-Path (Split-Path (scoop which mpv)) 'portable_config/input.conf') ./dotfiles/mpv.input.conf
