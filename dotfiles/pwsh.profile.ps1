@@ -229,6 +229,22 @@ function mkvideo {
     }
 }
 
+function ago {
+    param(
+        [uint]$Day,
+        [Parameter(ValueFromPipelineByPropertyName, ValueFromPipeline)]
+        [ValidateScript({ Test-Path $_ })]
+        [string]$Path
+    )
+
+    process {
+        $item = Get-Item -Path $Path
+        if ($item.CreationTime -lt [datetime]::Now.AddDays($Day)) {
+            $item
+        }
+    }
+}
+
 if ((Get-Command 'home-manager' -ErrorAction SilentlyContinue)) {
     function hms {
         home-manager switch --flake "~/.config/home-manager#$env:USERNAME"
