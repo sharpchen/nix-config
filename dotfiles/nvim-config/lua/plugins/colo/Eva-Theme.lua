@@ -33,6 +33,9 @@ return os.getenv('eva') == nil
                 bg = nil,
               }
             end,
+            CursorLine = function(_, p)
+              return { bg = p.panelBackground }
+            end,
           },
         })
       end,
@@ -42,6 +45,5 @@ return os.getenv('eva') == nil
     lazy = false,
     priority = 1000,
     build = ':EvaCompile',
-    config = function()
-    end,
+    config = function() end,
   }
