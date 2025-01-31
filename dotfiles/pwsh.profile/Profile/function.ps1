@@ -104,22 +104,26 @@ function mkvideo {
         }
         foreach ($music in $allMusic) {
             Write-Progress -Activity 'Creating Videos' -Status $music -PercentComplete (($current++ / $allMusic.Length) * 100)
+
+            $json = ffprobe -v error -show_format -show_streams -hide_banner -of json -i $music 
+            $mediaInfo = $json | ConvertFrom-Json
             $filename = Split-Path $music -Leaf
-            if ($filename -match '^(?<Index>\d+)\.?(?<Name>.*)\..*$') {
+            $musicName = $mediaInfo.format.tags.title
+
+            if ($filename -match '^(?<Index>\d+)\.?(?<Name>.*)$') {
                 $index = $matches.Index
-                $musicName = $matches.Name.Trim()
-            } else {
-                Write-Error "Cannot get index for $filename" -ea Stop
+                if ([string]::IsNullOrEmpty($musicName)) {
+                    $musicName = Split-Path $matches.Name.Trim() -LeafBase
+                }
             }
 
-            $mediaInfo = ffprobe -v error -show_format -show_streams -hide_banner -of json -i $music | ConvertFrom-Json
             $duration = [uint]$mediaInfo.format.duration + 1
-            $videoname = "$index. 「$musicName」"
+            $videoname = "$index.「$musicName」"
             $info.Add($videoname)
 
             # ffmpeg -i $music -c:v copy -c:a flac -sample_fmt s32 -ar 48000 (Join-Path $Destination $videoname) *>$null
             ffmpeg -v error -framerate 24 -loop 1 -i $Cover -i $music -strict -2 -t $duration -c:v libx264 -c:a copy -hide_banner (Join-Path $Destination "$videoname.mp4") *>$null
-            Write-Progress -Activity 'Creating Videos' -Status $music -PercentComplete (($current / $allMusic.Length) * 100)
+            Write-Progress -Activity 'Creating Videos' -Status $musicName -PercentComplete (($current / $allMusic.Length) * 100)
         }
 
         $head = "$($mediaInfo.format.tags.ALBUM) ($($mediaInfo.format.tags.DATE)) - $($mediaInfo.format.tags.ARTIST)"
@@ -128,7 +132,7 @@ function mkvideo {
     }
 
     clean {
-        if ((Split-Path $Cover).StartsWith([System.IO.Path]::GetTempPath())) {
+        if ((Split-Path $Cover).TrimEnd([IO.Path]::DirectorySeparatorChar) -eq ([System.IO.Path]::GetTempPath()).TrimEnd([IO.Path]::DirectorySeparatorChar)) {
             Remove-Item -Path $Cover
         }
     }
