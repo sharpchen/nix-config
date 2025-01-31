@@ -16,9 +16,8 @@ return {
       timeout = 1000,
       top_down = false,
       render = 'wrapped-compact',
+      merge_duplicates = false,
     })
     vim.notify = require('notify')
-
-    vim.keymap.set('n', '<leader>fn', ':Telescope notify<CR>', { silent = true, desc = 'open notify' })
   end,
 }
