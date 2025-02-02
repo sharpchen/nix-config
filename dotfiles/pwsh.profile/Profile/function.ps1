@@ -80,7 +80,8 @@ function mkvideo {
         [string]$Path,
         [string]$Destination,
         [ValidateScript({ Test-Path $_ })]
-        [string]$Cover
+        [string]$Cover,
+        [switch]$MakeInfo
     )
     
     begin {
@@ -89,10 +90,17 @@ function mkvideo {
         $Destination ??= $PWD.Path
 
         if (-not (Test-Path $Destination)) {
+            Write-Verbose 'Destination does not exist, creating forcibly'
             New-Item -ItemType Directory -Path $Destination -ea SilentlyContinue | Out-Null
         }
 
         [System.Collections.Generic.List[string]]$info = @()
+        $invalidChar = @(
+            ('\', '.'),
+            ('/', '.'),
+            (':', '：'),
+            ('?', '？')
+        )
     }
 
     end {
@@ -100,6 +108,7 @@ function mkvideo {
         $allMusic = @($input)
         if (-not $Cover) {
             $Cover = [System.IO.Path]::GetTempFileName()
+            Write-Verbose 'Cover unspecified, extracting from audio file'
             ffmpeg -hide_banner -i $allMusic[0] -an -vcodec copy $Cover *>$null
         }
         foreach ($music in $allMusic) {
@@ -113,12 +122,16 @@ function mkvideo {
             if ($filename -match '^(?<Index>\d+)\.?(?<Name>.*)$') {
                 $index = $matches.Index
                 if ([string]::IsNullOrEmpty($musicName)) {
+                    Write-Verbose 'Title not found in tags, extracting from filename'
                     $musicName = Split-Path $matches.Name.Trim() -LeafBase
                 }
             }
 
             $duration = [uint]$mediaInfo.format.duration + 1
             $videoname = "$index.「$musicName」"
+            foreach ($group in $invalidChar) {
+                $videoname = $videoname -replace $group
+            }
             $info.Add($videoname)
 
             # ffmpeg -i $music -c:v copy -c:a flac -sample_fmt s32 -ar 48000 (Join-Path $Destination $videoname) *>$null
@@ -126,9 +139,11 @@ function mkvideo {
             Write-Progress -Activity 'Creating Videos' -Status $musicName -PercentComplete (($current / $allMusic.Length) * 100)
         }
 
-        $head = "$($mediaInfo.format.tags.ALBUM) ($($mediaInfo.format.tags.DATE)) - $($mediaInfo.format.tags.ARTIST)"
-        $info.InsertRange(0, [string[]]@($head, [string]::Empty))
-        $info -join [System.Environment]::NewLine > (Join-Path $Destination "$head.txt")
+        if ($MakeInfo) {
+            $head = "$($mediaInfo.format.tags.ALBUM) ($($mediaInfo.format.tags.DATE)) - $($mediaInfo.format.tags.ARTIST)"
+            $info.InsertRange(0, [string[]]@($head, [string]::Empty))
+            $info -join [System.Environment]::NewLine > (Join-Path $Destination "$head.txt")
+        }
     }
 
     clean {
