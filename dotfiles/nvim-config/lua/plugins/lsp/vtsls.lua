@@ -1,15 +1,6 @@
 local lsp = require('utils.lsp')
 require('lspconfig').vtsls.setup({
-  filetypes = {
-    'javascript',
-    'javascriptreact',
-    'javascript.jsx',
-    'typescript',
-    'typescriptreact',
-    'typescript.tsx',
-    'vue',
-    'markdown',
-  },
+  filetypes = require('utils.lsp').config.filetypes('vtsls', { 'vue', 'markdown' }),
   on_attach = function(client, bufnr)
     if vim.bo.filetype == 'markdown' then
       lsp.event.disable_formatter(client)
