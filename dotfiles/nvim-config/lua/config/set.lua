@@ -73,30 +73,6 @@ vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.s
   border = 'rounded',
 })
 
-vim.api.nvim_create_autocmd('VimEnter', {
-  pattern = '*',
-  callback = function()
-    local from = vim.uv.cwd()
-    ---@type string
-    local target
-    local args = vim.fn.argv()
-    for _, arg in ipairs(type(args) == 'table' and args or {}) do
-      if vim.fn.isdirectory(arg) == 1 then
-        target = vim.fn.fnamemodify(from .. arg:sub(1, 1) == '/' and '' or '/' .. arg, ':p')
-        if target:sub(1, 1) == '/' then
-          target = target:sub(2)
-        end
-        break
-      end
-    end
-    if target == nil then
-      return
-    end
-    vim.cmd(string.format(':cd %s', target))
-    vim.notify(string.format('cd to %s', target))
-  end,
-})
-
 vim.api.nvim_create_autocmd('FileType', {
   pattern = '*',
   callback = function()

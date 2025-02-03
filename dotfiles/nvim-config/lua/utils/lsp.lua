@@ -33,6 +33,16 @@ M.event = {
   end,
 }
 
+M.config = {
+  --- add filetypes for language-server
+  ---@param ls string name of language-server
+  ---@param extra string[] extra filetypes
+  ---@return string[]
+  filetypes = function(ls, extra)
+    local module = 'lspconfig.configs.' .. ls
+    return vim.list_extend(extra, require(module).default_config.filetypes)
+  end,
+}
 ---@return vim.lsp.Client[]
 M.attached_clients = function()
   return vim.lsp.get_clients({ bufnr = 0 })

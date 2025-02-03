@@ -3,6 +3,14 @@ return {
   config = function()
     local fzf = require('fzf-lua')
     fzf.setup({
+      previewers = {
+        builtin = {
+          extensions = {
+            ['png'] = { 'viu', '-b' },
+            ['jpg'] = { 'viu', '-b' },
+          },
+        },
+      },
       actions = {
         files = {
           true,
@@ -18,9 +26,7 @@ return {
     vim.keymap.set('n', '<leader>fc', function()
       local config_path = require('utils.env').is_windows and vim.fn.stdpath('config')
         or '~/.config/home-manager/dotfiles/nvim-config/'
-      fzf.files({
-        cwd = config_path,
-      })
+      fzf.files({ cwd = config_path })
     end, { desc = 'find nvim config file' })
 
     vim.keymap.set('n', '<leader>fg', fzf.live_grep_resume, { desc = 'grep from files' })
@@ -30,9 +36,11 @@ return {
     vim.keymap.set('n', '<leader>ca', fzf.lsp_code_actions, { desc = 'code actions' })
     vim.keymap.set('n', '<leader>fe', fzf.diagnostics_document, { desc = 'document diagnostics' })
     vim.keymap.set('n', '<leader>fo', fzf.oldfiles, { desc = 'search recent files' })
+
     vim.keymap.set('n', '<leader>fd', function()
       fzf.files({ cmd = 'fd -t=d', cwd = vim.uv.cwd() })
     end, { desc = 'search folders' })
+
     vim.keymap.set('n', '<leader>fr', function()
       vim.cmd(('Oil %s'):format(vim.uv.cwd()))
     end, { desc = 'root folder' })
@@ -48,7 +56,7 @@ return {
           end, 200)
         end
       end,
-      desc = 'invoke ufo after opening buf from fzf-lua',
+      desc = 'invoke ufo after entering buf using fzf-lua',
     })
   end,
 }

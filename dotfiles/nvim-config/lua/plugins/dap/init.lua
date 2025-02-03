@@ -13,7 +13,7 @@ return {
     require('dapui').setup()
 
     vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'toggle breakpoint' })
-    vim.keymap.set('n', '<leader>g', dap.run_to_cursor, { desc = 'run to cursor' })
+    vim.keymap.set('n', '<leader>gh', dap.run_to_cursor, { desc = 'run to cursor' })
     vim.keymap.set('n', '<leader>?', function()
       ui.eval(nil, { enter = true })
     end)

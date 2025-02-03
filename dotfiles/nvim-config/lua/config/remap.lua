@@ -77,7 +77,7 @@ end)
 
 vim.keymap.set('n', '<leader>a', 'ggVG', { desc = 'select all text' })
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
-vim.keymap.set('n', '<leader>h', function()
+vim.keymap.set('n', '<leader>hh', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }))
 end, { desc = 'toggle inlay hint' })
 
