@@ -155,7 +155,7 @@ function mkvideo {
 
 function ago {
     param(
-        [uint]$Day,
+        [uint]$Days,
         [Parameter(ValueFromPipelineByPropertyName, ValueFromPipeline)]
         [ValidateScript({ Test-Path $_ })]
         [string]$Path
@@ -163,8 +163,44 @@ function ago {
 
     process {
         $item = Get-Item -Path $Path
-        if ($item.CreationTime -lt [datetime]::Now.AddDays($Day)) {
+        if ($item.CreationTime -lt [datetime]::Now.AddDays(-$Days)) {
             $item
+        }
+    }
+}
+
+function play {
+    [CmdletBinding(DefaultParameterSetName = 'Extension')]
+    param (
+        [ValidateScript({ Test-Path $_ })]
+        [string]$Path,
+        [switch]$Recurse,
+
+        [Parameter(ParameterSetName = 'Extension')]
+        [ValidateSet('mp4', 'flac', 'mp3')]
+        [string[]]$Extension = 'mp4',
+
+        [Parameter(ParameterSetName = 'Filter')]
+        [SupportsWildcards()]
+        [string]$Filter
+    )
+    begin {
+        Get-Command mpv -ea Stop | Out-Null
+
+        if ([string]::IsNullOrEmpty($Path)) {
+            $Path = $pwd.Path
+        }
+    }
+
+    end {
+        if ($PSCmdlet.ParameterSetName -eq 'Extension') {
+            Get-ChildItem -Path $Path -Recurse:$Recurse -File -Include ($Extension | ForEach-Object { "*.$_" }) 
+            | ForEach-Object FullName 
+            | mpv --playlist=-
+        } else {
+            Get-ChildItem -Path $Path -Recurse:$Recurse -File -Filter $Filter 
+            | ForEach-Object FullName 
+            | mpv --playlist=-
         }
     }
 }
