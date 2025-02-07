@@ -34,6 +34,7 @@
     nix-prefetch
     nix-prefetch-github
     helix
+    viu
   ];
 
   home.file.".config/lazygit/config.yml".source = ../../dotfiles/lazygit.config.yml;
