@@ -5,7 +5,7 @@ if ($IsWindows) {
         Install-Module -Name Microsoft.WinGet.CommandNotFound -Force -Scope CurrentUser
     }
     Import-Module -Name Microsoft.WinGet.CommandNotFound
-    [Console]::InputEncoding = [Console]::OutputEncoding = $OutputEncoding = [System.Text.Encoding]::UTF8
+    [Console]::InputEncoding = [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 }
 
 $OnViModeChange = {
