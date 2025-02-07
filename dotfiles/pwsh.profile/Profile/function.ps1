@@ -31,7 +31,7 @@ function iparam {
         [Parameter(ParameterSetName = 'ParameterSet')]
         [switch]$ParameterSet
     )
-    if($PSCmdlet.ParameterSetName -eq 'Attribute') {
+    if ($PSCmdlet.ParameterSetName -eq 'Attribute') {
 
         if ($Positional) {
             help $Command | Select-String 'Position\??\s*\d' -Context 3, 5
@@ -76,10 +76,10 @@ function iparam {
 function mkvideo {
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [ValidateScript({ Test-Path $_ })]
+        [ValidateScript({ Test-Path -LiteralPath $_ })]
         [string]$Path,
         [string]$Destination,
-        [ValidateScript({ Test-Path $_ })]
+        [ValidateScript({ Test-Path -LiteralPath $_ })]
         [string]$Cover,
         [switch]$MakeInfo,
         [switch]$Convert
@@ -171,7 +171,7 @@ function ago {
     param(
         [uint]$Days,
         [Parameter(ValueFromPipelineByPropertyName, ValueFromPipeline)]
-        [ValidateScript({ Test-Path $_ })]
+        [ValidateScript({ Test-Path -LiteralPath $_ })]
         [string]$Path
     )
 
@@ -186,7 +186,7 @@ function ago {
 function play {
     [CmdletBinding(DefaultParameterSetName = 'Extension')]
     param (
-        [ValidateScript({ Test-Path $_ })]
+        [ValidateScript({ Test-Path -LiteralPath $_ })]
         [string]$Path,
         [switch]$Recurse,
 
