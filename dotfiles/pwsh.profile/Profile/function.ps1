@@ -81,7 +81,8 @@ function mkvideo {
         [string]$Destination,
         [ValidateScript({ Test-Path $_ })]
         [string]$Cover,
-        [switch]$MakeInfo
+        [switch]$MakeInfo,
+        [switch]$Convert
     )
     
     begin {
@@ -96,10 +97,10 @@ function mkvideo {
 
         [System.Collections.Generic.List[string]]$info = @()
         $invalidChar = @(
-            ('\', '.'),
+            ('\\', '.'),
             ('/', '.'),
             (':', '：'),
-            ('?', '？')
+            ('\?', '？')
         )
     }
 
@@ -134,8 +135,18 @@ function mkvideo {
             }
             $info.Add($videoname)
 
-            # ffmpeg -i $music -c:v copy -c:a flac -sample_fmt s32 -ar 48000 (Join-Path $Destination $videoname) *>$null
-            ffmpeg -v error -framerate 24 -loop 1 -i $Cover -i $music -strict -2 -t $duration -c:v libx264 -c:a copy -hide_banner (Join-Path $Destination "$videoname.mp4") *>$null
+            $output = if ($Convert) {
+                [IO.Path]::GetTempFileName() -replace '\.tmp$', '.mp4'
+            } else {
+                Join-Path $Destination "$videoname.mp4"
+            }
+
+            ffmpeg -v error -framerate 24 -loop 1 -i $Cover -i $music -strict -2 -t $duration -c:v libx264 -c:a copy -hide_banner $output *>$null
+
+            if ($Convert) {
+                ffmpeg -i $output -c:v copy -c:a flac -sample_fmt s32 -ar 48000 (Join-Path $Destination "$videoname.mp4") *>$null
+            }
+
             Write-Progress -Activity 'Creating Videos' -Status $musicName -PercentComplete (($current / $allMusic.Length) * 100)
         }
 
@@ -149,6 +160,9 @@ function mkvideo {
     clean {
         if ((Split-Path $Cover).TrimEnd([IO.Path]::DirectorySeparatorChar) -eq ([System.IO.Path]::GetTempPath()).TrimEnd([IO.Path]::DirectorySeparatorChar)) {
             Remove-Item -Path $Cover
+        }
+        if ($Convert) {
+            Remove-Item -Path $output
         }
     }
 }
