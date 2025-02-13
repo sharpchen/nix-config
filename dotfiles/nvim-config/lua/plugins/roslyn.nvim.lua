@@ -1,6 +1,8 @@
 return {
   'seblj/roslyn.nvim',
   ft = 'cs',
+  commit = '490fd2d0f76249032ef6ce503e43ccdaeed9616e',
+  pin = true,
   -- enabled = false,
   config = function()
     local util = require('lspconfig.util')

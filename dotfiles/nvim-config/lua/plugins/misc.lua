@@ -100,7 +100,9 @@ return {
     cmd = { 'Shades', 'Huefy' },
   },
   {
-    'wurli/contextindent.nvim',
+    -- 'wurli/contextindent.nvim',
+    -- enabled = false,
+    dir = '~/projects/contextindent.nvim/',
     -- This is the only config option; you can use it to restrict the files
     -- which this plugin will affect (see :help autocommand-pattern).
     opts = { pattern = '*' },

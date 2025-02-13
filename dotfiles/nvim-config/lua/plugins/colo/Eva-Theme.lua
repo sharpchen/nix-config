@@ -22,10 +22,7 @@ local function setup()
         }
       end,
       LspInlayHint = function(_, p)
-        return {
-          fg = p.comment,
-          bg = nil,
-        }
+        return { fg = p.comment, bg = false }
       end,
       CursorLine = function(_, p)
         return { bg = p.panelBackground }
@@ -35,6 +32,9 @@ local function setup()
       end,
       ['@punctuation.special'] = function(_, _)
         return { bold = true }
+      end,
+      ['@boolean'] = function(_, p)
+        return { fg = p.digit }
       end,
     },
   })

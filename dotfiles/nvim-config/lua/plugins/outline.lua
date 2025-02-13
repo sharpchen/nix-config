@@ -1,6 +1,9 @@
 return {
   'hedyhli/outline.nvim',
   event = { 'BufReadPre', 'BufNewFile' },
+  dependencies = {
+    'epheien/outline-treesitter-provider.nvim',
+  },
   config = function()
     -- Example mapping to toggle outline
     vim.keymap.set('n', '<leader>o', '<cmd>Outline<CR>', { desc = 'toggle outline' })
@@ -22,7 +25,7 @@ return {
         },
       },
       providers = {
-        priority = { 'markdown', 'lsp', 'norg' },
+        priority = { 'markdown', 'lsp', 'norg', 'treesitter' },
         markdown = {
           filetypes = { 'markdown' },
         },

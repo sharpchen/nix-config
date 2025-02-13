@@ -48,7 +48,7 @@ return {
     vim.api.nvim_create_autocmd('ModeChanged', {
       pattern = 't:n',
       callback = function(args)
-        local is_file = vim.fn.filereadable(vim.api.nvim_buf_get_name(args.buf))
+        local is_file = vim.fn.filereadable(vim.api.nvim_buf_get_name(args.buf)) == 1
         local is_writable = vim.bo[args.buf].modifiable and not vim.bo[args.buf].readonly
         if is_file and is_writable then
           vim.defer_fn(function()
