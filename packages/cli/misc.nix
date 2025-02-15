@@ -35,10 +35,16 @@
     nix-prefetch-github
     helix
     viu
+    just
   ];
 
   home.file.".config/lazygit/config.yml".source = ../../dotfiles/lazygit.config.yml;
   home.file.".config/yazi/yazi.toml".source = ../../dotfiles/yazi.toml;
   home.file.".config/yazi/keymap.toml".source = ../../dotfiles/yazi.keymap.toml;
   home.file.".config/helix/config.toml".source = ../../dotfiles/helix.config.toml;
+
+  programs.nix-index = {
+    enable = true;
+    enableBashIntegration = true;
+  };
 }
