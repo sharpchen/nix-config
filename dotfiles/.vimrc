@@ -67,8 +67,8 @@ nnoremap <C-d> <C-d>zz
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
-" -- avoid replacing selected text overwrites previous copy
-xnoremap <leader>p "_dP
+" paste last yank
+xnoremap <leader>p "0p
 
 " -- copy to system clipboard
 nnoremap <leader>y "+y
