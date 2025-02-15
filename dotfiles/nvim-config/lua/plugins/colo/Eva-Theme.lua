@@ -33,8 +33,14 @@ local function setup()
       ['@punctuation.special'] = function(_, _)
         return { bold = true }
       end,
-      ['@boolean'] = function(_, p)
-        return { fg = p.digit }
+      ['@punctuation.special.typescript'] = function(_, _)
+        return { bold = true }
+      end,
+      ['@keyword.operator'] = function(_, p)
+        return { fg = p.declarative }
+      end,
+      ['@keyword.coroutine'] = function(_, p)
+        return { fg = p.declarative }
       end,
     },
   })

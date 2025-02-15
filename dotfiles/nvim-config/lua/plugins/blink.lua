@@ -53,7 +53,7 @@ return {
       nerd_font_variant = 'mono',
     },
     enabled = function()
-      return not vim.list_contains({ 'lazy', 'rip-substitute', 'DressingInput' }, vim.bo.filetype)
+      return not vim.list_contains({ 'lazy', 'rip-substitute', 'DressingInput', 'typr' }, vim.bo.filetype)
         and vim.bo.buftype ~= 'prompt'
         and vim.b.completion ~= false
     end,
@@ -114,8 +114,16 @@ return {
       ghost_text = {
         enabled = true,
       },
+      trigger = {},
       list = {
-        selection = { preselect = true, auto_insert = true },
+        selection = {
+          preselect = function(ctx)
+            return ctx.mode ~= 'cmdline'
+          end,
+          auto_insert = function(ctx)
+            return ctx.mode ~= 'cmdline'
+          end,
+        },
       },
       documentation = {
         auto_show = true,
@@ -162,6 +170,9 @@ return {
           },
         },
       },
+    },
+    fuzzy = {
+      sorts = { 'exact', 'score', 'sort_text' },
     },
   },
 }

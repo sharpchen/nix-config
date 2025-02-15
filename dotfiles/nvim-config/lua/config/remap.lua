@@ -23,12 +23,11 @@ vim.keymap.set('n', 'J', 'mzJ`z', { desc = 'join next line with still cursor' })
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 
--- keep occurrence center when jumping between search results
+-- keep occurrence center when jumping between search
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 
--- avoid replacing selected text overwrites previous copy
-vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'pasting without overwriting copy' })
+vim.keymap.set('n', '<leader>p', '"0p', { desc = 'paste last yank' })
 
 -- copy to system clipboard
 vim.keymap.set('n', '<leader>y', '"+y', { desc = 'copy to system clipboard' })

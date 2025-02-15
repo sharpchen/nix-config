@@ -4,6 +4,7 @@ require('config.lazy')
 require('utils')
 require('config.neovide')
 require('config.wsl')
+
 if require('utils.env').is_windows then
   vim.cmd([[colo vscode]])
 else
