@@ -177,7 +177,7 @@ function ago {
 
     process {
         $item = Get-Item -Path $Path
-        if ($item.CreationTime -lt [datetime]::Now.AddDays(-$Days)) {
+        if ($item.CreationTime -gt [datetime]::Today.AddDays(-$Days)) {
             $item
         }
     }
@@ -209,10 +209,12 @@ function play {
     end {
         if ($PSCmdlet.ParameterSetName -eq 'Extension') {
             Get-ChildItem -Path $Path -Recurse:$Recurse -File -Include ($Extension | ForEach-Object { "*.$_" }) 
+            | Sort-Object CreationTime -Descending
             | ForEach-Object FullName 
             | mpv --playlist=-
         } else {
             Get-ChildItem -Path $Path -Recurse:$Recurse -File -Filter $Filter 
+            | Sort-Object CreationTime -Descending
             | ForEach-Object FullName 
             | mpv --playlist=-
         }
