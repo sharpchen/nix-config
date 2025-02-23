@@ -39,4 +39,6 @@ nsp() {
     nix-store -q --outputs "$(type -fP "$1")"
 }
 
+export DOTNET_ROOT="$(nsp dotnet)/share/dotnet"
+
 eval "$(starship init bash)"
