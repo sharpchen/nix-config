@@ -105,9 +105,9 @@ local camel_lexer = vim.tbl_extend('error', {
       return { name }
     end
 
-    local first_word = Collect(name:gmatch('^%l+'))
+    local first_word = name:match('^%l+')
     local rest = Collect(name:gmatch('%u%l*'))
-    return vim.list_extend(first_word, rest)
+    return vim.list_extend({ first_word }, rest)
   end,
 }, lexer_base)
 

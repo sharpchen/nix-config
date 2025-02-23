@@ -70,7 +70,7 @@ return {
       providers = {
         snippets = {
           min_keyword_length = 2,
-          score_offset = 3,
+          score_offset = 10,
           should_show_items = function(ctx)
             return ctx.trigger.initial_kind ~= 'trigger_character'
           end,
