@@ -220,17 +220,3 @@ function play {
         }
     }
 }
-
-function prompt {
-    if ($IsWindows) {
-        $pattern = 'C:\\Users\\[a-zA-Z0-9]+'
-        $path = if ($pwd.ProviderPath -match $pattern) {
-            "~$($pwd.ProviderPath -replace $pattern, '')" 
-        } else { 
-            $pwd.ProviderPath 
-        }
-
-        return "PS $path$('>' * ($nestedPromptLevel + 1)) "
-    }
-    return "PS $($pwd.ProviderPath -replace '/home/[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1)) "
-}

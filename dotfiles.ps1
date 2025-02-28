@@ -68,6 +68,11 @@ mklink ~/.bashrc ./dotfiles/.bashrc
 mklink $PROFILE ./dotfiles/pwsh.profile/pwsh.profile.ps1
 mklink (Join-Path (Split-Path $PROFILE) 'Profile') ./dotfiles/pwsh.profile/Profile/
 
+# powershell
+$powershellProfile = (powershell -noprofile -nologo -c '$PROFILE')
+mklink  $powershellProfile ./dotfiles/pwsh.profile/pwsh.profile.ps1
+mklink (Join-Path (Split-Path $powershellProfile) 'Profile') ./dotfiles/pwsh.profile/Profile/
+
 mklink ~/.config/wezterm/wezterm.lua ./dotfiles/.wezterm.lua
 
 # yazi

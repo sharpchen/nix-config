@@ -1,23 +1,30 @@
+if ($Host.Name -ne 'ConsoleHost') {
+    Write-Information 'Current Host is not ConsoleHost'
+    return 
+}
+
 Import-Module PSReadLine
 
-if ($IsWindows) {
-    if (-not (Get-Module -ListAvailable -Name Microsoft.WinGet.CommandNotFound)) {
-        Install-Module -Name Microsoft.WinGet.CommandNotFound -Force -Scope CurrentUser
-    }
-    Import-Module -Name Microsoft.WinGet.CommandNotFound
+$IsLegacy = $PSVersionTable.PSEdition -eq 'Desktop'
+
+if ($IsWindows -or $IsLegacy) {
     [Console]::InputEncoding = [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 }
 
-$OnViModeChange = {
-    if ($args[0] -eq 'Command') {
-        # Set the cursor to a blinking block.
-        Write-Host -NoNewline "`e[2 q"
-    } else {
-        # Set the cursor to a blinking line.
-        Write-Host -NoNewline "`e[5 q"
+if ($IsLegacy) {
+    Set-PSReadLineOption -ViModeIndicator Prompt
+} else {
+    $OnViModeChange = {
+        if ($args[0] -eq 'Command') {
+            # Set the cursor to a blinking block.
+            Write-Host -NoNewline "`e[2 q"
+        } else {
+            # Set the cursor to a blinking line.
+            Write-Host -NoNewline "`e[5 q"
+        }
     }
+    Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler $OnViModeChange
 }
-Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler $OnViModeChange
 
 $syntaxColors = @{
     Parameter = 'Magenta'
@@ -36,4 +43,18 @@ if ((Get-Module -Name PSReadLine).Version -lt '2.0.0') {
     }
 } else {
     Set-PSReadLineOption -Colors $syntaxColors
+}
+
+function prompt {
+    if ($IsLinux -or $IsMacOS) {
+        return "PS $($pwd.ProviderPath -replace '/home/[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1)) "
+    }
+    $pattern = 'C:\\Users\\[a-zA-Z0-9]+'
+    $path = if ($pwd.ProviderPath -match $pattern) {
+        "~$($pwd.ProviderPath -replace $pattern, [string]::Empty)" 
+    } else { 
+        $pwd.ProviderPath 
+    }
+
+    return "PS $path$('>' * ($nestedPromptLevel + 1)) "
 }
