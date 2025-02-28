@@ -16,9 +16,6 @@ set number
 
 set cursorline
 
-set statusline
-set laststatus=1
-
 " Move selected lines down/up in visual mode
 xnoremap <M-j> :m '>+1<CR>gv=gv
 xnoremap <M-k> :m '<-2<CR>gv=gv
@@ -66,13 +63,15 @@ nnoremap <A-,> :vsc Window.PreviousDocumentWindow<CR>
 nnoremap <A-a> :vsc Window.CloseAllDocuments<CR>
 nnoremap gr :vsc Edit.FindAllReferences<CR>
 nnoremap gd :vsc Edit.GoToImplementation<CR>
+nnoremap gp :vsc Edit.PeekDefinition<CR>
 nnoremap 0 ^
 nnoremap ^ 0
 nnoremap gh :norm 0<CR>
 nnoremap gl :norm $<CR>
 
 nnoremap <M-CR> :vsc FullScreen<CR>
-nnoremap <leader>b :vsc View.SolutionExplorer<CR>
+nnoremap <leader>o :vsc View.SolutionExplorer<CR>
+nnoremap <leader>b :vsc Debug.ToggleBreakpoint<CR>
 nnoremap <leader>ca :vsc View.QuickActions<CR>
 nnoremap K :vsc Edit.QuickInfo<CR>
 nnoremap gi `^i
