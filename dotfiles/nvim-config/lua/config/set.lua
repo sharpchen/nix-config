@@ -100,3 +100,20 @@ vim.treesitter.language.register('xml', { 'axaml', 'xaml', 'msbuild' })
 if jit.os:find('Windows') and vim.fn.executable('pwsh') == 1 then
   vim.o.shell = 'pwsh'
 end
+
+vim.api.nvim_create_user_command('Pj', function()
+  local cmd = [[cmd.exe /c "for /D %d in (%USERPROFILE%\projects\*) do @echo %d" | fzf]]
+  local pwsh = [[gci -dir -path ~/projects | % FullName]]
+  local bash = [[ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/")]]
+  local command = (vim.o.shell:find('pwsh') or vim.o.shell:find('powershell')) and pwsh
+    or vim.o.shell:find('cmd') and cmd
+    or bash
+
+  require('fzf-lua').fzf_exec(command, {
+    actions = {
+      ['default'] = function(selected, _)
+        vim.fn.chdir(selected[1])
+      end,
+    },
+  })
+end, { desc = 'switch to one project folder' })

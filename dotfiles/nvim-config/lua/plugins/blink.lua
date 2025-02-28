@@ -62,7 +62,7 @@ return {
     sources = {
       default = function()
         local ok, node = pcall(vim.treesitter.get_node)
-        if ok and node and vim.tbl_contains({ 'comment', 'line_comment', 'block_comment' }, node:type()) then
+        if ok and node and node:type():find('comment') then
           return { 'buffer' }
         end
         return { 'snippets', 'lsp', 'path', 'buffer' }
