@@ -189,6 +189,8 @@ function play {
         [ValidateScript({ Test-Path -LiteralPath $_ })]
         [string]$Path,
         [switch]$Recurse,
+        [switch]$ByDate,
+        [switch]$Randomize,
 
         [Parameter(ParameterSetName = 'Extension')]
         [ValidateSet('mp4', 'flac', 'mp3')]
@@ -208,15 +210,19 @@ function play {
 
     end {
         if ($PSCmdlet.ParameterSetName -eq 'Extension') {
-            Get-ChildItem -Path $Path -Recurse:$Recurse -File -Include ($Extension | ForEach-Object { "*.$_" }) 
-            | Sort-Object CreationTime -Descending
-            | ForEach-Object FullName 
-            | mpv --playlist=-
+            $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Include ($Extension | ForEach-Object { "*.$_" }) 
         } else {
-            Get-ChildItem -Path $Path -Recurse:$Recurse -File -Filter $Filter 
-            | Sort-Object CreationTime -Descending
-            | ForEach-Object FullName 
-            | mpv --playlist=-
+            $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Filter $Filter 
         }
+
+        if ($ByDate) {
+            $playlist = $playlist | Sort-Object CreationTime -Descending
+        }
+
+        if ($Randomize) {
+            $playlist = $playlist | Sort-Object { Get-Random }
+        }
+
+        $playlist | ForEach-Object FullName | mpv --playlist=-
     }
 }
