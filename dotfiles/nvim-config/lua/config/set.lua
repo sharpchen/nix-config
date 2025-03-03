@@ -43,7 +43,7 @@ vim.o.listchars = listchars
 vim.cmd([[2match WhiteSpaceBol /^ \+/]])
 vim.cmd('match WhiteSpaceMol / /')
 vim.api.nvim_set_hl(0, 'WhiteSpaceMol', {
-  fg = string.format('#%x', vim.api.nvim_get_hl(0, { name = 'Normal' }).bg),
+  fg = string.format('#%x', vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 0),
 })
 vim.api.nvim_create_autocmd('ColorScheme', {
   callback = function()
@@ -52,7 +52,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
     vim.cmd([[2match WhiteSpaceBol /^ \+/]])
     vim.cmd('match WhiteSpaceMol / /')
     vim.api.nvim_set_hl(0, 'WhiteSpaceMol', {
-      fg = string.format('#%x', vim.api.nvim_get_hl(0, { name = 'Normal' }).bg),
+      fg = string.format('#%x', vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 0),
     })
   end,
 })

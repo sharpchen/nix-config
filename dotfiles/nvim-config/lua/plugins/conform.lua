@@ -35,17 +35,23 @@ return {
           )
         )
       else
-        vim.lsp.buf.format({ async = false, timeout_ms = 5000, bufnr = bufnr })
-        local names = vim
-          .iter(vim.lsp.get_clients({ bufnr = bufnr }))
-          :filter(function(client)
-            return not not client.server_capabilities.documentFormattingProvider
-          end)
-          :map(function(client)
-            return client.name
-          end)
-          :totable()
-        vim.notify(string.format('formmatted by lsp: %s', table.concat(names, ',')))
+        local fmt_available = vim.iter(vim.lsp.get_clients({ bufnr = bufnr })):filter(function(client)
+          return not not client.server_capabilities.documentFormattingProvider
+            and not not client.server_capabilities.documentRangeFormattingProvider
+        end)
+
+        if #(fmt_available:totable()) == 0 then
+          vim.api.nvim_feedkeys('gg=G', 'n', false)
+          vim.notify('formatted by indetexpr')
+        else
+          vim.lsp.buf.format({ async = false, timeout_ms = 5000, bufnr = bufnr })
+          local names = fmt_available
+            :map(function(client)
+              return client.name
+            end)
+            :totable()
+          vim.notify(string.format('formmatted by lsp: %s', table.concat(names, ',')))
+        end
       end
     end
 
