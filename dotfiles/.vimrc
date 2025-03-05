@@ -93,3 +93,6 @@ nnoremap <leader><leader> diw
 nnoremap <leader>z I(<Esc>A)
 nnoremap <leader>; mzA;<Esc>`z
 nnoremap <leader>, mzA,<Esc>`z
+nnoremap gi gi<Esc>zzi
+
+au BufReadPost * silent! normal! g`"zvzz 
