@@ -41,8 +41,12 @@ return {
         end)
 
         if #(fmt_available:totable()) == 0 then
-          vim.api.nvim_feedkeys('gg=G', 'n', false)
-          vim.notify('formatted by indetexpr')
+          if vim.bo[bufnr].filetype == 'markdown' then
+            vim.notify(string.format('no formatter available for %s', vim.bo[bufnr].filetype))
+            return
+          end
+          vim.api.nvim_feedkeys('mzgg=G`z', 'n', false)
+          vim.notify('formatted by indentexpr')
         else
           vim.lsp.buf.format({ async = false, timeout_ms = 5000, bufnr = bufnr })
           local names = fmt_available

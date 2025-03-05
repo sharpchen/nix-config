@@ -16,6 +16,21 @@ M.buf = {
   end,
 }
 
+M.mark = {
+  --- wrap an action to make sure the cursor stays still
+  ---@param action fun()
+  ---@return fun()
+  wrap = function(action)
+    return function()
+      local bufnr, linenr, colnr, _ = unpack(vim.fn.getpos('.'))
+      vim.api.nvim_buf_set_mark(bufnr, 'z', linenr, colnr, {})
+      action()
+      local row, col, _, _ = unpack(vim.api.nvim_buf_get_mark(bufnr, 'z'))
+      vim.api.nvim_win_set_cursor(0, { linenr, col - 1 })
+    end
+  end,
+}
+
 M.ts = {
   ---returns language name of current position
   ---@return string

@@ -118,7 +118,6 @@ return {
       ghost_text = {
         enabled = true,
       },
-      trigger = {},
       list = {
         selection = {
           preselect = function(ctx)

@@ -16,19 +16,21 @@ function string.to_array(str)
   return ret
 end
 
+--- find first position of target in *literal*
 ---@param str string
 ---@param target string
 ---@return integer
 function string.indexof(str, target)
-  return str:find(target:verbatim()) or -1
+  return str:find(target:verbatim()) or 0
 end
 
+--- find last position of target in *literal*
 ---@param str string
 ---@param target string
 ---@return integer
 function string.last_indexof(str, target)
   local all = Collect(str:gmatch('()' .. target:verbatim())) --[[@as integer]]
-  return all[#all] or -1
+  return all[#all] or 0
 end
 
 --- cancel escape for all character classes in lua pattern
@@ -38,12 +40,14 @@ function string.verbatim(str)
   -- local c_like = { '\n', '\t', '\r', '\b', '\v', '\\' }
 
   local regex = ('^$()%.[]*+-?'):to_array()
+  local percent = '%'
 
-  local foo = ('([%s])'):format(vim.iter(regex):fold(string.empty, function(sum, current)
-    return sum .. '%' .. current
-  end))
+  _G.my_regex_special = _G.my_regex_special
+    or ('([%s])'):format(vim.iter(regex):fold(string.empty, function(sum, current)
+      return sum .. '%' .. current
+    end))
 
-  local ret = str:gsub('%%', '%%%%'):gsub(foo, '%%%1')
+  local ret, _ = str:gsub('%%', '%%%%'):gsub(_G.my_regex_special, '%%%1'):gsub(percent:rep(8), percent:rep(4))
 
   return ret
 end

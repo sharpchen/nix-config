@@ -25,6 +25,15 @@ return {
         },
       },
     })
-    vim.keymap.set({ 'v', 'x' }, '<leader>e', ":'<,'>SnipRun<CR>")
+
+    vim.keymap.set({ 'v', 'x' }, '<leader>e', "<cmd>'<,'>SnipRun<CR>", { desc = 'sniprun' })
+    vim.keymap.set(
+      'n',
+      '<leader>e',
+      require('utils.static').mark.wrap(function()
+        vim.cmd('SnipRun')
+      end),
+      { desc = 'sniprun' }
+    )
   end,
 }

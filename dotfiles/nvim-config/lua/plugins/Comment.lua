@@ -49,19 +49,25 @@ return {
         end
         local line_cs = type(cs) == 'string' and cs or cs[1]
         local pos = line_cs:find('%%s')
-        local sub = pos and line_cs:sub(1, pos - 1) .. ' ' .. suffix .. line_cs:sub(pos) or line_cs .. suffix
+        local sub = (pos and line_cs:sub(1, pos - 1) .. ' ' .. suffix .. line_cs:sub(pos) or line_cs .. suffix):gsub(
+          '%%s',
+          string.empty
+        )
         require('Comment.ft').set(ft, sub)
         require('Comment.api').insert.linewise.eol()
         vim.api.nvim_feedkeys(esc, 'x', false)
         require('Comment.ft').set(ft, cs)
       end
     end
-    vim.keymap.set('n', 'gva', comment_eol('[!code ++]'), { desc = '[!code ++]' })
-    vim.keymap.set('n', 'gvd', comment_eol('[!code --]'), { desc = '[!code --]' })
-    vim.keymap.set('n', 'gvh', comment_eol('[!code highlight]'), { desc = '[!code highlight]' })
-    vim.keymap.set('n', 'gvf', comment_eol('[!code focus]'), { desc = '[!code focus]' })
-    vim.keymap.set('n', 'gvw', comment_eol('[!code warning]'), { desc = '[!code warning]' })
-    vim.keymap.set('n', 'gve', comment_eol('[!code error]'), { desc = '[!code error]' })
+
+    local stay_still = require('utils.static').mark.wrap
+
+    vim.keymap.set('n', 'gva', stay_still(comment_eol('[!code ++]')), { desc = '[!code ++]' })
+    vim.keymap.set('n', 'gvd', stay_still(comment_eol('[!code --]')), { desc = '[!code --]' })
+    vim.keymap.set('n', 'gvh', stay_still(comment_eol('[!code highlight]')), { desc = '[!code highlight]' })
+    vim.keymap.set('n', 'gvf', stay_still(comment_eol('[!code focus]')), { desc = '[!code focus]' })
+    vim.keymap.set('n', 'gvw', stay_still(comment_eol('[!code warning]')), { desc = '[!code warning]' })
+    vim.keymap.set('n', 'gve', stay_still(comment_eol('[!code error]')), { desc = '[!code error]' })
 
     ---@param action fun()
     local function foreach_line(action)
@@ -75,11 +81,37 @@ return {
         end
       end
     end
-    vim.keymap.set('x', 'vva', foreach_line(comment_eol('[!code ++]')), { desc = '[!code ++]' })
-    vim.keymap.set('x', 'vvd', foreach_line(comment_eol('[!code --]')), { desc = '[!code --]' })
-    vim.keymap.set('x', 'vvh', foreach_line(comment_eol('[!code highlight]')), { desc = '[!code highlight]' })
-    vim.keymap.set('x', 'vvf', foreach_line(comment_eol('[!code focus]')), { desc = '[!code focus]' })
-    vim.keymap.set('x', 'vvw', foreach_line(comment_eol('[!code warning]')), { desc = '[!code warning]' })
-    vim.keymap.set('x', 'vve', foreach_line(comment_eol('[!code error]')), { desc = '[!code error]' })
+
+    vim.keymap.set('x', 'vva', stay_still(foreach_line(comment_eol('[!code ++]'))), { desc = '[!code ++]' })
+    vim.keymap.set('x', 'vvd', stay_still(foreach_line(comment_eol('[!code --]'))), { desc = '[!code --]' })
+    vim.keymap.set(
+      'x',
+      'vvh',
+      stay_still(foreach_line(comment_eol('[!code highlight]'))),
+      { desc = '[!code highlight]' }
+    )
+    vim.keymap.set('x', 'vvf', stay_still(foreach_line(comment_eol('[!code focus]'))), { desc = '[!code focus]' })
+    vim.keymap.set('x', 'vvw', stay_still(foreach_line(comment_eol('[!code warning]'))), { desc = '[!code warning]' })
+    vim.keymap.set('x', 'vve', stay_still(foreach_line(comment_eol('[!code error]'))), { desc = '[!code error]' })
+
+    local function remove_codehl_comment()
+      local line = vim.api.nvim_get_current_line()
+      if line:match('%[!code.*%]') then
+        local cs, _ = get_ctx()
+
+        cs = type(cs) == 'table' and cs[1] or cs --[[@as string]]
+
+        if not cs then
+          vim.notify('comment string not found', vim.log.levels.WARN)
+          return
+        end
+
+        local cs_prefix = cs:sub(1, cs:find('%%s') - 1)
+        local sub = line:sub(1, line:find('%s*' .. cs_prefix:verbatim() .. '%s*%[!code.*%]') - 1)
+        vim.api.nvim_set_current_line(sub)
+      end
+    end
+
+    vim.keymap.set('n', 'gvr', remove_codehl_comment, { desc = 'delete shiki highlight comment' })
   end,
 }

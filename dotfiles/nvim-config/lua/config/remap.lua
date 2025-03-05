@@ -90,6 +90,7 @@ vim.keymap.set('n', '<leader><leader>', 'diw')
 -- vim.keymap.set('n', '^', '0', { noremap = true, silent = true, desc = 'go to first word bound of line' })
 vim.keymap.set('n', 'gh', '<cmd>norm! ^<CR>', { noremap = true, silent = true, desc = 'go to start of line' })
 vim.keymap.set('n', 'gl', '<cmd>norm! $<CR>', { noremap = true, silent = true, desc = 'go to end of line' })
+vim.keymap.set('n', 'gi', 'gi<Esc>zzi', { noremap = true, silent = true })
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
 vim.keymap.set('n', '<leader>z', 'I(<Esc>A)', { noremap = true, desc = 'brace line with ()' })
 vim.keymap.set('n', '<leader>;', 'mzA;<Esc>`z', { noremap = true, desc = 'append ; at the end of line' })
@@ -208,3 +209,29 @@ vim.api.nvim_create_autocmd('FileType', {
     end, opts)
   end,
 })
+
+function _G.select_md_code_block()
+  local start, finish = nil, nil
+
+  for i = vim.fn.line('.') - 1, 1, -1 do
+    if vim.trim(vim.fn.getline(i)):match('^```') then
+      start = i
+      break
+    end
+  end
+
+  for i = vim.fn.line('.') + 1, vim.fn.line('$') do
+    if vim.trim(vim.fn.getline(i)):match('^```') then
+      finish = i
+      break
+    end
+  end
+
+  if start and finish and start ~= finish then
+    vim.cmd(string.format('normal! %dGV%dG', start + 1, finish - 1)) -- Select content
+  end
+end
+
+-- Map "vi`" to select inside a Markdown code block
+vim.keymap.set('o', 'im', ':lua select_md_code_block()<CR>', { noremap = true, silent = true })
+vim.keymap.set('x', 'im', ':lua select_md_code_block()<CR>', { noremap = true, silent = true })
