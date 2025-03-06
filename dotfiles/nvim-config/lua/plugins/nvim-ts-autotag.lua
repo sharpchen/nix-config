@@ -1,7 +1,18 @@
 return {
   'windwp/nvim-ts-autotag',
-  ft = { 'html', 'xml', 'axaml', 'xaml', 'msbuild', 'vue', 'javascriptreact', 'typescriptreact', 'markdown' },
+  ft = {
+    'html',
+    'xml',
+    'axaml',
+    'xaml',
+    'msbuild',
+    'vue',
+    'javascriptreact',
+    'typescriptreact',
+    'markdown',
+  },
   config = function()
+    ---@diagnostic disable-next-line: missing-fields
     require('nvim-ts-autotag').setup({
       opts = {
         -- Defaults
@@ -16,6 +27,7 @@ return {
       aliases = {
         axaml = 'xml',
         xaml = 'xml',
+        msbuild = 'xml',
       },
     })
   end,

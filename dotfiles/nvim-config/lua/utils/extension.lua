@@ -53,6 +53,7 @@ function string.verbatim(str)
 end
 
 ---split string by single char or multiple single char
+---*separator length greater than 1 is not supported*
 ---@param text string
 ---@param separator? string | string[]
 ---@return string[]

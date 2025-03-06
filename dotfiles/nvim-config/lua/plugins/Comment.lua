@@ -49,10 +49,8 @@ return {
         end
         local line_cs = type(cs) == 'string' and cs or cs[1]
         local pos = line_cs:find('%%s')
-        local sub = (pos and line_cs:sub(1, pos - 1) .. ' ' .. suffix .. line_cs:sub(pos) or line_cs .. suffix):gsub(
-          '%%s',
-          string.empty
-        )
+        -- NOTE: this sub keeps a %s within it so it can pass the check of `Comment.U.unwrap_cstr`
+        local sub = pos and line_cs:sub(1, pos - 1) .. ' ' .. suffix .. line_cs:sub(pos) or line_cs .. suffix
         require('Comment.ft').set(ft, sub)
         require('Comment.api').insert.linewise.eol()
         vim.api.nvim_feedkeys(esc, 'x', false)

@@ -80,6 +80,8 @@ return {
         -- Toggles
         map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
         map('n', '<leader>tw', gitsigns.toggle_word_diff, { desc = 'toggle word diff' })
+
+        vim.keymap.set({ 'o', 'x' }, 'ih', '<Cmd>Gitsigns select_hunk<CR>', { desc = 'select hunk' })
       end,
     })
   end,

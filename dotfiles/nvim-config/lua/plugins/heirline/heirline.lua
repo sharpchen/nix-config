@@ -249,7 +249,7 @@ local Git = {
   {
     -- git branch name
     provider = function(self)
-      return '  ' .. self.status_dict.head .. ' '
+      return '  ' .. (self.status_dict.head or '!error!') .. ' '
     end,
     hl = { fg = 'git_branch', bold = true },
   },
@@ -388,7 +388,7 @@ local TerminalStatusline = {
 }
 
 require('heirline').setup({
-  update = { 'BufWritePost' },
+  update = { 'BufWritePost', 'BufEnter' },
   statusline = {
     hl = function()
       if conditions.is_active() then
