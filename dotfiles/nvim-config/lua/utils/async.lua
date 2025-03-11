@@ -3,9 +3,11 @@ local M = {}
 ---simple async cmd to fetch single result.
 ---@param cmd string[]
 ---@param cb? fun(result: string) callback for using returned result
-M.cmd = function(cmd, cb)
+---@param opts? vim.SystemOpts
+M.cmd = function(cmd, cb, opts)
   cb = cb or function(_) end
-  vim.system(cmd, { text = true }, function(out)
+  opts = vim.tbl_extend('keep', opts or {}, { text = true })
+  vim.system(cmd, opts, function(out)
     if out.code ~= 0 then
       vim.schedule(function()
         vim.notify(('async job for `%s` exited with code %s.'):format(table.concat(cmd, ' '), tostring(out.code)))

@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-fields
 return {
   'nvim-treesitter/nvim-treesitter',
   dependencies = {
@@ -12,7 +13,7 @@ return {
       install_info = {
         url = 'https://github.com/ionide/tree-sitter-fsharp',
         branch = 'main',
-        files = { 'src/scanner.c', 'src/parser.c' },
+        files = { 'fsharp/src/scanner.c', 'fsharp/src/parser.c' },
       },
       requires_generate_from_grammar = false,
       filetype = 'fsharp',

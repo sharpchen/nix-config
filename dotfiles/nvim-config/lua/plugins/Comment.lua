@@ -14,6 +14,7 @@ return {
     vim.keymap.del('n', 'gcc')
   end,
   config = function()
+    ---@diagnostic disable-next-line: missing-fields
     require('Comment').setup({
       pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
     })
@@ -47,13 +48,20 @@ return {
           vim.notify('getting context failed', vim.log.levels.ERROR)
           return
         end
-        local line_cs = type(cs) == 'string' and cs or cs[1]
-        local pos = line_cs:find('%%s')
+        local curr_cs = type(cs) == 'string' and cs or cs[1]
+        local pos = curr_cs:find('%%s')
         -- NOTE: this sub keeps a %s within it so it can pass the check of `Comment.U.unwrap_cstr`
-        local sub = pos and line_cs:sub(1, pos - 1) .. ' ' .. suffix .. line_cs:sub(pos) or line_cs .. suffix
-        require('Comment.ft').set(ft, sub)
+        local sub_cs = pos and curr_cs:sub(1, pos - 1) .. ' ' .. suffix .. curr_cs:sub(pos) or curr_cs .. suffix
+        require('Comment.ft').set(ft, sub_cs)
         require('Comment.api').insert.linewise.eol()
         vim.api.nvim_feedkeys(esc, 'x', false)
+
+        --NOTE: remove trailing space after suffix caused by required %s
+        local sub_cs_no_escape = sub_cs:gsub('%%s', '  ')
+        local trimmed =
+          vim.api.nvim_get_current_line():gsub(sub_cs_no_escape:verbatim(), sub_cs_no_escape:gsub('%]%s+', '] '))
+        vim.api.nvim_set_current_line(trimmed)
+
         require('Comment.ft').set(ft, cs)
       end
     end

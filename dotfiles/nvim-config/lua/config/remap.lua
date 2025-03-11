@@ -145,31 +145,32 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 ---@param next boolean
-local function mv_qf_item(next, bufnr)
+local function mv_qf_item(next, init_bufnr)
   local is_top = vim.fn.line('.') == 1
   local is_bottom = vim.fn.line('.') == vim.fn.line('$')
-  local is_not_init_buf = (vim.fn.bufnr('%') ~= bufnr and vim.bo.filetype ~= 'qf')
 
+  local is_not_init_buf = false
   -- go back to file so we can delete the buf
-  vim.cmd('wincmd p')
+  if vim.bo.filetype == 'qf' then
+    vim.cmd('wincmd p')
+    is_not_init_buf = vim.fn.bufnr('%') ~= init_bufnr
+  end
 
   if is_not_init_buf then
     -- delete and go back to qf
-    vim.cmd('bd | wincmd p')
+    vim.cmd('bd | copen')
   end
 
   if is_top and not next then
-    vim.api.nvim_feedkeys('G', 'n', false)
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true), 'n', false)
+    vim.cmd('clast')
   elseif is_bottom and next then
-    vim.api.nvim_feedkeys('gg', 'n', false)
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true), 'n', false)
+    vim.cmd('cfirst')
   else
     vim.cmd(next and 'cn' or 'cN')
   end
 
   -- center location
-  vim.api.nvim_feedkeys('zz', 'n', false)
+  vim.api.nvim_feedkeys('zz', 't', false)
 
   -- resize qf(should stay in file)
   vim.cmd(
@@ -178,12 +179,13 @@ local function mv_qf_item(next, bufnr)
       math.floor(
         (vim.o.lines - vim.o.cmdheight - (vim.o.laststatus == 0 and 0 or 1) - (vim.o.tabline == '' and 0 or 1)) / 3 * 2
           + 0.5
-      ) - 1
+      ) + 3
     )
   )
+
   -- make sure go back to qf
   if vim.bo.filetype ~= 'qf' then
-    vim.cmd('wincmd p')
+    vim.cmd('copen')
   end
 end
 
@@ -235,3 +237,5 @@ end
 -- Map "vi`" to select inside a Markdown code block
 vim.keymap.set('o', 'im', ':lua select_md_code_block()<CR>', { noremap = true, silent = true })
 vim.keymap.set('x', 'im', ':lua select_md_code_block()<CR>', { noremap = true, silent = true })
+vim.keymap.set('o', 'am', ':lua select_md_code_block()<CR>', { noremap = true, silent = true })
+vim.keymap.set('x', 'am', ':lua select_md_code_block()<CR>', { noremap = true, silent = true })

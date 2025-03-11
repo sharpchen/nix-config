@@ -19,6 +19,6 @@ return {
       },
     })
 
-    vim.keymap.set('n', '<leader>n', '<cmd>Neogen<CR>', { desc = 'generate doc annotation' })
+    vim.keymap.set('n', '<leader>ng', '<cmd>Neogen<CR>', { desc = 'generate doc annotation' })
   end,
 }

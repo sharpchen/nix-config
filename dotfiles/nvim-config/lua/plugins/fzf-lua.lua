@@ -2,26 +2,39 @@ return {
   'ibhagwan/fzf-lua',
   config = function()
     local fzf = require('fzf-lua')
-    fzf.setup({
-      previewers = {
-        builtin = {
-          extensions = {
-            ['png'] = { 'viu', '-b' },
-            ['jpg'] = { 'viu', '-b' },
+    if require('utils.env').is_windows then
+      fzf.setup({
+        winopts = {
+          preview = { default = 'bat_native' },
+        },
+        fzf_opts = { ['--ansi'] = false },
+        files = {
+          git_icons = false,
+          file_icons = false,
+        },
+      })
+    else
+      fzf.setup({
+        previewers = {
+          builtin = {
+            extensions = {
+              ['png'] = { 'viu', '-b' },
+              ['jpg'] = { 'viu', '-b' },
+            },
           },
         },
-      },
-      actions = {
-        files = {
-          true,
-          ['alt-e'] = function(_, opts)
-            local f = vim.fs.joinpath(opts.cwd, opts.last_query)
-            local e = vim.api.nvim_replace_termcodes('<Esc>:e ', true, true, true)
-            vim.api.nvim_feedkeys(e .. f, 'L', false)
-          end,
+        actions = {
+          files = {
+            true,
+            ['alt-e'] = function(_, opts)
+              local f = vim.fs.joinpath(opts.cwd, opts.last_query)
+              local e = vim.api.nvim_replace_termcodes('<Esc>:e ', true, true, true)
+              vim.api.nvim_feedkeys(e .. f, 'L', false)
+            end,
+          },
         },
-      },
-    })
+      })
+    end
 
     vim.keymap.set('n', '<leader>fc', function()
       local config_path = require('utils.env').is_windows and vim.fn.stdpath('config')
@@ -52,7 +65,7 @@ return {
         local is_writable = vim.bo[args.buf].modifiable and not vim.bo[args.buf].readonly
         if is_file and is_writable then
           vim.defer_fn(function()
-            vim.api.nvim_feedkeys(require('utils.text').termcode('i<Esc>'), 'n', false)
+            vim.api.nvim_feedkeys(require('utils.text').termcode('i<Esc>'), 't', false)
           end, 200)
         end
       end,

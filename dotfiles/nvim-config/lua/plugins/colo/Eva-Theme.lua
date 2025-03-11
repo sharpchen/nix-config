@@ -1,6 +1,7 @@
 local function setup()
   local light = require('Eva-Theme.palette').light_base
   local dark = require('Eva-Theme.palette').dark_base
+
   require('Eva-Theme').setup({
     override_palette = {
       dark = {
@@ -13,36 +14,45 @@ local function setup()
         typeparam = light.primitive,
       },
     },
-    override_highlight = {
-      ['@lsp.type.enumMember'] = function(v)
-        return {
-          fg = require('Eva-Theme.utils').is_dark(v) and require('Eva-Theme.palette').dark_base.digit
-            or require('Eva-Theme.palette').light_base.digit,
-          bold = true,
-        }
-      end,
-      LspInlayHint = function(_, p)
-        return { fg = p.comment, bg = false }
-      end,
-      CursorLine = function(_, p)
-        return { bg = p.panelBackground }
-      end,
-      ['@string.escape'] = function(_, _)
-        return { bold = true }
-      end,
-      ['@punctuation.special'] = function(_, _)
-        return { bold = true }
-      end,
-      ['@punctuation.special.typescript'] = function(_, _)
-        return { bold = true }
-      end,
-      ['@keyword.operator'] = function(_, p)
-        return { fg = p.declarative }
-      end,
-      ['@keyword.coroutine'] = function(_, p)
-        return { fg = p.declarative }
-      end,
-    },
+    override_highlight = vim.tbl_extend(
+      'error',
+      {
+        ['@lsp.type.enumMember'] = function(v)
+          return {
+            fg = require('Eva-Theme.utils').is_dark(v) and require('Eva-Theme.palette').dark_base.digit
+              or require('Eva-Theme.palette').light_base.digit,
+            bold = true,
+          }
+        end,
+        LspInlayHint = function(_, p)
+          return { fg = p.comment, bg = false }
+        end,
+        CursorLine = function(_, p)
+          return { bg = p.panelBackground }
+        end,
+        ['@string.escape'] = function(_, _)
+          return { bold = true }
+        end,
+        ['@punctuation.special'] = function(_, _)
+          return { bold = true }
+        end,
+        ['@punctuation.special.typescript'] = function(_, _)
+          return { bold = true }
+        end,
+        ['@keyword.operator'] = function(_, p)
+          return { fg = p.declarative }
+        end,
+        ['@keyword.coroutine'] = function(_, p)
+          return { fg = p.declarative }
+        end,
+      },
+      vim.iter({ 'Error', 'Warn', 'Hint', 'Info' }):fold({}, function(final, curr)
+        final['DiagnosticVirtualText' .. curr] = function(_, _)
+          return { bg = 'none' }
+        end
+        return final
+      end)
+    ),
   })
 end
 

@@ -15,4 +15,5 @@ return {
     end,
   },
   { 'Bilal2453/luvit-meta', lazy = true }, -- optional `vim.uv` typings
+  { 'justinsgithub/wezterm-types', lazy = true },
 }

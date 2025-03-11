@@ -8,6 +8,7 @@ return {
     local util = require('lspconfig.util')
     require('roslyn').setup({
       exe = 'Microsoft.CodeAnalysis.LanguageServer',
+      ---@diagnostic disable-next-line: missing-fields
       config = {
         settings = {
           ['csharp|inlay_hints'] = {
@@ -40,5 +41,26 @@ return {
         },
       },
     })
+
+    vim.keymap.set('n', '<leader>ni', function()
+      local buf_parent = vim.fs.dirname(vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()))
+      if vim.fn.isdirectory(buf_parent) == 0 then
+        vim.notify('not a valid parent')
+        return
+      end
+      require('fzf-lua').fzf_exec(function(yield)
+        for _, template in ipairs(_G.dotnet_templates) do
+          yield(template.shortname)
+        end
+      end, {
+        actions = {
+          ['default'] = function(selected, _)
+            require('utils.async').cmd(require('utils.env').shell.bash_cmd('dotnet new ' .. selected[1]), function(_)
+              vim.notify('template ' .. selected[1] .. ' created')
+            end, { cwd = buf_parent })
+          end,
+        },
+      })
+    end)
   end,
 }

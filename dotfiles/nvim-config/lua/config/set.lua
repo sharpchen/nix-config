@@ -89,6 +89,7 @@ vim.filetype.add({
     props = 'msbuild',
     tasks = 'msbuild',
     targets = 'msbuild',
+    slnx = 'msbuild',
   },
   pattern = {
     [ [[.*\..*proj]] ] = 'msbuild',
