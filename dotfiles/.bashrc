@@ -40,5 +40,7 @@ nsp() {
 }
 
 export DOTNET_ROOT="$(nsp dotnet)/share/dotnet"
+export MANPAGER='nvim +Man!'
 
 eval "$(starship init bash)"
+eval "$(fzf --bash)"
