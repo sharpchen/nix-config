@@ -3,6 +3,8 @@ if ($Host.Name -ne 'ConsoleHost') {
     return 
 }
 
+$env:DOTNET_CLI_UI_LANGUAGE = 'en'
+
 Import-Module PSReadLine
 
 $IsLegacy = $PSVersionTable.PSEdition -eq 'Desktop'

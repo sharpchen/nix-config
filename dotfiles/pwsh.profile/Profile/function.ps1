@@ -177,7 +177,7 @@ function ago {
 
     process {
         $item = Get-Item -Path $Path
-        if ($item.CreationTime -gt [datetime]::Today.AddDays(-$Days)) {
+        if ($item.CreationTime -gt [datetime]::Now.AddDays(-$Days)) {
             $item
         }
     }
@@ -224,5 +224,52 @@ function play {
         }
 
         $playlist | ForEach-Object FullName | mpv --playlist=-
+    }
+}
+
+function dnnew {
+    begin {
+        Get-Command dotnet -ea Stop | Out-Null
+        Get-Command fzf -ea Stop | Out-Null
+        Get-Command tr -ea Stop | Out-Null
+    }
+
+    end {
+        $templates = dotnet new list | Select-Object -Skip 4 | ForEach-Object {
+            if ($_ -match '^(?<Name>(?:[\w\.\(\)\-]+\s?)+)\s+(?<ShortName>[\w\.\-,]+)\s+(?<Lang>.*?)\s+(?<Tags>.*$)') {
+                if ($Matches.ShortName.Contains(',')) {
+                    $Matches.ShortName -split ',' | ForEach-Object {
+                        "$_`tDesc: $($Matches.Name)`tLang: $($Matches.Lang)`tTags: $($Matches.Tags)"
+                    }
+                } else {
+                    "$($Matches.ShortName)`tDesc: $($Matches.Name)`tLang: $($Matches.Lang)`tTags: $($Matches.Tags)"
+                }
+            }
+        }
+        $templates | fzf --delimiter='\t' `
+            --with-nth=1 `
+            --preview-window=down `
+            --preview='echo {2..} | tr "\t" "\n"' `
+            --bind "enter:execute(dotnet new {1} $($args -join ' '))+abort"
+    }
+}
+
+function dnpack {
+    begin {
+        Get-Command dotnet -ea Stop | Out-Null
+        Get-Command fzf -ea Stop | Out-Null
+        Get-Command tr -ea Stop | Out-Null
+    }
+
+    end {
+        $res = dotnet package search @args --format json | ConvertFrom-Json
+
+        $res.searchResult.packages |
+            ForEach-Object { "$($_.id)`tLatest Version: $($_.latestVersion)`tTotal Downloads: $($_.totalDownloads)`tOwners: $($_.owners)" } |
+            fzf  --delimiter='\t' `
+                --with-nth=1 `
+                --preview-window=down `
+                --preview='echo {2..} | tr "\t" "\n"' `
+                --bind 'enter:execute(dotnet package add {1})+abort'
     }
 }
