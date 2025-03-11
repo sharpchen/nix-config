@@ -47,7 +47,8 @@ $scoopPackages = @(
     'transmission-cli',
     'miller',
     'ouch',
-    'glow'
+    'glow',
+    'uutils-coreutils'
 )
 
 $scoopFonts = @(
@@ -70,7 +71,6 @@ $wingetPackages = @(
 & ./dotfiles.ps1
 
 scoop install ($scoopPackages -join ' ')
-RefreshPath
 scoop install ($scoopFonts -join ' ')
 winget add --silent --accept-source-agreements ($wingetPackages -join ' ')
 RefreshPath
