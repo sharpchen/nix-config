@@ -48,7 +48,8 @@ $scoopPackages = @(
     'miller',
     'ouch',
     'glow',
-    'uutils-coreutils'
+    'uutils-coreutils',
+    'sioyek'
 )
 
 $scoopFonts = @(

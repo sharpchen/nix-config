@@ -39,10 +39,11 @@ function mklink {
 }
 
 if (Get-Command scoop -ErrorAction SilentlyContinue) {
-    $scoopRoot = [IO.Path]::GetDirectoryName([IO.Path]::GetDirectoryName((Get-Command scoop).Source))
+    $scoopRoot = Resolve-Path ~/scoop
     # librewolf overrides
     mklink (Join-Path $scoopRoot 'persist/librewolf/Profiles/Default/librewolf.overrides.cfg') ./dotfiles/librewolf.cfg
     [Environment]::SetEnvironmentVariable('YAZI_FILE_ONE', ([IO.Path]::Combine($scoopRoot, 'apps\git\current\usr\bin\file.exe')), 'User')
+    mklink (Join-Path $scoopRoot 'apps/sioyek/current/keys_user.config') ./dotfiles/sioyek.keys_user.config
 }
 
 $nvimConfig = Join-Path $env:LOCALAPPDATA 'nvim'
