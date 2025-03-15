@@ -212,30 +212,42 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
-function _G.select_md_code_block()
+function _G.select_md_code_block(around)
+  local cur_line = vim.fn.line('.')
   local start, finish = nil, nil
 
-  for i = vim.fn.line('.') - 1, 1, -1 do
+  -- Find the start ```
+  for i = cur_line, 1, -1 do
     if vim.trim(vim.fn.getline(i)):match('^```') then
       start = i
       break
     end
   end
 
-  for i = vim.fn.line('.') + 1, vim.fn.line('$') do
+  -- Find the end ```
+  for i = cur_line, vim.fn.line('$') do
     if vim.trim(vim.fn.getline(i)):match('^```') then
       finish = i
       break
     end
   end
 
-  if start and finish and start ~= finish then
-    vim.cmd(string.format('normal! %dGV%dG', start + 1, finish - 1)) -- Select content
+  -- Ensure valid range
+  if not start or not finish or start == finish then
+    return
+  end
+
+  if around then
+    -- Select around (including ``` lines)
+    vim.cmd(string.format('normal! %dGV%dG', start, finish))
+  else
+    -- Select inside (excluding ``` lines)
+    vim.cmd(string.format('normal! %dGV%dG', start + 1, finish - 1))
   end
 end
 
 -- Map "vi`" to select inside a Markdown code block
-vim.keymap.set('o', 'im', ':lua select_md_code_block()<CR>', { noremap = true, silent = true })
-vim.keymap.set('x', 'im', ':lua select_md_code_block()<CR>', { noremap = true, silent = true })
-vim.keymap.set('o', 'am', ':lua select_md_code_block()<CR>', { noremap = true, silent = true })
-vim.keymap.set('x', 'am', ':lua select_md_code_block()<CR>', { noremap = true, silent = true })
+vim.keymap.set('o', 'im', ':lua select_md_code_block(false)<CR>', { noremap = true, silent = true })
+vim.keymap.set('x', 'im', ':lua select_md_code_block(false)<CR>', { noremap = true, silent = true })
+vim.keymap.set('o', 'am', ':lua select_md_code_block(true)<CR>', { noremap = true, silent = true })
+vim.keymap.set('x', 'am', ':lua select_md_code_block(true)<CR>', { noremap = true, silent = true })

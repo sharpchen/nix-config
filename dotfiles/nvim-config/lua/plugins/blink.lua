@@ -11,6 +11,8 @@ return {
         require('luasnip.loaders.from_vscode').lazy_load()
       end,
     },
+
+    'Kaiser-Yang/blink-cmp-dictionary',
     'rafamadriz/friendly-snippets',
     {
       'xzbdmw/colorful-menu.nvim',
@@ -64,47 +66,46 @@ return {
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
+      min_keyword_length = function(ctx)
+        return ctx.trigger.kind == 'trigger_character' and 0 or 1
+      end,
       default = function()
         local ok, node = pcall(vim.treesitter.get_node)
         if ok and node and node:type():find('comment') then
-          return { 'buffer' }
+          return { 'buffer', 'dictionary' }
         end
-        return { 'snippets', 'lsp', 'path', 'buffer' }
+        return { 'snippets', 'lsp', 'path', 'buffer', 'dictionary' }
       end,
       providers = {
         snippets = {
           min_keyword_length = 2,
           score_offset = 10,
           should_show_items = function(ctx)
-            return ctx.trigger.initial_kind ~= 'trigger_character'
+            return ctx.trigger.initial_kind ~= 'trigger_character' and not require('blink.cmp').snippet_active()
           end,
+          max_items = 5,
         },
         lsp = {
-          min_keyword_length = 1,
           score_offset = 3,
         },
-        -- path = {
-        --   min_keyword_length = 3,
-        --   score_offset = 2,
-        -- },
         buffer = {
           min_keyword_length = 3,
           score_offset = 1,
+          max_items = 4,
         },
         dadbod = {
           name = 'Dadbod',
           module = 'vim_dadbod_completion.blink',
         },
-        -- cmdline = {
-        --   enabled = function()
-        --     return vim.fn.getcmdline():sub(1, 1) ~= '!'
-        --   end,
-        -- },
-        -- lazydev = {
-        --   name = 'LazyDev',
-        --   module = 'lazydev.integrations.blink',
-        --   score_offset = 100,
-        -- },
+        dictionary = {
+          module = 'blink-cmp-dictionary',
+          name = 'Dict',
+          -- Make sure this is at least 2.
+          -- 3 is recommended
+          min_keyword_length = 3,
+          max_items = 4,
+          opts = {},
+        },
       },
     },
     snippets = {
@@ -115,6 +116,9 @@ return {
       window = { border = 'single' },
     },
     completion = {
+      trigger = {
+        show_on_trigger_character = true,
+      },
       ghost_text = {
         enabled = true,
       },
