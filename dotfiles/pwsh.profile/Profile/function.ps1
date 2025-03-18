@@ -270,6 +270,6 @@ function dnpack {
                 --with-nth=1 `
                 --preview-window=down `
                 --preview='echo {2..} | tr "\t" "\n"' `
-                --bind 'enter:execute(dotnet package add {1})+abort'
+                --bind 'enter:execute(dotnet add package {1})+abort'
     }
 }
