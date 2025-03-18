@@ -51,7 +51,7 @@ return {
     vim.keymap.set('n', '<leader>fo', fzf.oldfiles, { desc = 'search recent files' })
 
     vim.keymap.set('n', '<leader>fd', function()
-      fzf.files({ cmd = 'fd -t=d', cwd = vim.uv.cwd() })
+      fzf.files({ cmd = 'fd -t=d -E .git/', cwd = vim.uv.cwd() })
     end, { desc = 'search folders' })
 
     vim.keymap.set('n', '<leader>fr', function()

@@ -13,7 +13,13 @@ local function file_init(self)
   self.file_size = myutils.file_size()
   self.filename = vim.api.nvim_buf_get_name(0)
   local extension = vim.fn.fnamemodify(self.filename, ':e')
-  self.icon, self.icon_color = require('nvim-web-devicons').get_icon_color(self.filename, extension, { default = true })
+  local ft, _ = vim.filetype.match({ filename = self.filename })
+  if ft then
+    self.icon, self.icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(ft)
+  end
+  local default = require('nvim-web-devicons').get_default_icon()
+  self.icon = self.icon or default.icon
+  self.icon_color = self.icon_color or default.color
 end
 local function setup_colors()
   return {

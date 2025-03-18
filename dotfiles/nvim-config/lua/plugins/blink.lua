@@ -11,8 +11,6 @@ return {
         require('luasnip.loaders.from_vscode').lazy_load()
       end,
     },
-
-    'Kaiser-Yang/blink-cmp-dictionary',
     'rafamadriz/friendly-snippets',
     {
       'xzbdmw/colorful-menu.nvim',
@@ -72,9 +70,9 @@ return {
       default = function()
         local ok, node = pcall(vim.treesitter.get_node)
         if ok and node and node:type():find('comment') then
-          return { 'buffer', 'dictionary' }
+          return { 'buffer' }
         end
-        return { 'snippets', 'lsp', 'path', 'buffer', 'dictionary' }
+        return { 'snippets', 'lsp', 'path', 'buffer' }
       end,
       providers = {
         snippets = {
@@ -96,15 +94,6 @@ return {
         dadbod = {
           name = 'Dadbod',
           module = 'vim_dadbod_completion.blink',
-        },
-        dictionary = {
-          module = 'blink-cmp-dictionary',
-          name = 'Dict',
-          -- Make sure this is at least 2.
-          -- 3 is recommended
-          min_keyword_length = 3,
-          max_items = 4,
-          opts = {},
         },
       },
     },
