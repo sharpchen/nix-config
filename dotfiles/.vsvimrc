@@ -61,6 +61,7 @@ nnoremap <leader>a ggVG
 nnoremap <A-.> :vsc Window.NextDocumentWindow<CR>
 nnoremap <A-,> :vsc Window.PreviousDocumentWindow<CR>
 nnoremap <A-a> :vsc Window.CloseAllDocuments<CR>
+nnoremap <F2> :vsc Refactor.Rename<CR>
 nnoremap gr :vsc Edit.FindAllReferences<CR>
 nnoremap gd :vsc Edit.GoToImplementation<CR>
 nnoremap gp :vsc Edit.PeekDefinition<CR>
