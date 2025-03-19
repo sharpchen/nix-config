@@ -7,7 +7,12 @@ function adbin {
     )
     $special = @( ' ', '\|', '\$', '&', '\(', '\)', '~', '\*', "\'", '"', '<', '>')
     foreach ($char in $special) {
-        $Str = $Str -replace $char, ($char.Length -gt 1 ? $char : "\$char")
+        $repl = if($char.Length -gt 1) {
+            $char 
+        } else {
+            "\$char" 
+        }
+        $Str = $Str -replace $char, $repl
     }
     adb shell input text $Str
     if ($Enter) {
@@ -56,7 +61,9 @@ function iparam {
             'Confirm'
         )
         $cmd = Get-Command $Command
-        $cmd = $cmd -is [System.Management.Automation.AliasInfo] ? (Get-Command $cmd.Definition) : $cmd
+        if ($cmd -is [System.Management.Automation.AliasInfo]) {
+            $cmd = Get-Command $cmd.Definition
+        }
         ($cmd.ParameterSets | ForEach-Object {
             $out = [pscustomobject]@{ 
                 Name = $_.Name
@@ -88,7 +95,9 @@ function mkvideo {
     begin {
         Get-Command ffmpeg -ea Stop | Out-Null
         Get-Command ffprobe -ea Stop | Out-Null
-        $Destination ??= $PWD.Path
+        if (-not $Destination) {
+            $Destination = $PWD.Path
+        }
 
         if (-not (Test-Path $Destination)) {
             Write-Verbose 'Destination does not exist, creating forcibly'
@@ -155,12 +164,11 @@ function mkvideo {
             $info.InsertRange(0, [string[]]@($head, [string]::Empty))
             $info -join [System.Environment]::NewLine > (Join-Path $Destination "$head.txt")
         }
-    }
 
-    clean {
         if ((Split-Path $Cover).TrimEnd([IO.Path]::DirectorySeparatorChar) -eq ([System.IO.Path]::GetTempPath()).TrimEnd([IO.Path]::DirectorySeparatorChar)) {
             Remove-Item -Path $Cover
         }
+
         if ($Convert) {
             Remove-Item -Path $output
         }
