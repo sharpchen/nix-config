@@ -75,5 +75,3 @@ scoop install ($scoopPackages -join ' ')
 scoop install ($scoopFonts -join ' ')
 winget add --silent --accept-source-agreements ($wingetPackages -join ' ')
 RefreshPath
-
-& ./make_vs.ps1

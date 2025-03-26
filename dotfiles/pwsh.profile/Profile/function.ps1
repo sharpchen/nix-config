@@ -281,3 +281,43 @@ function dnpack {
                 --bind 'enter:execute(dotnet add package {1})+abort'
     }
 }
+
+function vs {
+    param (
+        [ValidateScript({ Test-Path -LiteralPath $_ })]
+        [string]$Path
+    )
+
+    begin {
+        if (-not (Get-Command devenv -ea SilentlyContinue)) {
+            Get-Command vswhere -ea Stop | Out-Null
+        }
+        if (-not $Path) {
+            $Path = $PWD.ProviderPath
+        }
+    }
+
+    end {
+        $sln = Get-ChildItem $Path -Filter *.sln
+        $slnx = Get-ChildItem $Path -Filter *.slnx
+        $proj = Get-ChildItem $Path -Filter *.*proj
+
+        if ($slnx) {
+            $file = $slnx | Select-Object -First 1
+        } elseif ($sln) {
+            $file = $sln | Select-Object -First 1
+        } elseif($proj) {
+            $file = $proj | Select-Object -First 1
+        } else {
+            Write-Warning "$($Path.FullName) contains no *proj or *.sln or *.slnx"
+            return
+        }
+
+        if (Get-Command devenv -ea SilentlyContinue) {
+            devenv $file.FullName
+        } else {
+            $devenv = (vswhere -latest -property productPath)
+            & $devenv $file
+        }
+    }
+}
