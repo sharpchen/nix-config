@@ -75,6 +75,7 @@ nnoremap gl :norm $<CR>
 nnoremap <M-CR> :vsc FullScreen<CR>
 nnoremap <leader>o :vsc View.SolutionExplorer<CR>
 nnoremap <leader>b :vsc Debug.ToggleBreakpoint<CR>
+nnoremap <leader>m :vsc Build.BuildSolution<CR><Esc>
 nnoremap <leader>ca :vsc View.QuickActions<CR>
 nnoremap K :vsc Edit.QuickInfo<CR>
 nnoremap gi `^i

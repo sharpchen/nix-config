@@ -97,3 +97,5 @@ nnoremap <leader>, mzA,<Esc>`z
 nnoremap gi gi<Esc>zzi
 
 au BufReadPost * silent! normal! g`"zvzz 
+au FileType *.markdown nnoremap <C-b> mz:s/\<<C-r><C-w>\>/**<C-r><C-w>**/<CR>`z
+au FileType *.markdown vnoremap <C-b> mz"zy:s/\<<C-r>z\>/**<C-r>z**/<CR>`z
