@@ -81,7 +81,6 @@ return {
           should_show_items = function(ctx)
             return ctx.trigger.initial_kind ~= 'trigger_character' and not require('blink.cmp').snippet_active()
           end,
-          max_items = 5,
         },
         lsp = {
           score_offset = 3,
@@ -89,7 +88,6 @@ return {
         buffer = {
           min_keyword_length = 3,
           score_offset = 1,
-          max_items = 4,
         },
         dadbod = {
           name = 'Dadbod',
@@ -117,7 +115,7 @@ return {
             return ctx.mode ~= 'cmdline'
           end,
           auto_insert = function(ctx)
-            return ctx.mode ~= 'cmdline'
+            return false
           end,
         },
       },

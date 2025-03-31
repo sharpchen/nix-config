@@ -109,7 +109,7 @@ vim.api.nvim_create_user_command('Pj', function()
   local pwsh = [[gci -dir -path ~/projects | % FullName]]
   local bash = [[ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/")]]
   local command = (vim.o.shell:find('pwsh') or vim.o.shell:find('powershell')) and pwsh
-    or vim.o.shell:find('cmd') and cmd
+    or vim.o.shell:find('cmd%.exe') and cmd
     or bash
 
   require('fzf-lua').fzf_exec(command, {

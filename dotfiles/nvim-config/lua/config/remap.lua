@@ -102,24 +102,6 @@ vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, desc = 'go to window le
 vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, desc = 'go to window right' })
 vim.keymap.set('n', '<C-q>', '<C-w>q', { noremap = true, desc = 'close current window' })
 
-vim.iter({ { '(', ')' }, { '<', '>' }, { '[', ']' }, '`', '"', "'", '*' }):each(function(x)
-  if type(x) == 'table' then
-    vim.keymap.set(
-      'n',
-      ('[%s'):format(x[1]),
-      ('viw<esc>a%s<esc>bi%s<esc>'):format(x[2], x[1]),
-      { desc = ('surround word with %s%s'):format(x[1], x[2]) }
-    )
-  else
-    vim.keymap.set(
-      'n',
-      ('[%s'):format(x),
-      ('viw<esc>a%s<esc>bi%s<esc>'):format(x, x),
-      { desc = ('surround word with %s'):format(x) }
-    )
-  end
-end)
-
 if vim.uv.os_uname().sysname == 'Linux' then
   vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true, desc = 'make current file executable' })
 end
@@ -157,7 +139,6 @@ local function mv_qf_item(next, init_bufnr)
   end
 
   if is_not_init_buf then
-    -- delete and go back to qf
     vim.cmd('bd | copen')
   end
 
@@ -247,7 +228,7 @@ function _G.select_md_code_block(around)
 end
 
 -- Map "vi`" to select inside a Markdown code block
-vim.keymap.set('o', 'im', ':lua select_md_code_block(false)<CR>', { noremap = true, silent = true })
-vim.keymap.set('x', 'im', ':lua select_md_code_block(false)<CR>', { noremap = true, silent = true })
-vim.keymap.set('o', 'am', ':lua select_md_code_block(true)<CR>', { noremap = true, silent = true })
-vim.keymap.set('x', 'am', ':lua select_md_code_block(true)<CR>', { noremap = true, silent = true })
+vim.keymap.set('o', 'im', '<cmd>lua select_md_code_block(false)<CR>', { noremap = true, silent = true })
+vim.keymap.set('x', 'im', '<cmd>lua select_md_code_block(false)<CR>', { noremap = true, silent = true })
+vim.keymap.set('o', 'am', '<cmd>lua select_md_code_block(true)<CR>', { noremap = true, silent = true })
+vim.keymap.set('x', 'am', '<cmd>lua select_md_code_block(true)<CR>', { noremap = true, silent = true })

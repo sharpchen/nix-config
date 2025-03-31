@@ -26,7 +26,7 @@ return {
       },
     })
 
-    vim.keymap.set({ 'v', 'x' }, '<leader>e', "<cmd>'<,'>SnipRun<CR>", { desc = 'sniprun' })
+    vim.keymap.set({ 'v', 'x' }, '<leader>e', ":'<,'>SnipRun<CR>", { desc = 'sniprun' })
     vim.keymap.set(
       'n',
       '<leader>e',

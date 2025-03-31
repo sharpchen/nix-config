@@ -44,13 +44,9 @@ return {
     'sharpchen/nvim-material-icon',
     branch = 'rm-invalid-icon',
     config = function()
-      local xaml_icon, xaml_color = require('nvim-web-devicons').get_icon_color('', 'xaml')
-      require('nvim-web-devicons').set_icon({
-        axaml = {
-          icon = xaml_icon,
-          color = xaml_color,
-          name = 'axaml',
-        },
+      require('nvim-web-devicons').set_icon_by_filetype({
+        msbuild = 'sln',
+        axaml = 'xaml',
       })
     end,
   },

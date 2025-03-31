@@ -1,9 +1,10 @@
 local async = require('utils.async')
 require('utils.extension')
 local M = {
-  is_windows = jit.os == 'Windows',
+  is_windows = jit.os:find('Windows') ~= nil,
   -- do not use it on plugin loading
   has_nix = vim.fn.executable('nix') == 1,
+  has_pwsh = vim.fn.executable('pwsh') == 1,
 }
 
 M.new_line = M.is_windows and '\r\n' or '\n'
@@ -21,7 +22,7 @@ end
 ---@param cmd string the direct command to run within bash
 ---@return string[]
 local function pwsh_cmd(cmd)
-  local ret = { 'powershell', '-noprofile', '-nologo', '-c' }
+  local ret = { (M.has_pwsh and 'pwsh' or 'powershell'), '-noprofile', '-nologo', '-c' }
   table.insert(ret, cmd)
   return ret
 end
@@ -29,6 +30,7 @@ end
 M.shell = {
   bash_cmd = bash_cmd,
   pwsh_cmd = pwsh_cmd,
+  cmd_wrap = (not M.is_windows) and bash_cmd or pwsh_cmd,
 }
 
 --- Generate a command array that query the store path of a nix package
@@ -106,6 +108,7 @@ if vim.fn.executable('dotnet') == 1 then
         end
 
         -- NOTE: should have 4 fields, the exception is when lang is empty
+        local name, shortname, tags, lang
         if #matches < 4 then
           name, shortname, tags = unpack(matches)
           lang = ''
@@ -120,8 +123,6 @@ if vim.fn.executable('dotnet') == 1 then
         else
           table.insert(_G.dotnet_templates, { name = name, shortname = shortname, lang = lang, tags = tags })
         end
-
-        -- local pattern = [[^\(\([a-z0-9\.()\-]\+\s\)\+\)\s\+\([a-z0-9\.\-,]\+\)\s\+\(.\{-}\)\s\+\(.\{-}$\)]] vim.notify( vim.inspect( vim.fn.matchlist( [[Dotnet local tool manifest file               tool-manifest                           Config]], pattern)))
       end
     end
   )

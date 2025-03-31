@@ -8,6 +8,8 @@ return {
   },
 
   config = function()
+    ---@diagnostic disable-next-line: missing-parameter
+    require('nvim-dap-virtual-text').setup()
     local dap = require('dap')
     local ui = require('dapui')
     require('dapui').setup()
@@ -15,6 +17,7 @@ return {
     vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'toggle breakpoint' })
     vim.keymap.set('n', '<leader>gh', dap.run_to_cursor, { desc = 'run to cursor' })
     vim.keymap.set('n', '<leader>?', function()
+      ---@diagnostic disable-next-line: missing-fields
       ui.eval(nil, { enter = true })
     end)
     vim.keymap.set('n', '<F5>', dap.continue, { desc = 'debug: continue' })
