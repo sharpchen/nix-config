@@ -6,6 +6,7 @@
     netcoredbg
     csharpier
     roslyn-ls
+    rzls
     fsautocomplete
   ];
 }

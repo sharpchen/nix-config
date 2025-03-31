@@ -2,6 +2,7 @@
 {
   home.packages = with pkgs; [
     powershell
+    powershell-editor-services
   ];
   xdg.configFile."powershell/Microsoft.PowerShell_profile.ps1".source =
     ../../dotfiles/pwsh.profile/pwsh.profile.ps1;

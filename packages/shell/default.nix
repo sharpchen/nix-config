@@ -1,6 +1,6 @@
 {
   imports = [
-    ./nushell.nix
+    # ./nushell.nix
     ./bash.nix
     ./powershell.nix
     ./starship.nix
