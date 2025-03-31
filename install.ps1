@@ -44,12 +44,14 @@ $scoopPackages = @(
     'poppler',
     'jq',
     'fd',
-    'transmission-cli',
     'miller',
     'ouch',
     'glow',
     'uutils-coreutils',
-    'sioyek'
+    'sioyek',
+    'pwsh',
+    'powertoys',
+    'ditto'
 )
 
 $scoopFonts = @(
@@ -60,12 +62,10 @@ $scoopFonts = @(
 
 $wingetPackages = @(
     'wez.wezterm',
-    'Microsoft.PowerShell',
     'Microsoft.VisualStudio.2022.Community',
     'File-New-Project.EarTrumpet',
     'dotPDN.PaintDotNet',
     'Ditto.Ditto',
-    'Microsoft.PowerToys',
     'Google.Chrome'
 )
 
