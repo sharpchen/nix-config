@@ -6,7 +6,6 @@ Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 Set-PSReadLineKeyHandler -Key 'Ctrl+p' -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key 'Ctrl+n' -Function HistorySearchForward
-Set-PSReadLineKeyHandler -Chord ' , ' -Function DeleteWord -ViMode Command
 Set-PSReadLineKeyHandler -Chord 'g,h' -Function GotoFirstNonBlankOfLine -ViMode Command
 Set-PSReadLineKeyHandler -Chord 'g,l' -Function EndofLine -ViMode Command
 Set-PSReadLineKeyHandler -Chord ' ,z' -ViMode Command -ScriptBlock {
@@ -14,4 +13,9 @@ Set-PSReadLineKeyHandler -Chord ' ,z' -ViMode Command -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert('(')
     [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert(')')
+}
+Set-PSReadLineKeyHandler -Chord ' , ' -ViMode Command -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::ForwardChar()
+    [Microsoft.PowerShell.PSConsoleReadLine]::BackwardWord()
+    [Microsoft.PowerShell.PSConsoleReadLine]::DeleteWord()
 }

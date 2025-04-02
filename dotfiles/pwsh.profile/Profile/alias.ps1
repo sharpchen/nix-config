@@ -20,5 +20,9 @@ if (Get-Command 'home-manager' -ErrorAction SilentlyContinue) {
 }
 
 function pj {
-    Set-Location (Get-ChildItem '~/projects' -Directory | ForEach-Object FullName | fzf)
+    $folders = Get-ChildItem '~/projects' -Directory
+    if (Test-Path '~/.config/home-manager/') {
+        $folders += Get-Item '~/.config/home-manager/'
+    }
+    Set-Location ($folders | ForEach-Object FullName | fzf)
 }
