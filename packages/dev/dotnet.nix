@@ -8,5 +8,6 @@
     roslyn-ls
     rzls
     fsautocomplete
+    fantomas
   ];
 }
