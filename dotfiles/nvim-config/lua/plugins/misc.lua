@@ -104,4 +104,5 @@ return {
     opts = { pattern = '*' },
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
   },
+  'machakann/vim-sandwich',
 }

@@ -12,11 +12,14 @@ local delimiter = { left = rounded_delimiters[1], right = rounded_delimiters[2] 
 local function file_init(self)
   self.file_size = myutils.file_size()
   self.filename = vim.api.nvim_buf_get_name(0)
-  local extension = vim.fn.fnamemodify(self.filename, ':e')
-  local ft, _ = vim.filetype.match({ filename = self.filename })
-  if ft then
-    self.icon, self.icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(ft)
-  end
+
+  local ext = vim.fn.fnamemodify(self.filename, ':e')
+  local ft = vim.filetype.match({ filename = self.filename })
+
+  -- some filetypes can't be detected by filename directly, use extension as fallback
+  self.icon, self.icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(ft or ext)
+
+  -- use default icon as final choice
   local default = require('nvim-web-devicons').get_default_icon()
   self.icon = self.icon or default.icon
   self.icon_color = self.icon_color or default.color

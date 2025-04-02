@@ -1,4 +1,4 @@
-vim.g.mapleader = ' '
+vim.g.mapleader = vim.keycode('<space>')
 
 -- move selected lines up/down
 vim.keymap.set('v', '<M-j>', ":m '>+1<CR>gv=gv", { silent = true })
@@ -48,6 +48,8 @@ vim.keymap.set(
   [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
   { desc = 'replace all occurrence of current word' }
 )
+
+vim.keymap.set('n', '<leader>gq', [[:sil grep!  | cw<Left><Left><Left><Left><Left>]], { desc = 'grep and pipe to qf' })
 
 vim.keymap.set('n', '<leader>cp', function()
   local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'pascal')
@@ -232,3 +234,12 @@ vim.keymap.set('o', 'im', '<cmd>lua select_md_code_block(false)<CR>', { noremap 
 vim.keymap.set('x', 'im', '<cmd>lua select_md_code_block(false)<CR>', { noremap = true, silent = true })
 vim.keymap.set('o', 'am', '<cmd>lua select_md_code_block(true)<CR>', { noremap = true, silent = true })
 vim.keymap.set('x', 'am', '<cmd>lua select_md_code_block(true)<CR>', { noremap = true, silent = true })
+
+vim.keymap.set('n', '<leader>ll', function()
+  local config = vim.diagnostic.config() or {}
+  if config.virtual_text then
+    vim.diagnostic.config({ virtual_text = false, virtual_lines = { current_line = true } })
+  else
+    vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
+  end
+end, { desc = 'Toggle lsp_lines' })

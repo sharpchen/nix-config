@@ -30,11 +30,6 @@ vim.opt.isfname:append('@-@')
 vim.opt.guicursor =
   'n-v-sm:block-blinkwait700-blinkoff400-blinkon250-Cursor,ci-ve:ver25,r-cr-o:hor20,i-c:ver100-blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
 
-for type, icon in pairs(require('utils.const').lsp.diagnostic_icons) do
-  local hl = 'DiagnosticSign' .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
 -- render listchars on colorcolumn loaded
 vim.opt.showmode = false
 local listchars = [[nbsp:␣,eol:↵,space:·,tab:» ]]
@@ -63,14 +58,21 @@ vim.diagnostic.config({
   },
   update_in_insert = true,
   underline = true,
-  float = { border = 'rounded' },
-})
-vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
-  border = 'rounded',
-})
-
-vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-  border = 'rounded',
+  float = { border = 'single' },
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = require('utils.const').lsp.diagnostic_icons.Error,
+      [vim.diagnostic.severity.WARN] = require('utils.const').lsp.diagnostic_icons.Warn,
+      [vim.diagnostic.severity.HINT] = require('utils.const').lsp.diagnostic_icons.Hint,
+      [vim.diagnostic.severity.INFO] = require('utils.const').lsp.diagnostic_icons.Info,
+    },
+    numhl = {
+      [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+      [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+      [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+      [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+    },
+  },
 })
 
 vim.api.nvim_create_autocmd('FileType', {
@@ -89,9 +91,9 @@ vim.filetype.add({
     props = 'msbuild',
     tasks = 'msbuild',
     targets = 'msbuild',
-    slnx = 'msbuild',
     vsvimrc = 'vim',
     ideavimrc = 'vim',
+    inputrc = 'sh',
   },
   pattern = {
     [ [[.*\..*proj]] ] = 'msbuild',
