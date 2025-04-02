@@ -1,5 +1,16 @@
 set editing-mode vi
-set keymap vi-insert
 set show-mode-in-prompt on
 set vi-cmd-mode-string "\1\e[2 q\2"
 set vi-ins-mode-string "\1\e[6 q\2"
+
+set keymap vi-command
+"gh": beginning-of-line
+"gl": end-of-line
+"ciw": "lbcw"
+"diw": "lbdw"
+"  ": "lbdw"
+"yiw": "lbyw"
+"ciW": "lBcW"
+"diW": "lBdW"
+"yiW": "lByW"
+" z": "I(\eA)"
