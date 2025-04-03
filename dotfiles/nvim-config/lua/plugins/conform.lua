@@ -35,25 +35,21 @@ return {
           )
         )
       else
-        local fmt_available = vim.iter(vim.lsp.get_clients({ bufnr = bufnr })):filter(function(client)
-          return not not client.server_capabilities.documentFormattingProvider
-            and not not client.server_capabilities.documentRangeFormattingProvider
-        end)
+        local lsp_methods = require('vim.lsp.protocol').Methods
+        local fmt_available = vim.lsp.get_clients({ bufnr = bufnr, method = lsp_methods.textDocument_formatting })
 
-        if #(fmt_available:totable()) == 0 then
+        if #fmt_available == 0 then
           if vim.bo[bufnr].filetype == 'markdown' then
             vim.notify(string.format('no formatter available for %s', vim.bo[bufnr].filetype))
             return
           end
-          vim.api.nvim_feedkeys('mzgg=G`z', 'n', false)
+          vim.api.nvim_feedkeys('mzgg=G`z', 't', false)
           vim.notify('formatted by indentexpr')
         else
           vim.lsp.buf.format({ async = false, timeout_ms = 5000, bufnr = bufnr })
-          local names = fmt_available
-            :map(function(client)
-              return client.name
-            end)
-            :totable()
+          local names = vim.tbl_map(function(client)
+            return client.name
+          end, fmt_available)
           vim.notify(string.format('formmatted by lsp: %s', table.concat(names, ',')))
         end
       end

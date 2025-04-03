@@ -48,6 +48,8 @@ M.attached_clients = function()
   return vim.lsp.get_clients({ bufnr = 0 })
 end
 
+--#region tasks to fetch language-server executables
+
 if not require('utils.env').is_windows then
   async.cmd(mk_store_query('vue-language-server'), function(result)
     M.path.vue_language_server = vim.fs.joinpath(result, 'lib/node_modules/@vue/language-server')
@@ -56,5 +58,7 @@ if not require('utils.env').is_windows then
     M.path.pwsh_es = vim.fs.joinpath(result, 'lib/powershell-editor-services')
   end)
 end
+
+--#endregion
 
 return M

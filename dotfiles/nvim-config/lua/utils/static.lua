@@ -42,27 +42,4 @@ M.ts = {
   end,
 }
 
-local icons = require('nvim-web-devicons').get_icons_by_operating_system()
-if require('utils.env').is_windows then
-  M.OS_distro = 'Windows_NT'
-  M.OS_short = 'windows'
-  M.OS_icon = icons['windows'].icon
-else
-  local f = io.open('/etc/os-release', 'r')
-  if f == nil then
-    return
-  end
-  local content = f:read('*a') --[[@as string]]
-  local distro_fullname = content:match('PRETTY_NAME="([^"]+)"')
-  local short
-  for word in string.gmatch(distro_fullname, '%S+') do
-    short = word:lower()
-    break
-  end
-  f:close()
-  M.OS_distro = distro_fullname
-  M.OS_short = short
-  M.OS_icon = icons[short].icon
-end
-
 return M

@@ -1,4 +1,7 @@
 require('utils.extension')
 require('utils.env')
-require('utils.lsp')
-require('utils.dap')
+
+if not vim.g.vscode then
+  require('utils.lsp')
+  require('utils.dap')
+end

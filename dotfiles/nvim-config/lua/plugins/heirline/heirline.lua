@@ -165,10 +165,13 @@ local FileEncoding = {
 }
 local System = {
   init = function(self)
-    self.icon_color =
-      require('nvim-web-devicons').get_icons_by_operating_system()[require('utils.static').OS_short].color
+    local sys = require('utils.env').is_windows and 'windows' or 'linux'
+    local icon = require('nvim-web-devicons').get_icons_by_operating_system()[sys].color
+    self.icon_color, self.icon = icon.color, icon.icon
   end,
-  provider = require('utils.static').OS_icon .. ' ' .. vim.bo.fileformat,
+  provider = function(self)
+    return self.icon .. ' ' .. vim.bo.fileformat
+  end,
   hl = function(self)
     return { fg = self.icon_color, bg = 'statusline' }
   end,

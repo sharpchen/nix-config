@@ -24,6 +24,8 @@ local plugins_for_windows = vim
     'nvim-autopairs',
     'oil',
     'fzf-lua',
+    'treesitter',
+    'which-key',
   })
   :map(function(x)
     return { import = 'plugins.' .. x }

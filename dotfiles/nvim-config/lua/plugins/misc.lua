@@ -50,7 +50,6 @@ return {
       })
     end,
   },
-  { 'ThePrimeagen/vim-be-good', lazy = true },
   { 'LunarVim/bigfile.nvim', event = { 'BufReadPre', 'BufNewFile' } },
   {
     'tree-sitter-grammars/tree-sitter-test',
@@ -62,25 +61,6 @@ return {
       vim.g.tstest_fullwidth_rules = false
       -- set the highlight group of the rules
       vim.g.tstest_rule_hlgroup = 'FoldColumn'
-    end,
-  },
-  {
-    'axelvc/template-string.nvim',
-    ft = {
-      'cs',
-      'javascript',
-      'typescript',
-      'javascriptreact',
-      'typescriptreact',
-      'vue',
-      'svelte',
-      'html',
-    },
-    -- enabled = false,
-    config = function()
-      require('template-string').setup({
-        remove_template_string = true,
-      })
     end,
   },
   { 'yioneko/nvim-vtsls', ft = { 'typescript', 'javascript' } },
@@ -97,12 +77,11 @@ return {
   },
   {
     -- 'wurli/contextindent.nvim',
-    -- enabled = false,
+    enabled = false,
     dir = '~/projects/contextindent.nvim/',
     -- This is the only config option; you can use it to restrict the files
     -- which this plugin will affect (see :help autocommand-pattern).
     opts = { pattern = '*' },
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
   },
-  'machakann/vim-sandwich',
 }

@@ -1,3 +1,8 @@
+if vim.g.vscode then
+  require('config.vscode')
+  return
+end
+
 require('config.remap')
 require('config.set')
 require('config.lazy')
