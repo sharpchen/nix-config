@@ -1,6 +1,6 @@
 function adbin {
     [OutputType([void])]
-    param( 
+    param(
         [Parameter(Mandatory)]
         [string]$Str,
         [switch]$Enter
@@ -8,9 +8,9 @@ function adbin {
     $special = @( ' ', '\|', '\$', '&', '\(', '\)', '~', '\*', "\'", '"', '<', '>')
     foreach ($char in $special) {
         $repl = if($char.Length -gt 1) {
-            $char 
+            $char
         } else {
-            "\$char" 
+            "\$char"
         }
         $Str = $Str -replace $char, $repl
     }
@@ -44,17 +44,17 @@ function iparam {
             help $Command | Select-String 'Accept pipeline input\??\s*true.*$' -Context 5, 4
         }
     } else {
-        $CommonParams = @( 
-            'Verbose', 
+        $CommonParams = @(
+            'Verbose',
             'Debug',
-            'ErrorAction', 
-            'WarningAction', 
-            'InformationAction', 
+            'ErrorAction',
+            'WarningAction',
+            'InformationAction',
             'ProgressAction',
             'ErrorVariable',
             'WarningVariable',
-            'InformationVariable', 
-            'OutVariable', 
+            'InformationVariable',
+            'OutVariable',
             'OutBuffer',
             'PipelineVariable',
             'WhatIf',
@@ -65,13 +65,13 @@ function iparam {
             $cmd = Get-Command $cmd.Definition
         }
         ($cmd.ParameterSets | ForEach-Object {
-            $out = [pscustomobject]@{ 
+            $out = [pscustomobject]@{
                 Name = $_.Name
-                Parameters = $_.Parameters | Where-Object Name -NotIn $CommonParams 
+                Parameters = $_.Parameters | Where-Object Name -NotIn $CommonParams
             }
             $joinParams = @{
                 Property = 'Name'
-                Separator = "$([System.Environment]::NewLine)`t" 
+                Separator = "$([System.Environment]::NewLine)`t"
                 OutputPrefix = "$($out.Name):$([System.Environment]::NewLine)`t"
                 OutputSuffix = "`n"
             }
@@ -91,7 +91,7 @@ function mkvideo {
         [switch]$MakeInfo,
         [switch]$Convert
     )
-    
+
     begin {
         Get-Command ffmpeg -ea Stop | Out-Null
         Get-Command ffprobe -ea Stop | Out-Null
@@ -124,7 +124,7 @@ function mkvideo {
         foreach ($music in $allMusic) {
             Write-Progress -Activity 'Creating Videos' -Status $music -PercentComplete (($current++ / $allMusic.Length) * 100)
 
-            $json = ffprobe -v error -show_format -show_streams -hide_banner -of json -i $music 
+            $json = ffprobe -v error -show_format -show_streams -hide_banner -of json -i $music
             $mediaInfo = $json | ConvertFrom-Json
             $filename = Split-Path $music -Leaf
             $musicName = $mediaInfo.format.tags.title
@@ -218,9 +218,9 @@ function play {
 
     end {
         if ($PSCmdlet.ParameterSetName -eq 'Extension') {
-            $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Include ($Extension | ForEach-Object { "*.$_" }) 
+            $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Include ($Extension | ForEach-Object { "*.$_" })
         } else {
-            $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Filter $Filter 
+            $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Filter $Filter
         }
 
         if ($ByDate) {

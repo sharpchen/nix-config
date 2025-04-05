@@ -9,7 +9,7 @@ Set-PSReadLineKeyHandler -Key 'Ctrl+n' -Function HistorySearchForward
 Set-PSReadLineKeyHandler -Chord 'g,h' -Function GotoFirstNonBlankOfLine -ViMode Command
 Set-PSReadLineKeyHandler -Chord 'g,l' -Function EndofLine -ViMode Command
 Set-PSReadLineKeyHandler -Chord ' ,z' -ViMode Command -ScriptBlock {
-    [Microsoft.PowerShell.PSConsoleReadLine]::GotoFirstNonBlankOfLine() 
+    [Microsoft.PowerShell.PSConsoleReadLine]::GotoFirstNonBlankOfLine()
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert('(')
     [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert(')')

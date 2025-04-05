@@ -1,6 +1,6 @@
 if ($Host.Name -ne 'ConsoleHost') {
     Write-Information 'Current Host is not ConsoleHost'
-    return 
+    return
 }
 
 $env:DOTNET_CLI_UI_LANGUAGE = 'en'
@@ -53,9 +53,9 @@ function prompt {
     }
     $pattern = 'C:\\Users\\[a-zA-Z0-9]+'
     $path = if ($pwd.ProviderPath -match $pattern) {
-        "~$($pwd.ProviderPath -replace $pattern, [string]::Empty)" 
-    } else { 
-        $pwd.ProviderPath 
+        "~$($pwd.ProviderPath -replace $pattern, [string]::Empty)"
+    } else {
+        $pwd.ProviderPath
     }
 
     return "PS $path$('>' * ($nestedPromptLevel + 1)) "
