@@ -7,7 +7,7 @@ require('lspconfig').powershell_es.setup({
   settings = {
     powershell = {
       codeFormatting = {
-        Preset = 'OTBS',
+        preset = 'OTBS',
         autoCorrectAliases = true,
         useConstantStrings = true,
         useCorrectCasing = true,

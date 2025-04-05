@@ -26,6 +26,8 @@ local plugins_for_windows = vim
     'fzf-lua',
     'treesitter',
     'which-key',
+    'vim-sandwich',
+    'template-string',
   })
   :map(function(x)
     return { import = 'plugins.' .. x }

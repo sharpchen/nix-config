@@ -166,7 +166,7 @@ local FileEncoding = {
 local System = {
   init = function(self)
     local sys = require('utils.env').is_windows and 'windows' or 'linux'
-    local icon = require('nvim-web-devicons').get_icons_by_operating_system()[sys].color
+    local icon = require('nvim-web-devicons').get_icons_by_operating_system()[sys]
     self.icon_color, self.icon = icon.color, icon.icon
   end,
   provider = function(self)
@@ -401,6 +401,7 @@ local TerminalStatusline = {
 
 require('heirline').setup({
   update = { 'BufWritePost', 'BufEnter' },
+  ---@diagnostic disable-next-line: missing-fields
   statusline = {
     hl = function()
       if conditions.is_active() then

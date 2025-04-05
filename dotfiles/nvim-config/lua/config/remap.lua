@@ -241,3 +241,7 @@ vim.keymap.set('n', '<leader>ll', function()
     vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
   end
 end, { desc = 'Toggle lsp_lines' })
+
+vim.keymap.set('n', '<leader>ls', function()
+  vim.o.list = not vim.o.list
+end, { desc = 'Toggle list char' })

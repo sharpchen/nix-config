@@ -22,9 +22,6 @@ vim.opt.rtp:prepend(lazypath)
 local plugins_for_vscode = vim
   .iter({
     'Comment',
-    'nvim-rip-substitute',
-    'nvim-autopairs',
-    'oil',
     'template-string',
     'vim-sandwich',
     'treesitter',
@@ -50,8 +47,28 @@ require('lazy').setup({
 local vscode = require('vscode')
 
 vim.keymap.set('n', '<leader>k', [[<cmd>lua require('vscode').action('editor.action.formatDocument')<CR>]])
-vim.keymap.set('i', '<C-k>', '<C-p>')
-vim.keymap.set('i', '<C-j>', '<C-n>')
+vim.keymap.set('n', 'zM', function()
+  vscode.call('editor.foldAll')
+end)
+vim.keymap.set('n', 'zR', function()
+  vscode.call('editor.unfoldAll')
+end)
+vim.keymap.set('n', 'zc', function()
+  vscode.call('editor.fold')
+end)
+vim.keymap.set('n', 'zC', function()
+  vscode.call('editor.foldRecursively')
+end)
+vim.keymap.set('n', 'zo', function()
+  vscode.call('editor.unfold')
+end)
+vim.keymap.set('n', 'zO', function()
+  vscode.call('editor.unfoldRecursively')
+end)
+vim.keymap.set('n', 'za', function()
+  vscode.call('editor.toggleFold')
+end)
+
 vim.keymap.set('n', [[\]], function()
   vscode.action('editor.actions.findWithArgs', {
     args = {
