@@ -1,3 +1,3 @@
 @{
-    ExcludeRules = @('PSAvoidUsingCmdletAliases')
+    IncludeRules = @('PSAvoidTrailingWhitespace')
 }
