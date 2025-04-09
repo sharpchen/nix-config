@@ -2,7 +2,7 @@ return {
   'lewis6991/hover.nvim',
   event = { 'BufReadPre', 'BufNewFile' },
   config = function()
-    require('hover').setup({
+    require('hover').setup {
       init = function()
         require('hover.providers.lsp')
         -- require('hover.providers.gh')
@@ -12,7 +12,7 @@ return {
         require('hover.providers.diagnostic')
       end,
       preview_opts = {
-        border = 'rounded',
+        border = 'single',
       },
       -- Whether the contents of a currently open hover window should be moved
       -- to a :h preview-window when pressing the hover keymap.
@@ -22,20 +22,36 @@ return {
         'LSP',
       },
       mouse_delay = 1000,
-    })
+    }
 
     -- Setup keymaps
     vim.keymap.set('n', 'K', require('hover').hover, { desc = 'hover.nvim' })
-    vim.keymap.set('n', 'gK', require('hover').hover_select, { desc = 'hover.nvim (select)' })
-    vim.keymap.set('n', '<C-p>', function()
-      require('hover').hover_switch('previous')
-    end, { desc = 'hover.nvim (previous source)' })
-    vim.keymap.set('n', '<C-n>', function()
-      require('hover').hover_switch('next')
-    end, { desc = 'hover.nvim (next source)' })
+    vim.keymap.set(
+      'n',
+      'gK',
+      require('hover').hover_select,
+      { desc = 'hover.nvim (select)' }
+    )
+    vim.keymap.set(
+      'n',
+      '<C-p>',
+      function() require('hover').hover_switch('previous') end,
+      { desc = 'hover.nvim (previous source)' }
+    )
+    vim.keymap.set(
+      'n',
+      '<C-n>',
+      function() require('hover').hover_switch('next') end,
+      { desc = 'hover.nvim (next source)' }
+    )
 
     -- Mouse support
-    vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = 'hover.nvim (mouse)' })
+    vim.keymap.set(
+      'n',
+      '<MouseMove>',
+      require('hover').hover_mouse,
+      { desc = 'hover.nvim (mouse)' }
+    )
     vim.o.mousemoveevent = true
   end,
 }

@@ -18,7 +18,7 @@ return {
       requires_generate_from_grammar = false,
       filetype = 'fsharp',
     }
-    configs.setup({
+    configs.setup {
       ensure_installed = {
         'c',
         'cpp',
@@ -84,9 +84,16 @@ return {
             ['ac'] = '@class.outer',
             -- You can optionally set descriptions to the mappings (used in the desc parameter of
             -- nvim_buf_set_keymap) which plugins like which-key display
-            ['ic'] = { query = '@class.inner', desc = 'Select inner part of a class region' },
+            ['ic'] = {
+              query = '@class.inner',
+              desc = 'Select inner part of a class region',
+            },
             -- You can also use captures from other query groups like `locals.scm`
-            ['as'] = { query = '@scope', query_group = 'locals', desc = 'Select language scope' },
+            ['as'] = {
+              query = '@scope',
+              query_group = 'locals',
+              desc = 'Select language scope',
+            },
           },
           selection_modes = {
             ['@parameter.outer'] = 'v', -- charwise
@@ -96,6 +103,6 @@ return {
           include_surrounding_whitespace = true,
         },
       },
-    })
+    }
   end,
 }

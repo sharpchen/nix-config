@@ -2,7 +2,7 @@ return {
   'danymat/neogen',
   event = { 'BufReadPre', 'BufNewFile' },
   config = function()
-    require('neogen').setup({
+    require('neogen').setup {
       enabled = true,
       snippet_engine = 'luasnip',
       languages = {
@@ -17,8 +17,13 @@ return {
           },
         },
       },
-    })
+    }
 
-    vim.keymap.set('n', '<leader>ng', '<cmd>Neogen<CR>', { desc = 'generate doc annotation' })
+    vim.keymap.set(
+      'n',
+      '<leader>ng',
+      '<cmd>Neogen<CR>',
+      { desc = 'generate doc annotation' }
+    )
   end,
 }

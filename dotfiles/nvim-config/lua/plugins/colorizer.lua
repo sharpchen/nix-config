@@ -1,7 +1,7 @@
 return {
   'catgoose/nvim-colorizer.lua',
   config = function()
-    require('colorizer').setup({
+    require('colorizer').setup {
       filetypes = {
         '*',
         '!lazy',
@@ -21,6 +21,6 @@ return {
         tailwind = 'both',
         always_update = true,
       },
-    })
+    }
   end,
 }

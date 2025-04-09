@@ -7,14 +7,14 @@ return {
       'luukvbaal/statuscol.nvim',
       config = function()
         local builtin = require('statuscol.builtin')
-        require('statuscol').setup({
+        require('statuscol').setup {
           relculright = true,
           segments = {
             { text = { builtin.foldfunc }, click = 'v:lua.ScFa' },
             { text = { '%s' }, click = 'v:lua.ScSa' },
             { text = { builtin.lnumfunc, ' ' }, click = 'v:lua.ScLa' },
           },
-        })
+        }
       end,
     },
   },
@@ -27,10 +27,10 @@ return {
     vim.o.foldenable = true
     vim.keymap.set('n', 'zR', require('ufo').openAllFolds, { desc = 'unfold all levels' })
     vim.keymap.set('n', 'zM', require('ufo').closeAllFolds, { desc = 'fold all levels' })
-    require('ufo').setup({
+    require('ufo').setup {
       provider_selector = function(bufnr, filetype, buftype)
         return { 'treesitter', 'indent' }
       end,
-    })
+    }
   end,
 }

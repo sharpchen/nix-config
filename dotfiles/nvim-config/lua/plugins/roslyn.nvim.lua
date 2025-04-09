@@ -2,7 +2,7 @@ return {
   'seblj/roslyn.nvim',
   ft = 'cs',
   config = function()
-    require('roslyn').setup({
+    require('roslyn').setup {
       exe = 'Microsoft.CodeAnalysis.LanguageServer',
       ---@diagnostic disable-next-line: missing-fields
       config = {
@@ -36,10 +36,11 @@ return {
           },
         },
       },
-    })
+    }
 
     vim.keymap.set('n', '<leader>ni', function()
-      local buf_parent = vim.fs.dirname(vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()))
+      local buf_parent =
+        vim.fs.dirname(vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()))
       if vim.fn.isdirectory(buf_parent) == 0 then
         vim.notify('not a valid parent')
         return
@@ -51,9 +52,11 @@ return {
       end, {
         actions = {
           ['default'] = function(selected, _)
-            require('utils.async').cmd(require('utils.env').shell.bash_cmd('dotnet new ' .. selected[1]), function(_)
-              vim.notify('template ' .. selected[1] .. ' created')
-            end, { cwd = buf_parent })
+            require('utils.async').cmd(
+              require('utils.env').shell.bash_cmd('dotnet new ' .. selected[1]),
+              function(_) vim.notify('template ' .. selected[1] .. ' created') end,
+              { cwd = buf_parent }
+            )
           end,
         },
       })

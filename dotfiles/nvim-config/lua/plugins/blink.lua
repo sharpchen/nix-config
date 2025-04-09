@@ -7,9 +7,7 @@ return {
       'L3MON4D3/LuaSnip',
       dependencies = { 'rafamadriz/friendly-snippets' },
       build = 'make install_jsregexp',
-      config = function()
-        require('luasnip.loaders.from_vscode').lazy_load()
-      end,
+      config = function() require('luasnip.loaders.from_vscode').lazy_load() end,
     },
     'rafamadriz/friendly-snippets',
     {
@@ -57,9 +55,10 @@ return {
       nerd_font_variant = 'mono',
     },
     enabled = function()
-      return not vim.list_contains({ 'lazy', 'rip-substitute', 'DressingInput', 'typr' }, vim.bo.filetype)
-        and vim.bo.buftype ~= 'prompt'
-        and vim.b.completion ~= false
+      return not vim.list_contains(
+        { 'lazy', 'rip-substitute', 'DressingInput', 'typr' },
+        vim.bo.filetype
+      ) and vim.bo.buftype ~= 'prompt' and vim.b.completion ~= false
     end,
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
@@ -69,9 +68,7 @@ return {
       end,
       default = function()
         local ok, node = pcall(vim.treesitter.get_node)
-        if ok and node and node:type():find('comment') then
-          return { 'buffer' }
-        end
+        if ok and node and node:type():find('comment') then return { 'buffer' } end
         return { 'snippets', 'lsp', 'path', 'buffer' }
       end,
       providers = {
@@ -79,7 +76,8 @@ return {
           min_keyword_length = 2,
           score_offset = 10,
           should_show_items = function(ctx)
-            return ctx.trigger.initial_kind ~= 'trigger_character' and not require('blink.cmp').snippet_active()
+            return ctx.trigger.initial_kind ~= 'trigger_character'
+              and not require('blink.cmp').snippet_active()
           end,
         },
         lsp = {
@@ -111,12 +109,8 @@ return {
       },
       list = {
         selection = {
-          preselect = function(ctx)
-            return ctx.mode ~= 'cmdline'
-          end,
-          auto_insert = function(ctx)
-            return false
-          end,
+          preselect = function(ctx) return ctx.mode ~= 'cmdline' end,
+          auto_insert = function(ctx) return false end,
         },
       },
       documentation = {
@@ -146,11 +140,11 @@ return {
             kind_icon = {
               ellipsis = false,
               text = function(ctx)
-                return require('utils.const').lsp.completion_kind_icons[ctx.kind] .. ctx.icon_gap .. ' '
+                return require('utils.const').lsp.completion_kind_icons[ctx.kind]
+                  .. ctx.icon_gap
+                  .. ' '
               end,
-              highlight = function(ctx)
-                return 'BlinkCmpKind' .. ctx.kind
-              end,
+              highlight = function(ctx) return 'BlinkCmpKind' .. ctx.kind end,
             },
             label = {
               width = { fill = true, max = 60 },

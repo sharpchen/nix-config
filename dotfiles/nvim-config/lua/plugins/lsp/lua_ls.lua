@@ -1,4 +1,4 @@
-require('lspconfig').lua_ls.setup({
+require('lspconfig').lua_ls.setup {
   settings = {
     Lua = {
       hint = {
@@ -19,4 +19,4 @@ require('lspconfig').lua_ls.setup({
       },
     },
   },
-})
+}

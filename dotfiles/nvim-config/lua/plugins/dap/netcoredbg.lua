@@ -18,12 +18,16 @@ dap.configurations.cs = {
       local target_fm_dirs = dir:get_directories()
 
       if not dir:exists() or #target_fm_dirs == 0 then
-        vim.notify('No debug build found, please build project first.', vim.log.levels.WARN)
+        vim.notify(
+          'No debug build found, please build project first.',
+          vim.log.levels.WARN
+        )
       end
 
-      local dlls = vim.fs.find(function(name, _)
-        return name:match('%.dll$')
-      end, { path = dir.fullname, limit = math.huge, type = 'file' })
+      local dlls = vim.fs.find(
+        function(name, _) return name:match('%.dll$') end,
+        { path = dir.fullname, limit = math.huge, type = 'file' }
+      )
 
       local ret
 
@@ -31,9 +35,7 @@ dap.configurations.cs = {
 
       require('fzf-lua').fzf_exec(dlls, {
         actions = {
-          default = function(selected, _)
-            ret = selected[1]
-          end,
+          default = function(selected, _) ret = selected[1] end,
         },
       })
 

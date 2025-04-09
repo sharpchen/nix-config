@@ -13,7 +13,7 @@ return {
   },
   config = function()
     ---@diagnostic disable-next-line: missing-fields
-    require('nvim-ts-autotag').setup({
+    require('nvim-ts-autotag').setup {
       opts = {
         -- Defaults
         enable_close = true, -- Auto close tags
@@ -29,6 +29,6 @@ return {
         xaml = 'xml',
         msbuild = 'xml',
       },
-    })
+    }
   end,
 }

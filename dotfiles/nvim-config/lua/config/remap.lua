@@ -33,8 +33,18 @@ vim.keymap.set('v', '<leader>y', '"+y', { desc = 'copy to system clipboard' })
 vim.keymap.set('n', '<leader>Y', '"+Y', { desc = 'copy to system clipboard' })
 
 -- deleting without overwriting last clipboard
-vim.keymap.set('n', '<leader>d', '"_d', { desc = 'deleting without overwriting clipboard' })
-vim.keymap.set('v', '<leader>d', '"_d', { desc = 'deleting without overwriting clipboard' })
+vim.keymap.set(
+  'n',
+  '<leader>d',
+  '"_d',
+  { desc = 'deleting without overwriting clipboard' }
+)
+vim.keymap.set(
+  'v',
+  '<leader>d',
+  '"_d',
+  { desc = 'deleting without overwriting clipboard' }
+)
 
 -- switch to another file in the system using tmux
 -- vim.keymap.set('n', '<C-f>', '<cmd>silent !tmux neww tmux-sessionizer<CR>')
@@ -47,7 +57,12 @@ vim.keymap.set(
   { desc = 'replace all occurrence of current word' }
 )
 
-vim.keymap.set('n', '<leader>gq', [[:sil grep!  | cw<Left><Left><Left><Left><Left>]], { desc = 'grep and pipe to qf' })
+vim.keymap.set(
+  'n',
+  '<leader>gq',
+  [[:sil grep!  | cw<Left><Left><Left><Left><Left>]],
+  { desc = 'grep and pipe to qf' }
+)
 
 vim.keymap.set('n', '<leader>cp', function()
   local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'pascal')
@@ -76,9 +91,12 @@ end)
 
 vim.keymap.set('n', '<leader>a', 'ggVG', { desc = 'select all text' })
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
-vim.keymap.set('n', '<leader>hh', function()
-  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }))
-end, { desc = 'toggle inlay hint' })
+vim.keymap.set(
+  'n',
+  '<leader>hh',
+  function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = 0 }) end,
+  { desc = 'toggle inlay hint' }
+)
 
 vim.keymap.set('n', '<A-c>', '<cmd>bd<CR>', { desc = 'close current buffer' })
 vim.keymap.set('n', '<A-,>', '<cmd>bp<CR>', { desc = 'move to previous buffer' })
@@ -88,13 +106,38 @@ vim.keymap.set('n', '<leader><leader>', 'diw')
 
 -- vim.keymap.set('n', '0', '^', { noremap = true, silent = true, desc = 'go to start of line' })
 -- vim.keymap.set('n', '^', '0', { noremap = true, silent = true, desc = 'go to first word bound of line' })
-vim.keymap.set('n', 'gh', '<cmd>norm! ^<CR>', { noremap = true, silent = true, desc = 'go to start of line' })
-vim.keymap.set('n', 'gl', '<cmd>norm! $<CR>', { noremap = true, silent = true, desc = 'go to end of line' })
+vim.keymap.set(
+  'n',
+  'gh',
+  '<cmd>norm! ^<CR>',
+  { noremap = true, silent = true, desc = 'go to start of line' }
+)
+vim.keymap.set(
+  'n',
+  'gl',
+  '<cmd>norm! $<CR>',
+  { noremap = true, silent = true, desc = 'go to end of line' }
+)
 vim.keymap.set('n', 'gi', 'gi<Esc>zzi', { noremap = true, silent = true })
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
-vim.keymap.set('n', '<leader>z', 'I(<Esc>A)', { noremap = true, desc = 'brace line with ()' })
-vim.keymap.set('n', '<leader>;', 'mzA;<Esc>`z', { noremap = true, desc = 'append ; at the end of line' })
-vim.keymap.set('n', '<leader>,', 'mzA,<Esc>`z', { noremap = true, desc = 'append ; at the end of line' })
+vim.keymap.set(
+  'n',
+  '<leader>z',
+  'I(<Esc>A)',
+  { noremap = true, desc = 'brace line with ()' }
+)
+vim.keymap.set(
+  'n',
+  '<leader>;',
+  'mzA;<Esc>`z',
+  { noremap = true, desc = 'append ; at the end of line' }
+)
+vim.keymap.set(
+  'n',
+  '<leader>,',
+  'mzA,<Esc>`z',
+  { noremap = true, desc = 'append ; at the end of line' }
+)
 
 vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, desc = 'go to window downward' })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, desc = 'go to window upward' })
@@ -103,7 +146,12 @@ vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, desc = 'go to window ri
 vim.keymap.set('n', '<C-q>', '<C-w>q', { noremap = true, desc = 'close current window' })
 
 if vim.uv.os_uname().sysname == 'Linux' then
-  vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true, desc = 'make current file executable' })
+  vim.keymap.set(
+    'n',
+    '<leader>x',
+    '<cmd>!chmod +x %<CR>',
+    { silent = true, desc = 'make current file executable' }
+  )
 end
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -138,9 +186,7 @@ local function mv_qf_item(next, init_bufnr)
     is_not_init_buf = vim.fn.bufnr('%') ~= init_bufnr
   end
 
-  if is_not_init_buf then
-    vim.cmd('bd | copen')
-  end
+  if is_not_init_buf then vim.cmd('bd | copen') end
 
   if is_top and not next then
     vim.cmd('clast')
@@ -158,16 +204,21 @@ local function mv_qf_item(next, init_bufnr)
     string.format(
       'res %s',
       math.floor(
-        (vim.o.lines - vim.o.cmdheight - (vim.o.laststatus == 0 and 0 or 1) - (vim.o.tabline == '' and 0 or 1)) / 3 * 2
+        (
+          vim.o.lines
+          - vim.o.cmdheight
+          - (vim.o.laststatus == 0 and 0 or 1)
+          - (vim.o.tabline == '' and 0 or 1)
+        )
+            / 3
+            * 2
           + 0.5
       ) + 3
     )
   )
 
   -- make sure go back to qf
-  if vim.bo.filetype ~= 'qf' then
-    vim.cmd('copen')
-  end
+  if vim.bo.filetype ~= 'qf' then vim.cmd('copen') end
 end
 
 vim.api.nvim_create_autocmd('FileType', {
@@ -175,21 +226,10 @@ vim.api.nvim_create_autocmd('FileType', {
   callback = function(event)
     local opts = { buffer = event.buf, silent = true }
     local init_bufnr = vim.fn.bufnr('#')
-    vim.keymap.set('n', '<C-n>', function()
-      mv_qf_item(true, init_bufnr)
-    end, opts)
-
-    vim.keymap.set('n', '<C-p>', function()
-      mv_qf_item(false, init_bufnr)
-    end, opts)
-
-    vim.keymap.set('n', '<C-j>', function()
-      mv_qf_item(true, init_bufnr)
-    end, opts)
-
-    vim.keymap.set('n', '<C-k>', function()
-      mv_qf_item(false, init_bufnr)
-    end, opts)
+    vim.keymap.set('n', '<C-n>', function() mv_qf_item(true, init_bufnr) end, opts)
+    vim.keymap.set('n', '<C-p>', function() mv_qf_item(false, init_bufnr) end, opts)
+    vim.keymap.set('n', '<C-j>', function() mv_qf_item(true, init_bufnr) end, opts)
+    vim.keymap.set('n', '<C-k>', function() mv_qf_item(false, init_bufnr) end, opts)
   end,
 })
 
@@ -214,9 +254,7 @@ function _G.select_md_code_block(around)
   end
 
   -- Ensure valid range
-  if not start or not finish or start == finish then
-    return
-  end
+  if not start or not finish or start == finish then return end
 
   if around then
     -- Select around (including ``` lines)
@@ -228,20 +266,50 @@ function _G.select_md_code_block(around)
 end
 
 -- Map "vi`" to select inside a Markdown code block
-vim.keymap.set('o', 'im', '<cmd>lua select_md_code_block(false)<CR>', { noremap = true, silent = true })
-vim.keymap.set('x', 'im', '<cmd>lua select_md_code_block(false)<CR>', { noremap = true, silent = true })
-vim.keymap.set('o', 'am', '<cmd>lua select_md_code_block(true)<CR>', { noremap = true, silent = true })
-vim.keymap.set('x', 'am', '<cmd>lua select_md_code_block(true)<CR>', { noremap = true, silent = true })
+vim.keymap.set(
+  'o',
+  'im',
+  '<cmd>lua select_md_code_block(false)<CR>',
+  { noremap = true, silent = true }
+)
+vim.keymap.set(
+  'x',
+  'im',
+  '<cmd>lua select_md_code_block(false)<CR>',
+  { noremap = true, silent = true }
+)
+vim.keymap.set(
+  'o',
+  'am',
+  '<cmd>lua select_md_code_block(true)<CR>',
+  { noremap = true, silent = true }
+)
+vim.keymap.set(
+  'x',
+  'am',
+  '<cmd>lua select_md_code_block(true)<CR>',
+  { noremap = true, silent = true }
+)
 
 vim.keymap.set('n', '<leader>ll', function()
-  local config = vim.diagnostic.config() or {}
-  if config.virtual_text then
-    vim.diagnostic.config({ virtual_text = false, virtual_lines = { current_line = true } })
+  if not _G.__diag_config then _G.__diag_config = vim.diagnostic.config() or {} end
+  local current_config = vim.diagnostic.config() or {}
+  if current_config.virtual_text then
+    vim.diagnostic.config {
+      virtual_text = false,
+      virtual_lines = {
+        current_line = true,
+        format = _G.__diag_fmt,
+      },
+    }
   else
-    vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
+    vim.diagnostic.config(_G.__diag_config)
   end
 end, { desc = 'Toggle lsp_lines' })
 
-vim.keymap.set('n', '<leader>ls', function()
-  vim.o.list = not vim.o.list
-end, { desc = 'Toggle list char' })
+vim.keymap.set(
+  'n',
+  '<leader>ls',
+  function() vim.o.list = not vim.o.list end,
+  { desc = 'Toggle list char' }
+)

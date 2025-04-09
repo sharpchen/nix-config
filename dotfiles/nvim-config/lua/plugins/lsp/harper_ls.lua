@@ -1,4 +1,4 @@
-require('lspconfig').harper_ls.setup({
+require('lspconfig').harper_ls.setup {
   filetypes = require('utils.lsp').config.filetypes('harper_ls', { 'ps1' }),
   settings = {
     ['harper-ls'] = {
@@ -11,4 +11,4 @@ require('lspconfig').harper_ls.setup({
       userDictPath = '~/.config/home-manager/dotfiles/harper_dict.txt',
     },
   },
-})
+}

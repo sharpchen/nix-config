@@ -2,9 +2,9 @@ return {
   'rmagatti/goto-preview',
   event = { 'BufReadPre', 'BufNewFile' },
   config = function()
-    require('goto-preview').setup({
+    require('goto-preview').setup {
       border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
-    })
+    }
     vim.keymap.set(
       'n',
       'gp',

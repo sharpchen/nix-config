@@ -9,9 +9,7 @@ M.buf = {
   ---@return string
   cursor_ft = function()
     local lang = M.ts.cursor_lang()
-    if lang == 'powershell' then
-      return 'ps1'
-    end
+    if lang == 'powershell' then return 'ps1' end
     return lang == 'c_sharp' and 'cs' or lang
   end,
 }
@@ -38,7 +36,10 @@ M.ts = {
   ---@return string
   cursor_lang = function()
     local curline = vim.fn.line('.')
-    return vim.treesitter.get_parser():language_for_range({ curline, 0, curline, 0 }):lang()
+    return vim.treesitter
+      .get_parser()
+      :language_for_range({ curline, 0, curline, 0 })
+      :lang()
   end,
 }
 

@@ -52,13 +52,40 @@ vim.api.nvim_create_autocmd('ColorScheme', {
   end,
 })
 
-vim.diagnostic.config({
+_G.__diag_fmt = function(diagnostic)
+  ---@cast diagnostic vim.Diagnostic
+  if diagnostic.code and diagnostic.source and diagnostic.message then
+    return string.format(
+      '[%s] %s [%s]',
+      diagnostic.code,
+      diagnostic.message,
+      diagnostic.source
+    )
+  elseif diagnostic.code and diagnostic.message then
+    return string.format(
+      '[%s] %s',
+      diagnostic.code,
+      diagnostic.message,
+      diagnostic.source
+    )
+  else
+    return diagnostic.message
+  end
+end
+
+vim.diagnostic.config {
   virtual_text = {
     prefix = ' ■ ', -- Could be '●', '▎', 'x', '■', , 
+    source = true,
+    format = _G.__diag_fmt,
   },
   update_in_insert = true,
   underline = true,
-  float = { border = 'single' },
+  float = {
+    border = 'single',
+    source = true,
+    format = _G.__diag_fmt,
+  },
   signs = {
     text = {
       [vim.diagnostic.severity.ERROR] = require('utils.const').lsp.diagnostic_icons.Error,
@@ -73,7 +100,7 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
     },
   },
-})
+}
 
 vim.api.nvim_create_autocmd('FileType', {
   pattern = '*',
@@ -84,7 +111,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
-vim.filetype.add({
+vim.filetype.add {
   extension = {
     axaml = 'axaml',
     xaml = 'xaml',
@@ -98,13 +125,11 @@ vim.filetype.add({
   pattern = {
     [ [[.*\..*proj]] ] = 'msbuild',
   },
-})
+}
 
 vim.treesitter.language.register('xml', { 'axaml', 'xaml', 'msbuild' })
 
-if jit.os:find('Windows') and vim.fn.executable('pwsh') == 1 then
-  vim.o.shell = 'pwsh'
-end
+if jit.os:find('Windows') and vim.fn.executable('pwsh') == 1 then vim.o.shell = 'pwsh' end
 
 vim.api.nvim_create_user_command('Pj', function()
   local cmd = [[cmd.exe /c "for /D %d in (%USERPROFILE%\projects\*) do @echo %d" | fzf]]
@@ -116,9 +141,7 @@ vim.api.nvim_create_user_command('Pj', function()
 
   require('fzf-lua').fzf_exec(command, {
     actions = {
-      ['default'] = function(selected, _)
-        vim.fn.chdir(selected[1])
-      end,
+      ['default'] = function(selected, _) vim.fn.chdir(selected[1]) end,
     },
   })
 end, { desc = 'switch to one project folder' })

@@ -1,13 +1,13 @@
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  vim.fn.system({
+  vim.fn.system {
     'git',
     'clone',
     '--filter=blob:none',
     'git@github.com:folke/lazy.nvim.git',
     '--branch=stable', -- latest stable release
     lazypath,
-  })
+  }
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -29,12 +29,10 @@ local plugins_for_windows = vim
     'vim-sandwich',
     'template-string',
   })
-  :map(function(x)
-    return { import = 'plugins.' .. x }
-  end)
+  :map(function(x) return { import = 'plugins.' .. x } end)
   :totable()
 
-require('lazy').setup({
+require('lazy').setup {
   lockfile = jit.os:find('Windows') and vim.fn.stdpath('config') .. '/lazy-lock.json'
     or '~/.config/home-manager/dotfiles/nvim-config/lazy-lock.json',
   git = {
@@ -48,4 +46,4 @@ require('lazy').setup({
   ui = {
     border = 'none',
   },
-})
+}

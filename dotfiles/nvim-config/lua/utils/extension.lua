@@ -2,9 +2,7 @@ string.empty = ''
 
 ---@param str string
 ---@return boolean
-function string.is_nil_or_empty(str)
-  return str == nil or str == string.empty
-end
+function string.is_nil_or_empty(str) return str == nil or str == string.empty end
 
 ---@param str string
 ---@return string[]
@@ -20,9 +18,7 @@ end
 ---@param str string
 ---@param target string
 ---@return integer
-function string.indexof(str, target)
-  return str:find(target:verbatim()) or 0
-end
+function string.indexof(str, target) return str:find(target:verbatim()) or 0 end
 
 --- find last position of target in *literal*
 ---@param str string
@@ -43,11 +39,16 @@ function string.verbatim(str)
   local percent = '%'
 
   _G.my_regex_special = _G.my_regex_special
-    or ('([%s])'):format(vim.iter(regex):fold(string.empty, function(sum, current)
-      return sum .. '%' .. current
-    end))
+    or ('([%s])'):format(
+      vim
+        .iter(regex)
+        :fold(string.empty, function(sum, current) return sum .. '%' .. current end)
+    )
 
-  local ret, _ = str:gsub('%%', '%%%%'):gsub(_G.my_regex_special, '%%%1'):gsub(percent:rep(8), percent:rep(4))
+  local ret, _ = str
+    :gsub('%%', '%%%%')
+    :gsub(_G.my_regex_special, '%%%1')
+    :gsub(percent:rep(8), percent:rep(4))
 
   return ret
 end
@@ -68,9 +69,7 @@ function string.split(text, separator)
   end
   return vim
     .iter(Collect(text:gmatch(pattern)))
-    :filter(function(x)
-      return x ~= string.empty
-    end)
+    :filter(function(x) return x ~= string.empty end)
     :totable()
 end
 

@@ -14,9 +14,7 @@ local termcode = {
   CR = translate_termcode('<CR>'),
 }
 M.termcode = setmetatable(termcode, {
-  __call = function(_, str)
-    return translate_termcode(str)
-  end,
+  __call = function(_, str) return translate_termcode(str) end,
 })
 
 ---@param name string
@@ -25,15 +23,11 @@ M.case.is_camel = function(name)
   assert(not string.is_nil_or_empty(name))
 
   -- if has only single word
-  if name:match('^%l+$') ~= nil then
-    return true
-  end
+  if name:match('^%l+$') ~= nil then return true end
 
   local first = name:match('^%l+')
 
-  if not first then
-    return false
-  end
+  if not first then return false end
 
   local rest = Collect(name:gmatch('%u%l+'))
   return first:len() + table.concat(rest):len() == name:len()
@@ -44,14 +38,10 @@ end
 M.case.is_snake = function(name)
   assert(not string.is_nil_or_empty(name))
   -- if has only single word
-  if name:match('^%l+$') ~= nil then
-    return true
-  end
+  if name:match('^%l+$') ~= nil then return true end
 
   local splits = name:split('_')
-  return vim.iter(splits):all(function(x)
-    return x:match('^%l+$') ~= nil
-  end)
+  return vim.iter(splits):all(function(x) return x:match('^%l+$') ~= nil end)
 end
 
 ---@param name string
@@ -82,9 +72,7 @@ local pascal_lexer = vim.tbl_extend('error', {
   ---@param name string
   ---@return string[]
   handle = function(self, name)
-    if not self.can_handle(name) then
-      return self.next:handle(name)
-    end
+    if not self.can_handle(name) then return self.next:handle(name) end
     assert(not string.is_nil_or_empty(name))
     return Collect(name:gmatch('%u%l*'))
   end,
@@ -97,13 +85,9 @@ local camel_lexer = vim.tbl_extend('error', {
   ---@param name string
   ---@return string[]
   handle = function(self, name)
-    if not self.can_handle(name) then
-      return self.next:handle(name)
-    end
+    if not self.can_handle(name) then return self.next:handle(name) end
 
-    if name:match('^%l+$') then
-      return { name }
-    end
+    if name:match('^%l+$') then return { name } end
 
     local first_word = name:match('^%l+')
     local rest = Collect(name:gmatch('%u%l*'))
@@ -118,9 +102,7 @@ local snake_lexer = vim.tbl_extend('error', {
   ---@param name string
   ---@return string[]
   handle = function(self, name)
-    if not self.can_handle(name) then
-      return self.next:handle(name)
-    end
+    if not self.can_handle(name) then return self.next:handle(name) end
 
     return name:match('^%l+$') and { name } or name:split('_')
   end,
@@ -155,12 +137,7 @@ M.case.convert = function(word, to)
       end)
   elseif to == 'snake' then
     return table.concat(
-      vim
-        .iter(tokens)
-        :map(function(token)
-          return token:lower()
-        end)
-        :totable(),
+      vim.iter(tokens):map(function(token) return token:lower() end):totable(),
       '_'
     )
   else

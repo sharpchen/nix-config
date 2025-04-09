@@ -12,6 +12,7 @@ require('config.wsl')
 
 if vim.g.started_by_firenvim then
   vim.o.laststatus = 0
+  vim.o.background = 'light'
 end
 
 if require('utils.env').is_windows then

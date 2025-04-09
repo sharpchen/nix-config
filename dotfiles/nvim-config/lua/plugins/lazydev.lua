@@ -10,9 +10,7 @@ return {
         { path = 'wezterm-types', mods = { 'wezterm' } },
       },
     },
-    enabled = function()
-      return not vim.uv.fs_stat(vim.uv.cwd() .. '/.luarc.json')
-    end,
+    enabled = function() return not vim.uv.fs_stat(vim.uv.cwd() .. '/.luarc.json') end,
   },
   { 'Bilal2453/luvit-meta', lazy = true }, -- optional `vim.uv` typings
   { 'justinsgithub/wezterm-types', lazy = true },

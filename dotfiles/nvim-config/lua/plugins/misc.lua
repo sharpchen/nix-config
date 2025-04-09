@@ -3,13 +3,13 @@ return {
     'RRethy/vim-illuminate',
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
-      require('illuminate').configure({
+      require('illuminate').configure {
         filetypes_denylist = {
           'dirbuf',
           'dirvish',
           'qf',
         },
-      })
+      }
     end,
   },
   {
@@ -44,10 +44,10 @@ return {
     'sharpchen/nvim-material-icon',
     branch = 'rm-invalid-icon',
     config = function()
-      require('nvim-web-devicons').set_icon_by_filetype({
+      require('nvim-web-devicons').set_icon_by_filetype {
         msbuild = 'sln',
         axaml = 'xaml',
-      })
+      }
     end,
   },
   { 'LunarVim/bigfile.nvim', event = { 'BufReadPre', 'BufNewFile' } },

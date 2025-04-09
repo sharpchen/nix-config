@@ -6,8 +6,8 @@ return {
   },
   config = function()
     require('lspconfig.ui.windows').default_options.border = 'rounded'
-    require('mason').setup({ ui = { border = 'rounded' } })
-    require('mason-tool-installer').setup({
+    require('mason').setup { ui = { border = 'rounded' } }
+    require('mason-tool-installer').setup {
       ensure_installed = {
         'vtsls',
         'lua_ls',
@@ -26,6 +26,6 @@ return {
         'fsautocomplete',
         'actionlint',
       },
-    })
+    }
   end,
 }

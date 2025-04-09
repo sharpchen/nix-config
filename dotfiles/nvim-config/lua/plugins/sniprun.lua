@@ -3,7 +3,7 @@ return {
   branch = 'master',
   build = 'sh install.sh 1',
   config = function()
-    require('sniprun').setup({
+    require('sniprun').setup {
       display = {
         'VirtualText',
         'Classic',
@@ -24,15 +24,13 @@ return {
           },
         },
       },
-    })
+    }
 
     vim.keymap.set({ 'v', 'x' }, '<leader>e', ":'<,'>SnipRun<CR>", { desc = 'sniprun' })
     vim.keymap.set(
       'n',
       '<leader>e',
-      require('utils.static').mark.wrap(function()
-        vim.cmd('SnipRun')
-      end),
+      require('utils.static').mark.wrap(function() vim.cmd('SnipRun') end),
       { desc = 'sniprun' }
     )
   end,

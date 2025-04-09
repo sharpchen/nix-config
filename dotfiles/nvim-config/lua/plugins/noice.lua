@@ -7,7 +7,7 @@ return {
     'rcarriga/nvim-notify',
   },
   config = function()
-    require('noice').setup({
+    require('noice').setup {
       messages = {
         enabled = false,
       },
@@ -38,6 +38,6 @@ return {
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = 'rounded', -- add a border to hover docs and signature help
       },
-    })
+    }
   end,
 }

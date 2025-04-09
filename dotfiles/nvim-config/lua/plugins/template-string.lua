@@ -12,8 +12,8 @@ return {
   },
   -- enabled = false,
   config = function()
-    require('template-string').setup({
+    require('template-string').setup {
       remove_template_string = true,
-    })
+    }
   end,
 }

@@ -14,9 +14,7 @@ M.DirectoryInfo.get_directories = function(self, pattern, level)
   if pattern then
     return vim
       .iter(internal.ls(self.fullname, level, 'directory'))
-      :filter(function(x)
-        return x.name:match(pattern) ~= nil
-      end)
+      :filter(function(x) return x.name:match(pattern) ~= nil end)
       :totable()
   end
   return internal.ls(self.fullname, level, 'directory')
@@ -27,9 +25,7 @@ M.DirectoryInfo.get_files = function(self, pattern, level)
   if pattern then
     return vim
       .iter(internal.ls(self.fullname, level, 'file'))
-      :filter(function(x)
-        return x.name:match(pattern) ~= nil
-      end)
+      :filter(function(x) return x.name:match(pattern) ~= nil end)
       :totable()
   end
 
@@ -74,9 +70,7 @@ end
 
 ---@param self FileInfo
 ---@return boolean
-M.FileInfo.exists = function(self)
-  return vim.fn.filereadable(self.fullname) == 1
-end
+M.FileInfo.exists = function(self) return vim.fn.filereadable(self.fullname) == 1 end
 
 ---@param base string
 ---@param level 'top' | 'all'
@@ -85,32 +79,34 @@ end
 internal.ls = function(base, level, type)
   local ret = {}
   local scanner = vim.uv.fs_scandir(base)
-  if not scanner then
-    return {}
-  end
+  if not scanner then return {} end
   if level == 'top' then
     while true do
       local name, kind = vim.uv.fs_scandir_next(scanner)
-      if not name then
-        break
-      end
+      if not name then break end
       if kind == type then
         local fullname = vim.fs.joinpath(base, name)
-        table.insert(ret, type == 'directory' and M.DirectoryInfo.new(fullname) or M.FileInfo.new(fullname))
+        table.insert(
+          ret,
+          type == 'directory' and M.DirectoryInfo.new(fullname)
+            or M.FileInfo.new(fullname)
+        )
       end
     end
   else
     while true do
       local name, kind = vim.uv.fs_scandir_next(scanner)
       local fullname = vim.fs.joinpath(base, name)
-      if not name then
-        break
-      end
+      if not name then break end
       if kind == 'directory' then
         ret = vim.list_extend(ret, internal.ls(fullname, 'all', type))
       end
       if kind == type then
-        table.insert(ret, type == 'directory' and M.DirectoryInfo.new(fullname) or M.FileInfo.new(fullname))
+        table.insert(
+          ret,
+          type == 'directory' and M.DirectoryInfo.new(fullname)
+            or M.FileInfo.new(fullname)
+        )
       end
     end
   end
