@@ -66,12 +66,12 @@ function iparam {
         }
         ($cmd.ParameterSets | ForEach-Object {
             $out = [pscustomobject]@{
-                Name = $_.Name
+                Name       = $_.Name
                 Parameters = $_.Parameters | Where-Object Name -NotIn $CommonParams
             }
             $joinParams = @{
-                Property = 'Name'
-                Separator = "$([System.Environment]::NewLine)`t"
+                Property     = 'Name'
+                Separator    = "$([System.Environment]::NewLine)`t"
                 OutputPrefix = "$($out.Name):$([System.Environment]::NewLine)`t"
                 OutputSuffix = "`n"
             }

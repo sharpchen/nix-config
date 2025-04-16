@@ -30,13 +30,13 @@ if ($IsLegacy) {
 
 $syntaxColors = @{
     Parameter = 'Magenta'
-    Operator = 'Cyan'
-    Type = 'Cyan'
-    Keyword = 'Magenta'
-    Command = 'Blue'
-    Number = 'Yellow'
-    Member = 'Red'
-    String = 'Green'
+    Operator  = 'Cyan'
+    Type      = 'Cyan'
+    Keyword   = 'Magenta'
+    Command   = 'Blue'
+    Number    = 'Yellow'
+    Member    = 'Red'
+    String    = 'Green'
 }
 
 if ((Get-Module -Name PSReadLine).Version -lt '2.0.0') {
