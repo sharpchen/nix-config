@@ -1,7 +1,4 @@
 ---@class Static
----@field OS_distro string full name of system
----@field OS_short string short name for system
----@field OS_icon string icon of system
 local M = {}
 
 M.buf = {

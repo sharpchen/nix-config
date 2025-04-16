@@ -1,6 +1,5 @@
 return {
-  -- 'johnfrankmorgan/whitespace.nvim',
-  dir = '~/projects/whitespace.nvim/',
+  'johnfrankmorgan/whitespace.nvim',
   config = function()
     require('whitespace-nvim').setup {
       highlight = 'DiffDelete',
@@ -9,5 +8,9 @@ return {
       return_cursor = true,
     }
     vim.keymap.set('n', '<Leader>tr', require('whitespace-nvim').trim)
+    -- highlight would disappear for conflicting with au in set.lua
+    vim.api.nvim_create_autocmd('ColorScheme', {
+      callback = require('whitespace-nvim').highlight,
+    })
   end,
 }

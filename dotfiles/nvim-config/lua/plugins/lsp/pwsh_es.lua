@@ -13,6 +13,7 @@ require('lspconfig').powershell_es.setup {
         whitespaceAfterSeparator = true,
         whitespaceBeforeOpenBrace = true,
         addWhitespaceAroundPipe = true,
+        alignPropertyValuePairs = true,
       },
     },
   },

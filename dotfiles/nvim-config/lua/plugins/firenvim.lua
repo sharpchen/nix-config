@@ -18,6 +18,10 @@ return {
           selector = 'textarea',
           takeover = 'always',
         },
+        ['https?://github.com.*/blob/*.'] = {
+          takeover = 'never',
+          priority = 1,
+        },
         ['https?://chat.*'] = { -- disable for ai chat
           takeover = 'never',
           priority = 1, -- priority matters to override the .* pattern

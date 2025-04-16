@@ -110,7 +110,7 @@ return {
       list = {
         selection = {
           preselect = function(ctx) return ctx.mode ~= 'cmdline' end,
-          auto_insert = function(ctx) return false end,
+          auto_insert = false,
         },
       },
       documentation = {
@@ -133,7 +133,7 @@ return {
         draw = {
           columns = {
             { 'kind_icon', 'label', gap = 1 },
-            { 'kind' },
+            -- { 'kind' },
             { 'source_name' },
           },
           components = {

@@ -1,16 +1,5 @@
 return {
   'rcarriga/nvim-notify',
-  dependencies = {
-    {
-      'mrded/nvim-lsp-notify',
-      enabled = false,
-      config = function()
-        require('lsp-notify').setup {
-          notify = require('notify'),
-        }
-      end,
-    },
-  },
   config = function()
     require('notify').setup {
       timeout = 1000,
