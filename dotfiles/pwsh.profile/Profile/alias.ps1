@@ -2,7 +2,7 @@ Set-Alias lg lazygit
 Set-Alias dn dotnet
 
 function vim {
-    nvim --clean -c 'source ~/.vimrc' @args
+    nvim -u '~/.vimrc' @args
 }
 
 function v {
