@@ -134,7 +134,7 @@ return {
           columns = {
             { 'kind_icon', 'label', gap = 1 },
             -- { 'kind' },
-            { 'source_name' },
+            -- { 'source_name' },
           },
           components = {
             kind_icon = {

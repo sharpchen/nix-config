@@ -32,6 +32,7 @@ local function setup()
         ['@punctuation.special.typescript'] = function(_, _) return { bold = true } end,
         ['@keyword.operator'] = function(_, p) return { fg = p.declarative } end,
         ['@keyword.coroutine'] = function(_, p) return { fg = p.declarative } end,
+        SymbolUsageText = function(_, p) return { fg = p.comment, italic = false } end,
       },
       vim.iter({ 'Error', 'Warn', 'Hint', 'Info' }):fold({}, function(final, curr)
         final['DiagnosticVirtualText' .. curr] = function(_, _) return { bg = 'none' } end

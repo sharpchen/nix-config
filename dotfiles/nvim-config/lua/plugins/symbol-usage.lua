@@ -23,6 +23,7 @@ return {
       end
       return table.concat(fragments, ', ') .. stacked_functions
     end
+    ---@diagnostic disable-next-line: missing-fields
     require('symbol-usage').setup {
       text_format = text_format,
       vt_position = 'end_of_line',

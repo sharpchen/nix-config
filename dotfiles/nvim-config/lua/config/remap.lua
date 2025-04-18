@@ -67,27 +67,27 @@ vim.keymap.set(
 vim.keymap.set('n', '<leader>cp', function()
   local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'pascal')
   vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
-end)
+end, { desc = 'convert to pascal case' })
 
 vim.keymap.set('n', '<leader>cs', function()
   local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'snake')
   vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
-end)
+end, { desc = 'convert to snake case' })
 
 vim.keymap.set('n', '<leader>cc', function()
   local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'camel')
   vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
-end)
+end, { desc = 'convert to camel case' })
 
 vim.keymap.set('n', '<M-u>', function()
   local sub = vim.fn.expand('<cword>'):upper()
   vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
-end)
+end, { desc = 'convert to upper case' })
 
 vim.keymap.set('n', '<M-l>', function()
   local sub = vim.fn.expand('<cword>'):lower()
   vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
-end)
+end, { desc = 'convert to lower case' })
 
 vim.keymap.set('n', '<leader>a', 'ggVG', { desc = 'select all text' })
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
