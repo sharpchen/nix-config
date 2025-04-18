@@ -38,6 +38,9 @@
     just
     wordnet
     sioyek
+    postgresql
+    zoxide
+    devenv
   ];
 
   home.file.".config/lazygit/config.yml".source = ../../dotfiles/lazygit.config.yml;

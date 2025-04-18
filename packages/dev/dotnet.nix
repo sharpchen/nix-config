@@ -9,5 +9,6 @@
     rzls
     fsautocomplete
     fantomas
+    ilspycmd
   ];
 }
