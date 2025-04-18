@@ -6,4 +6,5 @@
     yamlfmt
     nixfmt-rfc-style
   ];
+  xdg.configFile.".stylua.toml".source = ../../dotfiles/.stylua.toml;
 }
