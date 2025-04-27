@@ -13,6 +13,10 @@ function :q {
     exit
 }
 
+function .. {
+    Set-Location ..
+}
+
 if (Get-Command 'home-manager' -ErrorAction SilentlyContinue) {
     function hms {
         home-manager switch --flake "~/.config/home-manager#$env:USER"

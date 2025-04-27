@@ -19,3 +19,5 @@ Set-PSReadLineKeyHandler -Chord ' , ' -ViMode Command -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::BackwardWord()
     [Microsoft.PowerShell.PSConsoleReadLine]::DeleteWord()
 }
+
+Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }
