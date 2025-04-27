@@ -26,7 +26,7 @@ alias :q='exit'
 alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
 alias lg=lazygit
 alias pj='cd $(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)'
-alias vim='nvim --clean -c "source ~/.vimrc"'
+alias vim='nvim -u ~/.vimrc'
 alias dn=dotnet
 alias v=nvim
 
@@ -39,8 +39,33 @@ nsp() {
     nix-store -q --outputs "$(type -fP "$1")"
 }
 
-export DOTNET_ROOT="$(nsp dotnet)/share/dotnet"
+_fzf_complete_nsp() {
+    _fzf_complete -- "$@" < <(compgen -c | sort -u)
+}
+
+complete -F _fzf_complete_nsp nsp
+
+function y() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+        builtin cd -- "$cwd" || return
+    fi
+    rm -f -- "$tmp"
+}
+
+_fzf_compgen_path() {
+    fd --hidden --follow --exclude ".git" . "$1"
+}
+
+_fzf_compgen_dir() {
+    fd --type d --hidden --follow --exclude ".git" . "$1"
+}
+
+DOTNET_ROOT="$(nsp dotnet)/share/dotnet"
+export DOTNET_ROOT
 export MANPAGER='nvim +Man!'
 
 eval "$(starship init bash)"
 eval "$(fzf --bash)"
+eval "$(zoxide init bash)"
