@@ -30,6 +30,8 @@ vim.opt.isfname:append('@-@')
 vim.opt.guicursor =
   'n-v-sm:block-blinkwait700-blinkoff400-blinkon250-Cursor,ci-ve:ver25,r-cr-o:hor20,i-c:ver100-blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
 
+vim.opt.grepprg = 'rg --vimgrep '
+
 -- render listchars on colorcolumn loaded
 vim.opt.showmode = false
 local listchars = [[nbsp:␣,eol:↵,space:·,tab:» ]]
@@ -38,7 +40,7 @@ vim.o.listchars = listchars
 vim.cmd([[2match WhiteSpaceBol /^ \+/]])
 vim.cmd('match WhiteSpaceMol / /')
 vim.api.nvim_set_hl(0, 'WhiteSpaceMol', {
-  fg = string.format('#%x', vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 0),
+  fg = string.format('#%x', vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 16777215),
 })
 vim.api.nvim_create_autocmd('ColorScheme', {
   callback = function()
@@ -47,7 +49,10 @@ vim.api.nvim_create_autocmd('ColorScheme', {
     vim.cmd([[2match WhiteSpaceBol /^ \+/]])
     vim.cmd('match WhiteSpaceMol / /')
     vim.api.nvim_set_hl(0, 'WhiteSpaceMol', {
-      fg = string.format('#%x', vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 0),
+      fg = string.format(
+        '#%x',
+        vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 16777215
+      ),
     })
   end,
 })
@@ -144,3 +149,17 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   pattern = '*',
   command = 'silent! normal! g`"zvzz',
 })
+
+vim.opt.fillchars = {
+  diff = '╱',
+}
+
+vim.opt.diffopt = {
+  'internal',
+  'filler',
+  'closeoff',
+  'context:12',
+  'algorithm:histogram',
+  'linematch:200',
+  'indent-heuristic',
+}

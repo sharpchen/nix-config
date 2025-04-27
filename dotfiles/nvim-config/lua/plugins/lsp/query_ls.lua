@@ -1,4 +1,4 @@
-require('lspconfig').ts_query_ls.setup {
+require('utils.lsp').setup('ts_query_ls', {
   settings = {
     parser_install_directories = {
       -- If using nvim-treesitter with lazy.nvim
@@ -8,4 +8,4 @@ require('lspconfig').ts_query_ls.setup {
       ),
     },
   },
-}
+})

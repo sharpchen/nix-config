@@ -1,18 +1,17 @@
 return {
   'neovim/nvim-lspconfig',
-  -- dir = '~/projects/nvim-lspconfig/',
+  -- dir = '~/projects/nvim-lspconfig',
   event = { 'BufReadPre', 'BufNewFile' },
   config = function()
     vim.api.nvim_create_user_command(
       'LspLog',
       string.format('e %s', vim.lsp.get_log_path()),
-      {
-        desc = 'open lsp log',
-      }
+      { desc = 'open lsp log' }
     )
 
     local lsp = require('utils.lsp')
 
+    --#region delete this when all ls were managed by vim.lsp
     require('lspconfig.ui.windows').default_options.border = 'rounded'
     local lspconfig = require('lspconfig')
     lspconfig.util.default_config =
@@ -20,12 +19,32 @@ return {
         capabilities = require('blink.cmp').get_lsp_capabilities(),
         on_attach = lsp.event.default_attach,
       })
+    --#endregion
+
+    vim.lsp.config('*', {
+      capabilities = require('blink.cmp').get_lsp_capabilities(),
+      on_attach = lsp.event.default_attach,
+    })
 
     if lsp.use_vtsls then
       require('plugins.lsp.vtsls')
     else
       require('plugins.lsp.ts_ls')
     end
+
+    lsp.setup('taplo')
+    lsp.setup('quick_lint_js')
+    lsp.setup('bashls')
+    lsp.setup('emmet_language_server')
+    lsp.setup('jsonls')
+    lsp.setup('cssls')
+    lsp.setup('html')
+    lsp.setup('vimls')
+    lsp.setup('postgres_lsp')
+    lsp.setup('marksman')
+    lsp.setup('eslint')
+    lsp.setup('fsautocomplete')
+    lsp.setup('roslyn_ls')
 
     require('plugins.lsp.lua_ls')
     require('plugins.lsp.yamlls')
@@ -36,23 +55,11 @@ return {
     require('plugins.lsp.query_ls')
     require('plugins.lsp.lemminx')
 
-    require('lspconfig').nixd.setup {
+    lsp.setup('nixd', {
       on_init = function(client)
         lsp.event.disable_semantic(client)
         lsp.event.disable_formatter(client)
       end,
-    }
-    require('lspconfig').taplo.setup {}
-    require('lspconfig').quick_lint_js.setup {}
-    require('lspconfig').bashls.setup {}
-    require('lspconfig').emmet_language_server.setup {}
-    require('lspconfig').jsonls.setup {}
-    require('lspconfig').cssls.setup {}
-    require('lspconfig').html.setup {}
-    require('lspconfig').vimls.setup {}
-    require('lspconfig').postgres_lsp.setup {}
-    require('lspconfig').marksman.setup {}
-    require('lspconfig').eslint.setup {}
-    require('lspconfig').fsautocomplete.setup {}
+    })
   end,
 }

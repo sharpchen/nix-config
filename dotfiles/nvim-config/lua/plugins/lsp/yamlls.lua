@@ -1,4 +1,4 @@
-require('lspconfig').yamlls.setup {
+require('utils.lsp').setup('yamlls', {
   settings = {
     yaml = {
       schemas = {
@@ -7,4 +7,4 @@ require('lspconfig').yamlls.setup {
       },
     },
   },
-}
+})

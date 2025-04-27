@@ -102,7 +102,34 @@ vim.keymap.set('n', '<A-c>', '<cmd>bd<CR>', { desc = 'close current buffer' })
 vim.keymap.set('n', '<A-,>', '<cmd>bp<CR>', { desc = 'move to previous buffer' })
 vim.keymap.set('n', '<A-.>', '<cmd>bn<CR>', { desc = 'move to next buffer' })
 vim.keymap.set('n', '<A-a>', '<cmd>bufdo bd<CR>', { desc = 'close all buffers' })
-vim.keymap.set('n', '<leader><leader>', 'diw')
+vim.keymap.set('n', '<leader><leader>', function()
+  local cword = vim.fn.expand('<cword>')
+  if require('utils.text').case.is_snake(cword) then
+    local init_row, init_col = unpack(vim.api.nvim_win_get_cursor(0))
+    vim.api.nvim_buf_set_mark(0, 'z', init_row, init_col, {})
+
+    vim.api.nvim_feedkeys('f_', 't', false)
+    local _, next_underscore_col = vim.api.nvim_win_get_cursor(0)
+    local _, cword_col_end = require('utils.text').cword_range()
+    -- when next _ exceeds range
+    local outof_range = next_underscore_col > cword_col_end
+    -- meaning no next _ occurrence on current line
+    local no_next = vim.api.nvim_win_get_cursor(0)[2] == init_col
+
+    vim.api.nvim_feedkeys('f_', 't', false)
+
+    if outof_range or no_next then
+      vim.api.nvim_feedkeys('`z', 't', false)
+      vim.api.nvim_feedkeys('he', 't', false)
+      vim.api.nvim_feedkeys('vF_d', 't', false)
+    else
+      vim.api.nvim_feedkeys('F_dt_', 't', false)
+    end
+  else
+    vim.api.nvim_feedkeys('diw', 't', false)
+  end
+end)
+-- foo_bbbbbar_voo_boo
 
 -- vim.keymap.set('n', '0', '^', { noremap = true, silent = true, desc = 'go to start of line' })
 -- vim.keymap.set('n', '^', '0', { noremap = true, silent = true, desc = 'go to first word bound of line' })
@@ -120,6 +147,7 @@ vim.keymap.set(
 )
 vim.keymap.set('n', 'gi', 'gi<Esc>zzi', { noremap = true, silent = true })
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
+vim.keymap.set('n', '<Tab>', [[%]], { noremap = true })
 vim.keymap.set(
   'n',
   '<leader>z',

@@ -1,5 +1,5 @@
 local lsp = require('utils.lsp')
-require('lspconfig').powershell_es.setup {
+lsp.setup('powershell_es', {
   on_attach = function(client) lsp.event.disable_semantic(client) end,
   bundle_path = lsp.path.pwsh_es,
   settings = {
@@ -17,4 +17,4 @@ require('lspconfig').powershell_es.setup {
       },
     },
   },
-}
+})

@@ -1,4 +1,4 @@
-require('lspconfig').msbuild_project_tools_server.setup {
+require('utils.lsp').setup('msbuild_project_tools_server', {
   cmd = { 'MSBuildProjectTools.LanguageServer.Host' },
   filetypes = { 'msbuild' },
   on_attach = function(client)
@@ -7,4 +7,4 @@ require('lspconfig').msbuild_project_tools_server.setup {
       triggerCharacters = { '<' },
     }
   end,
-}
+})

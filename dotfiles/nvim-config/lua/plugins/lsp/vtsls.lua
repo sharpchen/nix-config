@@ -1,12 +1,13 @@
 local lsp = require('utils.lsp')
-require('lspconfig').vtsls.setup {
-  filetypes = require('utils.lsp').config.filetypes('vtsls', { 'vue', 'markdown' }),
+lsp.setup('vtsls', {
+  filetypes = lsp.config.ft_extend('vtsls', { 'vue', 'markdown' }),
   on_attach = function(client, bufnr)
     if vim.bo.filetype == 'markdown' then
       lsp.event.disable_formatter(client)
-      return
+      lsp.event.abort_on(client, 'package.json')
+    else
+      lsp.event.attach_navic(client, bufnr)
     end
-    lsp.event.attach_navic(client, bufnr)
   end,
   settings = {
     complete_function_calls = true,
@@ -36,4 +37,4 @@ require('lspconfig').vtsls.setup {
       },
     },
   },
-}
+})

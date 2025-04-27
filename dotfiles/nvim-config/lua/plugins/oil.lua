@@ -195,17 +195,5 @@ return {
         border = 'rounded',
       },
     }
-
-    vim.keymap.set(
-      'n',
-      '<leader>fb',
-      function()
-        require('fzf-lua').files {
-          cmd = 'fd -d 1',
-          cwd = vim.fs.dirname(vim.fn.bufname('%')),
-        }
-      end,
-      { desc = 'fuzzy find folders' }
-    )
   end,
 }

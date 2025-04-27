@@ -2,6 +2,26 @@ local M = {
   case = {},
 }
 
+--- get range of current word
+---@return integer
+---@return integer
+M.cword_range = function()
+  local cword = vim.fn.expand('<cword>')
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  vim.api.nvim_buf_set_mark(0, 'z', row, col, {})
+  local cchar = unpack(vim.api.nvim_buf_get_text(0, row - 1, col, row - 1, col + 1, {}))
+  -- NOTE: as long as the char is not the leading
+  -- we can `b` and `e` to get start and end
+  if cword:match('^' .. cchar:verbatim()) then vim.api.nvim_feedkeys('l', 't', false) end
+  vim.api.nvim_feedkeys('b', 't', false)
+  local _, head = unpack(vim.api.nvim_win_get_cursor(0))
+  vim.api.nvim_feedkeys('e', 't', false)
+  local _, tail = unpack(vim.api.nvim_win_get_cursor(0))
+  vim.notify(vim.inspect { head, tail })
+
+  vim.api.nvim_feedkeys('`z', 't', false)
+  return head, tail
+end
 --- replace termcode
 ---@param str string termcode seq
 ---@return string
@@ -37,6 +57,8 @@ end
 ---@return boolean
 M.case.is_snake = function(name)
   assert(not string.is_nil_or_empty(name))
+
+  if not name:find('_') then return false end
   -- if has only single word
   if name:match('^%l+$') ~= nil then return true end
 

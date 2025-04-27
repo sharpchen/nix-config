@@ -45,12 +45,12 @@ return {
     vim.keymap.set('n', '<leader>fg', fzf.live_grep_resume, { desc = 'grep from files' })
     vim.keymap.set(
       'n',
-      '<leader>fpf',
+      '<leader>ff',
       fzf.git_files,
       { desc = 'find in all tracked files' }
     )
     vim.keymap.set('n', '<leader>fh', fzf.help_tags, { desc = 'help tags' })
-    vim.keymap.set('n', '<leader>ff', fzf.files, { desc = 'find files' })
+    vim.keymap.set('n', '<leader>fa', fzf.files, { desc = 'find files' })
     vim.keymap.set('n', '<leader>ca', fzf.lsp_code_actions, { desc = 'code actions' })
     vim.keymap.set(
       'n',
@@ -65,6 +65,18 @@ return {
       '<leader>fd',
       function() fzf.files { cmd = 'fd -t=d -E .git/', cwd = vim.uv.cwd() } end,
       { desc = 'search folders' }
+    )
+
+    vim.keymap.set(
+      'n',
+      '<leader>fb',
+      function()
+        fzf.files {
+          cmd = 'fd -d 1',
+          cwd = vim.fs.dirname(vim.fn.bufname('%')),
+        }
+      end,
+      { desc = 'fuzzy find folders' }
     )
 
     vim.keymap.set(

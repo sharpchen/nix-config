@@ -1,9 +1,12 @@
 local lsp = require('utils.lsp')
-require('lspconfig').ts_ls.setup {
+lsp.setup('ts_ls', {
   on_attach = function(client, _)
-    if vim.bo.filetype == 'markdown' then lsp.event.disable_formatter(client) end
+    if vim.bo.filetype == 'markdown' then
+      lsp.event.abort_on(client, 'package.json')
+      lsp.event.disable_formatter(client)
+    end
   end,
-  filetypes = require('utils.lsp').config.filetypes('ts_ls', { 'vue', 'markdown' }),
+  filetypes = lsp.config.ft_extend('ts_ls', { 'vue', 'markdown' }),
   init_options = {
     plugins = {
       {
@@ -15,4 +18,4 @@ require('lspconfig').ts_ls.setup {
       },
     },
   },
-}
+})
