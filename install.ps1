@@ -3,14 +3,17 @@
 # This file is for fresh installation on a new windows
 
 function RefreshPath {
-    $env:Path = 
+    $env:Path =
     [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User)
-    + ';' 
+    + ';'
     + [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine)
 }
-# install scoop
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+if (-not (Get-Command scoop -ea SilentlyContinue)) {
+    # install scoop
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+    Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+}
 
 scoop bucket add extras
 scoop bucket add nerd-fonts
@@ -71,7 +74,8 @@ $wingetPackages = @(
 
 & ./dotfiles.ps1
 
-scoop install ($scoopPackages -join ' ')
-scoop install ($scoopFonts -join ' ')
-winget add --silent --accept-source-agreements ($wingetPackages -join ' ')
+scoop install @scoopPackages
+scoop install @scoopFonts
+winget add --silent --accept-source-agreements @wingetPackages
+
 RefreshPath
