@@ -133,7 +133,17 @@ local snake_lexer = vim.tbl_extend('error', {
   end,
 }, lexer_base)
 
-snake_lexer:chain(camel_lexer):chain(pascal_lexer)
+---@type CaseLexer
+local empty_lexer = vim.tbl_extend('error', {
+  can_handle = function(_) return true end,
+  ---@param self CaseLexer
+  ---@param name string
+  ---@return string[]
+  handle = function(self, name) return { name } end,
+}, lexer_base)
+
+snake_lexer:chain(camel_lexer):chain(pascal_lexer):chain(empty_lexer)
+
 local case_lexer = snake_lexer
 
 ---@param word string
@@ -174,8 +184,10 @@ end
 ---@param case 'pascal' | 'camel' | 'snake'
 M.case.replace_cword_case = function(case)
   vim.opt.iskeyword:append { '_' }
-  local sub = M.case.convert(vim.fn.expand('<cword>'), case)
-  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
+  require('utils.static').mark.wrap(function()
+    local sub = M.case.convert(vim.fn.expand('<cword>'), case)
+    vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
+  end)()
   vim.opt.iskeyword:remove { '_' }
 end
 

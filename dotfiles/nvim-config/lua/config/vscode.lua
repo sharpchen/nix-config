@@ -47,6 +47,13 @@ vim.keymap.set(
   '<leader>k',
   function() vscode.action('editor.action.formatDocument') end
 )
+vim.keymap.set(
+  'n',
+  '<leader>ca',
+  function() vscode.call('editor.action.quickFix') end,
+  { desc = 'code actions' }
+)
+
 vim.keymap.set('n', 'zM', function() vscode.call('editor.foldAll') end)
 vim.keymap.set('n', 'zR', function() vscode.call('editor.unfoldAll') end)
 vim.keymap.set('n', 'zc', function() vscode.call('editor.fold') end)
