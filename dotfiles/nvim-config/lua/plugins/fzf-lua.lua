@@ -94,7 +94,7 @@ return {
         if is_file and is_writable then
           vim.defer_fn(
             function()
-              vim.api.nvim_feedkeys(require('utils.text').termcode('i<Esc>'), 't', false)
+              vim.api.nvim_feedkeys(require('utils.text').termcode('i<Esc>'), 'tx', false)
             end,
             200
           )

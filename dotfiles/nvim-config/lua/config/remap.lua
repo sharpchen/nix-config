@@ -64,20 +64,26 @@ vim.keymap.set(
   { desc = 'grep and pipe to qf' }
 )
 
-vim.keymap.set('n', '<leader>cp', function()
-  local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'pascal')
-  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
-end, { desc = 'convert to pascal case' })
+vim.keymap.set(
+  'n',
+  '<leader>cp',
+  function() require('utils.text').case.replace_cword_case('pascal') end,
+  { desc = 'convert to pascal case' }
+)
 
-vim.keymap.set('n', '<leader>cs', function()
-  local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'snake')
-  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
-end, { desc = 'convert to snake case' })
+vim.keymap.set(
+  'n',
+  '<leader>cs',
+  function() require('utils.text').case.replace_cword_case('snake') end,
+  { desc = 'convert to snake case' }
+)
 
-vim.keymap.set('n', '<leader>cc', function()
-  local sub = require('utils.text').case.convert(vim.fn.expand('<cword>'), 'camel')
-  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
-end, { desc = 'convert to camel case' })
+vim.keymap.set(
+  'n',
+  '<leader>cc',
+  function() require('utils.text').case.replace_cword_case('camel') end,
+  { desc = 'convert to camel case' }
+)
 
 vim.keymap.set('n', '<M-u>', function()
   local sub = vim.fn.expand('<cword>'):upper()
@@ -102,33 +108,7 @@ vim.keymap.set('n', '<A-c>', '<cmd>bd<CR>', { desc = 'close current buffer' })
 vim.keymap.set('n', '<A-,>', '<cmd>bp<CR>', { desc = 'move to previous buffer' })
 vim.keymap.set('n', '<A-.>', '<cmd>bn<CR>', { desc = 'move to next buffer' })
 vim.keymap.set('n', '<A-a>', '<cmd>bufdo bd<CR>', { desc = 'close all buffers' })
-vim.keymap.set('n', '<leader><leader>', function()
-  local cword = vim.fn.expand('<cword>')
-  if require('utils.text').case.is_snake(cword) then
-    local init_row, init_col = unpack(vim.api.nvim_win_get_cursor(0))
-    vim.api.nvim_buf_set_mark(0, 'z', init_row, init_col, {})
-
-    vim.api.nvim_feedkeys('f_', 't', false)
-    local _, next_underscore_col = vim.api.nvim_win_get_cursor(0)
-    local _, cword_col_end = require('utils.text').cword_range()
-    -- when next _ exceeds range
-    local outof_range = next_underscore_col > cword_col_end
-    -- meaning no next _ occurrence on current line
-    local no_next = vim.api.nvim_win_get_cursor(0)[2] == init_col
-
-    vim.api.nvim_feedkeys('f_', 't', false)
-
-    if outof_range or no_next then
-      vim.api.nvim_feedkeys('`z', 't', false)
-      vim.api.nvim_feedkeys('he', 't', false)
-      vim.api.nvim_feedkeys('vF_d', 't', false)
-    else
-      vim.api.nvim_feedkeys('F_dt_', 't', false)
-    end
-  else
-    vim.api.nvim_feedkeys('diw', 't', false)
-  end
-end)
+vim.keymap.set('n', '<leader><leader>', 'diw')
 -- foo_bbbbbar_voo_boo
 
 -- vim.keymap.set('n', '0', '^', { noremap = true, silent = true, desc = 'go to start of line' })
@@ -225,7 +205,7 @@ local function mv_qf_item(next, init_bufnr)
   end
 
   -- center location
-  vim.api.nvim_feedkeys('zz', 't', false)
+  vim.api.nvim_feedkeys('zz', 'tx', false)
 
   -- resize qf(should stay in file)
   vim.cmd(

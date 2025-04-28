@@ -51,7 +51,6 @@ return {
     require('plugins.lsp.vue_language_server')
     require('plugins.lsp.pwsh_es')
     require('plugins.lsp.msbuild_ls')
-    require('plugins.lsp.harper_ls')
     require('plugins.lsp.query_ls')
     require('plugins.lsp.lemminx')
 

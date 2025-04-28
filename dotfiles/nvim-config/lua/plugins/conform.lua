@@ -49,7 +49,7 @@ return {
             )
             return
           end
-          vim.api.nvim_feedkeys('mzgg=G`z', 't', false)
+          vim.api.nvim_feedkeys('mzgg=G`z', 'tx', false)
           vim.notify('formatted by indentexpr')
         else
           vim.lsp.buf.format { async = false, timeout_ms = 5000, bufnr = bufnr }
