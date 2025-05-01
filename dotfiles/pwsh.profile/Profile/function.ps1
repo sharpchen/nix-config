@@ -20,7 +20,7 @@ function adbin {
     }
 }
 
-function iparam {
+function pinfo {
     [CmdletBinding(DefaultParameterSetName = 'Attribute')]
     [OutputType([string], ParameterSetName = 'ParameterSet')]
     [OutputType([void], ParameterSetName = 'Attribute')]
@@ -281,43 +281,76 @@ function dnpack {
                 --bind 'enter:execute(dotnet add package {1})+abort'
     }
 }
+if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
+    function vs {
+        param (
+            [ValidateScript({ Test-Path -LiteralPath $_ })]
+            [string]$Path
+        )
 
-function vs {
-    param (
-        [ValidateScript({ Test-Path -LiteralPath $_ })]
-        [string]$Path
-    )
-
-    begin {
-        if (-not (Get-Command devenv -ea SilentlyContinue)) {
-            Get-Command vswhere -ea Stop | Out-Null
+        begin {
+            if (-not (Get-Command devenv -ea SilentlyContinue)) {
+                Get-Command vswhere -ea Stop | Out-Null
+            }
+            if (-not $Path) {
+                $Path = $PWD.ProviderPath
+            }
         }
-        if (-not $Path) {
-            $Path = $PWD.ProviderPath
+
+        end {
+            $sln = Get-ChildItem $Path -Filter *.sln
+            $slnx = Get-ChildItem $Path -Filter *.slnx
+            $proj = Get-ChildItem $Path -Filter *.*proj
+
+            if ($slnx) {
+                $file = $slnx | Select-Object -First 1
+            } elseif ($sln) {
+                $file = $sln | Select-Object -First 1
+            } elseif($proj) {
+                $file = $proj | Select-Object -First 1
+            } else {
+                Write-Warning "$($Path.FullName) contains no *proj or *.sln or *.slnx"
+                return
+            }
+
+            if (Get-Command devenv -ea SilentlyContinue) {
+                devenv $file.FullName
+            } else {
+                $devenv = (vswhere -latest -property productPath)
+                & $devenv $file
+            }
         }
     }
 
-    end {
-        $sln = Get-ChildItem $Path -Filter *.sln
-        $slnx = Get-ChildItem $Path -Filter *.slnx
-        $proj = Get-ChildItem $Path -Filter *.*proj
+    function vdcompact {
+        param (
+            [ValidateScript({ (Test-Path -LiteralPath $_) -and (Split-Path $_ -Extension) -eq '.vhdx' })]
+            [string]$Path,
+            [switch]$IsNotWSL
+        )
+        begin {
+            Get-Command diskpart -CommandType Application -ea Stop | Out-Null
 
-        if ($slnx) {
-            $file = $slnx | Select-Object -First 1
-        } elseif ($sln) {
-            $file = $sln | Select-Object -First 1
-        } elseif($proj) {
-            $file = $proj | Select-Object -First 1
-        } else {
-            Write-Warning "$($Path.FullName) contains no *proj or *.sln or *.slnx"
-            return
+            if (-not $IsNotWSL) {
+                $origEncoding = [Console]::OutputEncoding
+                [Console]::OutputEncoding = [System.Text.Encoding]::Unicode # wsl outputs unicode 16
+                if (wsl --list --verbose | Select-String Running) {
+                    Write-Warning 'Please make sure distro were terminated by `wsl -t <distro>`'
+                    return
+                }
+                [Console]::OutputEncoding = $origEncoding
+                wsl –-shutdown
+            }
         }
+        end {
+            $tempScript = New-TemporaryFile
+            @"
+            select vdisk file=`"$Path`"
+            compact vdisk
+"@ > $tempScript
 
-        if (Get-Command devenv -ea SilentlyContinue) {
-            devenv $file.FullName
-        } else {
-            $devenv = (vswhere -latest -property productPath)
-            & $devenv $file
+            diskpart /s $tempScript.FullName
+            Remove-Item $tempScript
         }
     }
 }

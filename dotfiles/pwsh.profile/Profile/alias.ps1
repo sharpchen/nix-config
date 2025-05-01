@@ -17,6 +17,10 @@ function .. {
     Set-Location ..
 }
 
+function so {
+    . $PROFILE
+}
+
 if (Get-Command 'home-manager' -ErrorAction SilentlyContinue) {
     function hms {
         home-manager switch --flake "~/.config/home-manager#$env:USER"
@@ -24,9 +28,14 @@ if (Get-Command 'home-manager' -ErrorAction SilentlyContinue) {
 }
 
 function pj {
-    $folders = Get-ChildItem '~/projects' -Directory
-    if (Test-Path '~/.config/home-manager/') {
-        $folders += Get-Item '~/.config/home-manager/'
+    begin {
+        Get-Command fzf -ea SilentlyContinue | Out-Null
     }
-    Set-Location ($folders | ForEach-Object FullName | fzf)
+    end {
+        $folders = Get-ChildItem '~/projects' -Directory
+        if (Test-Path '~/.config/home-manager/') {
+            $folders += Get-Item '~/.config/home-manager/'
+        }
+        Set-Location ($folders | ForEach-Object FullName | fzf)
+    }
 }
