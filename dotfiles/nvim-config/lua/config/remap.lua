@@ -154,7 +154,7 @@ vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, desc = 'go to window do
 vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, desc = 'go to window upward' })
 vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, desc = 'go to window left' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, desc = 'go to window right' })
-vim.keymap.set('n', '<C-q>', '<C-w>q', { noremap = true, desc = 'close current window' })
+vim.keymap.set('n', '<C-c>', '<C-w>q', { noremap = true, desc = 'close current window' })
 
 if vim.uv.os_uname().sysname == 'Linux' then
   vim.keymap.set(
