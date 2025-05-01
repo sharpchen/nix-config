@@ -82,7 +82,7 @@ nnoremap gi `^i
 nnoremap <leader>fg :vsc Edit.GoToText<CR>
 nnoremap <leader>ff :vsc Edit.GoToFile<CR>
 nnoremap gcc :vsc Edit.ToggleLineComment<CR><Esc>
-vnoremap gc :vsc Edit.ToggleLineComment<CR><Esc><Esc><Esc><Esc><Esc><Esc><Esc><Esc><Esc><Esc>
+vnoremap gc :vsc Edit.ToggleLineComment<CR><Esc>
 nnoremap <leader>so :source ~/.vsvimrc<CR>
 nnoremap <leader>k :vsc Edit.FormatDocument<CR>
 nnoremap <leader><leader> diw
@@ -90,3 +90,5 @@ nnoremap <leader>z I(<Esc>A)
 nnoremap <leader>; mzA;<Esc>`z
 nnoremap <leader>, mzA,<Esc>`z
 nnoremap gi `^zzi
+nnoremap ' `
+nnoremap ` '
