@@ -1,2 +1,5 @@
 [wsl2]
 guiApplications=false
+
+[experimental]
+sparseVhd=true
