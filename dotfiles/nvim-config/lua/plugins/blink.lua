@@ -4,13 +4,6 @@ return {
   build = 'export CARGO_NET_GIT_FETCH_WITH_CLI=true; nix run .#build-plugin --accept-flake-config',
   dependencies = {
     {
-      'L3MON4D3/LuaSnip',
-      dependencies = { 'rafamadriz/friendly-snippets' },
-      build = 'make install_jsregexp',
-      config = function() require('luasnip.loaders.from_vscode').lazy_load() end,
-    },
-    'rafamadriz/friendly-snippets',
-    {
       'xzbdmw/colorful-menu.nvim',
       opts = {
         ls = {
@@ -73,7 +66,7 @@ return {
       end,
       providers = {
         snippets = {
-          min_keyword_length = 2,
+          min_keyword_length = 1,
           score_offset = 10,
           should_show_items = function(ctx)
             return ctx.trigger.initial_kind ~= 'trigger_character'
@@ -84,7 +77,7 @@ return {
           score_offset = 3,
         },
         buffer = {
-          min_keyword_length = 3,
+          -- min_keyword_length = 3,
           score_offset = 1,
         },
         dadbod = {

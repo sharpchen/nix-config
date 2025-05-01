@@ -27,6 +27,9 @@ vim.keymap.set('n', 'N', 'Nzzzv')
 
 vim.keymap.set('n', '<leader>p', '"0p', { desc = 'paste last yank' })
 
+vim.keymap.set('n', [[']], [[`]])
+vim.keymap.set('n', [[`]], [[']])
+
 -- copy to system clipboard
 vim.keymap.set('n', '<leader>y', '"+y', { desc = 'copy to system clipboard' })
 vim.keymap.set('v', '<leader>y', '"+y', { desc = 'copy to system clipboard' })

@@ -12,6 +12,9 @@ vim.keymap.set(
   { buffer = vim.fn.bufnr('%'), desc = 'boldify selection' }
 )
 
+vim.keymap.set('i', '*', '**<Left>', { buffer = vim.fn.bufnr('%') })
+vim.keymap.set('i', '~', '~~<Left>', { buffer = vim.fn.bufnr('%') })
+
 vim.keymap.set('n', '<leader>ck', function()
   local line = vim.api.nvim_get_current_line()
   local pattern = '^(%s*[%-%*]) %[([ x])%]'

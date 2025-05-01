@@ -1,5 +1,8 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   'rcarriga/nvim-notify',
+  priority = 1000,
   config = function()
     require('notify').setup {
       timeout = 1000,

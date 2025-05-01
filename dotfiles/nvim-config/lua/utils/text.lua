@@ -24,6 +24,12 @@ M.cword_range = function()
 
   return head, tail
 end
+
+---@param new_word string
+M.replace_cword = function(new_word)
+  vim.api.nvim_feedkeys('viwc' .. new_word, 'nx', false)
+end
+
 --- replace termcode
 ---@param str string termcode seq
 ---@return string
@@ -183,11 +189,13 @@ end
 
 ---@param case 'pascal' | 'camel' | 'snake'
 M.case.replace_cword_case = function(case)
+  ---@diagnostic disable-next-line: undefined-field
   vim.opt.iskeyword:append { '_' }
   require('utils.static').mark.wrap(function()
     local sub = M.case.convert(vim.fn.expand('<cword>'), case)
-    vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
+    M.replace_cword(sub)
   end)()
+  ---@diagnostic disable-next-line: undefined-field
   vim.opt.iskeyword:remove { '_' }
 end
 
