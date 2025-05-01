@@ -29,6 +29,7 @@ alias pj='cd $(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manage
 alias vim='nvim -u ~/.vimrc'
 alias dn=dotnet
 alias v=nvim
+alias ngc='nix-collect-garbage -d && sudo nix-collect-garbage -d'
 
 #######################################
 # Get nix store path of a package
