@@ -92,3 +92,5 @@ nnoremap <leader>, mzA,<Esc>`z
 nnoremap gi `^zzi
 nnoremap ' `
 nnoremap ` '
+nnoremap <Tab> %
+xnoremap <Tab> %

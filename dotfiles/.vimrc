@@ -102,3 +102,5 @@ au FileType *.markdown vnoremap <C-b> mz"zy:s/\<<C-r>z\>/**<C-r>z**/<CR>`z
 
 nnoremap ' `
 nnoremap ` '
+nnoremap <Tab> %
+xnoremap <Tab> %
