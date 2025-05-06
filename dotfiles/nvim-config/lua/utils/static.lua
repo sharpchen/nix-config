@@ -66,14 +66,8 @@ M.snippet = {
       table.insert(nodes, insert(i, placeholders[i]))
     end
 
-    if type(filetype) == 'table' then
-      for _, ft in ipairs(filetype) do
-        ls.add_snippets(ft, {
-          snip(trigger, fmt(body, nodes, opts)),
-        })
-      end
-    else
-      ls.add_snippets(filetype, {
+    for _, ft in ipairs(type(filetype) == 'table' and filetype or { filetype }) do
+      ls.add_snippets(ft, {
         snip(trigger, fmt(body, nodes, opts)),
       })
     end

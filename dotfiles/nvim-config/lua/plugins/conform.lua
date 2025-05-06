@@ -31,7 +31,7 @@ return {
       if ok then
         vim.notify(
           string.format(
-            'formmatted by formatter: %s',
+            'formatted by: %s',
             type(formatter) == 'function' and formatter(bufnr)[1] or formatter[1]
           )
         )
@@ -57,7 +57,7 @@ return {
             function(client) return client.name end,
             fmt_available
           )
-          vim.notify(string.format('formmatted by lsp: %s', table.concat(names, ',')))
+          vim.notify(string.format('formatted by: %s', table.concat(names, ',')))
         end
       end
     end

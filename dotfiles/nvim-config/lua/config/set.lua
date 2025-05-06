@@ -125,7 +125,7 @@ vim.filetype.add {
     inputrc = 'sh',
   },
   pattern = {
-    [ [[.*\..*proj]] ] = 'msbuild',
+    ['.*%..*proj'] = 'msbuild',
   },
 }
 

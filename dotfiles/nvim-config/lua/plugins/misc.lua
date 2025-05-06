@@ -1,3 +1,5 @@
+---@module 'lazy'
+---@type LazySpec[]
 return {
   {
     'RRethy/vim-illuminate',
@@ -47,6 +49,7 @@ return {
       require('nvim-web-devicons').set_icon_by_filetype {
         msbuild = 'sln',
         axaml = 'xaml',
+        sh = 'bash',
       }
     end,
   },
@@ -77,11 +80,18 @@ return {
   },
   {
     -- 'wurli/contextindent.nvim',
-    enabled = false,
+    -- enabled = false,
     dir = '~/projects/contextindent.nvim/',
     -- This is the only config option; you can use it to restrict the files
     -- which this plugin will affect (see :help autocommand-pattern).
     opts = { pattern = '*' },
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
+  },
+  {
+    'nvzone/showkeys',
+    cmd = 'ShowkeysToggle',
+    opts = {
+      maxkeys = 5,
+    },
   },
 }

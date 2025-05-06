@@ -2,6 +2,7 @@ return {
   'ibhagwan/fzf-lua',
   config = function()
     local fzf = require('fzf-lua')
+    fzf.register_ui_select()
     if require('utils.env').is_windows then
       fzf.setup {
         winopts = {

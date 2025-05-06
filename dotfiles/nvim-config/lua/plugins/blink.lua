@@ -70,7 +70,7 @@ return {
           score_offset = 10,
           should_show_items = function(ctx)
             return ctx.trigger.initial_kind ~= 'trigger_character'
-              and not require('blink.cmp').snippet_active()
+            -- and not require('blink.cmp').snippet_active()
           end,
         },
         lsp = {
@@ -154,6 +154,7 @@ return {
     },
     fuzzy = {
       sorts = { 'exact', 'score', 'sort_text' },
+      implementation = jit.os:find('Windows') and 'lua' or 'rust',
     },
   },
 }

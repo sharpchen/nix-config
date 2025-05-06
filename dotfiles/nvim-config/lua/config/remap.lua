@@ -130,7 +130,12 @@ vim.keymap.set(
 )
 vim.keymap.set('n', 'gi', 'gi<Esc>zzi', { noremap = true, silent = true })
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
-vim.keymap.set('n', '<Tab>', [[%]], { noremap = true })
+vim.keymap.set(
+  { 'n', 'x' },
+  '<Tab>',
+  function() return vim.fn.mode() == 'V' and '$%' or '%' end,
+  { noremap = true, expr = true }
+)
 vim.keymap.set(
   'n',
   '<leader>z',
