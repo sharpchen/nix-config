@@ -5,6 +5,12 @@ function vim {
     nvim -u '~/.vimrc' @args
 }
 
+function vwrite {
+    nvim -u '~/.vimrc' @args -c @'
+    set wrap
+'@
+}
+
 function v {
     nvim @args
 }
@@ -23,7 +29,7 @@ function so {
 
 if (Get-Command 'home-manager' -ErrorAction SilentlyContinue) {
     function hms {
-        home-manager switch --flake "~/.config/home-manager#$env:USER"
+        home-manager switch --flake ((Resolve-Path '~/.config/home-manager').Path + '#' + $env:USER)
     }
 }
 
