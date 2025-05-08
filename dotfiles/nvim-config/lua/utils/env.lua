@@ -1,12 +1,16 @@
--- NOTE: this module should not run any task and modification on anything
+-- WARN: this module should not run any task and modification on anything
+-- DO NOT reference custom functions in this module
 
-require('utils.extension')
 local M = {
   is_windows = jit.os:find('Windows') ~= nil,
+  is_linux = jit.os:find('Linux') ~= nil,
   -- do not use it on plugin loading
   has_nix = vim.fn.executable('nix') == 1,
   has_pwsh = vim.fn.executable('pwsh') == 1,
 }
+
+_G.IsWindows = M.is_windows
+_G.IsLinux = M.is_linux
 
 M.new_line = M.is_windows and '\r\n' or '\n'
 

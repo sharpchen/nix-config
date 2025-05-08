@@ -9,7 +9,7 @@ local M = {
 
 if not require('utils.env').is_windows then
   async.cmd(
-    { 'bash', '-c', 'which netcoredbg' },
+    require('utils.env').shell.bash_cmd('which netcoredbg'),
     function(result) M.path.netcoredbg = result end
   )
   async.cmd(mk_store_query('js-debug'), function(result)

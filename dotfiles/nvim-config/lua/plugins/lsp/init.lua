@@ -45,6 +45,8 @@ return {
     lsp.setup('eslint')
     lsp.setup('fsautocomplete')
     lsp.setup('roslyn_ls')
+    lsp.setup('basedpyright')
+    lsp.setup('ruff')
 
     require('plugins.lsp.lua_ls')
     require('plugins.lsp.yamlls')

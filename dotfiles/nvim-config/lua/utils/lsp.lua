@@ -33,7 +33,9 @@ M.event = {
   ---@param bufnr integer
   attach_navic = function(client, bufnr)
     if client.server_capabilities.documentSymbolProvider then
-      require('nvim-navic').attach(client, bufnr)
+      local ok, navic = pcall(require, 'nvim-navic')
+      if not ok then return end
+      navic.attach(client, bufnr)
     end
   end,
 
@@ -46,7 +48,8 @@ M.event = {
     if type(cond) == 'function' then
       should_abort = cond()
     else
-      should_abort = not require('lspconfig').util.root_pattern(cond)(vim.fn.getcwd())
+      local ok, lspconfig = pcall(require, 'lspconfig')
+      if ok then should_abort = not lspconfig.util.root_pattern(cond)(vim.fn.getcwd()) end
     end
 
     if should_abort then
@@ -75,7 +78,6 @@ M.config = {
 }
 
 --#region tasks to fetch language-server executables
-
 if not require('utils.env').is_windows then
   async.cmd(
     mk_store_query('vue-language-server'),
@@ -91,7 +93,6 @@ if not require('utils.env').is_windows then
     end
   )
 end
-
 --#endregion
 
 return M

@@ -18,6 +18,14 @@ return {
     )
     add(
       'lua',
+      'pcre',
+      [[
+    local ok, <name> = pcall(require, '<module>')
+    if not ok then return end
+    ]]
+    )
+    add(
+      'lua',
       'au',
       [[
       vim.api.nvim_create_autocmd('<event>', {

@@ -27,9 +27,6 @@ vim.keymap.set('n', 'N', 'Nzzzv')
 
 vim.keymap.set('n', '<leader>p', '"0p', { desc = 'paste last yank' })
 
-vim.keymap.set('n', [[']], [[`]])
-vim.keymap.set('n', [[`]], [[']])
-
 -- copy to system clipboard
 vim.keymap.set('n', '<leader>y', '"+y', { desc = 'copy to system clipboard' })
 vim.keymap.set('v', '<leader>y', '"+y', { desc = 'copy to system clipboard' })
@@ -161,7 +158,7 @@ vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, desc = 'go to window le
 vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, desc = 'go to window right' })
 vim.keymap.set('n', '<C-c>', '<C-w>q', { noremap = true, desc = 'close current window' })
 
-if vim.uv.os_uname().sysname == 'Linux' then
+if IsLinux then
   vim.keymap.set(
     'n',
     '<leader>x',
