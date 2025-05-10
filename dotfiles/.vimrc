@@ -56,6 +56,7 @@ inoremap <silent> <M-Down> <Esc>:m .+1<CR>==gi
 inoremap <silent> <M-Up> <Esc>:m .-2<CR>==gi
 
 nnoremap <leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>
+xnoremap <leader>s "zy:%s/\V<C-r>z/<C-r>z/gI<Left><Left><Left>
 
 
 nnoremap J mzJ`z
@@ -100,7 +101,5 @@ au BufReadPost * silent! normal! g`"zvzz
 au FileType *.markdown nnoremap <C-b> mz:s/\<<C-r><C-w>\>/**<C-r><C-w>**/<CR>`z
 au FileType *.markdown vnoremap <C-b> mz"zy:s/\<<C-r>z\>/**<C-r>z**/<CR>`z
 
-nnoremap ' `
-nnoremap ` '
 nnoremap <Tab> %
-xnoremap <Tab> %
+xnoremap <expr> <Tab> mode()==#'V' ? '$%' : '%'
