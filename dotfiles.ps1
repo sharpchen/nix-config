@@ -1,8 +1,8 @@
 # this file is for restoring dotfiles on windows
 
-if (-not $IsWindows) {
-    Write-Error 'This script is only allowed to be executed on windows' 
-    return 
+if (-not $IsWindows -or $PSVersionTable.PSEdition -ne 'Desktop') {
+    Write-Error 'This script is only allowed to be executed on windows'
+    return
 }
 
 function mklink {
@@ -15,7 +15,6 @@ function mklink {
         [Parameter(ParameterSetName = 'Special', Mandatory)]
         [string]$Target,
 
-
         [Parameter(ParameterSetName = 'Special', Mandatory)]
         [string]$ChildPath,
 
@@ -23,7 +22,7 @@ function mklink {
         [Parameter(ParameterSetName = 'Special', Mandatory)]
         [string]$SpecialParent
     )
-    
+
     $Target = Resolve-Path $Target
     if ($PSCmdlet.ParameterSetName -eq 'Normal') {
         mkdir (Split-Path $Path) -ErrorAction SilentlyContinue
@@ -38,7 +37,7 @@ function mklink {
 
 }
 
-if (Get-Command scoop -ErrorAction SilentlyContinue) {
+if (Get-Command scoop -ea SilentlyContinue) {
     $scoopRoot = Resolve-Path ~/scoop
     # librewolf overrides
     mklink (Join-Path $scoopRoot 'persist/librewolf/Profiles/Default/librewolf.overrides.cfg') ./dotfiles/librewolf.cfg
@@ -46,11 +45,13 @@ if (Get-Command scoop -ErrorAction SilentlyContinue) {
     mklink (Join-Path $scoopRoot 'apps/sioyek/current/keys_user.config') ./dotfiles/sioyek.keys_user.config
 }
 
-$nvimConfig = Join-Path $env:LOCALAPPDATA 'nvim'
-if (Test-Path $nvimConfig) {
-    Remove-Item -Recurse $nvimConfig 
+if (Get-Command nvim -ea SilentlyContinue) {
+    $nvimConfig = Join-Path $env:LOCALAPPDATA 'nvim'
+    if (Test-Path $nvimConfig) {
+        Remove-Item -Recurse $nvimConfig
+    }
+    mklink $nvimConfig ./dotfiles/nvim-config
 }
-mklink $nvimConfig ./dotfiles/nvim-config
 
 # git
 mklink ~/.gitconfig ./dotfiles/.gitconfig
