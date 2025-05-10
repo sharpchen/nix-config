@@ -16,7 +16,6 @@
       postgres-lsp
       sqlfluff
       eslint
-      ruff
       bashdb
       marksman
       ts_query_ls
