@@ -7,6 +7,7 @@ Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 Set-PSReadLineKeyHandler -Key 'Ctrl+p' -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key 'Ctrl+n' -Function HistorySearchForward
 Set-PSReadLineKeyHandler -Chord 'g,h' -Function GotoFirstNonBlankOfLine -ViMode Command
+Set-PSReadLineKeyHandler -Chord Tab -Function GotoBrace -ViMode Command
 Set-PSReadLineKeyHandler -Chord 'g,l' -Function EndofLine -ViMode Command
 Set-PSReadLineKeyHandler -Chord ' ,z' -ViMode Command -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::GotoFirstNonBlankOfLine()
