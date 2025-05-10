@@ -78,7 +78,7 @@ M.config = {
 }
 
 --#region tasks to fetch language-server executables
-if not require('utils.env').is_windows then
+if not IsWindows then
   async.cmd(
     mk_store_query('vue-language-server'),
     function(result)

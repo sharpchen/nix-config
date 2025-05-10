@@ -11,6 +11,7 @@ local M = {
 
 _G.IsWindows = M.is_windows
 _G.IsLinux = M.is_linux
+_G.HasNix = M.has_nix
 
 M.new_line = M.is_windows and '\r\n' or '\n'
 

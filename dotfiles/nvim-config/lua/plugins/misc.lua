@@ -42,9 +42,9 @@ return {
     },
   },
   {
-    -- 'DaikyXendo/nvim-material-icon',
-    'sharpchen/nvim-material-icon',
-    branch = 'rm-invalid-icon',
+    'DaikyXendo/nvim-material-icon',
+    -- 'sharpchen/nvim-material-icon',
+    -- branch = 'rm-invalid-icon',
     config = function()
       require('nvim-web-devicons').set_icon_by_filetype {
         msbuild = 'sln',

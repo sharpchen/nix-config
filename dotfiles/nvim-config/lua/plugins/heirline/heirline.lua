@@ -153,7 +153,7 @@ local FileEncoding = {
 }
 local System = {
   init = function(self)
-    local sys = require('utils.env').is_windows and 'windows' or 'linux'
+    local sys = IsWindows and 'windows' or 'linux'
     local icon = require('nvim-web-devicons').get_icons_by_operating_system()[sys]
     self.icon_color, self.icon = icon.color, icon.icon
   end,

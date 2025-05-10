@@ -39,11 +39,16 @@ require('lazy').setup {
     url_format = 'git@github.com:%s.git',
     timeout = 60 * 10,
   },
-  spec = require('utils.env').is_windows and plugins_for_windows or {
+  spec = IsWindows and plugins_for_windows or {
     { import = 'plugins' },
     { import = 'plugins.colo' },
   },
   ui = {
     border = 'none',
+  },
+  performance = {
+    rtp = {
+      paths = { vim.env.NVIM_TREESITTER_PARSERS },
+    },
   },
 }

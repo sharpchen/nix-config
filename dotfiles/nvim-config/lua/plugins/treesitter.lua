@@ -13,13 +13,15 @@ return {
       install_info = {
         url = 'https://github.com/ionide/tree-sitter-fsharp',
         branch = 'main',
-        files = { 'fsharp/src/scanner.c', 'fsharp/src/parser.c' },
+        files = { 'src/scanner.c', 'src/parser.c' },
+        location = 'fsharp',
+        revision = 'af8cd5b06c86e93e7dfaf3519fed5b8084a3c944',
       },
       requires_generate_from_grammar = false,
       filetype = 'fsharp',
     }
     configs.setup {
-      ensure_installed = {
+      ensure_installed = HasNix and {} or {
         'c',
         'cpp',
         'c_sharp',
@@ -98,7 +100,7 @@ return {
           selection_modes = {
             ['@parameter.outer'] = 'v', -- charwise
             ['@function.outer'] = 'V', -- linewise
-            ['@class.outer'] = '<c-v>', -- blockwise
+            ['@class.outer'] = 'V', -- blockwise
           },
           include_surrounding_whitespace = true,
         },

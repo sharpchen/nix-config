@@ -3,7 +3,7 @@ return {
   config = function()
     local fzf = require('fzf-lua')
     fzf.register_ui_select()
-    if require('utils.env').is_windows then
+    if IsWindows then
       fzf.setup {
         winopts = {
           preview = { default = 'bat_native' },
@@ -38,7 +38,7 @@ return {
     end
 
     vim.keymap.set('n', '<leader>fc', function()
-      local config_path = require('utils.env').is_windows and vim.fn.stdpath('config')
+      local config_path = IsWindows and vim.fn.stdpath('config')
         or '~/.config/home-manager/dotfiles/nvim-config/'
       fzf.files { cwd = config_path }
     end, { desc = 'find nvim config file' })
