@@ -14,3 +14,4 @@ set keymap vi-command
 "diW": "lBdW"
 "yiW": "lByW"
 " z": "I(\eA)"
+"\C-I": "%"
