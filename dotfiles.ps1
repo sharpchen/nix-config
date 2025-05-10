@@ -43,6 +43,7 @@ if (Get-Command scoop -ea SilentlyContinue) {
     mklink (Join-Path $scoopRoot 'persist/librewolf/Profiles/Default/librewolf.overrides.cfg') ./dotfiles/librewolf.cfg
     [Environment]::SetEnvironmentVariable('YAZI_FILE_ONE', ([IO.Path]::Combine($scoopRoot, 'apps\git\current\usr\bin\file.exe')), 'User')
     mklink (Join-Path $scoopRoot 'apps/sioyek/current/keys_user.config') ./dotfiles/sioyek.keys_user.config
+    mklink (Join-Path $scoopRoot 'apps/sioyek/current/prefs_user.config') ./dotfiles/sioyek.prefs_user.config
 }
 
 if (Get-Command nvim -ea SilentlyContinue) {
