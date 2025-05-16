@@ -25,9 +25,9 @@
       ];
   };
 
-  xdg.configFile.nvim = {
-    source = ../../dotfiles/nvim-config;
+  home.file.".config/nvim" = {
+    source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim-config";
   };
 
-  home.file.".vimrc".source = ../../dotfiles/.vimrc;
+  home.file.".vimrc".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.vimrc";
 }

@@ -1,8 +1,9 @@
+{ config, ... }:
 {
   programs.bash = {
     enable = true;
     sessionVariables = {
-      EDITOR = "nvim"; # --clean -c \"source ~/.vimrc\"'";
+      EDITOR = "vim"; # --clean -c \"source ~/.vimrc\"'";
       XDG_RUNTIME_DIR = "$HOME/.cache/";
     };
     # prepend content for auto-gen rc by hm
@@ -12,6 +13,6 @@
   };
 
   home.file.".inputrc" = {
-    source = ../../dotfiles/.inputrc;
+    source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.inputrc";
   };
 }

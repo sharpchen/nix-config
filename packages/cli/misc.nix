@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   home.packages = with pkgs; [
     gcc
@@ -33,7 +33,7 @@
     poppler
     nix-prefetch
     nix-prefetch-github
-    helix
+    evil-helix
     viu
     just
     wordnet
@@ -42,12 +42,17 @@
     zoxide
     devenv
     ncdu
+    pandoc
   ];
 
-  home.file.".config/lazygit/config.yml".source = ../../dotfiles/lazygit.config.yml;
-  home.file.".config/yazi/yazi.toml".source = ../../dotfiles/yazi.toml;
-  home.file.".config/yazi/keymap.toml".source = ../../dotfiles/yazi.keymap.toml;
-  home.file.".config/helix/config.toml".source = ../../dotfiles/helix.config.toml;
+  home.file.".config/lazygit/config.yml".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/lazygit.config.yml";
+  home.file.".config/yazi/yazi.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/yazi.toml";
+  home.file.".config/yazi/keymap.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/yazi.keymap.toml";
+  home.file.".config/helix/config.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/helix.config.toml";
 
   programs.nix-index = {
     enable = true;

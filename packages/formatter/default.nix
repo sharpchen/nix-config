@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   home.packages = with pkgs; [
     stylua
@@ -6,5 +6,6 @@
     yamlfmt
     nixfmt-rfc-style
   ];
-  xdg.configFile.".stylua.toml".source = ../../dotfiles/.stylua.toml;
+  xdg.configFile.".stylua.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.stylua.toml";
 }
