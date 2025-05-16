@@ -306,7 +306,7 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
                 $file = $slnx | Select-Object -First 1
             } elseif ($sln) {
                 $file = $sln | Select-Object -First 1
-            } elseif($proj) {
+            } elseif ($proj) {
                 $file = $proj | Select-Object -First 1
             } else {
                 Write-Warning "$($Path.FullName) contains no *proj or *.sln or *.slnx"
