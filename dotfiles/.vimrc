@@ -57,7 +57,7 @@ inoremap <silent> <M-Up> <Esc>:m .-2<CR>==gi
 
 nnoremap <leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>
 xnoremap <leader>s "zy:%s/\V<C-r>z/<C-r>z/gI<Left><Left><Left>
-
+xnoremap <leader>: "zy:<C-r>z
 
 nnoremap J mzJ`z
 
@@ -81,7 +81,8 @@ nnoremap <leader>Y "+Y
 nnoremap <leader>d "_d
 vnoremap <leader>d "_d
 
-nnoremap <leader>a ggVG
+" FIXME: keepjumps not working
+nnoremap <leader>a :keepjumps normal! ggVG<CR>
 nnoremap <silent> <A-c> :bd<CR>
 nnoremap <silent> <A-,> :bp<CR>
 nnoremap <silent> <A-.> :bn<CR>

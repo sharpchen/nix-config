@@ -36,6 +36,7 @@ inoremap <M-Up> <Esc>:m .-2<CR>==gi
 
 nnoremap <leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>
 xnoremap <leader>s "zy:%s/\V<C-r>z/<C-r>z/gI<Left><Left><Left>
+xnoremap <leader>: "zy:<C-r>z
 
 nnoremap J mzJ`z
 
