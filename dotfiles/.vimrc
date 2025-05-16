@@ -99,8 +99,8 @@ nnoremap <leader>, mzA,<Esc>`z
 nnoremap gi gi<Esc>zzi
 
 au BufReadPost * silent! normal! g`"zvzz
-au FileType *.markdown nnoremap <C-b> mz:s/\<<C-r><C-w>\>/**<C-r><C-w>**/<CR>`z
-au FileType *.markdown vnoremap <C-b> mz"zy:s/\<<C-r>z\>/**<C-r>z**/<CR>`z
+au FileType *.markdown nnoremap <silent> <buffer> <C-b> mz:s/\<<C-r><C-w>\>/**<C-r><C-w>**/<CR>`z
+au FileType *.markdown vnoremap <silent> <buffer> <C-b> mz"zy:s/\<<C-r>z\>/**<C-r>z**/<CR>`z
 
 nnoremap <Tab> %
 xnoremap <expr> <Tab> mode()==#'V' ? '$%' : '%'
