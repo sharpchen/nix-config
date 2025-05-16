@@ -2,10 +2,10 @@ local M = {}
 
 M.lsp = {
   diagnostic_icons = {
-    Error = '',
-    Warn = '',
-    Hint = '',
-    Info = '',
+    Error = '',
+    Warn = '',
+    Hint = '', --'',
+    Info = '', --'',
   },
   completion_kind_icons = {
     Text = '',

@@ -28,7 +28,7 @@ vim.opt.scrolloff = 8
 vim.opt.signcolumn = 'yes'
 vim.opt.isfname:append('@-@')
 vim.opt.guicursor =
-  'n-v-sm:block-blinkwait700-blinkoff400-blinkon250-Cursor,ci-ve:ver25,r-cr-o:hor20,i-c:ver100-blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
+  'n-v-sm:block-blinkwait700-Cursor,ci-ve:ver25,r-cr-o:hor20,i-c:ver100-blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
 
 vim.opt.grepprg = 'rg --vimgrep '
 vim.opt.spell = true

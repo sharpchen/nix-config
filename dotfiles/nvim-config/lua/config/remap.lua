@@ -65,6 +65,13 @@ vim.keymap.set(
 )
 
 vim.keymap.set(
+  'x',
+  [[<leader>:]],
+  [["zy:<C-r>z]],
+  { desc = 'send selection to cmdline', noremap = true }
+)
+
+vim.keymap.set(
   'n',
   '<leader>gq',
   [[:sil grep!  | cw<Left><Left><Left><Left><Left>]],
@@ -102,7 +109,13 @@ vim.keymap.set('n', '<M-l>', function()
   vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
 end, { desc = 'convert to lower case' })
 
-vim.keymap.set('n', '<leader>a', 'ggVG', { desc = 'select all text' })
+-- FIXME: keepjumps not working
+vim.keymap.set(
+  'n',
+  '<leader>a',
+  ':keepjumps normal! ggVG<CR>',
+  { desc = 'select all text' }
+)
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
 vim.keymap.set(
   'n',
@@ -115,11 +128,8 @@ vim.keymap.set('n', '<A-c>', '<cmd>bd<CR>', { desc = 'close current buffer' })
 vim.keymap.set('n', '<A-,>', '<cmd>bp<CR>', { desc = 'move to previous buffer' })
 vim.keymap.set('n', '<A-.>', '<cmd>bn<CR>', { desc = 'move to next buffer' })
 vim.keymap.set('n', '<A-a>', '<cmd>bufdo bd<CR>', { desc = 'close all buffers' })
-vim.keymap.set('n', '<leader><leader>', 'diw')
--- foo_bbbbbar_voo_boo
+vim.keymap.set('n', '<leader><leader>', 'diw', { remap = true })
 
--- vim.keymap.set('n', '0', '^', { noremap = true, silent = true, desc = 'go to start of line' })
--- vim.keymap.set('n', '^', '0', { noremap = true, silent = true, desc = 'go to first word bound of line' })
 vim.keymap.set(
   'n',
   'gh',
@@ -193,53 +203,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
   end,
 })
-
--- ---@param next boolean
--- local function mv_qf_item(next, init_bufnr)
---   local is_top = vim.fn.line('.') == 1
---   local is_bottom = vim.fn.line('.') == vim.fn.line('$')
---
---   local is_not_init_buf = false
---   -- go back to file so we can delete the buf
---   if vim.bo.filetype == 'qf' then
---     vim.cmd('wincmd p')
---     is_not_init_buf = vim.fn.bufnr('%') ~= init_bufnr
---   end
---
---   if is_not_init_buf then vim.cmd('bd | copen') end
---
---   if is_top and not next then
---     vim.cmd('clast')
---   elseif is_bottom and next then
---     vim.cmd('cfirst')
---   else
---     vim.cmd(next and 'cn' or 'cN')
---   end
---
---   -- center location
---   vim.api.nvim_feedkeys('zz', 'tx', false)
---
---   -- resize qf(should stay in file)
---   vim.cmd(
---     string.format(
---       'res %s',
---       math.floor(
---         (
---           vim.o.lines
---           - vim.o.cmdheight
---           - (vim.o.laststatus == 0 and 0 or 1)
---           - (vim.o.tabline == '' and 0 or 1)
---         )
---             / 3
---             * 2
---           + 0.5
---       ) + 3
---     )
---   )
---
---   -- make sure go back to qf
---   if vim.bo.filetype ~= 'qf' then vim.cmd('copen') end
--- end
 
 -- vim.api.nvim_create_autocmd('FileType', {
 --   pattern = 'qf',

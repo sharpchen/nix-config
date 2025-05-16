@@ -17,8 +17,11 @@ local function file_init(self)
   local ft = vim.filetype.match { filename = self.filename }
 
   -- some filetypes can't be detected by filename directly, use extension as fallback
-  self.icon, self.icon_color =
-    require('nvim-web-devicons').get_icon_color_by_filetype(ft or ext)
+  self.icon, self.icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(ft)
+  if not self.icon then
+    self.icon, self.icon_color =
+      require('nvim-web-devicons').get_icon_color_by_filetype(ext)
+  end
 
   -- use default icon as final choice
   local default = require('nvim-web-devicons').get_default_icon()
@@ -59,18 +62,18 @@ local ViMode = {
   init = function(self) self.mode = vim.api.nvim_get_mode().mode end,
   static = {
     mode_names = {
-      n = 'NORMAL',
-      v = 'VISUAL',
-      V = 'VLINE',
-      i = 'INSERT',
-      c = 'COMMAND',
-      t = 'TERMINAL',
-      nt = 'NORTERM',
-      R = 'REPLACE',
-      r = 'REPLACE',
-      ['\22'] = 'VBLOCK',
-      ['\22s'] = 'VBLOCK',
-      s = 'SELECT',
+      n = 'NOR',
+      v = 'VIS',
+      V = 'VLI',
+      i = 'INS',
+      c = 'CMD',
+      t = 'TERM',
+      nt = 'NTERM',
+      R = 'REP',
+      r = 'REP',
+      ['\22'] = 'VBL',
+      ['\22s'] = 'VBL',
+      s = 'SEL',
       niI = 'NiI',
       niR = 'NiR',
       niV = 'NiV',
@@ -245,29 +248,27 @@ local Git = {
   hl = { bg = 'statusline' },
   {
     -- git branch name
-    provider = function(self)
-      return '  ' .. (self.status_dict.head or '!error!') .. ' '
-    end,
+    provider = function(self) return ' ' .. (self.status_dict.head or '!error!') .. ' ' end,
     hl = { fg = 'git_branch', bold = true },
   },
   {
     provider = function(self)
       local count = self.status_dict.added or 0
-      return count > 0 and (' ' .. count .. ' ')
+      return count > 0 and ('+' .. count .. ' ')
     end,
     hl = { fg = 'git_add' },
   },
   {
     provider = function(self)
       local count = self.status_dict.removed or 0
-      return count > 0 and (' ' .. count .. ' ')
+      return count > 0 and ('-' .. count .. ' ')
     end,
     hl = { fg = 'git_del' },
   },
   {
     provider = function(self)
       local count = self.status_dict.changed or 0
-      return count > 0 and (' ' .. count .. ' ')
+      return count > 0 and ('~' .. count .. ' ')
     end,
     hl = { fg = 'git_modified' },
   },
@@ -309,9 +310,8 @@ local Ruler = {
   -- %L = number of lines in the buffer
   -- %c = column number
   -- %P = percentage through file of displayed window
-  provider = ' Ln %l, Col %c ',
-  init = file_init,
-  hl = function(self) return { bg = 'terminal', fg = 'statusline' } end,
+  provider = '%l:%c',
+  hl = { bg = 'statusline' },
 }
 
 local align = { provider = '%=' }
@@ -324,15 +324,15 @@ local DefaultStatusLine = {
   sp,
   SearchCount,
   align,
+  sp,
   Diagnostic,
-  sp,
   LSPActive,
+  -- sp,
+  -- FileEncoding,
   sp,
-  FileEncoding,
+  Ruler,
   sp,
-  System,
-  sp,
-  myutils.auto_surround({ rounded_delimiters[1], nil }, FileType),
+  myutils.auto_surround({ delimiter.left, nil }, FileType),
   -- myutils.auto_surround({ delimiter.left, nil }, Ruler),
 }
 local InactiveStatusLine = {
@@ -353,7 +353,7 @@ local SpecialStatusline = {
   sp,
   HelpFileName,
   align,
-  System,
+  Ruler,
   sp,
   myutils.auto_surround({ rounded_delimiters[1], nil }, FileType),
 }
@@ -372,12 +372,12 @@ local TerminalStatusline = {
   -- Quickly add a condition to the ViMode to only show it when buffer is active!
   {
     condition = conditions.is_active,
-    myutils.auto_surround({ nil, rounded_delimiters[2] }, ViMode),
+    myutils.auto_surround({ nil, delimiter.right }, ViMode),
     sp,
   },
   TerminalName,
   align,
-  System,
+  Ruler,
 }
 
 require('heirline').setup {

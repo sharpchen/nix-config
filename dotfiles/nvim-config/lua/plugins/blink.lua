@@ -67,7 +67,7 @@ return {
       providers = {
         snippets = {
           min_keyword_length = 1,
-          score_offset = 10,
+          score_offset = 1,
           should_show_items = function(ctx)
             return ctx.trigger.initial_kind ~= 'trigger_character'
             -- and not require('blink.cmp').snippet_active()

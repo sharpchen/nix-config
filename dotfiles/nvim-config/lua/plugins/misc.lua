@@ -4,6 +4,7 @@ return {
   {
     'RRethy/vim-illuminate',
     event = { 'BufReadPre', 'BufNewFile' },
+    enabled = false,
     config = function()
       require('illuminate').configure {
         filetypes_denylist = {
@@ -19,9 +20,10 @@ return {
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
+      highlight = {
+        keyword = 'wide_fg',
+        after = 'empty',
+      },
     },
   },
   'onsails/lspkind.nvim',

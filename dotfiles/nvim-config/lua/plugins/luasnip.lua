@@ -2,8 +2,7 @@
 ---@type LazySpec
 return {
   'L3MON4D3/LuaSnip',
-  -- branch = 'master',
-  version = 'v2.*',
+  branch = 'master',
   dependencies = { 'rafamadriz/friendly-snippets' },
   build = 'make install_jsregexp',
   config = function()
@@ -14,7 +13,12 @@ return {
     add(
       'lua',
       'keymap',
-      "vim.keymap.set('<n>', <action>, { desc = '<desc>', noremap = true })"
+      "vim.keymap.set('<n>', [[<keyseq>]], <action>, { desc = '<desc>', noremap = true })"
+    )
+    add(
+      'lua',
+      'lkeymap',
+      "vim.keymap.set('<n>', [[<keyseq>]], <action>, { desc = '<desc>', noremap = true, buffer = vim.fn.bufnr('%') })"
     )
     add(
       'lua',
@@ -43,12 +47,12 @@ return {
     ---@type LazySpec
         ]]
     )
-    -- add(
-    --   { 'cs', 'typescript', 'javascript', 'lua', 'json' },
-    --   'lambda',
-    --   '([param]) => [/* body */]',
-    --   { delimiters = '[]' }
-    -- )
+    add(
+      { 'cs', 'typescript', 'javascript', 'lua', 'json' },
+      'lambda',
+      '([param]) => [/* body */]',
+      { delimiters = '[]' }
+    )
     add(
       'markdown',
       'details',

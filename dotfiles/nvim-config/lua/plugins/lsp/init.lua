@@ -45,8 +45,24 @@ return {
     lsp.setup('eslint')
     lsp.setup('fsautocomplete')
     lsp.setup('roslyn_ls')
-    lsp.setup('basedpyright')
-    lsp.setup('ruff')
+    lsp.setup('basedpyright', {
+      settings = {
+        pyright = {
+          disableOrganizeImports = true,
+        },
+      },
+      python = {
+        analysis = {
+          ignore = { '*' },
+        },
+      },
+    })
+    lsp.setup('ruff', {
+      on_attach = function(client)
+        -- disable this if using basedpyright as language server
+        client.server_capabilities.hoverProvider = false
+      end,
+    })
 
     require('plugins.lsp.lua_ls')
     require('plugins.lsp.yamlls')

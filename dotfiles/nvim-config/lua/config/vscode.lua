@@ -1,5 +1,7 @@
 if not vim.g.vscode then return end
 
+vim.opt.spell = false
+
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   vim.fn.system {
@@ -13,15 +15,22 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local plugins_for_vscode = vim
-  .iter({
-    'Comment',
-    'template-string',
-    'vim-sandwich',
-    'treesitter',
-  })
-  :map(function(x) return { import = 'plugins.' .. x } end)
-  :totable()
+---@module 'lazy'
+---@type LazySpec[]
+local plugins_for_vscode = vim.list_extend(
+  vim
+    .iter({
+      'Comment',
+      'template-string',
+      'vim-sandwich',
+      'treesitter',
+    })
+    :map(function(x) return { import = 'plugins.' .. x } end)
+    :totable(),
+  {
+    { 'xiyaowong/fast-cursor-move.nvim' },
+  }
+)
 
 require('lazy').setup {
   lockfile = IsWindows and vim.fn.stdpath('config') .. '/lazy-lock.json'
@@ -48,6 +57,19 @@ vim.keymap.set(
   '<leader>ca',
   function() vscode.call('editor.action.quickFix') end,
   { desc = 'code actions' }
+)
+vim.keymap.set(
+  'n',
+  '<leader>ff',
+  [[<cmd>call VSCodeNotify('workbench.action.quickOpen', '')<CR>]],
+  { desc = 'search files', noremap = true }
+)
+
+vim.keymap.set(
+  'n',
+  [[<leader>fg]],
+  [[<cmd>call VSCodeNotify('workbench.action.quickOpen', '%'.expand('<cword>'))<CR>]],
+  { desc = 'desc', noremap = true }
 )
 
 vim.keymap.set('n', 'zM', function() vscode.call('editor.foldAll') end)

@@ -77,43 +77,6 @@ return {
 
     local stay_still = require('utils.static').mark.wrap
 
-    vim.keymap.set(
-      'n',
-      'gva',
-      stay_still(comment_eol('[!code ++]')),
-      { desc = '[!code ++]' }
-    )
-    vim.keymap.set(
-      'n',
-      'gvd',
-      stay_still(comment_eol('[!code --]')),
-      { desc = '[!code --]' }
-    )
-    vim.keymap.set(
-      'n',
-      'gvh',
-      stay_still(comment_eol('[!code highlight]')),
-      { desc = '[!code highlight]' }
-    )
-    vim.keymap.set(
-      'n',
-      'gvf',
-      stay_still(comment_eol('[!code focus]')),
-      { desc = '[!code focus]' }
-    )
-    vim.keymap.set(
-      'n',
-      'gvw',
-      stay_still(comment_eol('[!code warning]')),
-      { desc = '[!code warning]' }
-    )
-    vim.keymap.set(
-      'n',
-      'gve',
-      stay_still(comment_eol('[!code error]')),
-      { desc = '[!code error]' }
-    )
-
     ---@param action fun()
     local function foreach_line(action)
       return function()
@@ -126,43 +89,6 @@ return {
         end
       end
     end
-
-    vim.keymap.set(
-      'x',
-      'vva',
-      stay_still(foreach_line(comment_eol('[!code ++]'))),
-      { desc = '[!code ++]' }
-    )
-    vim.keymap.set(
-      'x',
-      'vvd',
-      stay_still(foreach_line(comment_eol('[!code --]'))),
-      { desc = '[!code --]' }
-    )
-    vim.keymap.set(
-      'x',
-      'vvh',
-      stay_still(foreach_line(comment_eol('[!code highlight]'))),
-      { desc = '[!code highlight]' }
-    )
-    vim.keymap.set(
-      'x',
-      'vvf',
-      stay_still(foreach_line(comment_eol('[!code focus]'))),
-      { desc = '[!code focus]' }
-    )
-    vim.keymap.set(
-      'x',
-      'vvw',
-      stay_still(foreach_line(comment_eol('[!code warning]'))),
-      { desc = '[!code warning]' }
-    )
-    vim.keymap.set(
-      'x',
-      'vve',
-      stay_still(foreach_line(comment_eol('[!code error]'))),
-      { desc = '[!code error]' }
-    )
 
     local function remove_codehl_comment()
       local line = vim.api.nvim_get_current_line()
@@ -183,11 +109,88 @@ return {
       end
     end
 
-    vim.keymap.set(
-      'n',
-      'gvr',
-      remove_codehl_comment,
-      { desc = 'delete shiki highlight comment' }
-    )
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = 'markdown',
+      callback = function(args)
+        vim.keymap.set(
+          'n',
+          'gvr',
+          remove_codehl_comment,
+          { desc = 'delete shiki highlight comment', buffer = args.buf }
+        )
+        vim.keymap.set(
+          'n',
+          'gva',
+          stay_still(comment_eol('[!code ++]')),
+          { buffer = args.buf, desc = '[!code ++]' }
+        )
+        vim.keymap.set(
+          'n',
+          'gvd',
+          stay_still(comment_eol('[!code --]')),
+          { buffer = args.buf, desc = '[!code --]' }
+        )
+        vim.keymap.set(
+          'n',
+          'gvh',
+          stay_still(comment_eol('[!code highlight]')),
+          { buffer = args.buf, desc = '[!code highlight]' }
+        )
+        vim.keymap.set(
+          'n',
+          'gvf',
+          stay_still(comment_eol('[!code focus]')),
+          { buffer = args.buf, desc = '[!code focus]' }
+        )
+        vim.keymap.set(
+          'n',
+          'gvw',
+          stay_still(comment_eol('[!code warning]')),
+          { buffer = args.buf, desc = '[!code warning]' }
+        )
+        vim.keymap.set(
+          'n',
+          'gve',
+          stay_still(comment_eol('[!code error]')),
+          { buffer = args.buf, desc = '[!code error]' }
+        )
+        vim.keymap.set(
+          'x',
+          'vva',
+          stay_still(foreach_line(comment_eol('[!code ++]'))),
+          { buffer = args.buf, desc = '[!code ++]' }
+        )
+        vim.keymap.set(
+          'x',
+          'vvd',
+          stay_still(foreach_line(comment_eol('[!code --]'))),
+          { buffer = args.buf, desc = '[!code --]' }
+        )
+        vim.keymap.set(
+          'x',
+          'vvh',
+          stay_still(foreach_line(comment_eol('[!code highlight]'))),
+          { buffer = args.buf, desc = '[!code highlight]' }
+        )
+        vim.keymap.set(
+          'x',
+          'vvf',
+          stay_still(foreach_line(comment_eol('[!code focus]'))),
+          { buffer = args.buf, desc = '[!code focus]' }
+        )
+        vim.keymap.set(
+          'x',
+          'vvw',
+          stay_still(foreach_line(comment_eol('[!code warning]'))),
+          { buffer = args.buf, desc = '[!code warning]' }
+        )
+        vim.keymap.set(
+          'x',
+          'vve',
+          stay_still(foreach_line(comment_eol('[!code error]'))),
+          { buffer = args.buf, desc = '[!code error]' }
+        )
+      end,
+    })
   end,
 }
