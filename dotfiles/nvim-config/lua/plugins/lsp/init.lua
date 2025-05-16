@@ -1,7 +1,9 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   'neovim/nvim-lspconfig',
   -- dir = '~/projects/nvim-lspconfig',
-  event = { 'BufReadPre', 'BufNewFile' },
+  event = 'VeryLazy',
   config = function()
     vim.api.nvim_create_user_command(
       'LspLog',

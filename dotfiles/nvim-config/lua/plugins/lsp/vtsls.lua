@@ -4,7 +4,7 @@ lsp.setup('vtsls', {
   on_attach = function(client, bufnr)
     if vim.bo.filetype == 'markdown' then
       lsp.event.disable_formatter(client)
-      lsp.event.abort_on(client, 'package.json')
+      lsp.event.abort_on_root_not_matched(client, 'package.json')
     else
       lsp.event.attach_navic(client, bufnr)
     end

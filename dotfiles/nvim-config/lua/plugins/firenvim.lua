@@ -1,6 +1,6 @@
 return {
   'glacambre/firenvim',
-  enabled = jit.os:find('Windows'),
+  enabled = IsWindows,
   build = ':call firenvim#install(0)',
   config = function()
     vim.api.nvim_create_autocmd({ 'BufEnter' }, {

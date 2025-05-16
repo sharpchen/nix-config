@@ -26,11 +26,11 @@ return {
       },
     },
   },
-  'onsails/lspkind.nvim',
   {
     'utilyre/barbecue.nvim',
     name = 'barbecue',
-    event = { 'BufReadPre', 'BufNewFile' },
+    enabled = false,
+    event = 'VeryLazy',
     version = '*',
     dependencies = {
       'SmiteshP/nvim-navic',
@@ -47,6 +47,7 @@ return {
     'DaikyXendo/nvim-material-icon',
     -- 'sharpchen/nvim-material-icon',
     -- branch = 'rm-invalid-icon',
+    event = 'VeryLazy',
     config = function()
       require('nvim-web-devicons').set_icon_by_filetype {
         msbuild = 'sln',
@@ -72,6 +73,7 @@ return {
   { 'nvchad/volt', lazy = true },
   {
     'nvzone/typr',
+    event = 'VeryLazy',
     dependencies = 'nvzone/volt',
     opts = {},
     cmd = { 'Typr', 'TyprStats' },
@@ -91,6 +93,7 @@ return {
   },
   {
     'nvzone/showkeys',
+    event = 'VeryLazy',
     cmd = 'ShowkeysToggle',
     opts = {
       maxkeys = 5,

@@ -1,6 +1,6 @@
 return {
   'hedyhli/outline.nvim',
-  event = { 'BufReadPre', 'BufNewFile' },
+  event = 'BufReadPost',
   dependencies = {
     'epheien/outline-treesitter-provider.nvim',
   },

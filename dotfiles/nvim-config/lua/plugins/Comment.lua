@@ -1,14 +1,18 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   -- 'numToStr/Comment.nvim',
   'sharpchen/Comment.nvim',
   branch = 'sum',
   dependencies = {
-    'JoosepAlviste/nvim-ts-context-commentstring',
-    opts = {
-      enable_autocmd = false,
+    {
+      'JoosepAlviste/nvim-ts-context-commentstring',
+      opts = {
+        enable_autocmd = false,
+      },
     },
   },
-  event = { 'BufReadPre', 'BufNewFile' },
+  event = 'BufReadPost',
   init = function()
     vim.keymap.del({ 'n', 'x', 'o' }, 'gc')
     vim.keymap.del('n', 'gcc')

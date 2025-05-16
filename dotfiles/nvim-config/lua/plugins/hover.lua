@@ -1,6 +1,6 @@
 return {
   'lewis6991/hover.nvim',
-  event = { 'BufReadPre', 'BufNewFile' },
+  event = 'BufReadPost',
   config = function()
     require('hover').setup {
       init = function()

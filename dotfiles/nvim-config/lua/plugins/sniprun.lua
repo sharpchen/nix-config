@@ -1,7 +1,10 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   'michaelb/sniprun',
   branch = 'master',
   build = 'sh install.sh 1',
+  event = 'VeryLazy',
   config = function()
     require('sniprun').setup {
       display = {

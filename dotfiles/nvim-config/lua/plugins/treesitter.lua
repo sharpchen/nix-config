@@ -1,10 +1,13 @@
 ---@diagnostic disable: missing-fields
+---@module 'lazy'
+---@type LazySpec
 return {
   'nvim-treesitter/nvim-treesitter',
   dependencies = {
     'nvim-treesitter/nvim-treesitter-textobjects',
   },
   build = ':TSUpdate',
+  event = 'VeryLazy',
   config = function()
     local configs = require('nvim-treesitter.configs')
     require('nvim-treesitter.install').prefer_git = true

@@ -7,7 +7,7 @@ local M = {
   },
 }
 
-if not IsWindows then
+if HasNix then
   async.cmd(
     require('utils.env').shell.bash_cmd('which netcoredbg'),
     function(result) M.path.netcoredbg = result end

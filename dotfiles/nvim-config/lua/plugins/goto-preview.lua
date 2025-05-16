@@ -1,6 +1,6 @@
 return {
   'rmagatti/goto-preview',
-  event = { 'BufReadPre', 'BufNewFile' },
+  event = 'BufReadPost',
   config = function()
     require('goto-preview').setup {
       border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },

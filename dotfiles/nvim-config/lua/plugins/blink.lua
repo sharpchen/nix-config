@@ -1,10 +1,14 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   'Saghen/blink.cmp',
   version = '*',
   build = 'export CARGO_NET_GIT_FETCH_WITH_CLI=true; nix run .#build-plugin --accept-flake-config',
+  event = 'BufReadPost',
   dependencies = {
     {
       'xzbdmw/colorful-menu.nvim',
+      lazy = true,
       opts = {
         ls = {
           lua_ls = {
@@ -154,7 +158,7 @@ return {
     },
     fuzzy = {
       sorts = { 'exact', 'score', 'sort_text' },
-      implementation = jit.os:find('Windows') and 'lua' or 'rust',
+      implementation = IsWindows and 'lua' or 'rust',
     },
   },
 }

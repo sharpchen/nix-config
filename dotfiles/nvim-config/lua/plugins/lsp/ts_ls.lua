@@ -2,7 +2,7 @@ local lsp = require('utils.lsp')
 lsp.setup('ts_ls', {
   on_attach = function(client, _)
     if vim.bo.filetype == 'markdown' then
-      lsp.event.abort_on(client, 'package.json')
+      lsp.event.abort_on_root_not_matched(client, 'package.json')
       lsp.event.disable_formatter(client)
     end
   end,

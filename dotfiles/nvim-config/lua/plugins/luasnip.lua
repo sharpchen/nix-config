@@ -5,6 +5,7 @@ return {
   branch = 'master',
   dependencies = { 'rafamadriz/friendly-snippets' },
   build = 'make install_jsregexp',
+  event = 'VeryLazy',
   config = function()
     require('luasnip.loaders.from_vscode').lazy_load()
 
@@ -47,12 +48,12 @@ return {
     ---@type LazySpec
         ]]
     )
-    add(
-      { 'cs', 'typescript', 'javascript', 'lua', 'json' },
-      'lambda',
-      '([param]) => [/* body */]',
-      { delimiters = '[]' }
-    )
+    -- add(
+    --   { 'cs', 'typescript', 'javascript', 'lua', 'json' },
+    --   'lambda',
+    --   '([param]) => [/* body */]',
+    --   { delimiters = '[]' }
+    -- )
     add(
       'markdown',
       'details',

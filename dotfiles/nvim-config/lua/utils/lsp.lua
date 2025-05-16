@@ -43,7 +43,7 @@ M.event = {
   --- abort attachment to client on root_pattern or condition
   ---@param client vim.lsp.Client
   ---@param cond string | string[] | fun(): boolean abort when root_pattern not met or cond eval to false
-  abort_on = function(client, cond)
+  abort_on_root_not_matched = function(client, cond)
     local should_abort = false
     if type(cond) == 'function' then
       should_abort = cond()
@@ -76,23 +76,6 @@ M.config = {
     return vim.list_extend(extra, ft)
   end,
 }
-
---#region tasks to fetch language-server executables
-if not IsWindows then
-  async.cmd(
-    mk_store_query('vue-language-server'),
-    function(result)
-      M.path.vue_language_server =
-        vim.fs.joinpath(result, 'lib/node_modules/@vue/language-server')
-    end
-  )
-  async.cmd(
-    mk_store_query('powershell-editor-services'),
-    function(result)
-      M.path.pwsh_es = vim.fs.joinpath(result, 'lib/powershell-editor-services')
-    end
-  )
-end
 --#endregion
 
 return M

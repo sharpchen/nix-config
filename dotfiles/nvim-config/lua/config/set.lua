@@ -35,10 +35,11 @@ vim.opt.spell = true
 vim.opt.spelloptions = 'camel'
 
 vim.opt.iskeyword:remove { '_' }
+vim.opt.showmode = false
 
 -- render listchars on colorcolumn loaded
-vim.opt.showmode = false
-local listchars = [[nbsp:␣,eol:↵,space:·,tab:» ]]
+-- local listchars = [[nbsp:␣,eol:↵,space:·,tab:» ]]
+local listchars = [[nbsp:␣,eol:↵,tab:» ]]
 vim.o.list = true
 vim.o.listchars = listchars
 vim.cmd([[2match WhiteSpaceBol /^ \+/]])
@@ -125,7 +126,7 @@ vim.filetype.add {
     inputrc = 'sh',
   },
   pattern = {
-    ['.*%..*proj'] = 'msbuild',
+    ['.*%..+proj'] = 'msbuild',
   },
 }
 

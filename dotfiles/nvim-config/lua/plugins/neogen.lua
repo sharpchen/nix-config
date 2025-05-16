@@ -1,6 +1,6 @@
 return {
   'danymat/neogen',
-  event = { 'BufReadPre', 'BufNewFile' },
+  event = 'BufReadPost',
   config = function()
     require('neogen').setup {
       enabled = true,

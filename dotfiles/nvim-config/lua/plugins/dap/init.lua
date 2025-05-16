@@ -1,6 +1,8 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   'mfussenegger/nvim-dap',
-  event = { 'BufReadPre' },
+  event = 'BufReadPost',
   dependencies = {
     'rcarriga/nvim-dap-ui',
     'theHamsta/nvim-dap-virtual-text',

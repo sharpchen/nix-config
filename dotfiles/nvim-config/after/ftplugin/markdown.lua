@@ -2,14 +2,14 @@ vim.keymap.set(
   'n',
   '<C-b>',
   [[mz:s/\<<C-r><C-w>\>/**<C-r><C-w>**/<CR>`z]],
-  { buffer = vim.fn.bufnr('%'), desc = 'boldify cursor word' }
+  { buffer = vim.fn.bufnr('%'), desc = 'boldify cursor word', silent = true }
 )
 
 vim.keymap.set(
   'v',
   '<C-b>',
   [[mz"zy:s/\<<C-r>z\>/**<C-r>z**/<CR>`z]],
-  { buffer = vim.fn.bufnr('%'), desc = 'boldify selection' }
+  { buffer = vim.fn.bufnr('%'), desc = 'boldify selection', silent = true }
 )
 
 vim.keymap.set('n', '<leader>ck', function()

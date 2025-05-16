@@ -1,6 +1,6 @@
 return {
   'stevearc/conform.nvim',
-  event = { 'BufReadPre', 'BufNewFile' },
+  event = 'BufReadPost',
   config = function()
     require('conform').setup {
       formatters_by_ft = {

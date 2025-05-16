@@ -1,5 +1,8 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   'johnfrankmorgan/whitespace.nvim',
+  event = 'BufReadPost',
   config = function()
     require('whitespace-nvim').setup {
       highlight = 'DiffDelete',
