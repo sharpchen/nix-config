@@ -326,6 +326,7 @@ local DefaultStatusLine = {
   align,
   sp,
   Diagnostic,
+  sp,
   LSPActive,
   -- sp,
   -- FileEncoding,

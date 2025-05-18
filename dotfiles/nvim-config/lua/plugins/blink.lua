@@ -6,6 +6,7 @@ return {
   build = 'export CARGO_NET_GIT_FETCH_WITH_CLI=true; nix run .#build-plugin --accept-flake-config',
   event = 'BufReadPost',
   dependencies = {
+    'moyiz/blink-emoji.nvim',
     {
       'xzbdmw/colorful-menu.nvim',
       lazy = true,
@@ -66,7 +67,7 @@ return {
       default = function()
         local ok, node = pcall(vim.treesitter.get_node)
         if ok and node and node:type():find('comment') then return { 'buffer' } end
-        return { 'snippets', 'lsp', 'path', 'buffer' }
+        return { 'snippets', 'lsp', 'path', 'buffer', 'emoji' }
       end,
       providers = {
         snippets = {
@@ -87,6 +88,15 @@ return {
         dadbod = {
           name = 'Dadbod',
           module = 'vim_dadbod_completion.blink',
+        },
+        emoji = {
+          module = 'blink-emoji',
+          name = 'Emoji',
+          score_offset = 15,
+          opts = { insert = true }, -- Insert emoji (default) or complete its name
+          should_show_items = function()
+            return vim.tbl_contains({ 'gitcommit', 'markdown' }, vim.bo.filetype)
+          end,
         },
       },
     },

@@ -155,6 +155,14 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   command = 'silent! normal! g`"zvzz',
 })
 
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function() vim.hl.on_yank { timeout = 300 } end,
+})
+
+vim.api.nvim_create_autocmd('VimResized', {
+  command = 'wincmd =',
+})
+
 vim.opt.fillchars = {
   diff = '╱',
 }

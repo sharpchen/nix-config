@@ -67,8 +67,8 @@ vim.keymap.set(
 vim.keymap.set(
   'x',
   [[<leader>:]],
-  [["zy:<C-r>z]],
-  { desc = 'send selection to cmdline', noremap = true }
+  function() return vim.bo.filetype == 'lua' and [["zy:=<C-r>z]] or [["zy:<C-r>z]] end,
+  { desc = 'send selection to cmdline', noremap = true, expr = true }
 )
 
 vim.keymap.set(
@@ -187,7 +187,7 @@ end
 vim.api.nvim_create_autocmd('LspAttach', {
   desc = 'LSP actions',
   callback = function(event)
-    local opts = { buffer = event.buf, silent = true }
+    local opts = { buffer = event.buf, silent = true, nowait = true }
     -- these will be buffer-local keybindings
     -- because they only work if you have an active language server
     -- vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
@@ -222,7 +222,7 @@ function _G.select_md_code_block(around)
 
   -- Find the start ```
   for i = cur_line, 1, -1 do
-    if vim.trim(vim.fn.getline(i)):match('^```') then
+    if vim.trim(vim.fn.getline(i)):match('%s+^```') then
       start = i
       break
     end
@@ -230,7 +230,7 @@ function _G.select_md_code_block(around)
 
   -- Find the end ```
   for i = cur_line, vim.fn.line('$') do
-    if vim.trim(vim.fn.getline(i)):match('^```') then
+    if vim.trim(vim.fn.getline(i)):match('%s+^```') then
       finish = i
       break
     end

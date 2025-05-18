@@ -77,7 +77,7 @@ return {
           cwd = vim.fs.dirname(vim.fn.bufname('%')),
         }
       end,
-      { desc = 'fuzzy find folders' }
+      { desc = 'find files in current folder' }
     )
 
     vim.keymap.set(

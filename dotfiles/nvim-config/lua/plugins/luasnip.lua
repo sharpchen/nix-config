@@ -42,6 +42,11 @@ return {
     )
     add(
       'lua',
+      'usercmd',
+      [[ vim.api.nvim_create_user_command('<name>', <action>, { desc = '<desc>' }) ]]
+    )
+    add(
+      'lua',
       'lazyspec',
       [[
     ---@module 'lazy'
