@@ -244,13 +244,21 @@ function dnnew {
 
     end {
         $templates = dotnet new list | Select-Object -Skip 4 | ForEach-Object {
-            if ($_ -match '^(?<Name>(?:[\w\.\(\)\-]+\s?)+)\s+(?<ShortName>[\w\.\-,]+)\s+(?<Lang>.*?)\s+(?<Tags>.*$)') {
+            if ($_ -match '^(?<Name>.+?)\s{2,}(?<ShortName>.+?)\s{2,}(?<Lang>(\s{2,}|\S+))(\s{2,})?(?<Tags>.*$)') {
+                $Lang = $Matches.Lang
+                $Tags = if ([string]::IsNullOrEmpty($Matches.Tags)) {
+                    $Matches.Lang
+                    $Lang = [string]::Empty
+                } else {
+                    $Matches.Tags
+                }
+
                 if ($Matches.ShortName.Contains(',')) {
                     $Matches.ShortName -split ',' | ForEach-Object {
-                        "$_`tDesc: $($Matches.Name)`tLang: $($Matches.Lang)`tTags: $($Matches.Tags)"
+                        "$_`tDesc: $($Matches.Name)`tLang: $($Lang)`tTags: $($Tags)"
                     }
                 } else {
-                    "$($Matches.ShortName)`tDesc: $($Matches.Name)`tLang: $($Matches.Lang)`tTags: $($Matches.Tags)"
+                    "$($Matches.ShortName)`tDesc: $($Matches.Name)`tLang: $($Lang)`tTags: $($Tags)"
                 }
             }
         }

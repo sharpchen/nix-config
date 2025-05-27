@@ -33,7 +33,7 @@ if (Get-Command 'home-manager' -ErrorAction SilentlyContinue) {
     }
 }
 
-function pj {
+function p {
     begin {
         Get-Command fzf -ea SilentlyContinue | Out-Null
     }
@@ -43,5 +43,26 @@ function pj {
             $folders += Get-Item '~/.config/home-manager/'
         }
         Set-Location ($folders | ForEach-Object FullName | fzf)
+    }
+}
+
+if ((Get-Command scoop -ea SilentlyContinue) -and -not (Get-Command sioyek -ea SilentlyContinue -CommandType Application)) {
+    $sioyekPrefix = scoop prefix sioyek
+    if ($LASTEXITCODE -eq 0) {
+        function sioyek {
+            & (Join-Path $sioyekPrefix 'sioyek.exe') @args
+        }
+    }
+}
+
+if (Get-Command yazi -ea SilentlyContinue) {
+    function y {
+        $tmp = [System.IO.Path]::GetTempFileName()
+        yazi $args --cwd-file="$tmp"
+        $cwd = Get-Content -Path $tmp -Encoding UTF8
+        if (-not [String]::IsNullOrEmpty($cwd) -and $cwd -ne $PWD.Path) {
+            Set-Location -LiteralPath ([System.IO.Path]::GetFullPath($cwd))
+        }
+        Remove-Item -Path $tmp
     }
 }
