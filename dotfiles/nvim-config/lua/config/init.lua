@@ -21,10 +21,10 @@ if vim.g.started_by_firenvim then
   vim.o.background = 'light'
 end
 
+local colo = { 'Eva-Dark', 'vscode', 'kanagawa' }
 if IsWindows then
   vim.cmd.colorscheme('vscode')
 else
-  local colo = { 'Eva-Dark', 'vscode', 'kanagawa' }
   math.randomseed(os.time())
-  vim.cmd.colorscheme(colo[math.random(#colo)])
+  vim.cmd.colo(colo[math.random(#colo)])
 end

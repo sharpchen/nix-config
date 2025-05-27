@@ -274,7 +274,9 @@ local Git = {
   },
   update = {
     'User',
-    pattern = 'GitSignsUpdate',
+    'BufLeave',
+    'BufEnter',
+    -- pattern = 'GitSignsUpdate',
     callback = vim.schedule_wrap(function() vim.cmd.redrawstatus() end),
   },
 }

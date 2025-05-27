@@ -33,7 +33,7 @@ local plugins_for_windows = vim
   :totable()
 
 require('lazy').setup {
-  lockfile = jit.os:find('Windows') and vim.fn.stdpath('config') .. '/lazy-lock.json'
+  lockfile = IsWindows and vim.fn.stdpath('config') .. '/lazy-lock.json'
     or '~/.config/home-manager/dotfiles/nvim-config/lazy-lock.json',
   git = {
     url_format = 'git@github.com:%s.git',
@@ -45,10 +45,5 @@ require('lazy').setup {
   },
   ui = {
     border = 'none',
-  },
-  performance = {
-    rtp = {
-      paths = { vim.env.NVIM_TREESITTER_PARSERS },
-    },
   },
 }

@@ -136,7 +136,7 @@ return {
         },
       },
       menu = {
-        border = 'single',
+        border = 'none',
         draw = {
           columns = {
             { 'kind_icon', 'label', gap = 1 },

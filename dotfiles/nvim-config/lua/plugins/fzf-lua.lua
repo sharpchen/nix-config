@@ -1,6 +1,15 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   'ibhagwan/fzf-lua',
   config = function()
+    do
+      if vim.fn.executable('fd') == 0 then
+        vim.notify('fd not installed', vim.log.levels.ERROR)
+        return
+      end
+    end
+
     local fzf = require('fzf-lua')
     fzf.register_ui_select()
     if IsWindows then
@@ -8,7 +17,10 @@ return {
         winopts = {
           preview = { default = 'bat_native' },
         },
-        fzf_opts = { ['--ansi'] = false },
+        fzf_opts = {
+          ['--cycle'] = true,
+          ['--ansi'] = false,
+        },
         files = {
           git_icons = false,
           file_icons = false,
@@ -16,6 +28,9 @@ return {
       }
     else
       fzf.setup {
+        fzf_opts = {
+          ['--cycle'] = true,
+        },
         previewers = {
           builtin = {
             extensions = {
@@ -39,7 +54,7 @@ return {
 
     vim.keymap.set('n', '<leader>fc', function()
       local config_path = IsWindows and vim.fn.stdpath('config')
-        or '~/.config/home-manager/dotfiles/nvim-config/'
+        or vim.fn.expand('~/.config/home-manager/dotfiles/nvim-config/')
       fzf.files { cwd = config_path }
     end, { desc = 'find nvim config file' })
 
@@ -87,6 +102,18 @@ return {
       { desc = 'root folder' }
     )
 
+    vim.keymap.set('n', [[<leader>fl]], function()
+      local lazy_path = vim.fs.joinpath(vim.fn.stdpath('data'), 'lazy')
+      fzf.fzf_exec('fd -d 1 -t=d -E .git/', {
+        cwd = lazy_path,
+        actions = {
+          default = function(selected, _)
+            vim.fn.chdir(vim.fs.joinpath(lazy_path, selected[1]))
+          end,
+        },
+      })
+    end, { desc = 'search plugin source file installed by lazy', noremap = true })
+
     vim.api.nvim_create_autocmd('ModeChanged', {
       pattern = 't:n',
       callback = function(args)
@@ -103,5 +130,15 @@ return {
       end,
       desc = 'invoke ufo after entering buf using fzf-lua',
     })
+
+    vim.keymap.set('n', [[<leader>fp]], function()
+      local cwd = vim.fn.expand('~/projects/')
+      require('fzf-lua').fzf_exec('fd -d 1 -t=d -E .git/', {
+        cwd = cwd,
+        actions = {
+          default = function(selected, _) vim.fn.chdir(vim.fs.joinpath(cwd, selected[1])) end,
+        },
+      })
+    end, { desc = 'desc', noremap = true })
   end,
 }

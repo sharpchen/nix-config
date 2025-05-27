@@ -74,7 +74,14 @@ vim.keymap.set(
 vim.keymap.set(
   'n',
   '<leader>gq',
-  [[:sil grep!  | cw<Left><Left><Left><Left><Left>]],
+  [[:sil grep! <C-r><C-w> | cw<Left><Left><Left><Left><Left>]],
+  { desc = 'grep and pipe to qf' }
+)
+
+vim.keymap.set(
+  'x',
+  '<leader>gq',
+  [["zy:sil grep! <C-r>z | cw<Left><Left><Left><Left><Left>]],
   { desc = 'grep and pipe to qf' }
 )
 
@@ -99,15 +106,9 @@ vim.keymap.set(
   { desc = 'convert to camel case' }
 )
 
-vim.keymap.set('n', '<M-u>', function()
-  local sub = vim.fn.expand('<cword>'):upper()
-  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
-end, { desc = 'convert to upper case' })
+vim.keymap.set('n', '<M-u>', 'viwU', { desc = 'convert to upper case' })
 
-vim.keymap.set('n', '<M-l>', function()
-  local sub = vim.fn.expand('<cword>'):lower()
-  vim.cmd(string.format("execute 'norm! viw' | execute 'norm! c%s'", sub))
-end, { desc = 'convert to lower case' })
+vim.keymap.set('n', '<M-l>', 'viwu', { desc = 'convert to lower case' })
 
 -- FIXME: keepjumps not working
 vim.keymap.set(

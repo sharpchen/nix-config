@@ -34,7 +34,7 @@ vim.opt.grepprg = 'rg --vimgrep '
 vim.opt.spell = true
 vim.opt.spelloptions = 'camel'
 
-vim.opt.iskeyword:remove { '_' }
+-- vim.opt.iskeyword:remove { '_' }
 vim.opt.showmode = false
 
 -- render listchars on colorcolumn loaded
@@ -133,21 +133,6 @@ vim.filetype.add {
 vim.treesitter.language.register('xml', { 'axaml', 'xaml', 'msbuild' })
 
 if jit.os:find('Windows') and vim.fn.executable('pwsh') == 1 then vim.o.shell = 'pwsh' end
-
-vim.api.nvim_create_user_command('Pj', function()
-  local cmd = [[cmd.exe /c "for /D %d in (%USERPROFILE%\projects\*) do @echo %d" | fzf]]
-  local pwsh = [[gci -dir -path ~/projects | % FullName]]
-  local bash = [[ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/")]]
-  local command = (vim.o.shell:find('pwsh') or vim.o.shell:find('powershell')) and pwsh
-    or vim.o.shell:find('cmd%.exe') and cmd
-    or bash
-
-  require('fzf-lua').fzf_exec(command, {
-    actions = {
-      ['default'] = function(selected, _) vim.fn.chdir(selected[1]) end,
-    },
-  })
-end, { desc = 'switch to one project folder' })
 
 vim.api.nvim_create_autocmd('BufReadPost', {
   desc = 'Open file at the last position it was edited earlier',

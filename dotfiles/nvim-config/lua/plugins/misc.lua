@@ -99,4 +99,46 @@ return {
       maxkeys = 5,
     },
   },
+  {
+    dir = '~/projects/new-item.nvim',
+    event = 'VeryLazy',
+    config = function()
+      require('new-item').setup {}
+      -- require('new-item.groups').dotnet = {
+      --   items = {
+      --     {
+      --       content = [[
+      --       Console.WriteLine("Hello, World")
+      --       ]],
+      --       name_customizable = true,
+      --     },
+      --   },
+      -- }
+      vim.keymap.set(
+        'n',
+        [[<leader>ni]],
+        [[<cmd>NewItem<CR>]],
+        { desc = 'desc', noremap = true }
+      )
+    end,
+  },
+
+  {
+    'nvim-lua/plenary.nvim',
+    event = 'VeryLazy',
+    config = function()
+      vim.keymap.set(
+        'n',
+        [[<leader>tf]],
+        [[<cmd>PlenaryBustedFile %<CR>]],
+        { desc = 'run plenary busted file', noremap = true }
+      )
+      vim.keymap.set(
+        'n',
+        [[<leader>td]],
+        [[<cmd>PlenaryBustedDirectory tests/<CR>]],
+        { desc = 'run plenary busted file', noremap = true }
+      )
+    end,
+  },
 }

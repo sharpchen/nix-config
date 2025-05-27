@@ -53,6 +53,20 @@ return {
     ---@type LazySpec
         ]]
     )
+    add(
+      'lua',
+      'ctor',
+      [[
+    ---@generic T
+    ---@param self T
+    ---@param o? T | table
+    ---@return T
+    function <Class>:new(o)
+      self.__index = self
+      return setmetatable(o or {}, self)
+    end
+    ]]
+    )
     -- add(
     --   { 'cs', 'typescript', 'javascript', 'lua', 'json' },
     --   'lambda',

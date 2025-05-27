@@ -3,6 +3,7 @@
 return {
   {
     'chaoren/vim-wordmotion',
+    event = 'BufReadPost',
     init = function() vim.g.wordmotion_nomap = 0 end,
     config = function()
       vim.api.nvim_create_user_command('WordMotionToggle', function()

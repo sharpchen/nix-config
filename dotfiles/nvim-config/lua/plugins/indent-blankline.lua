@@ -6,7 +6,8 @@ return {
   config = function()
     require('ibl').setup {
       indent = {
-        char = '▏',
+        -- char = '▏',
+        char = '┊',
         smart_indent_cap = true,
         priority = 2,
         repeat_linebreak = true,

@@ -10,8 +10,8 @@ return {
       render = 'wrapped-compact',
       merge_duplicates = false,
     }
-    vim.notify = function(msg, level, opts)
-      require('notify')(vim.inspect(msg), level, opts)
+    vim.notify = function(obj, level, opts)
+      require('notify')(vim.inspect(obj), level, opts)
     end
   end,
 }
