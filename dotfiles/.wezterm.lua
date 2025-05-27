@@ -21,7 +21,7 @@ config.cursor_blink_ease_out = 'Constant'
 
 config.hide_tab_bar_if_only_one_tab = true
 
-local font = 'JetBrains Mono NL'
+local font = 'SF Mono' -- 'JetBrains Mono NL'
 config.font_size = 12
 config.font =
 	wezterm.font_with_fallback({ font, "Nerd Font Symbols", "Noto Color Emoji", "Symbols Nerd Font Mono" })
