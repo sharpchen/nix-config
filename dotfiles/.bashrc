@@ -25,11 +25,11 @@ alias so='source ~/.bashrc'
 alias :q='exit'
 alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
 alias lg=lazygit
-alias pj='cd $(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)'
+alias p='cd $(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)'
 alias vim='nvim -u ~/.vimrc'
 alias dn=dotnet
 alias v=nvim
-alias ngc='nix-collect-garbage -d && sudo nix-collect-garbage -d'
+alias ngc='nix-collect-garbage -d && sudo $(which nix-collect-garbage) -d'
 
 #######################################
 # Get nix store path of a package
