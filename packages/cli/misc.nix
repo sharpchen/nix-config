@@ -24,7 +24,6 @@
     fd
     ouch
     miller
-    transmission_4
     imagemagick
     mpv
     glow
@@ -35,15 +34,28 @@
     nix-prefetch-github
     evil-helix
     viu
-    just
-    wordnet
     sioyek
     postgresql
     zoxide
     devenv
     ncdu
-    pandoc
+    dict
+    dictdDBs.wiktionary
+    nh
   ];
+  home.file.".dict/.dict.conf".text = ''
+    server localhost
+  '';
+  home.file.".dict/dictd.conf".text = ''
+    global {
+        pid_file ${config.home.homeDirectory}/.dict/.dictd.pid
+    }
+    database wiktionary {
+        data ${pkgs.dictdDBs.wiktionary}/share/wiktionary-en.dict.dz
+        index ${pkgs.dictdDBs.wiktionary}/share/wiktionary-en.index
+    }
+  '';
+  home.file.".dict/.dictd.pid".text = "";
 
   home.file.".config/lazygit/config.yml".source =
     config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/lazygit.config.yml";
