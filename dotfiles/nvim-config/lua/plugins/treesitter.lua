@@ -107,6 +107,26 @@ return {
           },
           include_surrounding_whitespace = true,
         },
+        move = {
+          enable = true,
+          set_jumps = true,
+          goto_next_start = {
+            [']f'] = '@function.outer',
+            [']]'] = '@function.outer',
+          },
+          goto_next_end = {
+            [']F'] = '@function.outer',
+            [']['] = '@function.outer',
+          },
+          goto_previous_start = {
+            ['[f'] = '@function.outer',
+            ['[['] = '@function.outer',
+          },
+          goto_previous_end = {
+            ['[f'] = '@function.outer',
+            ['[]'] = '@function.outer',
+          },
+        },
       },
     }
   end,

@@ -11,6 +11,9 @@ return {
 
     local add = require('utils.static').snippet.add
 
+    -- TODO: use this to parse snippet literal
+    _ = require('luasnip').parser.parse_snippet
+
     add(
       'lua',
       'keymap',
@@ -62,8 +65,9 @@ return {
     ---@param o? T | table
     ---@return T
     function <Class>:new(o)
+      o = o or {}
       self.__index = self
-      return setmetatable(o or {}, self)
+      return setmetatable(o, self)
     end
     ]]
     )
@@ -83,6 +87,37 @@ return {
         </details>
         ]],
       { delimiters = '{}' }
+    )
+    add('markdown', 'shikihl', '<//> [!code <highlight>]')
+    add('ps1', 'cmdp', '$null = Get-Command <cmd> -ea Stop')
+    add(
+      'ps1',
+      'cmdif',
+      [[
+    if (Get-Command <cmd> -ea SilentlyContinue) {
+      <# body>
+    }
+    ]]
+    )
+    add(
+      'sh',
+      'cmdif',
+      [[
+    if type {cmd} >/dev/null; then
+      {# body}
+    fi
+    ]],
+      { delimiters = '{}' }
+    )
+    add(
+      'nix',
+      'mod',
+      [[
+        { pkgs, config, lib, ...  }:
+        {
+          <# here>
+        }
+        ]]
     )
 
     -- local ok, ls = pcall(require, 'luasnip')

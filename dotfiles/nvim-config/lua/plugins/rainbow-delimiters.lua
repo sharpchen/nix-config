@@ -3,6 +3,7 @@
 return {
   'HiPhish/rainbow-delimiters.nvim',
   event = 'BufReadPost',
+  submodules = false,
   config = function()
     ---@type rainbow_delimiters.config
     require('rainbow-delimiters.setup').setup {

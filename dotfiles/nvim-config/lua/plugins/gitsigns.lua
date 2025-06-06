@@ -35,7 +35,7 @@ return {
           else
             gitsigns.nav_hunk('next')
           end
-        end, { desc = 'navigate to next hunk' })
+        end, { desc = 'Navigate to next hunk' })
 
         map('n', '[c', function()
           if vim.wo.diff then
@@ -43,59 +43,85 @@ return {
           else
             gitsigns.nav_hunk('prev')
           end
-        end, { desc = 'navigate to prev hunk' })
+        end, { desc = 'Navigate to prev hunk' })
 
         -- Actions
-        map('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'stage current hunk' })
-        map('n', '<leader>hr', gitsigns.reset_hunk, { desc = 'reset current hunk' })
+        map('n', '<leader>hs', gitsigns.stage_hunk, { desc = '[S]tage current hunk' })
+        map('n', '<leader>hr', gitsigns.reset_hunk, { desc = '[R]eset current hunk' })
 
         map(
           'v',
           '<leader>hs',
           function() gitsigns.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
-          { desc = 'stage selected hunk' }
+          { desc = '[S]tage selected hunk' }
         )
 
         map(
           'v',
           '<leader>hr',
           function() gitsigns.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
-          { desc = 'reset selected hunk' }
+          { desc = '[R]eset current [H]unk' }
         )
 
-        map('n', '<leader>hS', gitsigns.stage_buffer, { desc = 'stage current buffer' })
-        map('n', '<leader>hR', gitsigns.reset_buffer, { desc = 'reset current buffer' })
-        map('n', '<leader>hp', gitsigns.preview_hunk, { desc = 'preview hunk' })
+        map('n', '<leader>hS', gitsigns.stage_buffer, { desc = '[S]tage current file' })
+        map('n', '<leader>hR', gitsigns.reset_buffer, { desc = '[R]eset current file' })
+        map('n', '<leader>hp', gitsigns.preview_hunk, { desc = '[P]review current hunk' })
         map(
           'n',
           '<leader>hi',
           gitsigns.preview_hunk_inline,
-          { desc = 'preview hunk inline' }
+          { desc = 'Preview hunk [I]nline' }
         )
 
         map(
           'n',
           '<leader>hb',
           function() gitsigns.blame_line { full = true } end,
-          { desc = 'show blame' }
+          { desc = 'Show [B]lame Text' }
         )
 
-        map('n', '<leader>hd', gitsigns.diffthis, { desc = 'show diff' })
+        -- NOTE: index means the snapshot including staged changes
+        map('n', '<leader>hd', gitsigns.diffthis, { desc = '[D]iff against index' })
 
-        map('n', '<leader>hD', function() gitsigns.diffthis('~') end)
+        map(
+          'n',
+          '<leader>hD',
+          function() gitsigns.diffthis('~') end,
+          { desc = '[D]iff against last commit' }
+        )
 
-        map('n', '<leader>hQ', function() gitsigns.setqflist('all') end)
-        map('n', '<leader>hq', gitsigns.setqflist)
+        map(
+          'n',
+          '<leader>hQ',
+          function() gitsigns.setqflist('all') end,
+          { desc = 'View repo [H]unks in [Q]flist' }
+        )
+        map(
+          'n',
+          '<leader>hq',
+          gitsigns.setqflist,
+          { desc = 'View file [H]unks in [Q]flist' }
+        )
 
         -- Toggles
-        map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
-        map('n', '<leader>tw', gitsigns.toggle_word_diff, { desc = 'toggle word diff' })
+        map(
+          'n',
+          '<leader>tb',
+          gitsigns.toggle_current_line_blame,
+          { desc = '[T]oggle git line blame' }
+        )
+        map(
+          'n',
+          '<leader>tw',
+          gitsigns.toggle_word_diff,
+          { desc = '[T]oggle [W]ord diff' }
+        )
 
         vim.keymap.set(
           { 'o', 'x' },
           'ih',
           '<Cmd>Gitsigns select_hunk<CR>',
-          { desc = 'select hunk' }
+          { desc = 'Select [H]unk' }
         )
       end,
     }

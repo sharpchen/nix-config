@@ -30,6 +30,13 @@ return {
             -- Such as "From <stdio.h>".
             extra_info_hl = '@comment',
           },
+          roslyn = {
+            extra_info_hl = '@comment',
+          },
+          basedpyright = {
+            -- It is usually import path such as "os"
+            extra_info_hl = '@comment',
+          },
         },
         -- If the built-in logic fails to find a suitable highlight group,
         -- this highlight is applied to the label.

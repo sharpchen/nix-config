@@ -12,12 +12,12 @@ vim.keymap.set(
   { buffer = vim.fn.bufnr('%'), desc = 'boldify selection', silent = true }
 )
 
-vim.keymap.set('n', '<leader>ck', function()
+local checklist_pattern = '^(%s*[%-%*]) %[([ x])%]'
+vim.keymap.set('n', '<leader>tk', function()
   local line = vim.api.nvim_get_current_line()
-  local pattern = '^(%s*[%-%*]) %[([ x])%]'
 
-  if line:match(pattern) then
-    local repl = line:gsub(pattern, function(head, symbol)
+  if line:match(checklist_pattern) then
+    local repl = line:gsub(checklist_pattern, function(head, symbol)
       ---@cast head string
       ---@cast symbol string
       return symbol == 'x' and head .. ' [ ]' or head .. ' [x]'
@@ -25,3 +25,15 @@ vim.keymap.set('n', '<leader>ck', function()
     vim.api.nvim_set_current_line(repl)
   end
 end, { buffer = vim.fn.bufnr('%'), desc = 'toggle checkbox' })
+
+vim.keymap.set('n', [[<leader>ck]], function()
+  local line = vim.api.nvim_get_current_line()
+  if not line:match(checklist_pattern) then
+    local repl = '- [ ] ' .. vim.trim(line)
+    vim.api.nvim_set_current_line(repl)
+  end
+end, {
+  desc = 'convert line to check list entry',
+  noremap = true,
+  buffer = vim.fn.bufnr('%'),
+})

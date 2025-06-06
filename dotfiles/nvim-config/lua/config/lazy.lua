@@ -28,6 +28,8 @@ local plugins_for_windows = vim
     'which-key',
     'vim-sandwich',
     'template-string',
+    'blink',
+    'luasnip',
   })
   :map(function(x) return { import = 'plugins.' .. x } end)
   :totable()

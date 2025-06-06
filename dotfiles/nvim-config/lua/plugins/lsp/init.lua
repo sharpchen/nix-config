@@ -46,7 +46,9 @@ return {
     lsp.setup('marksman')
     lsp.setup('eslint')
     lsp.setup('fsautocomplete')
-    lsp.setup('roslyn_ls')
+    lsp.setup('roslyn_ls', {
+      on_attach = lsp.event.disable_semantic,
+    })
     lsp.setup('basedpyright', {
       settings = {
         pyright = {

@@ -22,29 +22,20 @@ vim.keymap.set('n', 'J', 'mzJ`z', { desc = 'join next line with still cursor' })
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 
-vim.keymap.set('n', 'n', 'nzzzv')
-vim.keymap.set('n', 'N', 'Nzzzv')
+vim.keymap.set('n', 'n', '<cmd>keepjumps normal! nzzzv<CR>')
+vim.keymap.set('n', 'N', '<cmd>keepjumps normal! Nzzzv<CR>')
 
-vim.keymap.set('n', '<leader>p', '"0p', { desc = 'paste last yank' })
+vim.keymap.set('n', '<leader>p', '"0p', { desc = 'paste last yanked' })
+vim.keymap.set('n', '<leader>P', '"0P', { desc = 'paste last yanked' })
 
 -- copy to system clipboard
 vim.keymap.set('n', '<leader>y', '"+y', { desc = 'copy to system clipboard' })
-vim.keymap.set('v', '<leader>y', '"+y', { desc = 'copy to system clipboard' })
+vim.keymap.set('x', '<leader>y', '"+y', { desc = 'copy to system clipboard' })
 vim.keymap.set('n', '<leader>Y', '"+Y', { desc = 'copy to system clipboard' })
 
 -- deleting without overwriting last clipboard
-vim.keymap.set(
-  'n',
-  '<leader>d',
-  '"_d',
-  { desc = 'deleting without overwriting clipboard' }
-)
-vim.keymap.set(
-  'v',
-  '<leader>d',
-  '"_d',
-  { desc = 'deleting without overwriting clipboard' }
-)
+vim.keymap.set('n', '<leader>d', '"_d', { desc = 'delete to void' })
+vim.keymap.set('x', '<leader>d', '"_d', { desc = 'delete to void' })
 
 -- switch to another file in the system using tmux
 -- vim.keymap.set('n', '<C-f>', '<cmd>silent !tmux neww tmux-sessionizer<CR>')
@@ -58,10 +49,24 @@ vim.keymap.set(
 )
 
 vim.keymap.set(
+  'n',
+  '<leader>S',
+  [[:%s/\<<C-r><C-w>\>//gI<Left><Left><Left>]],
+  { desc = 'replace all occurrence of current word without pre-fill' }
+)
+
+vim.keymap.set(
   'x',
   '<leader>s',
   [["zy:%s/\V<C-r>z/<C-r>z/gI<Left><Left><Left>]],
   { desc = 'replace all occurrence of current selection' }
+)
+
+vim.keymap.set(
+  'x',
+  '<leader>S',
+  [["zy:%s/\V<C-r>z//gI<Left><Left><Left>]],
+  { desc = 'replace all occurrence of current selection without pre-fill' }
 )
 
 vim.keymap.set(
@@ -72,38 +77,52 @@ vim.keymap.set(
 )
 
 vim.keymap.set(
+  'x',
+  '<leader>r',
+  [[<C-\><C-n>`>:%s/\%V//g<Left><Left><Left>]],
+  { desc = '[R]eplace in selection' }
+)
+
+vim.keymap.set(
+  'x',
+  '<leader>R',
+  [[<C-\><C-n>`>:%s/^\%V//g<Left><Left><Left>]],
+  { desc = '[R]eplace start of line in selection' }
+)
+
+vim.keymap.set(
   'n',
   '<leader>gq',
   [[:sil grep! <C-r><C-w> | cw<Left><Left><Left><Left><Left>]],
-  { desc = 'grep and pipe to qf' }
+  { desc = '[G]rep and pipe to [Q]f' }
 )
 
 vim.keymap.set(
   'x',
   '<leader>gq',
   [["zy:sil grep! <C-r>z | cw<Left><Left><Left><Left><Left>]],
-  { desc = 'grep and pipe to qf' }
+  { desc = '[G]rep and pipe to [Q]f' }
 )
 
 vim.keymap.set(
   'n',
   '<leader>cp',
   function() require('utils.text').case.replace_cword_case('pascal') end,
-  { desc = 'convert to pascal case' }
+  { desc = '[C]onvert to [P]ascal case' }
 )
 
 vim.keymap.set(
   'n',
   '<leader>cs',
   function() require('utils.text').case.replace_cword_case('snake') end,
-  { desc = 'convert to snake case' }
+  { desc = '[C]onvert to [S]nake case' }
 )
 
 vim.keymap.set(
   'n',
   '<leader>cc',
   function() require('utils.text').case.replace_cword_case('camel') end,
-  { desc = 'convert to camel case' }
+  { desc = '[C]onvert to [C]amel case' }
 )
 
 vim.keymap.set('n', '<M-u>', 'viwU', { desc = 'convert to upper case' })
@@ -115,14 +134,14 @@ vim.keymap.set(
   'n',
   '<leader>a',
   ':keepjumps normal! ggVG<CR>',
-  { desc = 'select all text' }
+  { desc = 'select [A]ll text' }
 )
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
 vim.keymap.set(
   'n',
   '<leader>hh',
   function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = 0 }) end,
-  { desc = 'toggle inlay hint' }
+  { desc = 'toggle inlay [H]int' }
 )
 
 vim.keymap.set('n', '<A-c>', '<cmd>bd<CR>', { desc = 'close current buffer' })
@@ -134,35 +153,43 @@ vim.keymap.set('n', '<leader><leader>', 'diw', { remap = true })
 vim.keymap.set(
   'n',
   'gh',
-  '<cmd>norm! ^<CR>',
+  '^',
   { noremap = true, silent = true, desc = 'go to start of line' }
 )
+
 vim.keymap.set(
   'n',
   'gl',
-  '<cmd>norm! $<CR>',
+  '$',
   { noremap = true, silent = true, desc = 'go to end of line' }
 )
+
 vim.keymap.set('n', 'gi', 'gi<Esc>zzi', { noremap = true, silent = true })
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
 vim.keymap.set(
   { 'n', 'x' },
   '<Tab>',
-  function() return vim.fn.mode() == 'V' and '$%' or '%' end,
+  function()
+    return vim.fn.mode() == 'V' and '<cmd>keepjumps normal! $%<CR>'
+      or '<cmd>keepjumps normal! %<CR>'
+  end,
   { noremap = true, expr = true }
 )
+
 vim.keymap.set(
   'n',
   '<leader>z',
   'I(<Esc>A)',
   { noremap = true, desc = 'brace line with ()' }
 )
+
 vim.keymap.set(
   'n',
   '<leader>;',
   'mzA;<Esc>`z',
   { noremap = true, desc = 'append ; at the end of line' }
 )
+
 vim.keymap.set(
   'n',
   '<leader>,',
@@ -200,80 +227,50 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
     vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
     vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
-    -- vim.keymap.set({ 'n', 'x' }, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
   end,
 })
 
--- vim.api.nvim_create_autocmd('FileType', {
---   pattern = 'qf',
---   callback = function(event)
---     local opts = { buffer = event.buf, silent = true }
---     local init_bufnr = vim.fn.bufnr('#')
---     vim.keymap.set('n', '<C-n>', function() mv_qf_item(true, init_bufnr) end, opts)
---     vim.keymap.set('n', '<C-p>', function() mv_qf_item(false, init_bufnr) end, opts)
---     vim.keymap.set('n', '<C-j>', function() mv_qf_item(true, init_bufnr) end, opts)
---     vim.keymap.set('n', '<C-k>', function() mv_qf_item(false, init_bufnr) end, opts)
---   end,
--- })
-
 function _G.select_md_code_block(around)
+  local mode = vim.fn.mode()
+  if mode == 'v' or mode == 'V' then
+    vim.api.nvim_feedkeys(
+      vim.api.nvim_replace_termcodes('<Esc>', true, false, false),
+      'x',
+      false
+    )
+  end
+
   local cur_line = vim.fn.line('.')
-  local start, finish = nil, nil
+  local start, finish
 
-  -- Find the start ```
-  for i = cur_line, 1, -1 do
-    if vim.trim(vim.fn.getline(i)):match('%s+^```') then
-      start = i
+  for linenr = cur_line, 1, -1 do
+    if vim.fn.getline(linenr):match('^%s*```') then
+      start = linenr
       break
     end
   end
 
-  -- Find the end ```
-  for i = cur_line, vim.fn.line('$') do
-    if vim.trim(vim.fn.getline(i)):match('%s+^```') then
-      finish = i
+  for linenr = cur_line, vim.fn.line('$') do
+    if vim.fn.getline(linenr):match('^%s*```') then
+      finish = linenr
       break
     end
   end
 
-  -- Ensure valid range
   if not start or not finish or start == finish then return end
 
   if around then
-    -- Select around (including ``` lines)
-    vim.cmd(string.format('normal! %dGV%dG', start, finish))
+    vim.cmd(string.format([[normal! %dGV%dG]], start, finish))
   else
-    -- Select inside (excluding ``` lines)
-    vim.cmd(string.format('normal! %dGV%dG', start + 1, finish - 1))
+    vim.cmd(string.format([[normal! %dGV%dG]], start + 1, finish - 1))
   end
 end
 
--- Map "vi`" to select inside a Markdown code block
-vim.keymap.set(
-  'o',
-  'im',
-  '<cmd>lua select_md_code_block(false)<CR>',
-  { noremap = true, silent = true }
-)
-vim.keymap.set(
-  'x',
-  'im',
-  '<cmd>lua select_md_code_block(false)<CR>',
-  { noremap = true, silent = true }
-)
-vim.keymap.set(
-  'o',
-  'am',
-  '<cmd>lua select_md_code_block(true)<CR>',
-  { noremap = true, silent = true }
-)
-vim.keymap.set(
-  'x',
-  'am',
-  '<cmd>lua select_md_code_block(true)<CR>',
-  { noremap = true, silent = true }
-)
+vim.keymap.set('o', 'im', '<cmd>lua select_md_code_block(false)<CR>', { silent = true })
+vim.keymap.set('x', 'im', '<cmd>lua select_md_code_block(false)<CR>', { silent = true })
+vim.keymap.set('o', 'am', '<cmd>lua select_md_code_block(true)<CR>', { silent = true })
+vim.keymap.set('x', 'am', '<cmd>lua select_md_code_block(true)<CR>', { silent = true })
 
 vim.keymap.set('n', '<leader>ll', function()
   if not _G.__diag_config then _G.__diag_config = vim.diagnostic.config() or {} end
@@ -289,11 +286,39 @@ vim.keymap.set('n', '<leader>ll', function()
   else
     vim.diagnostic.config(_G.__diag_config)
   end
-end, { desc = 'Toggle lsp_lines' })
+end, { desc = 'Toggle [L]sp [L]ines' })
 
 vim.keymap.set(
   'n',
   '<leader>ls',
   function() vim.o.list = not vim.o.list end,
-  { desc = 'Toggle list char' }
+  { desc = 'Toggle [L]i[S]t char' }
+)
+
+vim.keymap.set(
+  'x',
+  '/',
+  [[<C-\><C-n>`</\%V]],
+  { desc = 'Search forward within visual selection' }
+)
+
+vim.keymap.set(
+  'x',
+  '?',
+  [[<C-\><C-n>`>?\%V]],
+  { desc = 'Search backward within visual selection' }
+)
+
+vim.keymap.set(
+  'n',
+  [[yx]],
+  [[<cmd>let @0 = expand('<cfile>')<CR>]],
+  { desc = '[Y]ank uri under cursor', noremap = true }
+)
+
+vim.keymap.set(
+  'n',
+  [[<leader>yx]],
+  [[<cmd>let @+ = expand('<cfile>')<CR>]],
+  { desc = '[Y]ank uri under cursor to system clipboard', noremap = true }
 )

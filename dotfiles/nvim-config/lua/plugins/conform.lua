@@ -25,8 +25,14 @@ return {
 
     local function format(bufnr)
       local conform = require('conform')
-      local formatter = conform.formatters[vim.bo.filetype]
-        or conform.formatters_by_ft[vim.bo.filetype]
+      local formatter = conform.formatters[vim.bo[bufnr].filetype]
+        or conform.formatters_by_ft[vim.bo[bufnr].filetype]
+
+      if vim.bo[bufnr].filetype == 'markdown' then
+        vim.notify(string.format('no formatter available for %s', vim.bo[bufnr].filetype))
+        return
+      end
+
       local ok = conform.format { bufnr = bufnr, timeout_ms = 5000, async = false }
       if ok then
         vim.notify(
@@ -43,12 +49,6 @@ return {
         }
 
         if #fmt_available == 0 then
-          if vim.bo[bufnr].filetype == 'markdown' then
-            vim.notify(
-              string.format('no formatter available for %s', vim.bo[bufnr].filetype)
-            )
-            return
-          end
           vim.api.nvim_feedkeys('mzgg=G`z', 'tx', false)
           vim.notify('formatted by indentexpr')
         else

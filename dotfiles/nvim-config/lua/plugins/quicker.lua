@@ -8,5 +8,15 @@ return {
     ---@type quicker.SetupOptions
     opts = {},
   },
-  { 'kevinhwang91/nvim-bqf', ft = 'qf' },
+  {
+    'kevinhwang91/nvim-bqf',
+    ft = 'qf',
+    config = function()
+      require('bqf').setup {
+        func_map = {
+          vsplit = '',
+        },
+      }
+    end,
+  },
 }

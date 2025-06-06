@@ -89,7 +89,7 @@ return {
       function()
         fzf.files {
           cmd = 'fd -d 1',
-          cwd = vim.fs.dirname(vim.fn.bufname('%')),
+          cwd = vim.fs.dirname(vim.fn.bufname('%')):gsub('^oil://', ''),
         }
       end,
       { desc = 'find files in current folder' }

@@ -30,7 +30,7 @@ vim.opt.isfname:append('@-@')
 vim.opt.guicursor =
   'n-v-sm:block-blinkwait700-Cursor,ci-ve:ver25,r-cr-o:hor20,i-c:ver100-blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
 
-vim.opt.grepprg = 'rg --vimgrep '
+if vim.fn.executable('rg') == 1 then vim.opt.grepprg = 'rg --vimgrep --pcre2 ' end
 vim.opt.spell = true
 vim.opt.spelloptions = 'camel'
 
@@ -127,6 +127,7 @@ vim.filetype.add {
   },
   pattern = {
     ['.*%..+proj'] = 'msbuild',
+    sshconfig = 'sshconfig',
   },
 }
 
@@ -161,3 +162,20 @@ vim.opt.diffopt = {
   'linematch:200',
   'indent-heuristic',
 }
+
+vim.api.nvim_create_autocmd({ 'DirChanged', 'VimEnter' }, {
+  callback = function(_)
+    local cwd = vim.uv.cwd()
+    if cwd and cwd:find('playground') then
+      vim.opt.autochdir = true
+    else
+      vim.opt.autochdir = false
+    end
+
+    if vim.fs.root(0, function(name, _) return name:match('%.%w+proj$') ~= nil end) then
+      vim.cmd.compiler('dotnet')
+      vim.g.dotnet_errors_only = true
+      vim.g.dotnet_show_project_file = false
+    end
+  end,
+})
