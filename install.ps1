@@ -54,7 +54,9 @@ $scoopPackages = @(
     'sioyek',
     'pwsh',
     'powertoys',
-    'ditto'
+    'ditto',
+    'perl',
+    'diff-so-fancy'
 )
 
 $scoopFonts = @(
@@ -65,11 +67,8 @@ $scoopFonts = @(
 
 $wingetPackages = @(
     'wez.wezterm',
-    'Microsoft.VisualStudio.2022.Community',
     'File-New-Project.EarTrumpet',
     'dotPDN.PaintDotNet',
-    'Ditto.Ditto',
-    'Google.Chrome'
 )
 
 & ./dotfiles.ps1
