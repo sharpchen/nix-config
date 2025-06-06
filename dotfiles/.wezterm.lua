@@ -2,6 +2,7 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
+config.front_end = 'OpenGL'
 config.color_scheme = "kanagawabones"
 
 config.default_prog = { "pwsh" }
@@ -21,7 +22,10 @@ config.cursor_blink_ease_out = 'Constant'
 
 config.hide_tab_bar_if_only_one_tab = true
 
-local font = 'SF Mono' -- 'JetBrains Mono NL'
+local best_fonts = { 'JetBrains Mono NL', 'SF Mono', 'Cascadia Mono', 'IBM Plex Mono', 'Roboto Mono' }
+math.randomseed(os.time())
+local font = best_fonts[math.random(#best_fonts)]
+
 config.font_size = 12
 config.font =
 	wezterm.font_with_fallback({ font, "Nerd Font Symbols", "Noto Color Emoji", "Symbols Nerd Font Mono" })
