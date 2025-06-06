@@ -31,14 +31,16 @@ alias dn=dotnet
 alias v=nvim
 alias ngc='nix-collect-garbage -d && sudo $(which nix-collect-garbage) -d'
 
-#######################################
-# Get nix store path of a package
-# Arguments:
-#   $1 main program
-#######################################
-nsp() {
-    nix-store -q --outputs "$(type -fP "$1")"
-}
+if type nix-store >/dev/null; then
+    #######################################
+    # Get nix store path of a package
+    # Arguments:
+    #   $1 main program
+    #######################################
+    nsp() {
+        nix-store -q --outputs "$(type -fP "$1")"
+    }
+fi
 
 _fzf_complete_nsp() {
     _fzf_complete -- "$@" < <(compgen -c | sort -u)
@@ -63,9 +65,18 @@ _fzf_compgen_dir() {
     fd --type d --hidden --follow --exclude ".git" . "$1"
 }
 
-DOTNET_ROOT="$(nsp dotnet)/share/dotnet"
-export DOTNET_ROOT
-export MANPAGER='nvim +Man!'
+if type less >/dev/null; then
+    export PAGER=less
+fi
+
+if type nvim >/dev/null; then
+    export MANPAGER='nvim +Man!'
+fi
+
+if type dotnet >/dev/null; then
+    DOTNET_ROOT="$(nsp dotnet)/share/dotnet"
+    export DOTNET_ROOT
+fi
 
 eval "$(starship init bash)"
 eval "$(fzf --bash)"
