@@ -42,6 +42,7 @@
     dict
     dictdDBs.wiktionary
     nh
+    diff-so-fancy
   ];
   home.file.".dict/.dict.conf".text = ''
     server localhost
@@ -65,6 +66,8 @@
     config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/yazi.keymap.toml";
   home.file.".config/helix/config.toml".source =
     config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/helix.config.toml";
+
+  home.file.".ssh/config".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/sshconfig";
 
   programs.nix-index = {
     enable = true;
