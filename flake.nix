@@ -4,7 +4,7 @@
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
     unstablePkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    stablePkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    stablePkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "unstablePkgs";
