@@ -38,12 +38,18 @@ function mklink {
 }
 
 if (Get-Command scoop -ea SilentlyContinue) {
-    $scoopRoot = Resolve-Path ~/scoop
-    # librewolf overrides
-    mklink (Join-Path $scoopRoot 'persist/librewolf/Profiles/Default/librewolf.overrides.cfg') ./dotfiles/librewolf.cfg
-    [Environment]::SetEnvironmentVariable('YAZI_FILE_ONE', ([IO.Path]::Combine($scoopRoot, 'apps\git\current\usr\bin\file.exe')), 'User')
-    mklink (Join-Path $scoopRoot 'apps/sioyek/current/keys_user.config') ./dotfiles/sioyek.keys_user.config
-    mklink (Join-Path $scoopRoot 'apps/sioyek/current/prefs_user.config') ./dotfiles/sioyek.prefs_user.config
+    if ((scoop which librewolf) -and $LASTEXITCODE -eq 0) {
+        mklink (Join-Path (scoop prefix librewolf) 'Profiles/Default/librewolf.overrides.cfg') ./dotfiles/librewolf.cfg
+    }
+
+    if ((scoop which git) -and $LASTEXITCODE -eq 0) {
+        [Environment]::SetEnvironmentVariable('YAZI_FILE_ONE', (Join-Path (scoop prefix git) 'usr\bin\file.exe'), 'User')
+    }
+
+    if ((scoop prefix sioyek) -and $LASTEXITCODE -eq 0) {
+        mklink (Join-Path (scoop prefix sioyek) 'prefs_user.config') ./dotfiles/sioyek.prefs_user.config
+        mklink (Join-Path (scoop prefix sioyek) 'keys_user.config') ./dotfiles/sioyek.keys_user.config
+    }
 }
 
 if (Get-Command nvim -ea SilentlyContinue) {
@@ -91,5 +97,5 @@ if (Get-Command ya -ErrorAction SilentlyContinue) {
 }
 
 mklink ~/.wslconfig ./dotfiles/.wslconfig
-mklink (Join-Path (Split-Path (scoop which mpv)) 'portable_config/mpv.conf') ./dotfiles/mpv.conf
-mklink (Join-Path (Split-Path (scoop which mpv)) 'portable_config/input.conf') ./dotfiles/mpv.input.conf
+mklink (Join-Path (scoop prefix mpv) 'portable_config/mpv.conf') ./dotfiles/mpv.conf
+mklink (Join-Path (scoop prefix mpv) 'portable_config/input.conf') ./dotfiles/mpv.input.conf
