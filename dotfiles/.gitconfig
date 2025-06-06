@@ -11,3 +11,24 @@
     path = ~/.gitconfig_windows
 [includeIf "gitdir:D:/**"]
     path = ~/.gitconfig_windows
+
+[rebase]
+    autoStash = true ; stash all local changes if exists on rebasing
+
+[diff]
+    context = 3
+    renames = copies
+    interHunkContext = 10
+
+[pager]
+    diff = diff-so-fancy | $PAGER
+[diff-so-fancy]
+    markEmptyLines = false
+
+; TODO
+; [commit]
+;     gpgSign = true
+; [gpg]
+;     format = ssh
+; [tag]
+;   gpgSign = true
