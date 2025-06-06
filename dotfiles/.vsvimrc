@@ -36,6 +36,10 @@ inoremap <M-Up> <Esc>:m .-2<CR>==gi
 
 nnoremap <leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>
 xnoremap <leader>s "zy:%s/\V<C-r>z/<C-r>z/gI<Left><Left><Left>
+nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
+xnoremap <leader>S "zy:%s/\V<C-r>z//gI<Left><Left><Left>
+xnoremap <leader>r <C-\><C-n>`>:%s/\%V//g<Left><Left><Left>
+xnoremap <leader>r <C-\><C-n>`>:%s/^\%V//g<Left><Left><Left>
 xnoremap <leader>: "zy:<C-r>z
 
 nnoremap J mzJ`z
@@ -43,21 +47,18 @@ nnoremap J mzJ`z
 nnoremap <C-u> <C-u>zz
 nnoremap <C-d> <C-d>zz
 
-" -- keep occurrence center when jumping between search results
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
-" paste last yank
-xnoremap <leader>p "0p
+nnoremap <leader>p "0p
+nnoremap <leader>P "0P
 
-" -- copy to system clipboard
 nnoremap <leader>y "+y
-vnoremap <leader>y "+y
+xnoremap <leader>y "+y
 nnoremap <leader>Y "+Y
 
-" -- deleting without overwriting last clipboard
 nnoremap <leader>d "_d
-vnoremap <leader>d "_d
+xnoremap <leader>d "_d
 
 nnoremap <leader>a ggVG
 nnoremap <A-.> :vsc Window.NextDocumentWindow<CR>
@@ -69,10 +70,8 @@ nnoremap gd :vsc Edit.GoToImplementation<CR>
 nnoremap gp :vsc Edit.PeekDefinition<CR>
 nnoremap <C-l> :vsc Window.NextSplitPane<CR>
 nnoremap <C-h> :vsc Window.PreviousSplitPane<CR>
-nnoremap 0 ^
-nnoremap ^ 0
-nnoremap gh :norm 0<CR>
-nnoremap gl :norm $<CR>
+nnoremap gh ^
+nnoremap gl $
 
 nnoremap <M-CR> :vsc FullScreen<CR>
 nnoremap <leader>o :vsc View.SolutionExplorer<CR>
@@ -80,11 +79,10 @@ nnoremap <leader>b :vsc Debug.ToggleBreakpoint<CR>
 nnoremap <leader>m :vsc Build.BuildSolution<CR><Esc>
 nnoremap <leader>ca :vsc View.QuickActions<CR>
 nnoremap K :vsc Edit.QuickInfo<CR>
-nnoremap gi `^i
-nnoremap <leader>fg :vsc Edit.GoToText<CR>
+noremap <leader>fg :vsc Edit.GoToText<CR>
 nnoremap <leader>ff :vsc Edit.GoToFile<CR>
 nnoremap gcc :vsc Edit.ToggleLineComment<CR><Esc>
-vnoremap gc :vsc Edit.ToggleLineComment<CR><Esc>
+xnoremap gc :vsc Edit.ToggleLineComment<CR><Esc>
 nnoremap <leader>so :source ~/.vsvimrc<CR>
 nnoremap <leader>k :vsc Edit.FormatDocument<CR>
 nnoremap <leader><leader> diw
@@ -94,3 +92,5 @@ nnoremap <leader>, mzA,<Esc>`z
 nnoremap gi `^zzi
 nnoremap <Tab> %
 xnoremap <Tab> $%
+xnoremap / <C-\><C-n>`</\%V
+xnoremap ? <C-\><C-n>`>?\%V
