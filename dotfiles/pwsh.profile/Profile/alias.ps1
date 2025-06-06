@@ -34,10 +34,9 @@ if (Get-Command 'home-manager' -ErrorAction SilentlyContinue) {
 }
 
 if ((Get-Command scoop -ea SilentlyContinue) -and -not (Get-Command sioyek -ea SilentlyContinue -CommandType Application)) {
-    $sioyekPrefix = scoop prefix sioyek
-    if ($LASTEXITCODE -eq 0) {
+    if ((scoop prefix sioyek) -and $LASTEXITCODE -eq 0) {
         function sioyek {
-            & (Join-Path $sioyekPrefix 'sioyek.exe') @args
+            & (Join-Path (scoop prefix sioyek) 'sioyek.exe') @args
         }
     }
 }
