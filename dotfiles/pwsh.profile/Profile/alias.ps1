@@ -5,7 +5,7 @@ function vim {
     nvim -u '~/.vimrc' @args
 }
 
-function vwrite {
+function vw {
     nvim -u '~/.vimrc' @args -c @'
     set wrap
 '@
@@ -33,19 +33,6 @@ if (Get-Command 'home-manager' -ErrorAction SilentlyContinue) {
     }
 }
 
-function p {
-    begin {
-        Get-Command fzf -ea SilentlyContinue | Out-Null
-    }
-    end {
-        $folders = Get-ChildItem '~/projects' -Directory
-        if (Test-Path '~/.config/home-manager/') {
-            $folders += Get-Item '~/.config/home-manager/'
-        }
-        Set-Location ($folders | ForEach-Object FullName | fzf)
-    }
-}
-
 if ((Get-Command scoop -ea SilentlyContinue) -and -not (Get-Command sioyek -ea SilentlyContinue -CommandType Application)) {
     $sioyekPrefix = scoop prefix sioyek
     if ($LASTEXITCODE -eq 0) {
@@ -64,5 +51,16 @@ if (Get-Command yazi -ea SilentlyContinue) {
             Set-Location -LiteralPath ([System.IO.Path]::GetFullPath($cwd))
         }
         Remove-Item -Path $tmp
+    }
+}
+
+function vf {
+    begin {
+        $null = Get-Command fzf -ea Stop
+        $null = Get-Command vim -ea Stop -CommandType Function
+    }
+
+    end {
+        vim (fzf)
     }
 }

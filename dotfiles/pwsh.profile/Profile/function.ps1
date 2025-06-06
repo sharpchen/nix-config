@@ -7,7 +7,7 @@ function adbin {
     )
     $special = @( ' ', '\|', '\$', '&', '\(', '\)', '~', '\*', "\'", '"', '<', '>')
     foreach ($char in $special) {
-        $repl = if($char.Length -gt 1) {
+        $repl = if ($char.Length -gt 1) {
             $char
         } else {
             "\$char"
@@ -26,7 +26,7 @@ function pinfo {
     [OutputType([void], ParameterSetName = 'Attribute')]
     param (
         [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
-        [ValidateScript({ Get-Command $_ -ErrorAction SilentlyContinue })]
+        [ValidateScript({ Get-Command $_ -ErrorAction SilentlyContinue -CommandType Cmdlet })]
         [string]$Command,
         [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Positional,
@@ -84,7 +84,6 @@ function mkvideo {
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateScript({ Test-Path -LiteralPath $_ })]
-        [string]$Path,
         [string]$Destination,
         [ValidateScript({ Test-Path -LiteralPath $_ })]
         [string]$Cover,
@@ -93,15 +92,15 @@ function mkvideo {
     )
 
     begin {
-        Get-Command ffmpeg -ea Stop | Out-Null
-        Get-Command ffprobe -ea Stop | Out-Null
+        $null = Get-Command ffmpeg -ea Stop
+        $null = Get-Command ffprobe -ea Stop
         if (-not $Destination) {
             $Destination = $PWD.Path
         }
 
         if (-not (Test-Path $Destination)) {
             Write-Verbose 'Destination does not exist, creating forcibly'
-            New-Item -ItemType Directory -Path $Destination -ea SilentlyContinue | Out-Null
+            $null = New-Item -ItemType Directory -Path $Destination -ea SilentlyContinue
         }
 
         [System.Collections.Generic.List[string]]$info = @()
@@ -209,10 +208,10 @@ function play {
         [string]$Filter
     )
     begin {
-        Get-Command mpv -ea Stop | Out-Null
+        $null = Get-Command mpv -ea Stop
 
         if ([string]::IsNullOrEmpty($Path)) {
-            $Path = $pwd.Path
+            $Path = $PWD.Path
         }
     }
 
@@ -225,9 +224,7 @@ function play {
 
         if ($ByDate) {
             $playlist = $playlist | Sort-Object CreationTime -Descending
-        }
-
-        if ($Randomize) {
+        } elseif ($Randomize) {
             $playlist = $playlist | Sort-Object { Get-Random }
         }
 
@@ -237,9 +234,9 @@ function play {
 
 function dnnew {
     begin {
-        Get-Command dotnet -ea Stop | Out-Null
-        Get-Command fzf -ea Stop | Out-Null
-        Get-Command tr -ea Stop | Out-Null
+        $null = Get-Command dotnet -ea Stop
+        $null = Get-Command fzf -ea Stop
+        $null = Get-Command tr -ea Stop
     }
 
     end {
@@ -272,9 +269,9 @@ function dnnew {
 
 function dnpack {
     begin {
-        Get-Command dotnet -ea Stop | Out-Null
-        Get-Command fzf -ea Stop | Out-Null
-        Get-Command tr -ea Stop | Out-Null
+        $null = Get-Command dotnet -ea Stop
+        $null = Get-Command fzf -ea Stop
+        $null = Get-Command tr -ea Stop
     }
 
     end {
@@ -298,7 +295,7 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
 
         begin {
             if (-not (Get-Command devenv -ea SilentlyContinue)) {
-                Get-Command vswhere -ea Stop | Out-Null
+                $null = Get-Command vswhere -ea Stop
             }
             if (-not $Path) {
                 $Path = $PWD.ProviderPath
@@ -333,11 +330,12 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
     function vdcompact {
         param (
             [ValidateScript({ (Test-Path -LiteralPath $_) -and (Split-Path $_ -Extension) -eq '.vhdx' })]
+            [Parameter(Position = 1)]
             [string]$Path,
             [switch]$IsNotWSL
         )
         begin {
-            Get-Command diskpart -CommandType Application -ea Stop | Out-Null
+            $null = Get-Command diskpart -CommandType Application -ea Stop
 
             if (-not $IsNotWSL) {
                 $origEncoding = [Console]::OutputEncoding
@@ -360,5 +358,58 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
             diskpart /s $tempScript.FullName
             Remove-Item $tempScript
         }
+    }
+
+    function pathadd {
+        param (
+            [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $Dir).Path) })]
+            [string]$Dir
+        )
+
+        $Dir = (Resolve-Path $Dir).Path
+        $path = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User)
+        if (-not $path.Contains($Dir)) {
+            [System.Environment]::SetEnvironmentVariable('Path', ($path + [IO.Path]::PathSeparator + $Dir), [System.EnvironmentVariableTarget]::User)
+        }
+    }
+}
+
+function pmclean {
+    param (
+        [ValidateSet('scoop', 'npm', 'nuget')]
+        [Parameter(Position = 1)]
+        [string]$PackageManager
+    )
+
+    switch -Exact ($PackageManager) {
+        'scoop' {
+            $null = Get-Command scoop -ea Stop
+            scoop cleanup *
+            scoop cache rm *
+        }
+        'nuget' {
+            $null = Get-Command dotnet -ea Stop
+            dotnet nuget locals all --clear
+        }
+        'npm' {
+            $null = Get-Command npm -ea Stop
+            npm cache clean --force
+        }
+        default {
+            Write-Warning "Cannot handle $PackageManager"
+        }
+    }
+}
+
+function p {
+    begin {
+        $null = Get-Command fzf -ea Stop
+    }
+    end {
+        $folders = Get-ChildItem '~/projects' -Directory
+        if (Test-Path '~/.config/home-manager/') {
+            $folders += Get-Item '~/.config/home-manager/'
+        }
+        Set-Location ($folders | ForEach-Object FullName | fzf)
     }
 }
