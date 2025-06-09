@@ -33,6 +33,8 @@ return {
         return
       end
 
+      if vim.bo[bufnr].filetype == 'oil' then return end
+
       local ok = conform.format { bufnr = bufnr, timeout_ms = 5000, async = false }
       if ok then
         vim.notify(

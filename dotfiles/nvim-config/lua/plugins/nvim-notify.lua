@@ -8,7 +8,7 @@ return {
       timeout = 1000,
       top_down = false,
       render = 'wrapped-compact',
-      merge_duplicates = false,
+      merge_duplicates = true,
     }
     vim.notify = function(obj, level, opts)
       require('notify')(vim.inspect(obj), level, opts)

@@ -89,6 +89,12 @@ return {
       { delimiters = '{}' }
     )
     add('markdown', 'shikihl', '<//> [!code <highlight>]')
+    add(
+      'markdown',
+      'vbadge',
+      [[<Badge type="{info}" text="{text}" />]],
+      { delimiters = '{}' }
+    )
     add('ps1', 'cmdp', '$null = Get-Command <cmd> -ea Stop')
     add(
       'ps1',

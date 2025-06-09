@@ -3,7 +3,8 @@
 return {
   'Saghen/blink.cmp',
   version = '*',
-  build = 'export CARGO_NET_GIT_FETCH_WITH_CLI=true; nix run .#build-plugin --accept-flake-config',
+  build = IsWindows and nil
+    or 'export CARGO_NET_GIT_FETCH_WITH_CLI=true; nix run .#build-plugin --accept-flake-config',
   event = 'BufReadPost',
   dependencies = {
     'moyiz/blink-emoji.nvim',

@@ -31,10 +31,11 @@ vim.keymap.set('n', '<leader>P', '"0P', { desc = 'paste last yanked' })
 -- copy to system clipboard
 vim.keymap.set('n', '<leader>y', '"+y', { desc = 'copy to system clipboard' })
 vim.keymap.set('x', '<leader>y', '"+y', { desc = 'copy to system clipboard' })
-vim.keymap.set('n', '<leader>Y', '"+Y', { desc = 'copy to system clipboard' })
+vim.keymap.set('n', '<leader>Y', '"+y$', { desc = 'copy to system clipboard' })
 
 -- deleting without overwriting last clipboard
 vim.keymap.set('n', '<leader>d', '"_d', { desc = 'delete to void' })
+vim.keymap.set('n', '<leader>D', '"_D', { desc = 'delete to void' })
 vim.keymap.set('x', '<leader>d', '"_d', { desc = 'delete to void' })
 
 -- switch to another file in the system using tmux
@@ -93,7 +94,14 @@ vim.keymap.set(
 vim.keymap.set(
   'n',
   '<leader>gq',
-  [[:sil grep! <C-r><C-w> | cw<Left><Left><Left><Left><Left>]],
+  [[:sil grep! '\b<C-r><C-w>\b' | cw<Left><Left><Left><Left><Left><Left><Left><Left>]],
+  { desc = '[G]rep and pipe to [Q]f' }
+)
+
+vim.keymap.set(
+  'n',
+  '<leader>gQ',
+  [[:sil grep!  | cw<Left><Left><Left><Left><Left>]],
   { desc = '[G]rep and pipe to [Q]f' }
 )
 
@@ -151,14 +159,14 @@ vim.keymap.set('n', '<A-a>', '<cmd>bufdo bd<CR>', { desc = 'close all buffers' }
 vim.keymap.set('n', '<leader><leader>', 'diw', { remap = true })
 
 vim.keymap.set(
-  'n',
+  { 'x', 'n' },
   'gh',
   '^',
   { noremap = true, silent = true, desc = 'go to start of line' }
 )
 
 vim.keymap.set(
-  'n',
+  { 'x', 'n' },
   'gl',
   '$',
   { noremap = true, silent = true, desc = 'go to end of line' }
@@ -322,3 +330,12 @@ vim.keymap.set(
   [[<cmd>let @+ = expand('<cfile>')<CR>]],
   { desc = '[Y]ank uri under cursor to system clipboard', noremap = true }
 )
+
+vim.keymap.set(
+  'n',
+  'g[',
+  '<C-o>',
+  { desc = '[G]oto previous jump location', noremap = true }
+)
+
+vim.keymap.set('n', 'g]', '<C-i>', { desc = '[G]oto next jump location', noremap = true })
