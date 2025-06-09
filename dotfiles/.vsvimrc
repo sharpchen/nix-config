@@ -55,10 +55,12 @@ nnoremap <leader>P "0P
 
 nnoremap <leader>y "+y
 xnoremap <leader>y "+y
-nnoremap <leader>Y "+Y
+nnoremap Y y$
+nnoremap <leader>Y "+y$
 
 nnoremap <leader>d "_d
 xnoremap <leader>d "_d
+nnoremap <leader>D "_D
 
 nnoremap <leader>a ggVG
 nnoremap <A-.> :vsc Window.NextDocumentWindow<CR>
@@ -72,6 +74,8 @@ nnoremap <C-l> :vsc Window.NextSplitPane<CR>
 nnoremap <C-h> :vsc Window.PreviousSplitPane<CR>
 nnoremap gh ^
 nnoremap gl $
+xnoremap gh ^
+xnoremap gl $
 
 nnoremap <M-CR> :vsc FullScreen<CR>
 nnoremap <leader>o :vsc View.SolutionExplorer<CR>
@@ -94,3 +98,5 @@ nnoremap <Tab> %
 xnoremap <Tab> $%
 xnoremap / <C-\><C-n>`</\%V
 xnoremap ? <C-\><C-n>`>?\%V
+nnoremap g[ <C-o>
+nnoremap g] <C-i>
