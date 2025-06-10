@@ -24,7 +24,7 @@ function .. {
 }
 
 function so {
-    . $PROFILE
+    Import-Module PwshProfile -Scope Global -Force
 }
 
 if (Get-Command 'home-manager' -ErrorAction SilentlyContinue) {

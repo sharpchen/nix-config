@@ -6,6 +6,6 @@
   ];
   xdg.configFile."powershell/Microsoft.PowerShell_profile.ps1".source =
     config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/pwsh.profile/pwsh.profile.ps1";
-  xdg.configFile."powershell/Profile".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/pwsh.profile/Profile";
+  xdg.configFile."powershell/PwshProfile".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/pwsh.profile/PwshProfile";
 }
