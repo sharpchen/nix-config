@@ -39,7 +39,7 @@ xnoremap <leader>s "zy:%s/\V<C-r>z/<C-r>z/gI<Left><Left><Left>
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//gI<Left><Left><Left>
 xnoremap <leader>S "zy:%s/\V<C-r>z//gI<Left><Left><Left>
 xnoremap <leader>r <C-\><C-n>`>:%s/\%V//g<Left><Left><Left>
-xnoremap <leader>r <C-\><C-n>`>:%s/^\%V//g<Left><Left><Left>
+xnoremap <leader>R <C-\><C-n>`>:%s/^\%V//g<Left><Left><Left>
 xnoremap <leader>: "zy:<C-r>z
 
 nnoremap J mzJ`z
