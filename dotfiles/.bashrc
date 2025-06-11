@@ -31,7 +31,7 @@ alias dn=dotnet
 alias v=nvim
 alias ngc='nix-collect-garbage -d && sudo $(which nix-collect-garbage) -d'
 
-if type nix-store >/dev/null; then
+if type nix-store &>/dev/null; then
     #######################################
     # Get nix store path of a package
     # Arguments:
@@ -49,8 +49,8 @@ _fzf_complete_nsp() {
 complete -F _fzf_complete_nsp nsp
 
 function y() {
-    local tmp
-    tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    local tmp cwd
+    tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
     yazi "$@" --cwd-file="$tmp"
     if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
         builtin cd -- "$cwd" || return
@@ -66,17 +66,18 @@ _fzf_compgen_dir() {
     fd --type d --hidden --follow --exclude ".git" . "$1"
 }
 
-if type less >/dev/null; then
+if type less &>/dev/null; then
     export PAGER=less
 fi
 
-if type nvim >/dev/null; then
+if type nvim &>/dev/null; then
     export MANPAGER='nvim +Man!'
 fi
 
-if type dotnet >/dev/null; then
+if type dotnet &>/dev/null; then
     DOTNET_ROOT="$(nsp dotnet)/share/dotnet"
     export DOTNET_ROOT
+    export PATH="$PATH:/home/$USER/.dotnet/tools"
 fi
 
 eval "$(starship init bash)"
