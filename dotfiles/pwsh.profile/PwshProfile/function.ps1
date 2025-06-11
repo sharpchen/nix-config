@@ -240,26 +240,37 @@ function dnnew {
     }
 
     end {
-        $templates = dotnet new list | Select-Object -Skip 4 | ForEach-Object {
-            if ($_ -match '^(?<Name>.+?)\s{2,}(?<ShortName>.+?)\s{2,}(?<Lang>(\s{2,}|\S+))(\s{2,})?(?<Tags>.*$)') {
-                $Lang = $Matches.Lang
-                $Tags = if ([string]::IsNullOrEmpty($Matches.Tags)) {
-                    $Matches.Lang
-                    $Lang = [string]::Empty
-                } else {
-                    $Matches.Tags
-                }
+        $templateStrings = (dotnet new list | Select-Object -Skip 4) -replace '\s{2,}', ';'
 
-                if ($Matches.ShortName.Contains(',')) {
-                    $Matches.ShortName -split ',' | ForEach-Object {
-                        "$_`tDesc: $($Matches.Name)`tLang: $($Lang)`tTags: $($Tags)"
-                    }
-                } else {
-                    "$($Matches.ShortName)`tDesc: $($Matches.Name)`tLang: $($Lang)`tTags: $($Tags)"
+        $csvEntries = ($templateStrings | ConvertFrom-Csv -Delimiter ';' -Header 'FullName', 'Alias', 'Lang', 'Tag' | ForEach-Object {
+                [PSCustomObject]@{
+                    FullName = $_.FullName
+                    Alias    = $_.Alias
+                    Lang     = $_.Lang
+                    Tag      = $_.Tag
                 }
+            })
+
+        $fzfEntries = $csvEntries | ForEach-Object {
+            if ($_.Lang -notmatch '\[.*?\]') {
+                $_.Tag = $_.Lang;
+                $_.Lang = [string]::Empty;
             }
+            if ($_.Alias -match ',') {
+                foreach ($alias in $_.Alias -split ',') {
+                    $new = $_.psobject.Copy()
+                    $new.Alias = $alias
+                    $new
+                }
+            } else {
+                $_
+            }
+        } | ForEach-Object {
+            "$($_.Alias)`tDesc: $($_.FullName)`tAlias: $($_.Alias)`tLang: $($_.Lang)`tTag: $($_.Tag)"
         }
-        $templates | fzf --delimiter='\t' `
+
+
+        $fzfEntries | fzf --delimiter='\t' `
             --with-nth=1 `
             --preview-window=down `
             --preview='echo {2..} | tr "\t" "\n"' `
