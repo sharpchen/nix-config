@@ -4,7 +4,11 @@ return {
   {
     'chaoren/vim-wordmotion',
     event = 'BufReadPost',
-    init = function() vim.g.wordmotion_nomap = 0 end,
+    init = function()
+      vim.g.wordmotion_nomap = 0
+      ---@type boolean my indicator for word motion
+      vim.g.wordmotion_enabled = true
+    end,
     config = function()
       vim.api.nvim_create_user_command('WordMotionToggle', function()
         if vim.g.loaded_wordmotion == 1 and vim.g.wordmotion_nomap == 0 then
@@ -14,9 +18,11 @@ return {
           vim.g.loaded_wordmotion = nil
           vim.g.wordmotion_nomap = 1
           vim.cmd('runtime plugin/wordmotion.vim')
+          vim.g.wordmotion_enabled = false
         else
           vim.g.wordmotion_nomap = 0
           vim.cmd('runtime plugin/wordmotion.vim')
+          vim.g.wordmotion_enabled = true
         end
       end, { desc = 'toggle wordmotion' })
     end,

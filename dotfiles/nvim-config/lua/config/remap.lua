@@ -112,26 +112,23 @@ vim.keymap.set(
   { desc = '[G]rep and pipe to [Q]f' }
 )
 
-vim.keymap.set(
-  'n',
-  '<leader>cp',
-  function() require('utils.text').case.replace_cword_case('pascal') end,
-  { desc = '[C]onvert to [P]ascal case' }
-)
+vim.keymap.set('n', '<leader>cp', function()
+  local cword = vim.fn.expand('<cword>')
+  local new_word = require('utils.text').case.convert(cword, 'pascal')
+  if cword ~= new_word then require('utils.text').replace_cword(new_word) end
+end, { desc = '[C]onvert to [P]ascal case' })
 
-vim.keymap.set(
-  'n',
-  '<leader>cs',
-  function() require('utils.text').case.replace_cword_case('snake') end,
-  { desc = '[C]onvert to [S]nake case' }
-)
+vim.keymap.set('n', '<leader>cs', function()
+  local cword = vim.fn.expand('<cword>')
+  local new_word = require('utils.text').case.convert(cword, 'snake')
+  if cword ~= new_word then require('utils.text').replace_cword(new_word) end
+end, { desc = '[C]onvert to [S]nake case' })
 
-vim.keymap.set(
-  'n',
-  '<leader>cc',
-  function() require('utils.text').case.replace_cword_case('camel') end,
-  { desc = '[C]onvert to [C]amel case' }
-)
+vim.keymap.set('n', '<leader>cc', function()
+  local cword = vim.fn.expand('<cword>')
+  local new_word = require('utils.text').case.convert(cword, 'camel')
+  if cword ~= new_word then require('utils.text').replace_cword(new_word) end
+end, { desc = '[C]onvert to [C]amel case' })
 
 vim.keymap.set('n', '<M-u>', 'viwU', { desc = 'convert to upper case' })
 
