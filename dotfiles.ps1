@@ -1,6 +1,6 @@
 # this file is for restoring dotfiles on windows
 
-if (-not $IsWindows -or $PSVersionTable.PSEdition -ne 'Desktop') {
+if ($IsLinux -or $IsMacOS) {
     Write-Error 'This script is only allowed to be executed on windows'
     return
 }
