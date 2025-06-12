@@ -50,7 +50,9 @@ local mux = wezterm.mux
 
 wezterm.on('gui-startup', function(cmd)
   local tab, pane, window = mux.spawn_window(cmd or {})
-  window:gui_window():maximize()
+  local gui_window = window:gui_window()
+  gui_window:maximize()
+  gui_window:perform_action(wezterm.action.ToggleFullScreen, pane)
 end)
 
 wezterm.on('update-right-status', function(window, _)
