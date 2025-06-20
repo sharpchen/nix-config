@@ -124,6 +124,13 @@ vim.filetype.add {
     vsvimrc = 'vim',
     ideavimrc = 'vim',
     inputrc = 'sh',
+    vb = function(path, _)
+      if vim.fs.root(path, function(name, _) return name:match('%.vbproj$') end) then
+        return 'vbnet'
+      else
+        return 'vb'
+      end
+    end,
   },
   pattern = {
     ['.*%..+proj'] = 'msbuild',
@@ -178,25 +185,6 @@ vim.api.nvim_create_autocmd({ 'DirChanged', 'VimEnter' }, {
       vim.cmd.compiler('dotnet')
       vim.g.dotnet_errors_only = true
       vim.g.dotnet_show_project_file = false
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  callback = function(args)
-    if not vim.bo[args.buf].modifiable and vim.bo[args.buf].readonly then
-      vim.keymap.set(
-        'n',
-        [[d]],
-        [[<C-d>]],
-        { desc = 'scroll down', remap = true, buffer = args.buf }
-      )
-      vim.keymap.set(
-        'n',
-        [[u]],
-        [[<C-u>]],
-        { desc = 'scroll up', remap = true, buffer = args.buf }
-      )
     end
   end,
 })

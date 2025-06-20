@@ -336,3 +336,22 @@ vim.keymap.set(
 )
 
 vim.keymap.set('n', 'g]', '<C-i>', { desc = '[G]oto next jump location', noremap = true })
+
+vim.api.nvim_create_autocmd('FileType', {
+  callback = function(args)
+    if not vim.bo[args.buf].modifiable and vim.bo[args.buf].readonly then
+      vim.keymap.set(
+        'n',
+        [[d]],
+        [[<C-d>]],
+        { desc = 'scroll down', remap = true, buffer = args.buf }
+      )
+      vim.keymap.set(
+        'n',
+        [[u]],
+        [[<C-u>]],
+        { desc = 'scroll up', remap = true, buffer = args.buf }
+      )
+    end
+  end,
+})

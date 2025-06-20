@@ -3,7 +3,7 @@
 return {
   'Saghen/blink.cmp',
   version = '*',
-  build = IsWindows and nil
+  build = IsWindows and ''
     or 'export CARGO_NET_GIT_FETCH_WITH_CLI=true; nix run .#build-plugin --accept-flake-config',
   event = 'BufReadPost',
   dependencies = {
@@ -103,7 +103,7 @@ return {
           score_offset = 15,
           opts = { insert = true }, -- Insert emoji (default) or complete its name
           should_show_items = function()
-            return vim.tbl_contains({ 'gitcommit', 'markdown' }, vim.bo.filetype)
+            return vim.list_contains({ 'gitcommit', 'markdown' }, vim.bo.filetype)
           end,
         },
       },

@@ -95,12 +95,12 @@ return {
       [[<Badge type="{info}" text="{text}" />]],
       { delimiters = '{}' }
     )
-    add('ps1', 'cmdp', '$null = Get-Command <cmd> -ea Stop')
+    add('ps1', 'cmdp', '$null = Get-Command <cmd> -ErrorAction Stop')
     add(
       'ps1',
       'cmdif',
       [[
-    if (Get-Command <cmd> -ea SilentlyContinue) {
+    if (Get-Command <cmd> -ErrorAction Ignore) {
       <# body>
     }
     ]]
@@ -109,7 +109,7 @@ return {
       'sh',
       'cmdif',
       [[
-    if type {cmd} >/dev/null; then
+    if type {cmd} &>/dev/null; then
       {# body}
     fi
     ]],

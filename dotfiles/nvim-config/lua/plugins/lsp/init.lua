@@ -46,6 +46,9 @@ return {
     lsp.setup('marksman')
     lsp.setup('eslint')
     lsp.setup('fsautocomplete')
+    lsp.setup('clangd')
+    lsp.setup('neocmake')
+    -- lsp.setup('csharp_ls')
     lsp.setup('roslyn_ls', {
       on_attach = lsp.event.disable_semantic,
     })

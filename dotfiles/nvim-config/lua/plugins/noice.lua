@@ -1,3 +1,5 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   'folke/noice.nvim',
   -- enabled = false,
@@ -7,6 +9,7 @@ return {
     'rcarriga/nvim-notify',
   },
   config = function()
+    ---@diagnostic disable-next-line: missing-fields
     require('noice').setup {
       messages = {
         enabled = false,
