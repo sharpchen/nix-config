@@ -10,5 +10,6 @@
     fsautocomplete
     fantomas
     ilspycmd
+    csharp-ls
   ];
 }

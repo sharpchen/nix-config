@@ -1,9 +1,6 @@
 { config, pkgs, ... }:
 {
   home.packages = with pkgs; [
-    gcc
-    cmake
-    gnumake
     lua5_1
     rustc
     cargo
@@ -42,7 +39,8 @@
     dict
     dictdDBs.wiktionary
     nh
-    diff-so-fancy
+    tree
+    tlrc
   ];
   home.file.".dict/.dict.conf".text = ''
     server localhost

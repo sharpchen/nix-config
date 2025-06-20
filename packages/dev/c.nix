@@ -10,5 +10,6 @@
     gcc
     cmake
     gnumake
+    neocmakelsp
   ];
 }
