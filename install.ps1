@@ -56,7 +56,6 @@ $scoopPackages = @(
     'powertoys',
     'ditto',
     'perl',
-    'diff-so-fancy'
 )
 
 $scoopFonts = @(
