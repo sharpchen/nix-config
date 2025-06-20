@@ -27,13 +27,13 @@ function so {
     Import-Module PwshProfile -Scope Global -Force
 }
 
-if (Get-Command 'home-manager' -ErrorAction SilentlyContinue) {
+if (Get-Command 'home-manager' -ErrorAction Ignore) {
     function hms {
         home-manager switch --flake ((Resolve-Path '~/.config/home-manager').Path + '#' + $env:USER)
     }
 }
 
-if ((Get-Command scoop -ea SilentlyContinue) -and -not (Get-Command sioyek -ea SilentlyContinue -CommandType Application)) {
+if ((Get-Command scoop -ea Ignore) -and -not (Get-Command sioyek -ea Ignore -CommandType Application)) {
     if ((scoop prefix sioyek) -and $LASTEXITCODE -eq 0) {
         function sioyek {
             & (Join-Path (scoop prefix sioyek) 'sioyek.exe') @args
@@ -41,7 +41,7 @@ if ((Get-Command scoop -ea SilentlyContinue) -and -not (Get-Command sioyek -ea S
     }
 }
 
-if (Get-Command yazi -ea SilentlyContinue) {
+if (Get-Command yazi -ea Ignore) {
     function y {
         $tmp = [System.IO.Path]::GetTempFileName()
         yazi $args --cwd-file="$tmp"

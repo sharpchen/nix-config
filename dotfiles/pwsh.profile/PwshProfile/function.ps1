@@ -26,7 +26,7 @@ function pinfo {
     [OutputType([void], ParameterSetName = 'Attribute')]
     param (
         [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
-        [ValidateScript({ Get-Command $_ -ErrorAction SilentlyContinue -CommandType Cmdlet })]
+        [ValidateScript({ Get-Command $_ -ErrorAction Ignore -CommandType Cmdlet })]
         [string]$Command,
         [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Positional,
@@ -100,7 +100,7 @@ function mkvideo {
 
         if (-not (Test-Path $Destination)) {
             Write-Verbose 'Destination does not exist, creating forcibly'
-            $null = New-Item -ItemType Directory -Path $Destination -ea SilentlyContinue
+            $null = New-Item -ItemType Directory -Path $Destination -ea Ignore
         }
 
         [System.Collections.Generic.List[string]]$info = @()
@@ -305,7 +305,7 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
         )
 
         begin {
-            if (-not (Get-Command devenv -ea SilentlyContinue)) {
+            if (-not (Get-Command devenv -ea Ignore)) {
                 $null = Get-Command vswhere -ea Stop
             }
             if (-not $Path) {
@@ -329,7 +329,7 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
                 return
             }
 
-            if (Get-Command devenv -ea SilentlyContinue) {
+            if (Get-Command devenv -ea Ignore) {
                 devenv $file.FullName
             } else {
                 $devenv = (vswhere -latest -property productPath)
