@@ -3,6 +3,10 @@
     email = rui.chen.sharp@gmail.com
 [init]
     defaultBranch = main
+[alias]
+    lg = log --oneline --graph --decorate
+    df = diff -w --word-diff=color --ignore-space-at-eol
+    cat = cat-file -p
 [url "git@github.com:"]
     insteadOf = https://github.com/
 [pull]
@@ -11,20 +15,12 @@
     path = ~/.gitconfig_windows
 [includeIf "gitdir:D:/**"]
     path = ~/.gitconfig_windows
-
 [rebase]
     autoStash = true ; stash all local changes if exists on rebasing
-
 [diff]
     context = 3
     renames = copies
     interHunkContext = 10
-
-[pager]
-    diff = diff-so-fancy | $PAGER
-[diff-so-fancy]
-    markEmptyLines = false
-
 ; TODO
 ; [commit]
 ;     gpgSign = true
