@@ -105,8 +105,8 @@ nnoremap <leader>, mzA,<Esc>`z
 nnoremap gi gi<Esc>zzi
 
 au BufReadPost * silent! normal! g`"zvzz
-au FileType *.markdown nnoremap <silent> <buffer> <C-b> mz:s/\<<C-r><C-w>\>/**<C-r><C-w>**/<CR>`z
-au FileType *.markdown vnoremap <silent> <buffer> <C-b> mz"zy:s/\<<C-r>z\>/**<C-r>z**/<CR>`z
+au FileType *.markdown nnoremap <silent> <buffer> <C-b> mzhebi**<Esc>ea**<Esc>`z
+au FileType *.markdown xnoremap <silent> <buffer> <C-b> mz<Esc>gv<Esc>a**<Esc>gvO<Esc>i**<Esc>`z
 
 nnoremap <silent> <Tab> :keepjumps normal! %<CR>
 xnoremap <expr> <Tab> mode()==#'V' ? ':keepjumps normal! $%<CR>' : ':keepjumps normal! %<CR>'
