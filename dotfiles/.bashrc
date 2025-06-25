@@ -40,31 +40,27 @@ if type nix-store &>/dev/null; then
     nsp() {
         nix-store -q --outputs "$(type -fP "$1")"
     }
+
+    if type fzf &>/dev/null; then
+        _fzf_complete_nsp() {
+            _fzf_complete -- "$@" < <(compgen -c | sort -u)
+        }
+
+        complete -F _fzf_complete_nsp nsp
+    fi
 fi
 
-_fzf_complete_nsp() {
-    _fzf_complete -- "$@" < <(compgen -c | sort -u)
-}
+if type fzf &>/dev/null; then
+    _fzf_compgen_path() {
+        fd --hidden --follow --exclude ".git" . "$1"
+    }
 
-complete -F _fzf_complete_nsp nsp
+    _fzf_compgen_dir() {
+        fd --type d --hidden --follow --exclude ".git" . "$1"
+    }
 
-function y() {
-    local tmp cwd
-    tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-    yazi "$@" --cwd-file="$tmp"
-    if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-        builtin cd -- "$cwd" || return
-    fi
-    rm -f -- "$tmp"
-}
-
-_fzf_compgen_path() {
-    fd --hidden --follow --exclude ".git" . "$1"
-}
-
-_fzf_compgen_dir() {
-    fd --type d --hidden --follow --exclude ".git" . "$1"
-}
+    eval "$(fzf --bash)"
+fi
 
 if type less &>/dev/null; then
     export PAGER=less
@@ -75,11 +71,30 @@ if type nvim &>/dev/null; then
 fi
 
 if type dotnet &>/dev/null; then
-    DOTNET_ROOT="$(nsp dotnet)/share/dotnet"
-    export DOTNET_ROOT
+    if type nsp &>/dev/null; then
+        DOTNET_ROOT="$(nsp dotnet)/share/dotnet"
+        export DOTNET_ROOT
+    fi
+
     export PATH="$PATH:/home/$USER/.dotnet/tools"
 fi
 
-eval "$(starship init bash)"
-eval "$(fzf --bash)"
-eval "$(zoxide init bash)"
+if type yazi &>/dev/null; then
+    function y() {
+        local tmp cwd
+        tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+        yazi "$@" --cwd-file="$tmp"
+        if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+            builtin cd -- "$cwd" || return
+        fi
+        rm -f -- "$tmp"
+    }
+fi
+
+if type starship &>/dev/null; then
+    eval "$(starship init bash)"
+fi
+
+if type zoxide &>/dev/null; then
+    eval "$(zoxide init bash)"
+fi
