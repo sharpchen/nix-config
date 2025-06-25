@@ -13,5 +13,10 @@ set keymap vi-command
 "ciW": "lBcW"
 "diW": "lBdW"
 "yiW": "lByW"
-" z": "I(\eA)"
+" z": "I$(\eA)\e"
+" Z": "i$(\eA)\e"
 "\C-I": "%"
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"k": history-search-backward
+"j": history-search-forward
