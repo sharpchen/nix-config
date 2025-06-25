@@ -113,7 +113,10 @@ xnoremap <expr> <Tab> mode()==#'V' ? ':keepjumps normal! $%<CR>' : ':keepjumps n
 xnoremap / <C-\><C-n>`</\%V
 xnoremap ? <C-\><C-n>`>?\%V
 " yank uri under cursor
-nnoremap yx :let @0 = expand('<cfile>')<CR>
-nnoremap <leader>yx :let @+ = expand('<cfile>')<CR>
+nnoremap <silent> yx :let @0 = expand('<cfile>')<CR>
+nnoremap <silent> <leader>yx :let @+ = expand('<cfile>')<CR>
 nnoremap g[ <C-o>
 nnoremap g] <C-i>
+nnoremap x "_x
+nnoremap <silent> <M-[> :tabp<CR>
+nnoremap <silent> <M-]> :tabn<CR>

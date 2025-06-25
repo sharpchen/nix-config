@@ -100,3 +100,4 @@ xnoremap / <C-\><C-n>`</\%V
 xnoremap ? <C-\><C-n>`>?\%V
 nnoremap g[ <C-o>
 nnoremap g] <C-i>
+nnoremap x "_x
