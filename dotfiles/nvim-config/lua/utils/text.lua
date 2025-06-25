@@ -27,7 +27,7 @@ end
 
 ---@param new_word string
 M.replace_cword = function(new_word)
-  vim.api.nvim_feedkeys('viwc' .. new_word, 'nx', false)
+  vim.api.nvim_feedkeys('viw"_c' .. new_word, 'nx', false)
 end
 
 --- replace termcode

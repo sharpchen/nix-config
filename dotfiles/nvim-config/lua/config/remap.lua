@@ -74,7 +74,7 @@ vim.keymap.set(
   'x',
   [[<leader>:]],
   function() return vim.bo.filetype == 'lua' and [["zy:=<C-r>z]] or [["zy:<C-r>z]] end,
-  { desc = 'send selection to cmdline', noremap = true, expr = true }
+  { desc = 'send selection to cmdline', expr = true }
 )
 
 vim.keymap.set(
@@ -155,22 +155,12 @@ vim.keymap.set('n', '<A-.>', '<cmd>bn<CR>', { desc = 'move to next buffer' })
 vim.keymap.set('n', '<A-a>', '<cmd>bufdo bd<CR>', { desc = 'close all buffers' })
 vim.keymap.set('n', '<leader><leader>', 'diw', { remap = true })
 
-vim.keymap.set(
-  { 'x', 'n' },
-  'gh',
-  '^',
-  { noremap = true, silent = true, desc = 'go to start of line' }
-)
+vim.keymap.set({ 'x', 'n' }, 'gh', '^', { silent = true, desc = 'go to start of line' })
 
-vim.keymap.set(
-  { 'x', 'n' },
-  'gl',
-  '$',
-  { noremap = true, silent = true, desc = 'go to end of line' }
-)
+vim.keymap.set({ 'x', 'n' }, 'gl', '$', { silent = true, desc = 'go to end of line' })
 
-vim.keymap.set('n', 'gi', 'gi<Esc>zzi', { noremap = true, silent = true })
-vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
+vim.keymap.set('n', 'gi', 'gi<Esc>zzi', { silent = true })
+vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
 vim.keymap.set(
   { 'n', 'x' },
   '<Tab>',
@@ -178,35 +168,20 @@ vim.keymap.set(
     return vim.fn.mode() == 'V' and '<cmd>keepjumps normal! $%<CR>'
       or '<cmd>keepjumps normal! %<CR>'
   end,
-  { noremap = true, expr = true }
+  { expr = true }
 )
 
-vim.keymap.set(
-  'n',
-  '<leader>z',
-  'I(<Esc>A)',
-  { noremap = true, desc = 'brace line with ()' }
-)
+vim.keymap.set('n', '<leader>z', 'I(<Esc>A)', { desc = 'brace line with ()' })
 
-vim.keymap.set(
-  'n',
-  '<leader>;',
-  'mzA;<Esc>`z',
-  { noremap = true, desc = 'append ; at the end of line' }
-)
+vim.keymap.set('n', '<leader>;', 'mzA;<Esc>`z', { desc = 'append ; at the end of line' })
 
-vim.keymap.set(
-  'n',
-  '<leader>,',
-  'mzA,<Esc>`z',
-  { noremap = true, desc = 'append ; at the end of line' }
-)
+vim.keymap.set('n', '<leader>,', 'mzA,<Esc>`z', { desc = 'append ; at the end of line' })
 
-vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, desc = 'go to window downward' })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, desc = 'go to window upward' })
-vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, desc = 'go to window left' })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, desc = 'go to window right' })
-vim.keymap.set('n', '<C-c>', '<C-w>q', { noremap = true, desc = 'close current window' })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'go to window downward' })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'go to window upward' })
+vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'go to window left' })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'go to window right' })
+vim.keymap.set('n', '<C-c>', '<C-w>q', { desc = 'close current window' })
 
 if IsLinux then
   vim.keymap.set(
@@ -318,28 +293,27 @@ vim.keymap.set(
   'n',
   [[yx]],
   [[<cmd>let @0 = expand('<cfile>')<CR>]],
-  { desc = '[Y]ank uri under cursor', noremap = true }
+  { desc = '[Y]ank uri under cursor' }
 )
 
 vim.keymap.set(
   'n',
   [[<leader>yx]],
   [[<cmd>let @+ = expand('<cfile>')<CR>]],
-  { desc = '[Y]ank uri under cursor to system clipboard', noremap = true }
+  { desc = '[Y]ank uri under cursor to system clipboard' }
 )
 
-vim.keymap.set(
-  'n',
-  'g[',
-  '<C-o>',
-  { desc = '[G]oto previous jump location', noremap = true }
-)
+vim.keymap.set('n', 'g[', '<C-o>', { desc = '[G]oto previous jump location' })
 
-vim.keymap.set('n', 'g]', '<C-i>', { desc = '[G]oto next jump location', noremap = true })
+vim.keymap.set('n', 'g]', '<C-i>', { desc = '[G]oto next jump location' })
 
 vim.api.nvim_create_autocmd('FileType', {
   callback = function(args)
-    if not vim.bo[args.buf].modifiable and vim.bo[args.buf].readonly then
+    local bufname = vim.api.nvim_buf_get_name(args.buf)
+    local cond = bufname:find('node_modules')
+    if cond then vim.bo[args.buf].modifiable = false end
+
+    if not vim.bo[args.buf].modifiable and vim.bo[args.buf].filetype ~= 'oil' then
       vim.keymap.set(
         'n',
         [[d]],
@@ -355,3 +329,7 @@ vim.api.nvim_create_autocmd('FileType', {
     end
   end,
 })
+
+vim.keymap.set('n', [[x]], [["_x]])
+vim.keymap.set('n', '<M-[>', '<cmd>tabp<CR>', { desc = 'desc' })
+vim.keymap.set('n', '<M-]>', '<cmd>tabn<CR>', { desc = 'desc' })

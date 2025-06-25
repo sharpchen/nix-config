@@ -34,6 +34,5 @@ vim.keymap.set('n', [[<leader>ck]], function()
   end
 end, {
   desc = 'convert line to check list entry',
-  noremap = true,
   buffer = vim.fn.bufnr('%'),
 })

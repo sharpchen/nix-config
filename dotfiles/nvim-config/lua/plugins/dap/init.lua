@@ -34,10 +34,22 @@ return {
     vim.keymap.set('n', '<F6>', dap.step_back, { desc = 'debug: step_back' })
     vim.keymap.set('n', '<F9>', dap.restart, { desc = 'debug: restart' })
 
-    dap.listeners.before.attach.dapui_config = function() ui.open() end
-    dap.listeners.before.launch.dapui_config = function() ui.open() end
-    dap.listeners.before.event_terminated.dapui_config = function() ui.close() end
-    dap.listeners.before.event_exited.dapui_config = function() ui.close() end
+    dap.listeners.before.attach.dapui_config = function()
+      vim.cmd.tabnew()
+      ui.open()
+    end
+    dap.listeners.before.launch.dapui_config = function()
+      vim.cmd.tabnew()
+      ui.open()
+    end
+    dap.listeners.before.event_terminated.dapui_config = function()
+      ui.close()
+      if vim.fn.tabpagenr('$') ~= 1 then vim.cmd.tabclose() end
+    end
+    dap.listeners.before.event_exited.dapui_config = function()
+      ui.close()
+      if vim.fn.tabpagenr('$') ~= 1 then vim.cmd.tabclose() end
+    end
 
     vim.fn.sign_define(
       'DapBreakpoint',

@@ -83,13 +83,11 @@ return {
     cmd = { 'Shades', 'Huefy' },
   },
   {
-    -- 'wurli/contextindent.nvim',
-    -- enabled = false,
-    dir = '~/projects/contextindent.nvim/',
+    'sharpchen/contextindent.nvim',
+    branch = 'cindent',
     -- This is the only config option; you can use it to restrict the files
     -- which this plugin will affect (see :help autocommand-pattern).
-    opts = { pattern = '*' },
-    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    opts = { pattern = '*.md' },
   },
   {
     'nvzone/showkeys',
@@ -103,7 +101,31 @@ return {
     dir = '~/projects/new-item.nvim',
     event = 'VeryLazy',
     config = function()
-      require('new-item').setup {}
+      require('new-item').setup { picker = 'fzf-lua' }
+      local groups = require('new-item.groups')
+      local file = require('new-item.item').FileItem
+      local folder = require('new-item.item').FolderItem
+      local cmd = require('new-item.item').CmdItem
+      groups.treesitter = {
+        cond = true,
+        items = {
+          folder {
+            label = 'test/corpus',
+            cwd = function() return vim.uv.cwd() or vim.fn.getcwd() end,
+          },
+        },
+      }
+      groups.markdown = {
+        cond = true,
+        items = {
+          file {
+            label = 'Markdown file',
+            filetype = 'markdown',
+            suffix = '.md',
+            content = [[# %s]],
+          },
+        },
+      }
       -- require('new-item.groups').dotnet = {
       --   items = {
       --     {
@@ -114,12 +136,7 @@ return {
       --     },
       --   },
       -- }
-      vim.keymap.set(
-        'n',
-        [[<leader>ni]],
-        [[<cmd>NewItem<CR>]],
-        { desc = 'desc', noremap = true }
-      )
+      vim.keymap.set('n', [[<leader>ni]], [[<cmd>NewItem<CR>]], { desc = 'desc' })
     end,
   },
 
@@ -131,14 +148,15 @@ return {
         'n',
         [[<leader>tf]],
         [[<cmd>PlenaryBustedFile %<CR>]],
-        { desc = 'run plenary busted file', noremap = true }
+        { desc = 'run plenary busted file' }
       )
       vim.keymap.set(
         'n',
         [[<leader>td]],
         [[<cmd>PlenaryBustedDirectory tests/<CR>]],
-        { desc = 'run plenary busted file', noremap = true }
+        { desc = 'run plenary busted file' }
       )
     end,
   },
+  'laytan/cloak.nvim',
 }

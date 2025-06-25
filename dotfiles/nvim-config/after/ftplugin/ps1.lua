@@ -1,5 +1,6 @@
-if pcall(require, 'nvim-treesitter') then vim.cmd([[TSDisable indent]]) end
-vim.bo.indentexpr = vim.api.nvim_get_option_value('indentexpr', { filetype = 'cs' })
+vim.opt_local.cindent = true
+vim.opt_local.cinoptions:append { 'J1', '(1s', '+0' }
+
 vim.opt_local.iskeyword:remove { '-' }
 
 if

@@ -35,7 +35,11 @@ return {
     end
 
     lsp.setup('taplo')
-    lsp.setup('quick_lint_js')
+    lsp.setup('quick_lint_js', {
+      on_attach = function(client, _)
+        if vim.fs.root(0, 'tree-sitter.json') then vim.lsp.stop_client(client.id) end
+      end,
+    })
     lsp.setup('bashls')
     lsp.setup('emmet_language_server')
     lsp.setup('jsonls')
@@ -48,7 +52,9 @@ return {
     lsp.setup('fsautocomplete')
     lsp.setup('clangd')
     lsp.setup('neocmake')
-    -- lsp.setup('csharp_ls')
+    -- lsp.setup('csharp_ls', {
+    --   on_attach = lsp.event.disable_semantic,
+    -- })
     lsp.setup('roslyn_ls', {
       on_attach = lsp.event.disable_semantic,
     })

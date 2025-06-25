@@ -112,7 +112,7 @@ return {
           end,
         },
       })
-    end, { desc = 'search plugin source file installed by lazy', noremap = true })
+    end, { desc = 'search plugin source file installed by lazy' })
 
     vim.api.nvim_create_autocmd('ModeChanged', {
       pattern = 't:n',
@@ -139,6 +139,6 @@ return {
           default = function(selected, _) vim.fn.chdir(vim.fs.joinpath(cwd, selected[1])) end,
         },
       })
-    end, { desc = 'desc', noremap = true })
+    end, { desc = 'find projects' })
   end,
 }

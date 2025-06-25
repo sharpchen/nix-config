@@ -3,7 +3,7 @@ local function setup()
   local dark = require('Eva-Theme.palette').dark_base
 
   ---@module 'Eva-Theme'
-  ---@type table<string, Eva-Theme.UserHightlightHandler>
+  ---@type table<string, Eva-Theme.UserHighlightHandler>
   local oh = {
     ['@lsp.type.enumMember'] = function(v)
       return {

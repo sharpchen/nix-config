@@ -62,14 +62,14 @@ vim.keymap.set(
   'n',
   '<leader>ff',
   [[<cmd>call VSCodeNotify('workbench.action.quickOpen', '')<CR>]],
-  { desc = 'search files', noremap = true }
+  { desc = 'search files',  }
 )
 
 vim.keymap.set(
   'n',
   [[<leader>fg]],
   [[<cmd>call VSCodeNotify('workbench.action.quickOpen', '%'.expand('<cword>'))<CR>]],
-  { desc = 'desc', noremap = true }
+  { desc = 'desc',  }
 )
 
 vim.keymap.set('n', 'zM', function() vscode.call('editor.foldAll') end)

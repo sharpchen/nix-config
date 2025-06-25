@@ -116,6 +116,7 @@ vim.opt.formatoptions:remove { 'c', 'r', 'o' }
 
 vim.filetype.add {
   extension = {
+    foo = 'foo',
     axaml = 'axaml',
     xaml = 'xaml',
     props = 'msbuild',
@@ -124,13 +125,6 @@ vim.filetype.add {
     vsvimrc = 'vim',
     ideavimrc = 'vim',
     inputrc = 'sh',
-    vb = function(path, _)
-      if vim.fs.root(path, function(name, _) return name:match('%.vbproj$') end) then
-        return 'vbnet'
-      else
-        return 'vb'
-      end
-    end,
   },
   pattern = {
     ['.*%..+proj'] = 'msbuild',
@@ -139,8 +133,6 @@ vim.filetype.add {
 }
 
 vim.treesitter.language.register('xml', { 'axaml', 'xaml', 'msbuild' })
-
-if jit.os:find('Windows') and vim.fn.executable('pwsh') == 1 then vim.o.shell = 'pwsh' end
 
 vim.api.nvim_create_autocmd('BufReadPost', {
   desc = 'Open file at the last position it was edited earlier',
@@ -172,9 +164,10 @@ vim.opt.diffopt = {
 
 vim.api.nvim_create_autocmd({ 'DirChanged', 'VimEnter' }, {
   callback = function(args)
-    if args.event == 'DirChanged' then vim.notify('DirChanged to ' .. vim.uv.cwd()) end
-
     local cwd = vim.uv.cwd()
+
+    if args.event == 'DirChanged' then vim.notify('DirChanged to ' .. cwd) end
+
     if cwd and cwd:find('playground') then
       vim.opt.autochdir = true
     else
@@ -182,9 +175,26 @@ vim.api.nvim_create_autocmd({ 'DirChanged', 'VimEnter' }, {
     end
 
     if vim.fs.root(0, function(name, _) return name:match('%.%w+proj$') ~= nil end) then
-      vim.cmd.compiler('dotnet')
       vim.g.dotnet_errors_only = true
       vim.g.dotnet_show_project_file = false
+      vim.cmd.compiler('dotnet')
     end
+
+    if
+      vim.fs.root(0, function(name, _) return name:match('tsconfig%.json$') ~= nil end)
+    then
+      local suffix = ' tsc --noEmit'
+      local exe = vim.fn.executable('pnpm') == 1 and 'pnpm' or 'npx'
+      vim.g.tsc_makeprg = exe .. suffix
+      vim.cmd.compiler('tsc')
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'foo',
+  callback = function(args)
+    vim.bo.cindent = true
+    vim.bo.cinoptions = 'J1,(1s,+0'
   end,
 })
