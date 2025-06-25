@@ -72,6 +72,7 @@ mklink ~/.ideavimrc ./dotfiles/.ideavimrc
 
 # shell
 mklink ~/.bashrc ./dotfiles/.bashrc
+mklink ~/.inputrc ./dotfiles/.inputrc
 
 # pwsh
 mklink $PROFILE ./dotfiles/pwsh.profile/pwsh.profile.ps1
