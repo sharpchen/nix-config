@@ -356,7 +356,7 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
                     return
                 }
                 [Console]::OutputEncoding = $origEncoding
-                wsl –-shutdown
+                wsl --shutdown
             }
         }
         end {

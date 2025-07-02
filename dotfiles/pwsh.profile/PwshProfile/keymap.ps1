@@ -15,6 +15,11 @@ Set-PSReadLineKeyHandler -Chord ' ,z' -ViMode Command -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert(')')
 }
+Set-PSReadLineKeyHandler -Chord ' ,Z' -ViMode Command -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert('(')
+    [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert(')')
+}
 Set-PSReadLineKeyHandler -Chord ' , ' -ViMode Command -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::ForwardChar()
     [Microsoft.PowerShell.PSConsoleReadLine]::BackwardWord()

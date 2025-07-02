@@ -1,18 +1,32 @@
 Set-Alias lg lazygit
 Set-Alias dn dotnet
+Set-Alias tsp Test-Path
 
-function vim {
-    nvim -u '~/.vimrc' @args
-}
+if (Get-Command nvim -ErrorAction Ignore) {
+    function vim {
+        nvim -u '~/.vimrc' @args
+    }
 
-function vw {
-    nvim -u '~/.vimrc' @args -c @'
-    set wrap
+    function vw {
+        nvim -u '~/.vimrc' @args -c @'
+        set wrap
 '@
-}
+    }
 
-function v {
-    nvim @args
+    function v {
+        nvim @args
+    }
+
+    function vf {
+        begin {
+            $null = Get-Command fzf -ea Stop
+            $null = Get-Command vim -ea Stop -CommandType Function
+        }
+
+        end {
+            vim (fzf)
+        }
+    }
 }
 
 function :q {
@@ -30,6 +44,16 @@ function so {
 if (Get-Command 'home-manager' -ErrorAction Ignore) {
     function hms {
         home-manager switch --flake ((Resolve-Path '~/.config/home-manager').Path + '#' + $env:USER)
+    }
+}
+
+if (Get-Command nix-store -ErrorAction Ignore) {
+    function nsp {
+        param(
+            [Parameter(Position = 1)]
+            [string]$MainProgram
+        )
+        nix-store -q --outputs (Get-Command $MainProgram).Source
     }
 }
 
@@ -53,13 +77,8 @@ if (Get-Command yazi -ea Ignore) {
     }
 }
 
-function vf {
-    begin {
-        $null = Get-Command fzf -ea Stop
-        $null = Get-Command vim -ea Stop -CommandType Function
-    }
-
-    end {
-        vim (fzf)
+if (Get-Command tree-sitter -ErrorAction Ignore) {
+    function ts {
+        tree-sitter @args
     }
 }
