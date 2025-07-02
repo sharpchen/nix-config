@@ -4,9 +4,13 @@
 [init]
     defaultBranch = main
 [alias]
-    lg = log --oneline --graph --decorate
+    lg = log --oneline --graph --decorate --date=iso
+    sh = show --date=iso
     df = diff -w --word-diff=color --ignore-space-at-eol
     cat = cat-file -p
+    bs = bisect
+    crpk = cherry-pick
+    ck = checkout
 [url "git@github.com:"]
     insteadOf = https://github.com/
 [pull]
