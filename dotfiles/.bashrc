@@ -60,6 +60,7 @@ if type fzf &>/dev/null; then
     }
 
     eval "$(fzf --bash)"
+    export FZF_DEFAULT_OPTS_FILE=~/.fzfrc
 fi
 
 if type less &>/dev/null; then

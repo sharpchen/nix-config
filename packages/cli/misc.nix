@@ -66,6 +66,7 @@
     config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/helix.config.toml";
 
   home.file.".ssh/config".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/sshconfig";
+  home.file.".fzfrc".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.fzfrc";
 
   programs.nix-index = {
     enable = true;
