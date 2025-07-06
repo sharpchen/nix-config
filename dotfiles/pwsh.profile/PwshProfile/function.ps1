@@ -424,3 +424,42 @@ function p {
         Set-Location ($folders | ForEach-Object FullName | fzf)
     }
 }
+
+function ds {
+    param (
+        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
+        [string]$Dir,
+
+        [ValidateSet('kb', 'mb', 'gb')]
+        [string]$Unit
+    )
+    begin {
+        if (-not $Dir) {
+            $Dir = $PWD.Path
+        }
+    }
+
+    end {
+        if (Get-Command du -CommandType Application -ErrorAction Ignore -OutVariable du) {
+            $length = (((& $du -sb $Dir) -split '\s+')[0]) -as [long]
+        } else {
+            $length = (Get-ChildItem -File -Force -Recurse -LiteralPath $Dir | Measure-Object Length -Sum).Sum
+        }
+
+        switch ($Unit) {
+            'kb' {
+                $length / 1kb
+            }
+            'mb' {
+                $length / 1mb
+            }
+            'gb' {
+                $length / 1gb
+            }
+            default {
+                $length
+            }
+        }
+    }
+
+}

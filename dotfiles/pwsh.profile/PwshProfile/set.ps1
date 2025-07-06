@@ -4,6 +4,7 @@ if ($Host.Name -ne 'ConsoleHost') {
 }
 
 $env:DOTNET_CLI_UI_LANGUAGE = 'en'
+$env:FZF_DEFAULT_OPTS_FILE = (Resolve-Path ~/.fzfrc).Path
 
 Set-PsFzfOption -TabExpansion
 
