@@ -13,6 +13,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins_for_windows = vim
   .iter({
+    'shared',
     'firenvim',
     'colorizer',
     'Comment',
@@ -26,8 +27,6 @@ local plugins_for_windows = vim
     'fzf-lua',
     'treesitter',
     'which-key',
-    'vim-sandwich',
-    'template-string',
     'blink',
     'luasnip',
   })

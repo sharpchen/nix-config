@@ -67,6 +67,7 @@ mklink -SpecialParent LOCALAPPDATA -ChildPath 'lazygit/config.yml' -Target ./dot
 
 # vim
 mklink ~/.vimrc ./dotfiles/.vimrc
+mklink ~/.keymap.vim ./dotfiles/.keymap.vim
 mklink ~/.vsvimrc ./dotfiles/.vsvimrc
 mklink ~/.ideavimrc ./dotfiles/.ideavimrc
 

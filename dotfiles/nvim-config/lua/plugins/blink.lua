@@ -116,6 +116,7 @@ return {
       window = { border = 'single' },
     },
     completion = {
+      keyword = { range = 'full' },
       trigger = {
         show_on_trigger_character = true,
       },

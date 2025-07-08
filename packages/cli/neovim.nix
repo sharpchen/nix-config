@@ -14,4 +14,6 @@
   };
 
   home.file.".vimrc".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.vimrc";
+  home.file.".keymap.vim".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.keymap.vim";
 }

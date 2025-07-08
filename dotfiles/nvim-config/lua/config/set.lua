@@ -191,10 +191,8 @@ vim.api.nvim_create_autocmd({ 'DirChanged', 'VimEnter' }, {
   end,
 })
 
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'foo',
-  callback = function(args)
-    vim.bo.cindent = true
-    vim.bo.cinoptions = 'J1,(1s,+0'
-  end,
-})
+vim.api.nvim_create_user_command(
+  'Rename',
+  [[execute $'saveas {expand('%:p:h')}/{"<args>"}' | call delete(expand('#'))]],
+  { desc = 'Rename current file', nargs = 1 }
+)

@@ -57,37 +57,10 @@ return {
     end,
   },
   { 'LunarVim/bigfile.nvim', event = { 'BufReadPre', 'BufNewFile' } },
-  {
-    'tree-sitter-grammars/tree-sitter-test',
-    -- compile on your own on Windows
-    build = 'make parser/test.so',
-    ft = 'test',
-    init = function()
-      -- toggle full-width rules for test separators
-      vim.g.tstest_fullwidth_rules = false
-      -- set the highlight group of the rules
-      vim.g.tstest_rule_hlgroup = 'FoldColumn'
-    end,
-  },
-  { 'yioneko/nvim-vtsls', ft = { 'typescript', 'javascript' } },
   { 'nvchad/volt', lazy = true },
-  {
-    'nvzone/typr',
-    event = 'VeryLazy',
-    dependencies = 'nvzone/volt',
-    opts = {},
-    cmd = { 'Typr', 'TyprStats' },
-  },
   {
     'nvchad/minty',
     cmd = { 'Shades', 'Huefy' },
-  },
-  {
-    'sharpchen/contextindent.nvim',
-    branch = 'cindent',
-    -- This is the only config option; you can use it to restrict the files
-    -- which this plugin will affect (see :help autocommand-pattern).
-    opts = { pattern = '*.md' },
   },
   {
     'nvzone/showkeys',
@@ -97,49 +70,6 @@ return {
       maxkeys = 5,
     },
   },
-  {
-    dir = '~/projects/new-item.nvim',
-    event = 'VeryLazy',
-    config = function()
-      require('new-item').setup { picker = 'fzf-lua' }
-      local groups = require('new-item.groups')
-      local file = require('new-item.item').FileItem
-      local folder = require('new-item.item').FolderItem
-      local cmd = require('new-item.item').CmdItem
-      groups.treesitter = {
-        cond = true,
-        items = {
-          folder {
-            label = 'test/corpus',
-            cwd = function() return vim.uv.cwd() or vim.fn.getcwd() end,
-          },
-        },
-      }
-      groups.markdown = {
-        cond = true,
-        items = {
-          file {
-            label = 'Markdown file',
-            filetype = 'markdown',
-            suffix = '.md',
-            content = [[# %s]],
-          },
-        },
-      }
-      -- require('new-item.groups').dotnet = {
-      --   items = {
-      --     {
-      --       content = [[
-      --       Console.WriteLine("Hello, World")
-      --       ]],
-      --       name_customizable = true,
-      --     },
-      --   },
-      -- }
-      vim.keymap.set('n', [[<leader>ni]], [[<cmd>NewItem<CR>]], { desc = 'desc' })
-    end,
-  },
-
   {
     'nvim-lua/plenary.nvim',
     event = 'VeryLazy',
@@ -159,4 +89,53 @@ return {
     end,
   },
   'laytan/cloak.nvim',
+  {
+    'johnfrankmorgan/whitespace.nvim',
+    event = 'BufReadPost',
+    config = function()
+      require('whitespace-nvim').setup {
+        highlight = 'DiffDelete',
+        ignored_filetypes = { 'TelescopePrompt', 'Trouble', 'help', 'dashboard' },
+        ignore_terminal = true,
+        return_cursor = true,
+      }
+      vim.keymap.set('n', '<Leader>tr', require('whitespace-nvim').trim)
+      -- highlight would disappear for conflicting with au in set.lua
+      vim.api.nvim_create_autocmd('ColorScheme', {
+        callback = require('whitespace-nvim').highlight,
+      })
+    end,
+  },
+  {
+    'psliwka/vim-dirtytalk',
+    build = ':DirtytalkUpdate',
+    event = 'BufReadPost',
+    config = function() vim.opt.spelllang:append { 'programming' } end,
+  },
+  {
+    'ravibrock/spellwarn.nvim',
+    event = 'VeryLazy',
+    config = function()
+      require('spellwarn').setup {
+        ft_default = false,
+        ft_config = {
+          markdown = true,
+        },
+      }
+    end,
+  },
+  {
+    'kosayoda/nvim-lightbulb',
+    event = 'BufReadPost',
+    config = function()
+      require('nvim-lightbulb').setup {
+        autocmd = { enabled = true },
+        sign = {
+          enabled = true,
+          text = '',
+        },
+        -- float = { enabled = true }
+      }
+    end,
+  },
 }

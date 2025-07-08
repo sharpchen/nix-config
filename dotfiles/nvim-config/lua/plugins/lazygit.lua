@@ -23,11 +23,7 @@ return {
         if vim.api.nvim_buf_get_name(args.buf):find('lazygit') then
           vim.keymap.set('t', '<Esc>', function()
             local chan = vim.b[args.buf].terminal_job_id
-            if chan then
-              -- Send the ESC key sequence to the terminal
-              -- "\x1b" is the escape character
-              vim.api.nvim_chan_send(chan, '\x1b')
-            end
+            if chan then vim.api.nvim_chan_send(chan, vim.keycode('<Esc>')) end
           end, { buffer = args.buf })
         end
       end,

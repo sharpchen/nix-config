@@ -69,6 +69,7 @@ local ViMode = {
       c = 'CMD',
       t = 'TERM',
       nt = 'NTERM',
+      no = 'OP',
       R = 'REP',
       r = 'REP',
       ['\22'] = 'VBL',
@@ -87,6 +88,7 @@ local ViMode = {
       c = 'command',
       t = 'terminal',
       nt = 'normal',
+      no = 'terminal',
       R = 'replace',
       r = 'replace',
       ['\22'] = 'vline',
@@ -102,7 +104,7 @@ local ViMode = {
   },
   provider = function(self) return ' ' .. (self.mode_names[self.mode] or 'UNKNOWN') end,
   hl = function(self)
-    local mode = self.mode:sub(1, 1) -- get only the first mode character
+    local mode = self.mode
     return { bg = self.mode_colors[mode], bold = true, fg = 'statusline' }
   end,
   update = {

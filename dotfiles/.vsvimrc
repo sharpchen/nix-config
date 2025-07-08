@@ -16,6 +16,26 @@ set number
 
 set cursorline
 
+nnoremap <A-.> :vsc Window.NextDocumentWindow<CR>
+nnoremap <A-,> :vsc Window.PreviousDocumentWindow<CR>
+nnoremap <A-a> :vsc Window.CloseAllDocuments<CR>
+nnoremap <F2> :vsc Refactor.Rename<CR>
+nnoremap gr :vsc Edit.FindAllReferences<CR>
+nnoremap gd :vsc Edit.GoToImplementation<CR>
+nnoremap gp :vsc Edit.PeekDefinition<CR>
+nnoremap <M-CR> :vsc FullScreen<CR>
+nnoremap <leader>o :vsc View.SolutionExplorer<CR>
+nnoremap <leader>b :vsc Debug.ToggleBreakpoint<CR>
+nnoremap <leader>m :vsc Build.BuildSolution<CR><Esc>
+nnoremap <leader>ca :vsc View.QuickActions<CR>
+nnoremap K :vsc Edit.QuickInfo<CR>
+noremap <leader>fg :vsc Edit.GoToText<CR>
+nnoremap <leader>ff :vsc Edit.GoToFile<CR>
+nnoremap gcc :vsc Edit.ToggleLineComment<CR><Esc>
+xnoremap gc :vsc Edit.ToggleLineComment<CR><Esc>
+nnoremap <leader>so :source ~/.vsvimrc<CR>
+nnoremap <leader>k :vsc Edit.FormatDocument<CR>
+
 " Move selected lines down/up in visual mode
 xnoremap <M-j> :m '>+1<CR>gv=gv
 xnoremap <M-k> :m '<-2<CR>gv=gv
@@ -29,8 +49,8 @@ nnoremap <M-Down> :m .+1<CR>==
 nnoremap <M-Up> :m .-2<CR>==
 
 " Move current line down/up in insert mode
-"inoremap <M-j> <Esc>:m .+1<CR>==gi
-"inoremap <M-k> <Esc>:m .-2<CR>==gi
+inoremap <M-j> <Esc>:m .+1<CR>==gi
+inoremap <M-k> <Esc>:m .-2<CR>==gi
 inoremap <M-Down> <Esc>:m .+1<CR>==gi
 inoremap <M-Up> <Esc>:m .-2<CR>==gi
 
@@ -63,34 +83,14 @@ xnoremap <leader>d "_d
 nnoremap <leader>D "_D
 
 nnoremap <leader>a ggVG
-nnoremap <A-.> :vsc Window.NextDocumentWindow<CR>
-nnoremap <A-,> :vsc Window.PreviousDocumentWindow<CR>
-nnoremap <A-a> :vsc Window.CloseAllDocuments<CR>
-nnoremap <F2> :vsc Refactor.Rename<CR>
-nnoremap gr :vsc Edit.FindAllReferences<CR>
-nnoremap gd :vsc Edit.GoToImplementation<CR>
-nnoremap gp :vsc Edit.PeekDefinition<CR>
-nnoremap <C-l> :vsc Window.NextSplitPane<CR>
-nnoremap <C-h> :vsc Window.PreviousSplitPane<CR>
 nnoremap gh ^
 nnoremap gl $
 xnoremap gh ^
 xnoremap gl $
 
-nnoremap <M-CR> :vsc FullScreen<CR>
-nnoremap <leader>o :vsc View.SolutionExplorer<CR>
-nnoremap <leader>b :vsc Debug.ToggleBreakpoint<CR>
-nnoremap <leader>m :vsc Build.BuildSolution<CR><Esc>
-nnoremap <leader>ca :vsc View.QuickActions<CR>
-nnoremap K :vsc Edit.QuickInfo<CR>
-noremap <leader>fg :vsc Edit.GoToText<CR>
-nnoremap <leader>ff :vsc Edit.GoToFile<CR>
-nnoremap gcc :vsc Edit.ToggleLineComment<CR><Esc>
-xnoremap gc :vsc Edit.ToggleLineComment<CR><Esc>
-nnoremap <leader>so :source ~/.vsvimrc<CR>
-nnoremap <leader>k :vsc Edit.FormatDocument<CR>
 nnoremap <leader><leader> diw
-nnoremap <leader>z I(<Esc>A)
+nnoremap <leader>z I(<Esc>A)<Esc>
+nnoremap <leader>Z i(<Esc>A)<Esc>
 nnoremap <leader>; mzA;<Esc>`z
 nnoremap <leader>, mzA,<Esc>`z
 nnoremap gi `^zzi
@@ -101,3 +101,8 @@ xnoremap ? <C-\><C-n>`>?\%V
 nnoremap g[ <C-o>
 nnoremap g] <C-i>
 nnoremap x "_x
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-c> <C-w>q

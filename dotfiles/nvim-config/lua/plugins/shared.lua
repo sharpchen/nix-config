@@ -1,6 +1,25 @@
 ---@module 'lazy'
----@type LazySpec[]
+---@type LazySpec
 return {
+  {
+    'axelvc/template-string.nvim',
+    ft = {
+      'cs',
+      'javascript',
+      'typescript',
+      'javascriptreact',
+      'typescriptreact',
+      'vue',
+      'svelte',
+      'html',
+    },
+    -- enabled = false,
+    config = function()
+      require('template-string').setup {
+        remove_template_string = true,
+      }
+    end,
+  },
   {
     'chaoren/vim-wordmotion',
     event = 'BufReadPost',
@@ -28,22 +47,12 @@ return {
     end,
   },
   {
-    'axelvc/template-string.nvim',
-    ft = {
-      'cs',
-      'javascript',
-      'typescript',
-      'javascriptreact',
-      'typescriptreact',
-      'vue',
-      'svelte',
-      'html',
-    },
-    -- enabled = false,
-    config = function()
-      require('template-string').setup {
-        remove_template_string = true,
-      }
-    end,
+    'sharpchen/contextindent.nvim',
+    branch = 'cindent',
+    opts = { pattern = '*.md' },
+  },
+  {
+    'machakann/vim-sandwich',
+    event = 'BufReadPost',
   },
 }
