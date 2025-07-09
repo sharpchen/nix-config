@@ -5,7 +5,7 @@ local config = wezterm.config_builder()
 config.front_end = 'OpenGL'
 config.color_scheme = 'kanagawabones'
 
-config.default_prog = { 'pwsh' }
+config.default_prog = { 'pwsh', '--nologo' }
 
 config.animation_fps = 60
 
