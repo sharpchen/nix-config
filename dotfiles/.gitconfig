@@ -12,14 +12,15 @@
     cp = cherry-pick
     ck = checkout
     mod = submodule
+    open = "!gio open $(git remote get-url origin | sed -E \"s|git@([^:]+):|https://\\1/|; s|\\.git$||\")"
 [url "git@github.com:"]
     insteadOf = https://github.com/
 [pull]
     rebase = true
 [includeIf "gitdir:C:/**"]
-    path = ~/.gitconfig_windows
+    path = ~/.windows.gitconfig
 [includeIf "gitdir:D:/**"]
-    path = ~/.gitconfig_windows
+    path = ~/.windows.gitconfig
 [rebase]
     autoStash = true ; stash all local changes if exists on rebasing
 [diff]

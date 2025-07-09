@@ -1,3 +1,0 @@
-[alias]
-    shell = !bash
-    repo = "!start $(git remote get-url origin | sed -E \"s|git@([^:]+):|https://\\1/|; s|\\.git$||\")"

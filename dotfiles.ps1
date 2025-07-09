@@ -38,15 +38,15 @@ function mklink {
 }
 
 if (Get-Command scoop -ea SilentlyContinue) {
-    if ((scoop which librewolf) -and $LASTEXITCODE -eq 0) {
+    if (& { scoop which librewolf *> $null; 0 -eq $LASTEXITCODE }) {
         mklink (Join-Path (scoop prefix librewolf) 'Profiles/Default/librewolf.overrides.cfg') ./dotfiles/librewolf.cfg
     }
 
-    if ((scoop which git) -and $LASTEXITCODE -eq 0) {
+    if (& { scoop which git *> $null; 0 -eq $LASTEXITCODE }) {
         [Environment]::SetEnvironmentVariable('YAZI_FILE_ONE', (Join-Path (scoop prefix git) 'usr\bin\file.exe'), 'User')
     }
 
-    if ((scoop prefix sioyek) -and $LASTEXITCODE -eq 0) {
+    if (& { scoop which sioyek *> $null; 0 -eq $LASTEXITCODE }) {
         mklink (Join-Path (scoop prefix sioyek) 'prefs_user.config') ./dotfiles/sioyek.prefs_user.config
         mklink (Join-Path (scoop prefix sioyek) 'keys_user.config') ./dotfiles/sioyek.keys_user.config
     }
@@ -62,7 +62,7 @@ if (Get-Command nvim -ea SilentlyContinue) {
 
 # git
 mklink ~/.gitconfig ./dotfiles/.gitconfig
-mklink ~/.gitconfig_windows ./dotfiles/.gitconfig-windows
+mklink ~/.windows.gitconfig. ./dotfiles/.windows.gitconfig
 mklink -SpecialParent LOCALAPPDATA -ChildPath 'lazygit/config.yml' -Target ./dotfiles/lazygit.config.yml
 
 # vim
