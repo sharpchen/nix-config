@@ -24,13 +24,13 @@ local plugins_for_windows = vim
     'nvim-rip-substitute',
     'nvim-autopairs',
     'oil',
-    'fzf-lua',
+    'snacks',
     'treesitter',
     'which-key',
     'blink',
     'luasnip',
   })
-  :map(function(x) return { import = 'plugins.' .. x } end)
+  :map(function(name) return { import = 'plugins.' .. name } end)
   :totable()
 
 require('lazy').setup {

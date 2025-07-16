@@ -52,7 +52,7 @@ return {
 
         if #fmt_available == 0 then
           vim.api.nvim_feedkeys('mzgg=G`z', 'tx', false)
-          vim.notify('formatted by indentexpr')
+          vim.notify('formatted by indent option')
         else
           vim.lsp.buf.format { async = false, timeout_ms = 5000, bufnr = bufnr }
           local names = vim.tbl_map(

@@ -56,7 +56,7 @@ return {
       }
     end,
   },
-  { 'LunarVim/bigfile.nvim', event = { 'BufReadPre', 'BufNewFile' } },
+  -- { 'LunarVim/bigfile.nvim', event = { 'BufReadPre', 'BufNewFile' } },
   { 'nvchad/volt', lazy = true },
   {
     'nvchad/minty',

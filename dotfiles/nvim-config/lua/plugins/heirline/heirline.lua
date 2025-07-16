@@ -9,25 +9,6 @@ vim.cmd('au VimLeavePre * au! Heirline_update_autocmds')
 local sharp_delimiters = { '', '' }
 local rounded_delimiters = { '', '' }
 local delimiter = { left = rounded_delimiters[1], right = rounded_delimiters[2] }
-local function file_init(self)
-  self.file_size = myutils.file_size()
-  self.filename = vim.api.nvim_buf_get_name(0)
-
-  local ext = vim.fn.fnamemodify(self.filename, ':e')
-  local ft = vim.filetype.match { filename = self.filename }
-
-  -- some filetypes can't be detected by filename directly, use extension as fallback
-  self.icon, self.icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(ft)
-  if not self.icon then
-    self.icon, self.icon_color =
-      require('nvim-web-devicons').get_icon_color_by_filetype(ext)
-  end
-
-  -- use default icon as final choice
-  local default = require('nvim-web-devicons').get_default_icon()
-  self.icon = self.icon or default.icon
-  self.icon_color = self.icon_color or default.color
-end
 local function setup_colors()
   return {
     background = utils.get_highlight('Normal').bg,
@@ -119,7 +100,12 @@ local ViMode = {
   },
 }
 local FileInfo = {
-  init = file_init,
+  init = function(self)
+    _, self.icon_color = myutils.file.icon {
+      ext = vim.fn.expand('%:e'),
+      filename = vim.api.nvim_buf_get_name(0),
+    }
+  end,
   {
     condition = function() return vim.bo.modified end,
     provider = '  ',
@@ -132,18 +118,24 @@ local FileInfo = {
   },
   { -- filename
     provider = function(self)
-      local filename = vim.fn.fnamemodify(self.filename, ':t')
-      if filename == '' then return '[No Name]' end
-      if not conditions.width_percent_below(#filename, 0.25) then
-        filename = vim.fn.fnamemodify(self.filename, ':t') -- vim.fn.pathshorten(filename)
+      local fullname = vim.api.nvim_buf_get_name(0)
+      local shortname = vim.fn.fnamemodify(fullname, ':t')
+      if shortname == '' then return '[No Name]' end
+      if not conditions.width_percent_below(#shortname, 0.25) then
+        shortname = vim.fn.fnamemodify(fullname, ':t')
       end
-      return string.format('%s [%s]', filename, self.file_size)
+      return string.format('%s [%s]', shortname, myutils.file.size_str(0))
     end,
+    update = { 'BufEnter', 'BufWritePost' },
   },
   hl = function(self) return { bg = 'statusline', fg = self.icon_color } end,
 }
 local FileType = {
-  init = file_init,
+  update = { 'BufEnter', 'BufWritePost' },
+  init = function(self)
+    self.icon, self.icon_color =
+      myutils.file.icon { ext = vim.fn.expand('%:e'), filename = vim.fn.expand('%:p') }
+  end,
   provider = function(self)
     return self.icon
       .. ' '
@@ -153,13 +145,13 @@ local FileType = {
   hl = function(self) return { bg = self.icon_color, fg = 'statusline' } end,
 }
 local FileEncoding = {
-  init = file_init,
   provider = function() return '󰉢 ' .. vim.o.fileencoding:upper() end,
 }
 local System = {
   init = function(self)
     local sys = IsWindows and 'windows' or 'linux'
-    local icon = require('nvim-web-devicons').get_icons_by_operating_system()[sys]
+    local icon =
+      require('nvim-web-devicons').myutils.file.icons_by_operating_system()[sys]
     self.icon_color, self.icon = icon.color, icon.icon
   end,
   provider = function(self) return self.icon .. ' ' .. vim.bo.fileformat end,
@@ -228,9 +220,8 @@ local LSPActive = {
       table.insert(self.names, server.name)
     end
     local filename = vim.api.nvim_buf_get_name(0)
-    local extension = vim.fn.fnamemodify(filename, ':e')
-    _, self.icon_color =
-      require('nvim-web-devicons').get_icon_color(filename, extension, { default = true })
+    local ext = vim.fn.fnamemodify(filename, ':e')
+    _, self.icon_color = myutils.file.icon { filename = filename, ext = ext }
   end,
   provider = function(self)
     return #self.names > 1 and '󰒋 [' .. table.concat(self.names, ',') .. ']'

@@ -2,6 +2,7 @@
 ---@type LazySpec
 return {
   'ibhagwan/fzf-lua',
+  enabled = false,
   config = function()
     do
       if vim.fn.executable('fd') == 0 then

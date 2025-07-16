@@ -125,6 +125,7 @@ vim.filetype.add {
     vsvimrc = 'vim',
     ideavimrc = 'vim',
     inputrc = 'sh',
+    gitconfig = 'gitconfig',
   },
   pattern = {
     ['.*%..+proj'] = 'msbuild',

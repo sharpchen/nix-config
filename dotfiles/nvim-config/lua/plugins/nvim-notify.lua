@@ -6,7 +6,7 @@ return {
   config = function()
     require('notify').setup {
       timeout = 1000,
-      top_down = false,
+      top_down = true,
       render = 'wrapped-compact',
       merge_duplicates = true,
     }

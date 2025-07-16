@@ -106,6 +106,24 @@ return {
     ]]
     )
     add(
+      'ps1',
+      'codecheck',
+      [[
+    & { [cmd] *> $null; 0 -eq $LASTEXITCODE }
+    ]],
+      { delimiters = '[]' }
+    )
+    add(
+      'ps1',
+      'codeif',
+      [[
+    if (& { [cmd] *> $null; 0 -eq $LASTEXITCODE }) {
+      [# action]
+    }
+    ]],
+      { delimiters = '[]' }
+    )
+    add(
       'sh',
       'cmdif',
       [[

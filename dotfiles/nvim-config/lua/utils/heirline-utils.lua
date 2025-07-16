@@ -34,13 +34,38 @@ function M.auto_surround(delimiters, component)
   }
 end
 
-function M.file_size()
-  local suffix = { 'b', 'k', 'M', 'G', 'T', 'P', 'E' }
-  local fsize = vim.fn.getfsize(vim.api.nvim_buf_get_name(0))
+M.file = {}
+function M.file.size_str(buf)
+  local suffix = { 'KB', 'MB', 'GB' }
+  local fsize = vim.fn.getfsize(vim.api.nvim_buf_get_name(buf))
   fsize = fsize < 0 and 0 or fsize
-  if fsize < 1024 then return fsize .. suffix[1] end
-  local i = math.floor((math.log(fsize) / math.log(1024)) + 0.5)
-  return string.format('%.2g%s', fsize / math.pow(1024, i), suffix[i + 1])
+
+  if fsize < 1024 then return fsize .. 'B' end
+
+  local idx = 0
+  while fsize >= 1024 and idx < #suffix do
+    fsize = fsize / 1024
+    idx = idx + 1
+  end
+
+  return string.format('%.2f%s', fsize, suffix[idx])
+end
+
+---@param opt { filename: string, ext: string }
+function M.file.icon(opt)
+  local ext = vim.fn.fnamemodify(opt.filename, ':e')
+  local ft = vim.filetype.match { filename = opt.filename }
+  local icon, icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(ft)
+  if not icon then
+    icon, icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(ext)
+  end
+
+  -- use default icon as final choice
+  local default = require('nvim-web-devicons').get_default_icon()
+  icon = icon or default.icon
+  icon_color = icon_color or default.color
+
+  return icon, icon_color
 end
 
 return M

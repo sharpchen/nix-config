@@ -60,7 +60,7 @@ return {
               vim.treesitter.language.get_lang(args.match)
             )
           then
-            vim.treesitter.start()
+            -- vim.treesitter.start()
           end
         end,
       })

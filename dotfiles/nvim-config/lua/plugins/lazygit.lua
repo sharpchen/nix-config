@@ -1,5 +1,8 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   'kdheepak/lazygit.nvim',
+  enabled = false,
   cmd = {
     'LazyGit',
     'LazyGitConfig',

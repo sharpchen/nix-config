@@ -12,6 +12,7 @@ return {
         { path = 'wezterm-types', mods = { 'wezterm' } },
         { path = 'luassert/library', words = { 'assert' } },
         { path = 'busted/library', words = { 'describe' } },
+        { path = 'snacks.nvim', words = { 'Snacks' } },
       },
     },
     enabled = true,

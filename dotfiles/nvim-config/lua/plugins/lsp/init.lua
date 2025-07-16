@@ -52,12 +52,12 @@ return {
       lsp.setup('fsautocomplete')
       lsp.setup('clangd')
       lsp.setup('neocmake')
-      -- lsp.setup('csharp_ls', {
-      --   on_attach = lsp.event.disable_semantic,
-      -- })
-      lsp.setup('roslyn_ls', {
+      lsp.setup('csharp_ls', {
         on_attach = lsp.event.disable_semantic,
       })
+      -- lsp.setup('roslyn_ls', {
+      --   on_attach = lsp.event.disable_semantic,
+      -- })
       lsp.setup('basedpyright', {
         settings = {
           pyright = {

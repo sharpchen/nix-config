@@ -25,7 +25,7 @@ vim.keymap.set(
 vim.keymap.set(
   'x',
   '<leader>gq',
-  [["zy:sil grep! <C-r>z | cw<Left><Left><Left><Left><Left>]],
+  [["zy:sil grep! '<C-r>z' | cw<Left><Left><Left><Left><Left>]],
   { desc = '[G]rep and pipe to [Q]f' }
 )
 
@@ -136,11 +136,15 @@ vim.keymap.set(
 
 vim.api.nvim_create_autocmd('FileType', {
   callback = function(args)
+    if vim.bo[args.buf].filetype == 'oil' then return end
+
     local bufname = vim.api.nvim_buf_get_name(args.buf)
-    local cond = bufname:find('node_modules') or bufname:find('.*glibc.*/include/')
+    local cond = bufname:find('node_modules')
+      or bufname:find('.*glibc.*/include/')
+      or bufname:find('%.log$')
     if cond then vim.bo[args.buf].modifiable = false end
 
-    if not vim.bo[args.buf].modifiable and vim.bo[args.buf].filetype ~= 'oil' then
+    if not vim.bo[args.buf].modifiable then
       vim.keymap.set(
         'n',
         [[d]],
@@ -156,3 +160,6 @@ vim.api.nvim_create_autocmd('FileType', {
     end
   end,
 })
+
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'goto next diagnostic' })
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'goto previous diagnostic' })
