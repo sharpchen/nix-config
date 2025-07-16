@@ -441,7 +441,7 @@ function ds {
 
     end {
         if (Get-Command du -CommandType Application -ErrorAction Ignore -OutVariable du) {
-            $length = (((& $du -sb $Dir) -split '\s+')[0]) -as [long]
+            $length = (((& $du[0] -sb $Dir) -split '\s+')[0]) -as [long]
         } else {
             $length = (Get-ChildItem -File -Force -Recurse -LiteralPath $Dir | Measure-Object Length -Sum).Sum
         }

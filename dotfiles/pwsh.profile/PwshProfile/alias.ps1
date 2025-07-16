@@ -4,11 +4,14 @@ Set-Alias tsp Test-Path
 Set-Alias ms Measure-Object
 Set-Alias msc Measure-Command
 Set-Alias for ForEach-Object
+Set-Alias map ForEach-Object
 Set-Alias sel Select-Object
 Set-Alias gpd Get-PSDrive
 Set-Alias gpp Get-PSProvider
 Set-Alias now Get-Date
 Set-Alias cond Where-Object
+Set-Alias expand Resolve-Path
+Set-Alias order Sort-Object
 
 if (Get-Command nvim -ErrorAction Ignore) {
     function vim {
@@ -54,8 +57,9 @@ function so {
 
 if (Get-Command 'home-manager' -ErrorAction Ignore) {
     function hms {
-        home-manager switch --flake ((Resolve-Path '~/.config/home-manager').Path + '#' + $env:USER)
+        home-manager switch --flake ((Resolve-Path '~/.config/home-manager').Path + '#' + $env:USER) @args --option substituters 'https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store'
     }
+    Set-Alias hm home-manager
 }
 
 if (Get-Command nix-store -ErrorAction Ignore) {
@@ -69,7 +73,7 @@ if (Get-Command nix-store -ErrorAction Ignore) {
 }
 
 if ((Get-Command scoop -ea Ignore) -and -not (Get-Command sioyek -ea Ignore -CommandType Application)) {
-    if ((scoop prefix sioyek) -and $LASTEXITCODE -eq 0) {
+    if (& { scoop prefix sioyek *> $null; 0 -eq $LASTEXITCODE }) {
         function sioyek {
             & (Join-Path (scoop prefix sioyek) 'sioyek.exe') @args
         }
