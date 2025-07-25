@@ -57,7 +57,9 @@ function so {
 
 if (Get-Command 'home-manager' -ErrorAction Ignore) {
     function hms {
-        home-manager switch --flake ((Resolve-Path '~/.config/home-manager').Path + '#' + $env:USER) @args --option substituters 'https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store'
+        home-manager switch --flake ((Resolve-Path '~/.config/home-manager').Path + '#' + $env:USER) `
+            --option substituters 'https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store' `
+            @args
     }
     Set-Alias hm home-manager
 }
@@ -80,6 +82,20 @@ if ((Get-Command scoop -ea Ignore) -and -not (Get-Command sioyek -ea Ignore -Com
     }
 }
 
+if (Get-Command sioyek -ErrorAction Ignore) {
+    function sio {
+        begin {
+            $null = Get-Command fzf -ErrorAction Stop
+        }
+        end {
+            $file = fzf
+            if ($file) {
+                sioyek $file @args
+            }
+        }
+    }
+}
+
 if (Get-Command yazi -ea Ignore) {
     function y {
         $tmp = [System.IO.Path]::GetTempFileName()
@@ -96,4 +112,16 @@ if (Get-Command tree-sitter -ErrorAction Ignore) {
     function ts {
         tree-sitter @args
     }
+}
+
+if (Test-Path alias:rd) {
+    Remove-Alias -Scope Global -Name rd
+}
+function rd {
+    param (
+        [Parameter(Position = 1, Mandatory)]
+        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
+        [string]$Path
+    )
+    Remove-Item -Recurse -Force -LiteralPath $Path
 }

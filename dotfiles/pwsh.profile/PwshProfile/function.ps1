@@ -26,24 +26,21 @@ function pinfo {
     [OutputType([void], ParameterSetName = 'Attribute')]
     param (
         [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
-        [ValidateScript({ Get-Command $_ -ErrorAction Ignore -CommandType Cmdlet })]
+        [ValidateScript({ Get-Command $_ -ErrorAction Ignore })]
         [string]$Command,
         [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Positional,
         [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Pipeline,
+        [Parameter(ParameterSetName = 'Attribute')]
+        [switch]$Alias,
 
         [Parameter(ParameterSetName = 'ParameterSet')]
         [switch]$ParameterSet
     )
-    if ($PSCmdlet.ParameterSetName -eq 'Attribute') {
 
-        if ($Positional) {
-            help $Command | Select-String 'Position\??\s*\d' -Context 3, 5
-        } elseif ($Pipeline) {
-            help $Command | Select-String 'Accept pipeline input\??\s*true.*$' -Context 5, 4
-        }
-    } else {
+    begin {
+        $info = @{}
         $CommonParams = @(
             'Verbose',
             'Debug',
@@ -60,23 +57,52 @@ function pinfo {
             'WhatIf',
             'Confirm'
         )
-        $cmd = Get-Command $Command
-        if ($cmd -is [System.Management.Automation.AliasInfo]) {
-            $cmd = Get-Command $cmd.Definition
+    }
+
+    end {
+        if (Get-Command $Command -ErrorAction SilentlyContinue -OutVariable cmd) {
+            if ($PSCmdlet.ParameterSetName -eq 'Attribute') {
+                $cmd.Parameters.GetEnumerator() | Where-Object { $_.Value.Name -notin $CommonParams } | ForEach-Object {
+                    $name, $attr = $_.Value.Name, $_.Value.Attributes
+                    $pipe = [System.Collections.Generic.List[string]]@()
+                    $paramInfo = [pscustomobject]@{}
+
+                    if ($Pipeline) {
+                        if ($attr.ValueFromPipeline) {
+                            $pipe.Add('Value')
+                        }
+                        if ($attr.ValueFromPipelineByPropertyName) {
+                            $pipe.Add('Property')
+                        }
+                        $paramInfo | Add-Member -MemberType NoteProperty -Name Pipeline -Value $pipe
+                    }
+                    # MinValue meaning Position attribute is not assigned
+                    if ($Positional -and $attr.Position -ne [int]::MinValue) {
+                        $paramInfo | Add-Member -MemberType NoteProperty -Name Position -Value $attr.Position
+                    }
+                    if ($Alias) {
+                        $paramInfo | Add-Member -MemberType NoteProperty -Name Alias -Value $attr.AliasNames
+                    }
+
+                    $info.Add($name, $paramInfo)
+                }
+                $format = @{
+                    Property = @(
+                        @{ Name = 'Parameter'; Expression = 'Key' }
+                        @{ Name = 'Pipeline'; Expression = { $_.Value.Pipeline -join ', ' } }
+                        @{ Name = 'Position'; Expression = { $_.Value.Position } }
+                        @{ Name = 'Alias'; Expression = { $_.Value.Alias -join ', ' } }
+                    )
+                }
+                $info.GetEnumerator() | Format-Table @format -AutoSize
+            } else {
+                # TODO: group by ParameterSetName
+                throw [System.NotImplementedException]::new()
+                $cmd.Parameters.GetEnumerator() | Group-Object { $_.Value.ParameterSets.Keys }
+            }
+        } else {
+            Write-Error $Error[-1]
         }
-        ($cmd.ParameterSets | ForEach-Object {
-            $out = [pscustomobject]@{
-                Name       = $_.Name
-                Parameters = $_.Parameters | Where-Object Name -NotIn $CommonParams
-            }
-            $joinParams = @{
-                Property     = 'Name'
-                Separator    = "$([System.Environment]::NewLine)`t"
-                OutputPrefix = "$($out.Name):$([System.Environment]::NewLine)`t"
-                OutputSuffix = "`n"
-            }
-            $out.Parameters | Join-String @joinParams
-        }) -join "`n"
     }
 }
 
@@ -210,7 +236,7 @@ function play {
     begin {
         $null = Get-Command mpv -ea Stop
 
-        if ([string]::IsNullOrEmpty($Path)) {
+        if (-not $Path) {
             $Path = $PWD.Path
         }
     }
@@ -373,7 +399,8 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
 
     function pathadd {
         param (
-            [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $Dir).Path) })]
+            [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_).Path) })]
+            [Parameter(Position = 0)]
             [string]$Dir
         )
 
@@ -421,7 +448,10 @@ function p {
         if (Test-Path '~/.config/home-manager/') {
             $folders += Get-Item '~/.config/home-manager/'
         }
-        Set-Location ($folders | ForEach-Object FullName | fzf)
+        $dest = $folders | ForEach-Object FullName | fzf
+        if ($dest) {
+            Set-Location $dest
+        }
     }
 }
 
@@ -431,7 +461,12 @@ function ds {
         [string]$Dir,
 
         [ValidateSet('kb', 'mb', 'gb')]
-        [string]$Unit
+        [string]$Unit,
+
+        [Parameter(ValueFromPipelineByPropertyName, ValueFromPipeline, ParameterSetName = 'Pipeline')]
+        [ValidateScript({ [IO.File]::Exists((Resolve-Path $_)) })]
+        [Alias('PSPath')]
+        [string]$Path
     )
     begin {
         if (-not $Dir) {
@@ -441,9 +476,17 @@ function ds {
 
     end {
         if (Get-Command du -CommandType Application -ErrorAction Ignore -OutVariable du) {
-            $length = (((& $du[0] -sb $Dir) -split '\s+')[0]) -as [long]
+            if ($PSCmdlet.ParameterSetName -eq 'Pipeline') {
+                $length = (((& $du[0] --bytes --total --summarize @input)[-1] -split '\s+')[0]) -as [long]
+            } else {
+                $length = (((& $du[0] --bytes --total --summarize $Dir)[-1] -split '\s+')[0]) -as [long]
+            }
         } else {
-            $length = (Get-ChildItem -File -Force -Recurse -LiteralPath $Dir | Measure-Object Length -Sum).Sum
+            if ($PSCmdlet.ParameterSetName -eq 'Pipeline') {
+                $length = ($input | ForEach-Object { Get-Item $_ -Force } | Measure-Object Length -Sum).Sum
+            } else {
+                $length = (Get-ChildItem -File -Force -Recurse -LiteralPath $Dir | Measure-Object Length -Sum).Sum
+            }
         }
 
         switch ($Unit) {
@@ -461,5 +504,59 @@ function ds {
             }
         }
     }
+}
 
+function any {
+    param (
+        [Parameter(ValueFromPipeline)]
+        [psobject]$InputObject,
+        [Parameter(Position = 1, Mandatory)]
+        [scriptblock]$Condition
+    )
+
+    process {
+        if ($Condition.InvokeWithContext($null, [psvariable]::new('_', $_))) {
+            $true
+            break
+        }
+    }
+
+    end {
+        $false
+    }
+}
+
+function all {
+    param (
+        [Parameter(ValueFromPipeline)]
+        [psobject]$InputObject,
+        [Parameter(Position = 1, Mandatory)]
+        [scriptblock]$Condition
+    )
+
+    process {
+        if (-not $Condition.InvokeWithContext($null, [psvariable]::new('_', $_))) {
+            $false
+            break
+        }
+    }
+
+    end {
+        $true
+    }
+}
+
+function fir {
+    param (
+        [Parameter(ValueFromPipeline)]
+        [psobject]$InputObject,
+        [Parameter(Position = 1, Mandatory)]
+        [scriptblock]$Condition
+    )
+    process {
+        if ($Condition.InvokeWithContext($null, [psvariable]::new('_', $_))) {
+            $_
+            break
+        }
+    }
 }
