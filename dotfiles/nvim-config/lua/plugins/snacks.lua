@@ -9,7 +9,6 @@ return {
       require('snacks').setup {
         picker = { enabled = true, ui_select = true },
         bigfile = { enabled = true, notify = true },
-        quickfile = { enabled = true },
       }
       vim.keymap.set('n', '<leader>fc', function()
         local config_path = IsWindows and vim.fn.stdpath('config')

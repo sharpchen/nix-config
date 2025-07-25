@@ -21,7 +21,7 @@ if vim.g.started_by_firenvim then
   vim.o.background = 'light'
 end
 
-local colo = { 'Eva-Dark', 'vscode', 'kanagawa' }
+local colo = { 'Eva-Dark', 'vscode', 'kanagawa', 'rose-pine' }
 if IsWindows then
   vim.cmd.colorscheme('vscode')
 else

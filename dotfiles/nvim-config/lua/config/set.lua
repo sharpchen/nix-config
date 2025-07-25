@@ -23,6 +23,7 @@ vim.opt.smartcase = true
 vim.opt.ignorecase = true
 
 vim.opt.termguicolors = true
+vim.opt.exrc = true
 
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = 'yes'
@@ -34,7 +35,6 @@ if vim.fn.executable('rg') == 1 then vim.opt.grepprg = 'rg --vimgrep --pcre2 ' e
 vim.opt.spell = true
 vim.opt.spelloptions = 'camel'
 
--- vim.opt.iskeyword:remove { '_' }
 vim.opt.showmode = false
 
 -- render listchars on colorcolumn loaded
@@ -149,9 +149,7 @@ vim.api.nvim_create_autocmd('VimResized', {
   command = 'wincmd =',
 })
 
-vim.opt.fillchars = {
-  diff = '╱',
-}
+vim.opt.fillchars:append('diff:╱')
 
 vim.opt.diffopt = {
   'internal',
