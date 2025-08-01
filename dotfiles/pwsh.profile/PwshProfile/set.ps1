@@ -8,6 +8,10 @@ if (Test-Path ~/.fzfrc) {
     $env:FZF_DEFAULT_OPTS_FILE = (Resolve-Path ~/.fzfrc).Path
 }
 
+if ($IsLinux -or $IsMacOS) {
+    $env:MANPAGER = 'nvim +Man!'
+}
+
 Set-PsFzfOption -TabExpansion
 
 $IsLegacy = $PSVersionTable.PSEdition -eq 'Desktop'

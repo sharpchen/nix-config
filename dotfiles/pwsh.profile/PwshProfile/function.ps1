@@ -387,13 +387,15 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
         }
         end {
             $tempScript = New-TemporaryFile
-            @"
-            select vdisk file=`"$Path`"
-            compact vdisk
+            try {
+                @"
+                select vdisk file=`"$Path`"
+                compact vdisk
 "@ > $tempScript
-
-            diskpart /s $tempScript.FullName
-            Remove-Item $tempScript
+                diskpart /s $tempScript.FullName
+            } finally {
+                Remove-Item $tempScript
+            }
         }
     }
 
