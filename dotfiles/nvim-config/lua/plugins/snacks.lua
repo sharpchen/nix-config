@@ -16,7 +16,12 @@ return {
         Snacks.picker.files { cwd = config_path }
       end, { desc = 'find nvim config file' })
 
-      vim.keymap.set('n', '<leader>fg', Snacks.picker.grep, { desc = 'grep from files' })
+      vim.keymap.set(
+        'n',
+        '<leader>fg',
+        function() Snacks.picker.grep { hidden = true } end,
+        { desc = 'grep from files' }
+      )
       vim.keymap.set(
         'n',
         '<leader>ff',

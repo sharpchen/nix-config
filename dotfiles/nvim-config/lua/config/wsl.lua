@@ -2,56 +2,50 @@ local function set_windows_clipboard()
   local bin = vim.fn.expand('~/.local/bin')
   if vim.fn.isdirectory(bin) == 0 then vim.fn.mkdir(bin, 'p') end
   local win32yank_path = vim.fn.expand('~/.local/bin/win32yank.exe')
+  local script_url =
+    'https://raw.githubusercontent.com/sharpchen/clip-nvim/main/install.sh'
   if vim.uv.fs_stat(win32yank_path) == nil then
-    local install_script_path = '/tmp/install_win32yank.sh'
-    local Task = require('plenary.job')
-    local download_script = Task:new {
-      command = 'wget',
-      args = {
-        '-nv',
-        '-O',
-        install_script_path,
-        'https://raw.githubusercontent.com/sharpchen/clip-nvim/main/install.sh',
-      },
-      on_stderr = function(_, data)
-        vim.notify(vim.fn.escape(data, '"') .. '"', vim.log.levels.TRACE)
-      end,
-      on_start = function() vim.notify('Downloading script...', vim.log.levels.INFO) end,
-      on_exit = function() vim.notify('script downloaded.', vim.log.levels.INFO) end,
-    }
-    local chmod_script = Task:new {
-      command = 'chmod',
-      args = { '+x', install_script_path },
-      on_stderr = function(_, val)
-        vim.notify(vim.fn.escape(val, '"'), vim.log.levels.ERROR)
-      end,
-      on_stdout = function(_, val)
-        vim.notify(vim.fn.escape(val, '"'), vim.log.levels.INFO)
-      end,
-    }
-    local download_winyank32 = Task:new {
-      command = 'sh',
-      args = { install_script_path },
-      on_start = function() vim.notify('Installing win32yank...', vim.log.levels.INFO) end,
-      on_stderr = function(_, val)
-        vim.notify(vim.fn.escape(val, '"'), vim.log.levels.ERROR)
-      end,
-      on_exit = function() vim.notify('win32yank installed.', vim.log.levels.INFO) end,
-    }
-    local chmod_exe = Task:new {
-      command = 'chmod',
-      args = { '+x', win32yank_path },
-      on_stderr = function(_, val)
-        vim.notify(vim.fn.escape(val, '"'), vim.log.levels.ERROR)
-      end,
-      on_stdout = function(_, val)
-        vim.notify(vim.fn.escape(val, '"'), vim.log.levels.INFO)
-      end,
-    }
-    download_winyank32:and_then(chmod_exe)
-    chmod_script:and_then(download_winyank32)
-    download_script:and_then(chmod_script)
-    download_script:start()
+    local script_path = os.tmpname()
+    vim.notify('downloading win32yank..', vim.log.levels.INFO, { title = 'WSL' })
+    vim.system({
+      'curl',
+      '-s',
+      '-o',
+      script_path,
+      script_url,
+    }, { timeout = 10 * 1000 }, function(out)
+      if out.code == 0 then
+        vim.system({ 'chmod', '+x', script_path }, {}, function(out)
+          if out.code == 0 then
+            vim.system({ 'sh', script_path }, { timeout = 30 * 1000 }, function(out)
+              if out.code == 0 then
+                vim.system({ 'chmod', '+x', win32yank_path }, {}, function(out)
+                  if out.code == 0 then
+                    vim.notify(
+                      'win32yank downloaded',
+                      vim.log.levels.INFO,
+                      { title = 'WSL' }
+                    )
+                  end
+                end)
+              else
+                vim.notify(
+                  string.format('downloading win32yank by script %s failed', script_path),
+                  vim.log.levels.ERROR,
+                  { title = 'WSL' }
+                )
+              end
+            end)
+          end
+        end)
+      else
+        vim.notify(
+          string.format('downloading %s failed', script_url),
+          vim.log.levels.ERROR,
+          { title = 'WSL' }
+        )
+      end
+    end)
   end
   vim.g.clipboard = {
     name = 'win32yank-wsl',

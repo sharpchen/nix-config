@@ -163,3 +163,9 @@ vim.api.nvim_create_autocmd('FileType', {
 
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'goto next diagnostic' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'goto previous diagnostic' })
+vim.keymap.set(
+  'n',
+  [[<leader>cd]],
+  [[<cmd>tchdir %:h<CR>]],
+  { desc = 'change dir to current parent' }
+)

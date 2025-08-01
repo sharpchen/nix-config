@@ -39,3 +39,6 @@ Ctx
 runspaces
 runspace
 accessor
+hashtable
+accessor
+accessor

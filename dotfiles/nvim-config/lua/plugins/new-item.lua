@@ -22,10 +22,8 @@ return {
         },
       },
     }
-    groups.lua = {
-      cond = function()
-        return vim.fs.root(vim.fn.expand('%:p:h'), { 'init.lua', '.git' }) ~= nil
-      end,
+    groups.config = {
+      cond = true,
       items = {
         file {
           label = 'stylua',
