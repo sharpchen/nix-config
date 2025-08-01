@@ -1,0 +1,30 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "command": "workbench.action.nextEditor",
+        "key": "alt+."
+    },
+    {
+        "command": "workbench.action.previousEditor",
+        "key": "alt+,"
+    },
+    {
+        "command": "workbench.action.closeActiveEditor",
+        "key": "alt-c"
+    },
+    {
+        "command": "workbench.action.closeAllEditors",
+        "key": "alt-a"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "selectNextSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "selectPrevSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+    },
+]
+

@@ -102,3 +102,8 @@ mklink ~/.wslconfig ./dotfiles/.wslconfig
 mklink (Join-Path (scoop prefix mpv) 'portable_config/mpv.conf') ./dotfiles/mpv.conf
 mklink (Join-Path (scoop prefix mpv) 'portable_config/input.conf') ./dotfiles/mpv.input.conf
 mklink ~/.fzfrc ./dotfiles/.fzfrc
+
+if (& { scoop prefix vscodium *> $null; 0 -eq $LASTEXITCODE }) {
+    mklink (Join-Path (scoop prefix vscodium) 'data/user-data/User/keybindings.json') ./dotfiles/vscode.keybinds.json
+    mklink (Join-Path (scoop prefix vscodium) 'data/user-data/User/settings.json') ./dotfiles/vscode.settings.json
+}
