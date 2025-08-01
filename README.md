@@ -1,42 +1,54 @@
-# nix-config
+## Nix Config
 
-## Install on New Unix Machine
+## Prerequisites
 
-- [install nix](https://nixos.org/download/)
+### Non-NixOS Prerequisites
 
-- enable flakes
+1. [install nix](https://nixos.org/download/)
 
-multi-user
+2. enable flakes
 
 ```sh
 sudo sh -c 'echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf'
 ```
 
-- add home-manager channel
+### Common Prerequisites
+
+1. add home-manager channel
 
 ```sh
-nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager && nix-channel --update
+nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
 ```
 
-- install home-manager
+2. install home-manager as standalone
 
 ```sh
 nix-shell '<home-manager>' -A install
 ```
 
-- clone repo
+3. clone repo
 
 ```sh
-mkdir -p ~/.config/home-manager/ && \
-rm -rf ~/.config/home-manager/* && \
-curl -L https://github.com/sharpchen/nix-config/archive/refs/heads/main.tar.gz \
-| tar -xz -C ~/.config/home-manager/ --strip-components=1
+nix-shell -p git
+mkdir -p ~/.config/home-manager/ && cd ~/.config/home-manager/ && git clone https://github.com/sharpchen/nix-config.git .
 ```
 
-- restore
+## Installation
+
+
+### NixOS-WSL
 
 ```sh
-home-manager switch --flake ~/.config/home-manager#$USER
+sudo nixos-rebuild switch --flake ~/.config/home-manager#nixos-wsl
+```
+
+### Non-NixOS
+
+
+```sh
+home-manager switch --flake ~/.config/home-manager#sharpchen
 ```
 
 ## Restore on Windows

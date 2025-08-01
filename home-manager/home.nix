@@ -7,7 +7,7 @@
 }:
 {
   imports = [
-    ./packages/default.nix
+    ../packages/default.nix
   ];
 
   options = {
