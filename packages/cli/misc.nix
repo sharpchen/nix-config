@@ -41,6 +41,8 @@
     nh
     tree
     tlrc
+    sqlite
+    ollama
   ];
   home.file.".dict/.dict.conf".text = ''
     server localhost
