@@ -1,9 +1,17 @@
 local wezterm = require('wezterm') --[[@as Wezterm]]
 
+---@generic T
+---@param arr T[]
+---@return T
+local function random(arr)
+  math.randomseed(os.time())
+  return arr[math.random(#arr)]
+end
+
 local config = wezterm.config_builder()
 
 config.front_end = 'OpenGL'
-config.color_scheme = 'kanagawabones'
+config.color_scheme = random { 'kanagawabones', 'rose-pine-moon' }
 
 config.default_prog = { 'pwsh', '--nologo' }
 
@@ -22,15 +30,13 @@ config.cursor_blink_ease_out = 'Constant'
 
 config.hide_tab_bar_if_only_one_tab = true
 
-local best_fonts = {
+local font = random {
   'JetBrains Mono NL',
   'SF Mono',
   'Cascadia Mono',
   'IBM Plex Mono',
   'Roboto Mono',
 }
-math.randomseed(os.time())
-local font = best_fonts[math.random(#best_fonts)]
 
 config.font_size = 12
 config.font = wezterm.font_with_fallback {
