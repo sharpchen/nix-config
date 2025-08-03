@@ -1,16 +1,12 @@
-#
-# ~/.bashrc
-#
-
-# If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-PS1='[\u@\h \W]\$ '
+export PS1="\n\[\033[1;32m\][\u@\h:\w]\$\[\033[0m\] "
 
 alias ls='ls --color=auto -h'
 alias ll='ls -la'
 alias grep='grep --color=auto -i'
-alias mkdir='mkdir -pv'
+alias md='mkdir -p'
+alias rd='rm -rf'
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
@@ -45,8 +41,50 @@ if type nix-store &>/dev/null; then
         _fzf_complete_nsp() {
             _fzf_complete -- "$@" < <(compgen -c | sort -u)
         }
+        _fzf_complete_type() {
+            _fzf_complete -- "$@" < <(compgen -c | sort -u)
+        }
+        _fzf_complete_which() {
+            _fzf_complete -- "$@" < <(compgen -c | sort -u)
+        }
 
         complete -F _fzf_complete_nsp nsp
+        complete -F _fzf_complete_type type
+        complete -F _fzf_complete_which which
+    fi
+
+    if type blesh-share &>/dev/null; then
+        # shellcheck source=/dev/null
+        source -- "$(blesh-share)/ble.sh" --attach=none
+        ble-import -d "$(blesh-share)/contrib/integration/fzf-completion.bash"
+        ble-import -d "$(blesh-share)/contrib/integration/fzf-key-bindings.bash"
+
+        function sharpchen/vim-load-hook {
+            bleopt keymap_vi_mode_show=
+        }
+        blehook/eval-after-load keymap_vi sharpchen/vim-load-hook
+
+        ble-face -s syntax_command fg=blue
+        ble-face -s syntax_function_name fg=blue
+        ble-face -s syntax_command fg=blue
+        ble-face -s command_builtin_dot fg=blue
+        ble-face -s command_builtin fg=blue
+        ble-face -s command_alias fg=blue
+        ble-face -s command_function fg=blue
+        ble-face -s command_file fg=blue
+        ble-face -s command_keyword fg=magenta
+        ble-face -s filename_executable fg=blue
+        ble-face -s syntax_history_expansion fg=gray,bg=
+        ble-face -s syntax_param_expansion fg=gray,bg=
+        ble-face -s syntax_error fg=red
+        ble-face -s argument_option fg=magenta
+        ble-face -s auto_complete fg=gray
+        bleopt highlight_filename=
+        bleopt highlight_variable=
+        bleopt prompt_eol_mark=''
+        bleopt prompt_eol_mark='↵'
+
+        [[ ! ${BLE_VERSION-} ]] || ble-attach
     fi
 fi
 
@@ -90,10 +128,6 @@ if type yazi &>/dev/null; then
         fi
         rm -f -- "$tmp"
     }
-fi
-
-if type starship &>/dev/null; then
-    eval "$(starship init bash)"
 fi
 
 if type zoxide &>/dev/null; then

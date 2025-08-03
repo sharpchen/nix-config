@@ -1,9 +1,9 @@
-{ config, ... }:
+{ pkgs, config, ... }:
 {
   programs.bash = {
     enable = true;
     sessionVariables = {
-      EDITOR = "vim"; # --clean -c \"source ~/.vimrc\"'";
+      EDITOR = "nvim";
       XDG_RUNTIME_DIR = "$HOME/.cache/";
     };
     # prepend content for auto-gen rc by hm
@@ -11,6 +11,10 @@
     # append content fot auto-gen profile by hm
     profileExtra = builtins.readFile ../../dotfiles/bash.profile.sh;
   };
+
+  home.packages = with pkgs; [
+    blesh
+  ];
 
   home.file.".inputrc" = {
     source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.inputrc";
