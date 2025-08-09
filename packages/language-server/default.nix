@@ -21,6 +21,6 @@
     ]
     ++ [
       (callPackage ./msbuild_ls/default.nix { inherit pkgs; })
-      # (callPackage ./avalonia_ls/default.nix { inherit pkgs; })
+      (callPackage ./avalonia_ls/default.nix { inherit pkgs; })
     ];
 }

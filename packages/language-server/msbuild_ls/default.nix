@@ -1,11 +1,8 @@
 {
-  buildDotnetModule ? null,
-  fetchFromGitHub ? null,
-  # dotnetCorePackages,
+  nix-update-script,
   pkgs,
 }:
 let
-  # pkgs = import <nixpkgs> { };
   owner = "tintoy";
   repo = "msbuild-project-tools-server";
   dotnet-sdk = pkgs.dotnetCorePackages.sdk_8_0_1xx;
@@ -23,6 +20,7 @@ pkgs.buildDotnetModule rec {
   projectFile = "src/LanguageServer/LanguageServer.csproj";
   inherit dotnet-sdk;
   useDotnetFromEnv = true;
+  passthru.updateScript = nix-update-script { };
 
   meta = with pkgs.lib; {
     description = "";

@@ -1,67 +1,40 @@
 {
-  buildDotnetModule ? null,
-  fetchFromGitHub ? null,
-  runtimeShell,
-  # dotnetCorePackages,
-  pkgs,
+  pkgs ? import <nixpkgs> { },
 }:
 let
-  # pkgs = import <nixpkgs> { };
   owner = "Eugenenoble2005";
   repo = "Avalonia-ls";
   dotnet-sdk = pkgs.dotnetCorePackages.sdk_9_0;
 in
-pkgs.stdenv.mkDerivation {
-  pname = repo;
+pkgs.buildDotnetModule {
+  pname = "avalonia-ls";
   version = "0.0.1";
   src = pkgs.fetchFromGitHub {
     inherit owner repo;
-    rev = "5c64ff84f92d822852eb3ecef1cb5eea8c2f152c";
-    hash = "sha256-bORSuvNYXtEp/f1ZI+gXBM66z0LFhFOZh+j9I75PrKQ=";
+    rev = "c2e21ee62e139c1d4f81589d64f45b55c8068dc8";
+    hash = "sha256-3ZmZy6/6fVbeJrZham5Nwx3mAk2y0IGLst1tYlmxdys=";
+    fetchSubmodules = true;
   };
 
-  buildInputs = [
-    pkgs.just
-    dotnet-sdk
+  projectFile = [
+    "src/AvaloniaLSP/AvaloniaLanguageServer/AvaloniaLanguageServer.csproj"
+    "src/SolutionParser/SolutionParser.csproj"
+    "src/AvaloniaPreview/AvaloniaPreview.csproj"
   ];
 
-  buildPhase = ''
-    mkdir -p bin/lsp
-    dotnet build src/AvaloniaLSP/AvaloniaLanguageServer --output bin/lsp
+  dotnetInstallFlags = [ "-p:TargetFramework=net9.0" ];
+  inherit dotnet-sdk;
 
-    mkdir -p bin/solution-parser
-    dotnet build src/SolutionParser/SolutionParser.csproj --output bin/solution-parser
-
-    mkdir -p bin/xaml-styler
-    dotnet build src/XamlStyler/src/XamlStyler.Console/XamlStyler.Console.csproj --output bin/xaml-styler
-
-    mkdir -p bin/avalonia-preview
-    dotnet build src/AvaloniaPreview --output bin/avalonia-preview
-  '';
-
-  installPhase = ''
-    just build
-    mkdir -p $out/avalonia-ls
-    cp bin/* $out/avalonia-ls -r
-    echo -e "#!${runtimeShell}\n exec $out/bin/avalonia-ls/xaml-styler/xstyler \"\$@\"" > $out/bin/xaml-styler
-    chmod +x $out/bin/xaml-styler
-
-    echo -e "#!${runtimeShell}\n exec $out/bin/avalonia-ls/lsp/AvaloniaLanguageServer \"\$@\"" > $out/bin/avalonia-ls
-    chmod +x $out/bin/avalonia-ls
-
-    echo -e "#!${runtimeShell}\n exec $out/bin/avalonia-ls/solution-parser/SolutionParser \"\$@\"" > $out/bin/avalonia-solution-parser
-    chmod +x $out/bin/avalonia-solution-parser
-
-    echo -e "#/!bin/bash\n exec $out/bin/avalonia-ls/avalonia-preview/AvaloniaPreview \"\$@\"" > $out/bin/avalonia-preview
-    chmod +x $out/bin/avalonia-preview
-  '';
+  nugetDeps = ./deps.json;
+  useDotnetFromEnv = true;
+  passthru.updateScript = pkgs.nix-update-script { };
 
   meta = with pkgs.lib; {
     description = "";
     homepage = "";
     license = licenses.mit;
     maintainers = with maintainers; [ sharpchen ];
-    platforms = platforms.unix;
+    platforms = platforms.linux;
     mainProgram = "";
   };
 }

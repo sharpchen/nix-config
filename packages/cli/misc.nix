@@ -43,6 +43,9 @@
     tlrc
     sqlite
     ollama
+    file
+    nurl
+    nix-init
   ];
   home.file.".dict/.dict.conf".text = ''
     server localhost
