@@ -54,7 +54,7 @@ end
 ---@param opt { filename: string, ext: string }
 function M.file.icon(opt)
   local ext = vim.fn.fnamemodify(opt.filename, ':e')
-  local ft = vim.filetype.match { filename = opt.filename }
+  local ft = vim.filetype.match { filename = opt.filename } or vim.bo.filetype
   local icon, icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(ft)
   if not icon then
     icon, icon_color = require('nvim-web-devicons').get_icon_color_by_filetype(ext)

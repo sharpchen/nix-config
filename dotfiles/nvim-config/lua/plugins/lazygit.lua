@@ -25,8 +25,8 @@ return {
       callback = function(args)
         if vim.api.nvim_buf_get_name(args.buf):find('lazygit') then
           vim.keymap.set('t', '<Esc>', function()
-            local chan = vim.b[args.buf].terminal_job_id
-            if chan then vim.api.nvim_chan_send(chan, vim.keycode('<Esc>')) end
+            local chan = vim.bo[args.buf].channel
+            if chan ~= 0 then vim.api.nvim_chan_send(chan, vim.keycode('<Esc>')) end
           end, { buffer = args.buf })
         end
       end,

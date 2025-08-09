@@ -128,16 +128,6 @@ return {
             )
           end
         )
-        vim.keymap.set(
-          { 'x', 'o' },
-          'as',
-          function()
-            require('nvim-treesitter-textobjects.select').select_textobject(
-              '@local.scope',
-              'locals'
-            )
-          end
-        )
       end
       do -- swap
         vim.keymap.set(

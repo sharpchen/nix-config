@@ -44,5 +44,11 @@ return {
       function() require('hover').hover_switch('next') end,
       { desc = 'hover.nvim (next source)' }
     )
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = 'help',
+      callback = function(args)
+        vim.keymap.set('n', 'K', '<cmd>normal! K<CR>', { buffer = args.buf })
+      end,
+    })
   end,
 }

@@ -14,6 +14,16 @@ function string.to_array(str)
   return ret
 end
 
+---@param s string
+---@param to_trim string?
+---@return string
+function string.trim(s, to_trim)
+  if not to_trim then return vim.trim(s) end
+  local ret = s:gsub('^' .. to_trim:verbatim(), string.empty)
+    :gsub(to_trim:verbatim() .. '$', string.empty)
+  return ret
+end
+
 --- find first position of target in *literal*
 ---@param str string
 ---@param target string

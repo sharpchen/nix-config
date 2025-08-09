@@ -139,9 +139,11 @@ vim.api.nvim_create_autocmd('FileType', {
     if vim.bo[args.buf].filetype == 'oil' then return end
 
     local bufname = vim.api.nvim_buf_get_name(args.buf)
-    local cond = bufname:find('node_modules')
-      or bufname:find('.*glibc.*/include/')
-      or bufname:find('%.log$')
+    local cond = bufname:match('node_modules')
+      or bufname:match('.*glibc.*/include/')
+      or bufname:match('%.log$')
+      or bufname:match('^/nix/store/')
+
     if cond then vim.bo[args.buf].modifiable = false end
 
     if not vim.bo[args.buf].modifiable then

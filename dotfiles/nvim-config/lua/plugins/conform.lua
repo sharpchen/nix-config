@@ -3,6 +3,12 @@ return {
   event = 'BufReadPost',
   config = function()
     require('conform').setup {
+      formatters = {
+        xstyler = {
+          command = 'xstyler',
+          args = { '--write-to-stdout', '--take-pipe', '--file', '$FILENAME' },
+        },
+      },
       formatters_by_ft = {
         lua = { 'stylua' },
         javascript = { 'prettier' },
@@ -12,6 +18,8 @@ return {
         sql = { 'sqlfluff' },
         plsql = { 'sqlfluff' },
         nix = { 'nixfmt' },
+        xaml = { 'xstyler' },
+        axaml = { 'xstyler' },
         python = {
           -- To fix auto-fixable lint errors.
           'ruff_fix',

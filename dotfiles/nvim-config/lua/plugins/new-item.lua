@@ -22,18 +22,15 @@ return {
         },
       },
     }
-    groups.config = {
-      cond = true,
-      items = {
-        file {
-          label = 'stylua',
-          link = vim.fn.expand('~/.config/.stylua.toml'),
-          filetype = 'toml',
-          suffix = '.toml',
-          default_name = '.stylua',
-          nameable = false,
-          cwd = function() return vim.fn.getcwd() end,
-        },
+    groups.config:append {
+      file {
+        label = 'stylua',
+        link = vim.fn.expand('~/.config/.stylua.toml'),
+        filetype = 'toml',
+        suffix = '.toml',
+        default_name = '.stylua',
+        nameable = false,
+        cwd = function() return vim.fn.getcwd() end,
       },
     }
     groups.nvim = {

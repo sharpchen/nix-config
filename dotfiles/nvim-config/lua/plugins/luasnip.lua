@@ -95,6 +95,15 @@ return {
       [[<Badge type="{info}" text="{text}" />]],
       { delimiters = '{}' }
     )
+    add(
+      'markdown',
+      'code-group',
+      [[
+    ::: code-group
+
+    :::
+    ]]
+    )
     add('ps1', 'cmdp', '$null = Get-Command <cmd> -ErrorAction Stop')
     add(
       'ps1',

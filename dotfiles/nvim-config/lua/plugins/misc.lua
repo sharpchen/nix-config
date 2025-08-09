@@ -52,7 +52,9 @@ return {
       require('nvim-web-devicons').set_icon_by_filetype {
         msbuild = 'sln',
         axaml = 'xaml',
-        sh = 'bash',
+        typescript = 'ts',
+        javascript = 'js',
+        python = 'py',
       }
     end,
   },

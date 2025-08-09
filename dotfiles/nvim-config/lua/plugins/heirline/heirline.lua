@@ -117,14 +117,14 @@ local FileInfo = {
     hl = { fg = 'command', bg = 'statusline' },
   },
   { -- filename
-    provider = function(self)
-      local fullname = vim.api.nvim_buf_get_name(0)
-      local shortname = vim.fn.fnamemodify(fullname, ':t')
+    provider = function(_)
+      local shortname = vim.fs.normalize(vim.fn.expand('%:t'))
       if shortname == '' then return '[No Name]' end
-      if not conditions.width_percent_below(#shortname, 0.25) then
-        shortname = vim.fn.fnamemodify(fullname, ':t')
-      end
-      return string.format('%s [%s]', shortname, myutils.file.size_str(0))
+      local name = vim.fs
+        .normalize(vim.fn.expand('%:p'))
+        :gsub('^' .. (vim.fn.getcwd()):verbatim(), '')
+      if not conditions.width_percent_below(#name, 0.25) then name = shortname end
+      return string.format('%s [%s]', name:gsub('^/', ''), myutils.file.size_str(0))
     end,
     update = { 'BufEnter', 'BufWritePost' },
   },

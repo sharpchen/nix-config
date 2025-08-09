@@ -123,6 +123,25 @@ return {
         }
       end, { desc = 'find projects' })
       vim.keymap.set('n', [[<leader>lg]], function() Snacks.lazygit() end)
+
+      vim.api.nvim_create_user_command(
+        'Term',
+        function(args)
+          Snacks.terminal.open(nil, { cwd = vim.fn.expand('%:p:h'), auto_close = false })
+        end,
+        { desc = 'open parent of current buffer in term' }
+      )
+      vim.keymap.set(
+        'n',
+        [[<M-`>]],
+        function()
+          Snacks.terminal.open(
+            nil,
+            { cwd = vim.fn.expand('%:p:h'):gsub('^oil:', ''), auto_close = false }
+          )
+        end,
+        { desc = 'desc' }
+      )
     end,
   },
   {

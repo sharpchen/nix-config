@@ -21,6 +21,7 @@ local function setup()
     ['@keyword.operator'] = function(_, p) return { fg = p.declarative } end,
     ['@keyword.coroutine'] = function(_, p) return { fg = p.declarative } end,
     SymbolUsageText = function(_, p) return { fg = p.comment, italic = false } end,
+    SnacksPickerMatch = function(_, p) return { fg = p.property, bold = true } end,
   }
   require('Eva-Theme').setup {
     override_palette = {

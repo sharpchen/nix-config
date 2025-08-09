@@ -91,6 +91,19 @@ return {
           lsp.event.disable_formatter(client)
         end,
       })
+      lsp.setup('avalonia_ls', {
+        name = 'avalonia_ls',
+        cmd = { 'AvaloniaLanguageServer' },
+        filetypes = { 'axaml' },
+        root_markers = { 'App.axaml' },
+        on_init = function(client)
+          vim.system(
+            { 'SolutionParser', client.root_dir },
+            {},
+            function() vim.system({ 'dotnet', 'build' }, { cwd = client.root_dir }) end
+          )
+        end,
+      })
     end,
   },
   { 'yioneko/nvim-vtsls', ft = { 'typescript', 'javascript' } },

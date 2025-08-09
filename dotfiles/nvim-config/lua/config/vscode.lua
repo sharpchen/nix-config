@@ -23,6 +23,7 @@ local plugins_for_vscode = vim.list_extend(
       'Comment',
       'shared',
       'treesitter',
+      'match-up',
     })
     :map(function(x) return { import = 'plugins.' .. x } end)
     :totable(),

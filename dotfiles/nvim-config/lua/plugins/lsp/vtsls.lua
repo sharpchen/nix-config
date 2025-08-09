@@ -17,9 +17,7 @@ local function setup()
     on_attach = function(client, bufnr)
       if vim.bo.filetype == 'markdown' then
         lsp.event.disable_formatter(client)
-        if not vim.fs.root(vim.fn.getcwd(), { 'package.json' }) then
-          vim.schedule(function() vim.lsp.stop_client(client.id) end)
-        end
+        vim.schedule(function() vim.lsp.stop_client(client.id) end)
       else
         lsp.event.attach_navic(client, bufnr)
       end

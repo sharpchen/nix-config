@@ -66,8 +66,8 @@ nnoremap <leader>; mzA;<Esc>`z
 nnoremap <leader>, mzA,<Esc>`z
 nnoremap gi gi<Esc>zzi
 
-nnoremap <silent> <Tab> :keepjumps normal! %<CR>
-xnoremap <expr> <Tab> mode()==#'V' ? '$%' : '%'
+nnoremap <silent> <Tab> :keepjumps normal %<CR>
+xmap <expr> <Tab> mode()==#'V' ? '$%' : '%'
 xnoremap / <C-\><C-n>`</\%V
 xnoremap ? <C-\><C-n>`>?\%V
 " yank uri under cursor
@@ -77,6 +77,7 @@ nnoremap <silent> <leader>yf :let @+ = expand('%:p')<CR>
 nnoremap g[ <C-o>
 nnoremap g] <C-i>
 nnoremap x "_x
+nnoremap X x
 nnoremap <silent> <M-[> :tabp<CR>
 nnoremap <silent> <M-]> :tabn<CR>
 nnoremap <M-u> viwU
@@ -87,3 +88,6 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 nnoremap <C-c> <C-w>q
+
+nnoremap <silent> <leader>yr :let @+ = expand("%:~:.")<CR>
+nnoremap <silent> yr :let @0 = expand("%:~:.")<CR>
