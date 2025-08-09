@@ -384,6 +384,7 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
                 [Console]::OutputEncoding = $origEncoding
                 wsl --shutdown
             }
+            $Path = Resolve-Path $Path
         }
         end {
             $tempScript = New-TemporaryFile
@@ -446,7 +447,7 @@ function p {
         $null = Get-Command fzf -ea Stop
     }
     end {
-        $folders = Get-ChildItem '~/projects' -Directory
+        $folders = @(Get-ChildItem '~/projects' -Directory)
         if (Test-Path '~/.config/home-manager/') {
             $folders += Get-Item '~/.config/home-manager/'
         }

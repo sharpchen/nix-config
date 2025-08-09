@@ -1,5 +1,6 @@
 Set-Alias lg lazygit
 Set-Alias dn dotnet
+Set-Alias v nvim
 Set-Alias tsp Test-Path
 Set-Alias ms Measure-Object
 Set-Alias msc Measure-Command
@@ -12,6 +13,7 @@ Set-Alias now Get-Date
 Set-Alias cond Where-Object
 Set-Alias expand Resolve-Path
 Set-Alias order Sort-Object
+Set-Alias ll Get-ChildItem
 
 if (Get-Command nvim -ErrorAction Ignore) {
     function vim {
@@ -22,10 +24,6 @@ if (Get-Command nvim -ErrorAction Ignore) {
         nvim -u '~/.vimrc' @args -c @'
         set wrap
 '@
-    }
-
-    function v {
-        nvim @args
     }
 
     function vf {
@@ -109,13 +107,11 @@ if (Get-Command yazi -ea Ignore) {
 }
 
 if (Get-Command tree-sitter -ErrorAction Ignore) {
-    function ts {
-        tree-sitter @args
-    }
+    Set-Alias ts tree-sitter
 }
 
 if (Test-Path alias:rd) {
-    Remove-Alias -Scope Global -Name rd
+    Remove-Item alias:rd
 }
 function rd {
     param (

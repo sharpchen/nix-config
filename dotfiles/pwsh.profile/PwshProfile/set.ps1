@@ -55,15 +55,18 @@ if ((Get-Module -Name PSReadLine).Version -lt '2.0.0') {
 }
 
 function prompt {
+    $left = "`e[1;32m"
+    $right = "`e[0m"
     if ($IsLinux -or $IsMacOS) {
-        return "PS $($pwd.ProviderPath -replace '/home/[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1)) "
-    }
-    $pattern = 'C:\\Users\\[a-zA-Z0-9]+'
-    $path = if ($pwd.ProviderPath -match $pattern) {
-        "~$($pwd.ProviderPath -replace $pattern, [string]::Empty)"
+        $ps1 = "PS $($pwd.ProviderPath -replace '/home/[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1)) "
     } else {
-        $pwd.ProviderPath
+        $pattern = 'C:\\Users\\[a-zA-Z0-9]+'
+        $path = if ($pwd.ProviderPath -match $pattern) {
+            "~$($pwd.ProviderPath -replace $pattern, [string]::Empty)"
+        } else {
+            $pwd.ProviderPath
+        }
+        $ps1 = "PS $path$('>' * ($nestedPromptLevel + 1)) "
     }
-
-    return "PS $path$('>' * ($nestedPromptLevel + 1)) "
+    return $left + $ps1 + $right
 }
