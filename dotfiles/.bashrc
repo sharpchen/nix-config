@@ -67,6 +67,7 @@ if type nix-store &>/dev/null; then
         ble-face -s syntax_command fg=blue
         ble-face -s syntax_function_name fg=blue
         ble-face -s syntax_command fg=blue
+        ble-face -s syntax_varname fg=green,bold
         ble-face -s command_builtin_dot fg=blue
         ble-face -s command_builtin fg=blue
         ble-face -s command_alias fg=blue
@@ -75,7 +76,7 @@ if type nix-store &>/dev/null; then
         ble-face -s command_keyword fg=magenta
         ble-face -s filename_executable fg=blue
         ble-face -s syntax_history_expansion fg=gray,bg=
-        ble-face -s syntax_param_expansion fg=gray,bg=
+        ble-face -s syntax_param_expansion fg=yellow,bold
         ble-face -s syntax_error fg=red
         ble-face -s argument_option fg=magenta
         ble-face -s auto_complete fg=gray
