@@ -68,5 +68,9 @@ function prompt {
         }
         $ps1 = "PS $path$('>' * ($nestedPromptLevel + 1)) "
     }
-    return $left + $ps1 + $right
+    if ($PSVersionTable.PSEdition -eq 'Core') {
+        return $left + $ps1 + $right
+    } else {
+        return $ps1
+    }
 }

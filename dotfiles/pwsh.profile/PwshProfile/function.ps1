@@ -413,6 +413,25 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
             [System.Environment]::SetEnvironmentVariable('Path', ($path + [IO.Path]::PathSeparator + $Dir), [System.EnvironmentVariableTarget]::User)
         }
     }
+
+    function trash {
+        param (
+            [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+            [Alias('FullName')]
+            [string]$Path
+        )
+        begin {
+            Add-Type -AssemblyName Microsoft.VisualBasic
+        }
+        process {
+            $abs = Resolve-Path $Path
+            if ([System.IO.File]::Exists($abs)) {
+                [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
+            } elseif  ([System.IO.Directory]::Exists($_)) {
+                [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
+            }
+        }
+    }
 }
 
 function pmclean {
