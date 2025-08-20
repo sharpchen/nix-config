@@ -156,6 +156,7 @@ local case_lexer = snake_lexer
 ---@param to 'pascal' | 'camel' | 'snake'
 ---@return string
 M.case.convert = function(word, to)
+  assert(type(word) == 'string')
   local tokens = case_lexer:handle(word)
 
   if to == 'pascal' then

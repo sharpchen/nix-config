@@ -7,7 +7,7 @@ return {
     config = function()
       vim.api.nvim_create_user_command(
         'LspLog',
-        string.format('e %s', vim.lsp.get_log_path()),
+        string.format('e %s', vim.lsp.log.get_filename()),
         { desc = 'open lsp log' }
       )
 
@@ -49,14 +49,18 @@ return {
       lsp.setup('postgres_lsp')
       lsp.setup('marksman')
       lsp.setup('eslint')
-      lsp.setup('fsautocomplete')
+      lsp.setup('fsautocomplete', {
+        on_init = lsp.event.disable_semantic,
+      })
       lsp.setup('clangd')
       lsp.setup('neocmake')
       lsp.setup('csharp_ls', {
-        on_attach = lsp.event.disable_semantic,
+        on_init = lsp.event.disable_semantic,
+        filetypes = lsp.config.ft_extend('csharp_ls', { 'axaml.cs' }),
       })
       -- lsp.setup('roslyn_ls', {
       --   on_attach = lsp.event.disable_semantic,
+      --   filetypes = lsp.config.ft_extend('roslyn_ls', { 'axaml.cs' }),
       -- })
       lsp.setup('basedpyright', {
         settings = {
@@ -107,4 +111,25 @@ return {
     end,
   },
   { 'yioneko/nvim-vtsls', ft = { 'typescript', 'javascript' } },
+  {
+    'Decodetalkers/csharpls-extended-lsp.nvim',
+    ft = { 'cs', 'axaml.cs' },
+    config = function() require('csharpls_extended').buf_read_cmd_bind() end,
+  },
+  {
+    'seblyng/roslyn.nvim',
+    cond = vim.lsp.is_enabled('roslyn_ls'),
+    ft = { 'cs', 'axaml.cs' },
+    ---@module 'roslyn.config'
+    ---@type RoslynNvimConfig
+    opts = {
+      filewatching = 'roslyn',
+      cmd = {
+        'Microsoft.CodeAnalysis.LanguageServer',
+        '--logLevel=Information',
+        '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.log.get_filename()),
+        '--stdio',
+      },
+    },
+  },
 }

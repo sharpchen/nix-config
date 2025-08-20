@@ -1,6 +1,6 @@
 if HasNix then
   require('utils.async').cmd(
-    require('utils.env').mk_store_query('powershell-editor-services'),
+    require('utils.env').nix_store_query('powershell-editor-services'),
     function(result)
       require('utils.lsp').path.pwsh_es =
         vim.fs.joinpath(result, 'lib/powershell-editor-services')

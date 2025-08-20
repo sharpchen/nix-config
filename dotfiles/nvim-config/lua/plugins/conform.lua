@@ -6,7 +6,7 @@ return {
       formatters = {
         xstyler = {
           command = 'xstyler',
-          args = { '--write-to-stdout', '--take-pipe', '--file', '$FILENAME' },
+          args = { '--write-to-stdout', '--take-pipe' },
         },
       },
       formatters_by_ft = {
@@ -33,17 +33,18 @@ return {
 
     local function format(bufnr)
       local conform = require('conform')
-      local formatter = conform.formatters[vim.bo[bufnr].filetype]
-        or conform.formatters_by_ft[vim.bo[bufnr].filetype]
+      local ft = vim.bo[bufnr].filetype
+      local formatter = conform.formatters[ft] or conform.formatters_by_ft[ft]
 
-      if vim.bo[bufnr].filetype == 'markdown' then
-        vim.notify(string.format('no formatter available for %s', vim.bo[bufnr].filetype))
+      if ft == 'markdown' then
+        vim.notify(string.format('no formatter available for %s', ft))
         return
       end
 
-      if vim.bo[bufnr].filetype == 'oil' then return end
+      if ft == 'oil' then return end
 
-      local ok = conform.format { bufnr = bufnr, timeout_ms = 5000, async = false }
+      local ok = formatter
+        and conform.format { bufnr = bufnr, timeout_ms = 5000, async = false }
       if ok then
         vim.notify(
           string.format(

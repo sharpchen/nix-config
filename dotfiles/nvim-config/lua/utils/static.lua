@@ -39,43 +39,6 @@ M.ts = {
   end,
 }
 
-M.snippet = {
-  --- simple snippet definition
-  --- only for snippets have successive index
-  --- use <> as delimiters by default
-  ---@param filetype string | string[]
-  ---@param trigger string | { trig: string, name: string, desc: string }
-  ---@param body string
-  ---@param opts? { delimiters?: string }
-  add = function(filetype, trigger, body, opts)
-    local ok, ls = pcall(require, 'luasnip')
-    if not ok then return end
-    local snip = ls.snippet --[[@as fun(trigger: string | { trig: string, name: string, desc: string }, node: any[] | any)]]
-    local oneof = ls.c --[[@as fun(idx: integer, choices: any[], opts: table)]]
-    local text = ls.t --[[@as fun(text: string)]]
-    local insert = ls.i --[[@as fun(idx: integer, placeholder: string)]]
-    local fmt = require('luasnip.extras.fmt').fmt --[[@as fun(body: string, nodes: any[] | any, opts: table)]]
-
-    opts = (opts and opts.delimiters) and opts or { delimiters = '<>' }
-    local l, r = opts.delimiters:sub(1, 1), opts.delimiters:sub(2, 2)
-    local placeholders = Collect(body:gmatch(l:verbatim() .. '(.-)' .. r:verbatim()))
-    local body, count = body:gsub(l:verbatim() .. '.-' .. r:verbatim(), opts.delimiters)
-    local nodes = {}
-
-    for i = 1, count do
-      table.insert(nodes, insert(i, placeholders[i]))
-    end
-
-    for _, ft in ipairs(type(filetype) == 'table' and filetype or { filetype }) do
-      ls.add_snippets(ft, {
-        snip(trigger, fmt(body, nodes, opts)),
-      })
-    end
-
-    -- vim.notify(vim.inspect(placeholders))
-  end,
-}
-
 ---@param next boolean
 local function mv_qf_item(next, init_bufnr)
   local is_top = vim.fn.line('.') == 1

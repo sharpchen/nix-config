@@ -126,14 +126,17 @@ vim.filetype.add {
     ideavimrc = 'vim',
     inputrc = 'sh',
     gitconfig = 'gitconfig',
+    slnx = 'slnx',
   },
   pattern = {
     ['.*%..+proj'] = 'msbuild',
     sshconfig = 'sshconfig',
+    ['.*axaml%.cs'] = 'axaml.cs',
   },
 }
 
-vim.treesitter.language.register('xml', { 'axaml', 'xaml', 'msbuild' })
+vim.treesitter.language.register('xml', { 'axaml', 'xaml', 'msbuild', 'slnx' })
+vim.treesitter.language.register('c_sharp', { 'axaml.cs' })
 
 vim.api.nvim_create_autocmd('BufReadPost', {
   desc = 'Open file at the last position it was edited earlier',
@@ -176,16 +179,14 @@ vim.api.nvim_create_autocmd({ 'DirChanged', 'VimEnter' }, {
     if vim.fs.root(0, function(name, _) return name:match('%.%w+proj$') ~= nil end) then
       vim.g.dotnet_errors_only = true
       vim.g.dotnet_show_project_file = false
-      vim.cmd.compiler('dotnet')
+      vim.cmd.compiler { bang = true, 'dotnet' }
     end
 
     if
       vim.fs.root(0, function(name, _) return name:match('tsconfig%.json$') ~= nil end)
     then
-      local suffix = ' tsc --noEmit'
-      local exe = vim.fn.executable('pnpm') == 1 and 'pnpm' or 'npx'
-      vim.g.tsc_makeprg = exe .. suffix
-      vim.cmd.compiler('tsc')
+      vim.g.tsc_makeprg = 'npx tsc --noEmit'
+      vim.cmd.compiler { bang = true, 'tsc' }
     end
   end,
 })
@@ -195,3 +196,25 @@ vim.api.nvim_create_user_command(
   [[execute $'saveas {expand('%:p:h')}/{"<args>"}' | call delete(expand('#'))]],
   { desc = 'Rename current file', nargs = 1 }
 )
+vim.api.nvim_create_user_command('Delete', function()
+  local path = vim.fn.expand('%:p')
+  vim.cmd.bd()
+  vim.fs.rm(path)
+  vim.notify(path .. ' deleted')
+end, { desc = 'delete current file' })
+
+if IsWindows then
+  vim.system({ 'scoop', 'prefix', 'git' }, { text = true }, function(out)
+    if out.code == 0 then
+      vim.schedule(function()
+        vim.o.shell = vim.fs.joinpath(vim.trim(out.stdout), 'bin/bash.exe')
+        vim.o.shellcmdflag = '-c'
+      end)
+    end
+  end)
+end
+
+vim.api.nvim_create_autocmd('TermOpen', {
+  callback = function(_) vim.opt_local.spell = false end,
+  desc = 'disable spell in terminal',
+})

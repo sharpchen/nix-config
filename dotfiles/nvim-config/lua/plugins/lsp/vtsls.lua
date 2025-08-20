@@ -51,9 +51,13 @@ end
 
 if HasNix then
   if lsp.path.vue_language_server:is_nil_or_empty() then
-    async.cmd(env.mk_store_query('vue-language-server'), function(result)
-      lsp.path.vue_language_server =
-        vim.fs.joinpath(result, 'lib/node_modules/@vue/language-server')
+    async.cmd(env.nix_store_query('vue-language-server'), function(result)
+      local vue_ls =
+        vim.fs.joinpath(result, 'lib/language-tools/packages/language-server')
+      if vim.fn.isdirectory(vue_ls) == 0 then
+        vim.notify(vue_ls .. ' does not exist', vim.log.levels.ERROR)
+      end
+      lsp.path.vue_language_server = vue_ls
       setup()
     end)
   else

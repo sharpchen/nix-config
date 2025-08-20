@@ -7,11 +7,13 @@ local M = {
   -- do not use it on plugin loading
   has_nix = vim.fn.executable('nix') == 1,
   has_pwsh = vim.fn.executable('pwsh') == 1,
+  has_scoop = vim.fn.executable('scoop') == 1,
 }
 
 _G.IsWindows = M.is_windows
 _G.IsLinux = M.is_linux
 _G.HasNix = M.has_nix
+_G.HasScoop = M.has_scoop
 
 M.new_line = M.is_windows and '\r\n' or '\n'
 
@@ -42,7 +44,7 @@ M.shell = {
 --- Generate a command array that query the store path of a nix package
 ---@param pkg string main program
 ---@return string[]
-M.mk_store_query = function(pkg)
+function M.nix_store_query(pkg)
   return bash_cmd(([[nix-store -q --outputs "$(type -fP %s)"]]):format(pkg))
 end
 

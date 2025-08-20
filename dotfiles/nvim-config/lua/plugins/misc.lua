@@ -51,6 +51,7 @@ return {
     config = function()
       require('nvim-web-devicons').set_icon_by_filetype {
         msbuild = 'sln',
+        slnx = 'sln',
         axaml = 'xaml',
         typescript = 'ts',
         javascript = 'js',
@@ -105,6 +106,14 @@ return {
       -- highlight would disappear for conflicting with au in set.lua
       vim.api.nvim_create_autocmd('ColorScheme', {
         callback = require('whitespace-nvim').highlight,
+      })
+
+      vim.api.nvim_create_autocmd('BufWritePost', {
+        callback = function(args)
+          if vim.list_contains({ 'markdown' }, vim.bo[args.buf].filetype) then
+            require('whitespace-nvim').trim()
+          end
+        end,
       })
     end,
   },

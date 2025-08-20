@@ -127,7 +127,10 @@ return {
       vim.api.nvim_create_user_command(
         'Term',
         function(args)
-          Snacks.terminal.open(nil, { cwd = vim.fn.expand('%:p:h'), auto_close = false })
+          Snacks.terminal.open(
+            nil,
+            { cwd = vim.fn.expand('%:p:h'):gsub('^oil:', ''), auto_close = false }
+          )
         end,
         { desc = 'open parent of current buffer in term' }
       )
@@ -141,6 +144,12 @@ return {
           )
         end,
         { desc = 'desc' }
+      )
+      vim.keymap.set(
+        'n',
+        [[<leader>fn]],
+        function() Snacks.picker.files { cwd = vim.env.VIMRUNTIME, hidden = true } end,
+        { desc = 'search vim runtime files' }
       )
     end,
   },
