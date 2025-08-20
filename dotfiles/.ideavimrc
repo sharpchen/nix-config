@@ -34,9 +34,9 @@ command! Tai set trackactionids!
 nnoremap <leader>s "zyiw:%s/\<<C-r>z\>/<C-r>z/g<left><left>
 cnoremap <C-v> <C-r>+
 xnoremap <leader>s "zy:%s/\V<C-r>z/<C-r>z/gI<Left><Left><Left>
-nnoremap <leader>S "zyiw:%s/\<<C-r>z>\>//gI<Left><Left><Left>
+nnoremap <leader>S "zyiw:%s/\<<C-r>z\>//gI<Left><Left><Left>
 xnoremap <leader>S "zy:%s/\V<C-r>z//gI<Left><Left><Left>
-nnoremap <leader>so :source ~/.ideavimrc<CR>
+" nnoremap <leader>so :source ~/.ideavimrc<CR>
 nnoremap <leader>t :NERDTreeToggle<CR>
 inoremap <C-v> <Esc>"+pa
 nnoremap <leader>a ggVG
