@@ -1,8 +1,13 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    # dotnetCorePackages.sdk_8_0_1xx
-    dotnetCorePackages.sdk_9_0
+    (
+      with dotnetCorePackages;
+      combinePackages [
+        sdk_9_0
+        # sdk_10_0-bin
+      ]
+    )
     netcoredbg
     csharpier
     roslyn-ls
