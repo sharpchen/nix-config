@@ -109,10 +109,16 @@ function pinfo {
 function mkvideo {
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Alias('FullName')]
+        [string]$Path,
+
         [ValidateScript({ Test-Path -LiteralPath $_ })]
+        [Parameter(Mandatory)]
         [string]$Destination,
-        [ValidateScript({ Test-Path -LiteralPath $_ })]
+
+        [ValidateScript({ [IO.File]::Exists((Resolve-Path $_)) })]
         [string]$Cover,
+
         [switch]$MakeInfo,
         [switch]$Convert
     )
@@ -255,52 +261,6 @@ function play {
         }
 
         $playlist | ForEach-Object FullName | mpv --playlist=-
-    }
-}
-
-function dnnew {
-    begin {
-        $null = Get-Command dotnet -ea Stop
-        $null = Get-Command fzf -ea Stop
-        $null = Get-Command tr -ea Stop
-    }
-
-    end {
-        $templateStrings = (dotnet new list | Select-Object -Skip 4) -replace '\s{2,}', ';'
-
-        $csvEntries = ($templateStrings | ConvertFrom-Csv -Delimiter ';' -Header 'FullName', 'Alias', 'Lang', 'Tag' | ForEach-Object {
-                [PSCustomObject]@{
-                    FullName = $_.FullName
-                    Alias    = $_.Alias
-                    Lang     = $_.Lang
-                    Tag      = $_.Tag
-                }
-            })
-
-        $fzfEntries = $csvEntries | ForEach-Object {
-            if ($_.Lang -notmatch '\[.*?\]') {
-                $_.Tag = $_.Lang;
-                $_.Lang = [string]::Empty;
-            }
-            if ($_.Alias -match ',') {
-                foreach ($alias in $_.Alias -split ',') {
-                    $new = $_.psobject.Copy()
-                    $new.Alias = $alias
-                    $new
-                }
-            } else {
-                $_
-            }
-        } | ForEach-Object {
-            "$($_.Alias)`tDesc: $($_.FullName)`tAlias: $($_.Alias)`tLang: $($_.Lang)`tTag: $($_.Tag)"
-        }
-
-
-        $fzfEntries | fzf --delimiter='\t' `
-            --with-nth=1 `
-            --preview-window=down `
-            --preview='echo {2..} | tr "\t" "\n"' `
-            --bind "enter:execute(dotnet new {1} $($args -join ' '))+abort"
     }
 }
 
