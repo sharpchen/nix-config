@@ -26,7 +26,15 @@ return {
           takeover = 'never',
           priority = 1, -- priority matters to override the .* pattern
         },
+        ['https?://gemini.*'] = {
+          takeover = 'never',
+          priority = 1,
+        },
         ['https?://www.overleaf.com/.*'] = {
+          takeover = 'never',
+          priority = 1,
+        },
+        ['https?://live.bilibili.com/.*'] = {
           takeover = 'never',
           priority = 1,
         },

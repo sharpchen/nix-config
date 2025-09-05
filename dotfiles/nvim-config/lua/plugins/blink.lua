@@ -81,10 +81,10 @@ return {
         snippets = {
           min_keyword_length = 1,
           score_offset = 1,
-          should_show_items = function(ctx)
-            return ctx.trigger.initial_kind ~= 'trigger_character'
-            -- and not require('blink.cmp').snippet_active()
-          end,
+          -- should_show_items = function(ctx)
+          --   return ctx.trigger.initial_kind ~= 'trigger_character'
+          --   -- and not require('blink.cmp').snippet_active()
+          -- end,
         },
         lsp = {
           score_offset = 3,
@@ -114,6 +114,14 @@ return {
     signature = {
       enabled = true,
       window = { border = 'single' },
+    },
+    cmdline = {
+      enabled = true,
+      keymap = {
+        preset = 'cmdline',
+        ['<Left>'] = {},
+        ['<Right>'] = {},
+      },
     },
     completion = {
       keyword = { range = 'full' },

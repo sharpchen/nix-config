@@ -1,16 +1,19 @@
 ---@module 'lazy'
----@type LazySpec
+---@type LazySpec[]
 return {
   {
     'neovim/nvim-lspconfig',
     event = 'VeryLazy',
+    -- dependencies load after main spec
+    -- so we can load plugins on cond or enabled
+    dependencies = {
+      {
+        'yioneko/nvim-vtsls',
+        ft = { 'typescript', 'javascript' },
+        cond = require('utils.lsp').use_vtsls,
+      },
+    },
     config = function()
-      vim.api.nvim_create_user_command(
-        'LspLog',
-        string.format('e %s', vim.lsp.log.get_filename()),
-        { desc = 'open lsp log' }
-      )
-
       local lsp = require('utils.lsp')
 
       --#region delete this when all ls were managed by vim.lsp
@@ -54,13 +57,9 @@ return {
       })
       lsp.setup('clangd')
       lsp.setup('neocmake')
-      lsp.setup('csharp_ls', {
-        on_init = lsp.event.disable_semantic,
-        filetypes = lsp.config.ft_extend('csharp_ls', { 'axaml.cs' }),
-      })
-      -- lsp.setup('roslyn_ls', {
-      --   on_attach = lsp.event.disable_semantic,
-      --   filetypes = lsp.config.ft_extend('roslyn_ls', { 'axaml.cs' }),
+      -- lsp.setup('csharp_ls', {
+      --   on_init = lsp.event.disable_semantic,
+      --   filetypes = lsp.config.ft_extend('csharp_ls', { 'axaml-cs' }),
       -- })
       lsp.setup('basedpyright', {
         settings = {
@@ -110,26 +109,35 @@ return {
       })
     end,
   },
-  { 'yioneko/nvim-vtsls', ft = { 'typescript', 'javascript' } },
-  {
-    'Decodetalkers/csharpls-extended-lsp.nvim',
-    ft = { 'cs', 'axaml.cs' },
-    config = function() require('csharpls_extended').buf_read_cmd_bind() end,
-  },
   {
     'seblyng/roslyn.nvim',
-    cond = vim.lsp.is_enabled('roslyn_ls'),
-    ft = { 'cs', 'axaml.cs' },
-    ---@module 'roslyn.config'
-    ---@type RoslynNvimConfig
-    opts = {
-      filewatching = 'roslyn',
-      cmd = {
-        'Microsoft.CodeAnalysis.LanguageServer',
-        '--logLevel=Information',
-        '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.log.get_filename()),
-        '--stdio',
-      },
-    },
+    ft = { 'cs', 'axaml-cs' },
+    -- enabled = false,
+    config = function()
+      local lsp = require('utils.lsp')
+
+      require('roslyn').setup {
+        filewatching = 'roslyn',
+        cmd = {
+          'Microsoft.CodeAnalysis.LanguageServer',
+          '--logLevel=Information',
+          '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.log.get_filename()),
+          '--stdio',
+        },
+      }
+      vim.lsp.config('roslyn', {
+        on_init = function(client) lsp.event.disable_semantic(client) end,
+        filetypes = lsp.config.ft_extend('roslyn_ls', { 'axaml-cs' }),
+      })
+    end,
+  },
+  {
+    'Decodetalkers/csharpls-extended-lsp.nvim',
+    ft = { 'cs', 'axaml-cs' },
+    config = function()
+      if vim.lsp.is_enabled('csharp_ls') then
+        require('csharpls_extended').buf_read_cmd_bind()
+      end
+    end,
   },
 }

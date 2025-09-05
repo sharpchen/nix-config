@@ -18,7 +18,7 @@ return {
           label = 'Markdown file',
           filetype = 'markdown',
           suffix = '.md',
-          content = [[# %s]],
+          content = '# %s',
         },
       },
     }
@@ -52,44 +52,6 @@ return {
           filetype = 'lua',
           suffix = '.lua',
         },
-      },
-    }
-    groups.dotnet:append {
-      file {
-        label = 'CLASS',
-        suffix = '.cs',
-        filetype = 'cs',
-        content = util.dedent([[
-        namespace <ns>;
-
-        public class %s {
-
-        }
-        ]]),
-        before_creation = function(item, ctx)
-          local proj
-          vim.fs.root(ctx.cwd, function(name, path)
-            if name:match('%.%w+proj$') then proj = vim.fs.joinpath(path, name) end
-          end)
-          local root_ns, ns
-          vim
-            .system(
-              { 'dotnet', 'msbuild', proj, '-getProperty:RootNamespace' },
-              { text = true },
-              function(out)
-                if out.code == 0 then root_ns = vim.trim(out.stdout) end
-              end
-            )
-            :wait()
-          local rel = vim.fs.relpath(vim.fs.dirname(proj), ctx.cwd)
-          if rel and rel ~= '.' then
-            ns = root_ns .. '.' .. rel:gsub('/', '.')
-          else
-            ns = root_ns
-          end
-          item.content = item.content:gsub('<ns>', ns)
-          return item, ctx
-        end,
       },
     }
     vim.keymap.set('n', [[<leader>ni]], [[<cmd>NewItem<CR>]], { desc = 'desc' })

@@ -73,23 +73,11 @@ return {
       end
     end
 
-    local augroup_id = vim.api.nvim_create_augroup('format_on_save', { clear = true })
-    local function add_format_event()
-      vim.api.nvim_create_autocmd('BufWritePre', {
-        group = augroup_id,
-        callback = function(event) format(event.buf) end,
-        desc = 'format on save',
-      })
-    end
-
-    vim.api.nvim_create_user_command('W', function()
-      if vim.fn.exists(':W') == 1 then vim.cmd('delcommand W') end
-      vim.api.nvim_clear_autocmds { group = augroup_id }
-      vim.cmd('w')
-      add_format_event()
-    end, { desc = 'save without format' })
-
-    add_format_event()
+    vim.api.nvim_create_autocmd('BufWritePre', {
+      group = vim.api.nvim_create_augroup('format_on_save', { clear = true }),
+      callback = function(event) format(event.buf) end,
+      desc = 'format on save',
+    })
 
     vim.keymap.set(
       'n',

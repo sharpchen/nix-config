@@ -1,3 +1,4 @@
+vim.cmd.source(vim.fn.expand('~/.vimrc'))
 -- line number
 vim.opt.nu = true
 vim.opt.rnu = true
@@ -131,12 +132,15 @@ vim.filetype.add {
   pattern = {
     ['.*%..+proj'] = 'msbuild',
     sshconfig = 'sshconfig',
-    ['.*axaml%.cs'] = 'axaml.cs',
+    ['.*axaml%.cs'] = 'axaml-cs',
+  },
+  filename = {
+    ['Settings.XamlStyler'] = 'json',
   },
 }
 
 vim.treesitter.language.register('xml', { 'axaml', 'xaml', 'msbuild', 'slnx' })
-vim.treesitter.language.register('c_sharp', { 'axaml.cs' })
+vim.treesitter.language.register('c_sharp', { 'axaml-cs' })
 
 vim.api.nvim_create_autocmd('BufReadPost', {
   desc = 'Open file at the last position it was edited earlier',
@@ -152,7 +156,7 @@ vim.api.nvim_create_autocmd('VimResized', {
   command = 'wincmd =',
 })
 
-vim.opt.fillchars:append('diff:╱')
+vim.opt.fillchars:append { diff = '╱' }
 
 vim.opt.diffopt = {
   'internal',
@@ -191,11 +195,6 @@ vim.api.nvim_create_autocmd({ 'DirChanged', 'VimEnter' }, {
   end,
 })
 
-vim.api.nvim_create_user_command(
-  'Rename',
-  [[execute $'saveas {expand('%:p:h')}/{"<args>"}' | call delete(expand('#'))]],
-  { desc = 'Rename current file', nargs = 1 }
-)
 vim.api.nvim_create_user_command('Delete', function()
   local path = vim.fn.expand('%:p')
   vim.cmd.bd()
@@ -218,3 +217,21 @@ vim.api.nvim_create_autocmd('TermOpen', {
   callback = function(_) vim.opt_local.spell = false end,
   desc = 'disable spell in terminal',
 })
+
+vim.api.nvim_create_user_command(
+  'LspLog',
+  string.format('e %s', vim.lsp.log.get_filename()),
+  { desc = 'open lsp log' }
+)
+
+vim.api.nvim_create_user_command(
+  'Edit',
+  function(args) vim.cmd.edit(vim.fs.joinpath(vim.fn.expand('%:p:h'), args.args)) end,
+  { nargs = 1 }
+)
+
+vim.api.nvim_create_user_command(
+  'W',
+  function() vim.cmd('noautocmd w') end,
+  { desc = 'pure write' }
+)

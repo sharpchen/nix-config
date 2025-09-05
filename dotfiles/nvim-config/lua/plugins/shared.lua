@@ -55,4 +55,25 @@ return {
     'machakann/vim-sandwich',
     event = 'BufReadPost',
   },
+  {
+    'echasnovski/mini.ai',
+    version = false,
+    config = function()
+      local ts_spec = require('mini.ai').gen_spec.treesitter
+      require('mini.ai').setup {
+        custom_textobjects = {
+          f = ts_spec { a = '@function.outer', i = '@function.inner' },
+          c = ts_spec { a = '@class.outer', i = '@class.inner' },
+          s = ts_spec {
+            a = { '@conditional.outer', '@loop.outer' },
+            i = { '@conditional.inner', '@loop.inner' },
+          },
+        },
+        mappings = {
+          goto_left = '',
+          goto_right = '',
+        },
+      }
+    end,
+  },
 }

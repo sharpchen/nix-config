@@ -1,5 +1,4 @@
 vim.g.mapleader = vim.keycode('<space>')
-vim.cmd.source(vim.fn.expand('~/.keymap.vim'))
 
 vim.keymap.set(
   'x',

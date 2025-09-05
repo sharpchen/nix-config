@@ -5,14 +5,18 @@ local oneof = ls.choice_node
 local sn = ls.snippet_node
 local fn = ls.function_node
 local text = ls.text_node
+local dyn = ls.dynamic_node
 local fmt = require('luasnip.extras.fmt').fmt --[[@as fun(body: string, nodes: any[] | any, opts?: table)]]
 local rep = require('luasnip.extras').rep --[[@as fun(idx: integer)]]
 local fmta = require('luasnip.extras.fmt').fmta --[[@as fun(body: string, nodes: any[] | any, opts?: table)]]
+local ref = require('luasnip.extras').lambda
+local postfix = require('luasnip.extras.postfix').postfix
+local ts_post = require('luasnip.extras.treesitter_postfix').treesitter_postfix
 
 return {
   snip(
     'kmap',
-    fmt([[vim.keymap.set('{}', '{}', {}, {{ desc = '{}' }})]], {
+    fmt("vim.keymap.set('{}', '{}', {}, {{ desc = '{}' }})", {
       ins(1, 'n'),
       sn(2, fmt('<leader>{}', { ins(1) })),
       oneof(3, {
@@ -20,7 +24,7 @@ return {
         sn(nil, fmt("'<cmd>{}<CR>'", { ins(1) })),
         sn(nil, fmt("':{}<CR>'", { ins(1) })),
       }),
-      ins(4, ''),
+      ins(4),
     })
   ),
   snip(
@@ -33,7 +37,7 @@ return {
         sn(nil, fmt("'<cmd>{}<CR>'", { ins(1) })),
         sn(nil, fmt("':{}<CR>'", { ins(1) })),
       }),
-      ins(4, ''),
+      ins(4),
     })
   ),
   snip(
@@ -57,16 +61,7 @@ return {
       ins(3),
     })
   ),
-  snip(
-    'lazyspec',
-    fmt(
-      [[
-      ---@module 'lazy'
-      ---@type LazySpec
-    ]],
-      {}
-    )
-  ),
+  snip('lazyspec', text { "---@module 'lazy'", '---@type LazySpec' }),
   snip(
     'ctor',
     fmt(

@@ -13,7 +13,7 @@ local function setup()
         bold = true,
       }
     end,
-    LspInlayHint = function(_, p) return { fg = p.comment, bg = false } end,
+    LspInlayHint = function(_, p) return { fg = p.comment, bg = 'none' } end,
     CursorLine = function(_, p) return { bg = p.panelBackground } end,
     ['@string.escape'] = function(_, _) return { bold = true } end,
     ['@punctuation.special'] = function(_, _) return { bold = true } end,

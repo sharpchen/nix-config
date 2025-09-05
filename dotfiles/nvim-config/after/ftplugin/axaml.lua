@@ -7,3 +7,7 @@ if not IsWindows then
   vim.opt.isfname:append { '\\' }
   vim.bo.includeexpr = [[tr(v:fname, '\', '/')]]
 end
+
+if pcall(require, 'match-up') then
+  vim.b.match_words = vim.fn['matchup#util#standard_xml']()
+end

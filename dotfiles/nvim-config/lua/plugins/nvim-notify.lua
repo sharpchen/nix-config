@@ -2,6 +2,7 @@
 ---@type LazySpec
 return {
   'rcarriga/nvim-notify',
+  cond = false,
   priority = 1000,
   config = function()
     require('notify').setup {
