@@ -58,7 +58,7 @@ nnoremap gh ^
 nnoremap gl $
 xnoremap gh ^
 xnoremap gl $
-nnoremap <silent> <leader>so :source ~/.vimrc<CR>
+" nnoremap <silent> <leader>so :source ~/.vimrc<CR>
 nmap <leader><leader> diw
 nnoremap <leader>z I(<Esc>A)<Esc>
 nnoremap <leader>Z i(<Esc>A)<Esc>

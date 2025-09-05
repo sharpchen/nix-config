@@ -19,12 +19,13 @@ set cursorline
 nnoremap <A-.> :vsc Window.NextDocumentWindow<CR>
 nnoremap <A-,> :vsc Window.PreviousDocumentWindow<CR>
 nnoremap <A-a> :vsc Window.CloseAllDocuments<CR>
+nnoremap <A-c> :vsc Window.CloseDocumentWindow<CR>
 nnoremap <F2> :vsc Refactor.Rename<CR>
 nnoremap gr :vsc Edit.FindAllReferences<CR>
 nnoremap gd :vsc Edit.GoToImplementation<CR>
 nnoremap gp :vsc Edit.PeekDefinition<CR>
 nnoremap <M-CR> :vsc FullScreen<CR>
-nnoremap <leader>o :vsc View.SolutionExplorer<CR>
+nnoremap <leader>t :vsc View.SolutionExplorer<CR>
 nnoremap <leader>b :vsc Debug.ToggleBreakpoint<CR>
 nnoremap <leader>m :vsc Build.BuildSolution<CR><Esc>
 nnoremap <leader>ca :vsc View.QuickActions<CR>
@@ -33,7 +34,7 @@ noremap <leader>fg :vsc Edit.GoToText<CR>
 nnoremap <leader>ff :vsc Edit.GoToFile<CR>
 nnoremap gcc :vsc Edit.ToggleLineComment<CR><Esc>
 xnoremap gc :vsc Edit.ToggleLineComment<CR><Esc>
-nnoremap <leader>so :source ~/.vsvimrc<CR>
+" nnoremap <leader>so :source ~/.vsvimrc<CR>
 nnoremap <leader>k :vsc Edit.FormatDocument<CR>
 
 " Move selected lines down/up in visual mode

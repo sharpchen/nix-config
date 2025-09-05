@@ -36,14 +36,18 @@ set langmenu=en_US
 
 let $LANG = 'en_US.UTF8'
 
-colo habamax
-
 source ~/.keymap.vim
 
-command! -nargs=1 Rename execute $'saveas {expand('%:p:h')}/{"<args>"}' | call delete(expand('#'))
+function s:CurrentFileName(a, l, p) abort
+    return expand('%:p:t')
+endfunction
+
+command! -nargs=1 -complete=custom,s:CurrentFileName Rename execute $'saveas {expand('%:p:h')}/{"<args>"}' | call delete(expand('#'))
 autocmd BufReadPost * silent! normal! g`"zvzz
 autocmd VimResized * wincmd =
 
 if has('nvim')
     au! TextYankPost * lua vim.hl.on_yank { timeout = 300 }
+else
+    colo habamax
 endif

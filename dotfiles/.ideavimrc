@@ -26,6 +26,7 @@ nmap <leader>fg <Action>(FindInPath)
 nmap <leader>b <Action>(ToggleLineBreakpoint)
 nmap [[ <Action>(MethodUp)
 nmap ]] <Action>(MethodDown)
+nmap <leader>o <Action>(ActivateStructureToolWindow)
 " requires plug FastPeek
 nnoremap gp :action com.github.vsuhanov.fastpeek.peek<CR>
 
