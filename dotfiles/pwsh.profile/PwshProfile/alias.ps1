@@ -121,3 +121,7 @@ function rd {
     )
     Remove-Item -Recurse -Force -LiteralPath $Path
 }
+
+Register-ArgumentCompleter -CommandName rd -ParameterName Path -ScriptBlock {
+    Get-ChildItem -Directory | ForEach-Object Name
+}

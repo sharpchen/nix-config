@@ -23,7 +23,6 @@ alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
 alias lg=lazygit
 alias p='cd $(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)'
 alias vim='nvim -u ~/.vimrc'
-alias dn=dotnet
 alias v=nvim
 alias ngc='nix-collect-garbage -d && sudo $(which nix-collect-garbage) -d'
 
@@ -111,12 +110,19 @@ if type nvim &>/dev/null; then
 fi
 
 if type dotnet &>/dev/null; then
-    if type nsp &>/dev/null; then
-        DOTNET_ROOT="$(nsp dotnet)/share/dotnet"
-        export DOTNET_ROOT
-    fi
+    # alias dn=dotnet
 
-    export PATH="$PATH:/home/$USER/.dotnet/tools"
+    function _dotnet_bash_complete() {
+        local cur="${COMP_WORDS[COMP_CWORD]}" IFS=$'\n' # On Windows you may need to use use IFS=$'\r\n'
+        local candidates
+        read -d '' -ra candidates < <(dotnet complete --position "${COMP_POINT}" "${COMP_LINE}" 2>/dev/null)
+        read -d '' -ra COMPREPLY < <(compgen -W "${candidates[*]:-}" -- "$cur")
+    }
+
+    complete -f -F _dotnet_bash_complete dotnet
+    complete -f -F _dotnet_bash_complete dn
+
+    # export PATH="$PATH:/home/$USER/.dotnet/tools"
 fi
 
 if type yazi &>/dev/null; then
