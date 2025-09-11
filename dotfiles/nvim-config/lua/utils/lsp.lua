@@ -61,16 +61,7 @@ M.config = {}
 ---@param extra string[] extra filetypes
 ---@return string[]
 function M.config.ft_extend(ls, extra)
-  local module = 'lspconfig.configs.' .. ls
-  local ok, mo = pcall(require, module)
-  local ft = {}
-  if ok then
-    ft = mo.default_config.filetypes
-  else
-    ft = vim.lsp.config[ls].filetypes
-  end
-  ---@cast ft table
-  return vim.list_extend(extra, ft)
+  return vim.list_extend(extra, vim.lsp.config[ls].filetypes or {})
 end
 --#endregion
 

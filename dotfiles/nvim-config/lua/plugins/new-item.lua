@@ -55,5 +55,7 @@ return {
       },
     }
     vim.keymap.set('n', [[<leader>ni]], [[<cmd>NewItem<CR>]], { desc = 'desc' })
+
+    require('new-item').load_groups()
   end,
 }

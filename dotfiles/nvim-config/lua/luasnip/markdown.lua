@@ -42,24 +42,24 @@ return {
   ),
   snip(
     'shikihl',
-    fmt('{cs} [!code {type}]', {
-      cs = dyn(1, function()
-        local cs = vim.filetype.get_option(
-          require('utils.static').buf.cursor_ft(),
-          'commentstring'
-        ) --[[@as string]]
-        cs = cs:gsub('%%s', string.empty):trim()
-        return sn(nil, ins(1, cs))
-      end),
-      type = oneof(2, {
-        text('highlight'),
-        text('focus'),
-        text('warning'),
-        text('error'),
-        text('--'),
-        text('++'),
-      }),
-    })
+    dyn(1, function()
+      local cs =
+        vim.filetype.get_option(require('utils.static').buf.cursor_ft(), 'commentstring') --[[@as string]]
+      local format = cs:gsub('%%s', '[!code {type}]'):trim()
+      return sn(
+        nil,
+        fmt(format, {
+          type = oneof(1, {
+            text('highlight'),
+            text('focus'),
+            text('warning'),
+            text('error'),
+            text('--'),
+            text('++'),
+          }),
+        })
+      )
+    end)
   ),
   snip(
     'vbadge',

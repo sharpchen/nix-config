@@ -6,10 +6,78 @@ return {
     priority = 1000,
     lazy = false,
     config = function()
+      local function to_qf(picker)
+        picker:close()
+        local sel = picker:selected()
+        local items = #sel > 0 and sel or picker:items()
+        local qf = {} ---@type vim.quickfix.entry[]
+        for _, item in ipairs(items) do
+          qf[#qf + 1] = {
+            filename = Snacks.picker.util.path(item),
+            bufnr = item.buf,
+            lnum = item.pos and item.pos[1] or 1,
+            col = item.pos and item.pos[2] + 1 or 1,
+            end_lnum = item.end_pos and item.end_pos[1] or nil,
+            end_col = item.end_pos and item.end_pos[2] + 1 or nil,
+            text = item.line
+              or item.comment
+              or item.label
+              or item.name
+              or item.detail
+              or item.text,
+            pattern = item.search,
+            valid = true,
+          }
+        end
+        vim.fn.setqflist(qf, 'r')
+        vim.cmd('botright copen')
+      end
       require('snacks').setup {
-        picker = { enabled = true, ui_select = true },
+        picker = {
+          enabled = true,
+          ui_select = true,
+          actions = { to_qf = to_qf },
+          win = {
+            input = {
+              keys = {
+                ['<M-q>'] = { 'to_qf', mode = { 'n', 'i' } },
+              },
+            },
+          },
+        },
         bigfile = { enabled = true, notify = true },
       }
+      vim.api.nvim_create_user_command('GitOpen', function(e)
+        ---@type snacks.gitbrowse.Config
+        local opts = {
+          open = function(url)
+            if IsWSL then
+              vim.fn.setreg('+', url)
+            else
+              vim.ui.open(url)
+            end
+          end,
+        }
+
+        if e.args then
+          if e.args == 'homepage' then
+            opts.what = 'repo'
+          else
+            opts.what = e.args:is_nil_or_empty() and 'commit' or e.args
+          end
+        end
+
+        if e.line1 and e.line2 then
+          opts.line_start = e.line1
+          opts.line_end = e.line2
+        end
+
+        Snacks.gitbrowse.open(opts)
+      end, {
+        nargs = '?',
+        range = true,
+        complete = function() return { 'homepage', 'permalink' } end,
+      })
       vim.keymap.set('n', '<leader>fc', function()
         local config_path = IsWindows and vim.fn.stdpath('config')
           or vim.fn.expand('~/.config/home-manager/dotfiles/nvim-config/')
@@ -143,7 +211,7 @@ return {
             { cwd = vim.fn.expand('%:p:h'):gsub('^oil:', ''), auto_close = false }
           )
         end,
-        { desc = 'desc' }
+        { desc = 'Open terminal on current path' }
       )
       vim.keymap.set(
         'n',

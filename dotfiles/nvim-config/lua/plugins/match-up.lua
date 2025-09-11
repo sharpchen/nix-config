@@ -14,6 +14,9 @@ return {
           method = 'status_manual',
         },
       },
+      motion = {
+        keepjumps = true,
+      },
     }
   end,
 }

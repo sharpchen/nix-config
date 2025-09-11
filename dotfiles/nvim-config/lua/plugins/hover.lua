@@ -2,15 +2,15 @@ return {
   'lewis6991/hover.nvim',
   event = 'BufReadPost',
   config = function()
-    require('hover').setup {
-      init = function()
-        require('hover.providers.lsp')
-        -- require('hover.providers.gh')
-        -- require('hover.providers.gh_user')
-        require('hover.providers.dap')
-        require('hover.providers.fold_preview')
-        require('hover.providers.diagnostic')
-      end,
+    require('hover').config {
+      providers = {
+        -- 'hover.providers.gh',
+        -- 'hover.providers.gh_user',
+        'hover.providers.lsp',
+        'hover.providers.dap',
+        'hover.providers.fold_preview',
+        'hover.providers.diagnostic',
+      },
       preview_opts = {
         border = 'single',
       },
@@ -24,24 +24,18 @@ return {
       mouse_delay = 1000,
     }
 
-    -- Setup keymaps
-    vim.keymap.set('n', 'K', require('hover').hover, { desc = 'hover.nvim' })
-    vim.keymap.set(
-      'n',
-      'gK',
-      require('hover').hover_select,
-      { desc = 'hover.nvim (select)' }
-    )
+    vim.keymap.set('n', 'K', require('hover').open, { desc = 'hover.nvim' })
+    vim.keymap.set('n', 'gK', require('hover').select, { desc = 'hover.nvim (select)' })
     vim.keymap.set(
       'n',
       '<C-p>',
-      function() require('hover').hover_switch('previous') end,
+      function() require('hover').switch('previous') end,
       { desc = 'hover.nvim (previous source)' }
     )
     vim.keymap.set(
       'n',
       '<C-n>',
-      function() require('hover').hover_switch('next') end,
+      function() require('hover').switch('next') end,
       { desc = 'hover.nvim (next source)' }
     )
     vim.api.nvim_create_autocmd('FileType', {

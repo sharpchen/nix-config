@@ -16,12 +16,7 @@ require('config.wsl') -- requires plugin
 require('utils.lsp') -- tasks
 require('utils.dap') -- tasks
 
-if vim.g.started_by_firenvim then
-  vim.o.laststatus = 0
-  vim.o.background = 'light'
-end
-
-local colo = { 'Eva-Dark', 'vscode', 'kanagawa', 'rose-pine-moon' }
+local colo = { 'Eva-Dark', 'vscode', 'kanagawa-dragon', 'rose-pine-moon' }
 if IsWindows then
   vim.cmd.colorscheme('vscode')
 else

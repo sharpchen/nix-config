@@ -71,3 +71,6 @@ readonly
 filetype
 clr
 github
+colorscheme
+lua
+keycode

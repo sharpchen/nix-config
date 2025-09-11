@@ -30,6 +30,7 @@ M.replace_cword = function(new_word)
   vim.api.nvim_feedkeys('viw"_c' .. new_word, 'nx', false)
 end
 
+-- WARN: should prefer vim.keycode()
 --- replace termcode
 ---@param str string termcode seq
 ---@return string

@@ -23,6 +23,7 @@ return {
         sn(nil, fmt('function() {} end', { ins(1) })),
         sn(nil, fmt("'<cmd>{}<CR>'", { ins(1) })),
         sn(nil, fmt("':{}<CR>'", { ins(1) })),
+        sn(nil, fmt("'{}'", { ins(1) })),
       }),
       ins(4),
     })

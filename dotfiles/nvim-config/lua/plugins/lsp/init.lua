@@ -43,7 +43,7 @@ return {
           if vim.fs.root(0, 'tree-sitter.json') then vim.lsp.stop_client(client.id) end
         end,
       })
-      lsp.setup('bashls')
+      lsp.setup('bashls') -- settings: https://github.com/bash-lsp/bash-language-server/blob/main/server/src/config.ts
       lsp.setup('emmet_language_server')
       lsp.setup('jsonls')
       lsp.setup('cssls')
@@ -53,13 +53,17 @@ return {
       lsp.setup('marksman')
       lsp.setup('eslint')
       lsp.setup('fsautocomplete', {
-        on_init = lsp.event.disable_semantic,
+        on_attach = lsp.event.disable_semantic,
       })
       lsp.setup('clangd')
       lsp.setup('neocmake')
       -- lsp.setup('csharp_ls', {
       --   on_init = lsp.event.disable_semantic,
       --   filetypes = lsp.config.ft_extend('csharp_ls', { 'axaml-cs' }),
+      -- })
+      -- vim.lsp.config('roslyn_ls', {
+      --   on_init = function(client) lsp.event.disable_semantic(client) end,
+      --   filetypes = lsp.config.ft_extend('roslyn_ls', { 'axaml-cs' }),
       -- })
       lsp.setup('basedpyright', {
         settings = {

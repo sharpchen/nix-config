@@ -230,8 +230,4 @@ vim.api.nvim_create_user_command(
   { nargs = 1 }
 )
 
-vim.api.nvim_create_user_command(
-  'W',
-  function() vim.cmd('noautocmd w') end,
-  { desc = 'pure write' }
-)
+vim.api.nvim_create_user_command('W', 'noautocmd w', { desc = 'pure write' })

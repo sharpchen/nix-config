@@ -78,6 +78,18 @@ return {
         ['gx'] = 'actions.open_external',
         ['g.'] = { 'actions.toggle_hidden', mode = 'n' },
         ['g\\'] = { 'actions.toggle_trash', mode = 'n' },
+        ['<leader>yx'] = {
+          callback = function()
+            require('oil.actions').copy_entry_path.callback()
+            vim.fn.setreg('+', vim.fn.getreg(vim.v.register))
+          end,
+        },
+        ['yx'] = {
+          callback = function()
+            require('oil.actions').copy_entry_path.callback()
+            vim.fn.setreg('0', vim.fn.getreg(vim.v.register))
+          end,
+        },
       },
       -- Set to false to disable all of the above keymaps
       use_default_keymaps = true,
@@ -196,5 +208,10 @@ return {
         border = 'rounded',
       },
     }
+
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = 'oil',
+      callback = function(args) vim.keymap.set('n', 'J', '<nop>', { buffer = args.buf }) end,
+    })
   end,
 }

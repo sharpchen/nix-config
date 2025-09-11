@@ -64,15 +64,36 @@ return {
         custom_textobjects = {
           f = ts_spec { a = '@function.outer', i = '@function.inner' },
           c = ts_spec { a = '@class.outer', i = '@class.inner' },
-          s = ts_spec {
+          C = ts_spec { a = '@comment.outer', i = '@comment.outer' },
+          o = ts_spec {
             a = { '@conditional.outer', '@loop.outer' },
             i = { '@conditional.inner', '@loop.inner' },
+          },
+          p = ts_spec {
+            a = '@parameter.outer',
+            i = '@parameter.inner',
+          },
+          S = ts_spec {
+            a = '@string.outer',
+            i = '@string.inner',
           },
         },
         mappings = {
           goto_left = '',
           goto_right = '',
         },
+        search_method = 'cover_or_next',
+      }
+    end,
+  },
+  {
+    'bkoropoff/clipipe',
+    enabled = IsWindows,
+    config = function()
+      require('clipipe').setup {
+        keep_line_endings = false, -- Set to true to disable \r\n conversion on Windows
+        download = false, -- Download pre-built binary if needed
+        build = true, -- Build from source if needed
       }
     end,
   },

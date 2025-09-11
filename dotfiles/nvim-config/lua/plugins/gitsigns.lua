@@ -29,7 +29,7 @@ return {
         end
 
         -- Navigation
-        map('n', ']c', function()
+        map('n', ']h', function()
           if vim.wo.diff then
             vim.cmd.normal { ']c', bang = true }
           else
@@ -37,7 +37,7 @@ return {
           end
         end, { desc = 'Navigate to next hunk' })
 
-        map('n', '[c', function()
+        map('n', '[h', function()
           if vim.wo.diff then
             vim.cmd.normal { '[c', bang = true }
           else
@@ -76,7 +76,7 @@ return {
         map(
           'n',
           '<leader>hb',
-          function() gitsigns.blame_line { full = true } end,
+          function() gitsigns.blame { full = true } end,
           { desc = 'Show [B]lame Text' }
         )
 

@@ -8,12 +8,14 @@ local M = {
   has_nix = vim.fn.executable('nix') == 1,
   has_pwsh = vim.fn.executable('pwsh') == 1,
   has_scoop = vim.fn.executable('scoop') == 1,
+  is_wsl = vim.uv.os_uname().release:find('WSL2') ~= nil,
 }
 
 _G.IsWindows = M.is_windows
 _G.IsLinux = M.is_linux
 _G.HasNix = M.has_nix
 _G.HasScoop = M.has_scoop
+_G.IsWSL = M.is_wsl
 
 M.new_line = M.is_windows and '\r\n' or '\n'
 
