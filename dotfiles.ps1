@@ -38,15 +38,15 @@ function mklink {
 }
 
 if (Get-Command scoop -ea SilentlyContinue) {
-    if (& { scoop which librewolf *> $null; 0 -eq $LASTEXITCODE }) {
+    if (& { scoop prefix librewolf *> $null; 0 -eq $LASTEXITCODE }) {
         mklink (Join-Path (scoop prefix librewolf) 'Profiles/Default/librewolf.overrides.cfg') ./dotfiles/librewolf.cfg
     }
 
-    if (& { scoop which git *> $null; 0 -eq $LASTEXITCODE }) {
+    if (& { scoop prefix git *> $null; 0 -eq $LASTEXITCODE }) {
         [Environment]::SetEnvironmentVariable('YAZI_FILE_ONE', (Join-Path (scoop prefix git) 'usr\bin\file.exe'), 'User')
     }
 
-    if (& { scoop which sioyek *> $null; 0 -eq $LASTEXITCODE }) {
+    if (& { scoop prefix sioyek *> $null; 0 -eq $LASTEXITCODE }) {
         mklink (Join-Path (scoop prefix sioyek) 'prefs_user.config') ./dotfiles/sioyek.prefs_user.config
         mklink (Join-Path (scoop prefix sioyek) 'keys_user.config') ./dotfiles/sioyek.keys_user.config
     }
@@ -107,3 +107,5 @@ if (& { scoop prefix vscodium *> $null; 0 -eq $LASTEXITCODE }) {
     mklink (Join-Path (scoop prefix vscodium) 'data/user-data/User/keybindings.json') ./dotfiles/vscode.keybinds.json
     mklink (Join-Path (scoop prefix vscodium) 'data/user-data/User/settings.json') ./dotfiles/vscode.settings.json
 }
+
+mklink ~/.ssh/config ./dotfiles/sshconfig
