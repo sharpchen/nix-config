@@ -36,8 +36,8 @@
     zoxide
     devenv
     ncdu
-    dict
-    dictdDBs.wiktionary
+    # dict
+    # dictdDBs.wiktionary
     nh
     tree
     tlrc
@@ -47,19 +47,19 @@
     nurl
     nix-init
   ];
-  home.file.".dict/.dict.conf".text = ''
-    server localhost
-  '';
-  home.file.".dict/dictd.conf".text = ''
-    global {
-        pid_file ${config.home.homeDirectory}/.dict/.dictd.pid
-    }
-    database wiktionary {
-        data ${pkgs.dictdDBs.wiktionary}/share/wiktionary-en.dict.dz
-        index ${pkgs.dictdDBs.wiktionary}/share/wiktionary-en.index
-    }
-  '';
-  home.file.".dict/.dictd.pid".text = "";
+  # home.file.".dict/.dict.conf".text = ''
+  #   server localhost
+  # '';
+  # home.file.".dict/dictd.conf".text = ''
+  #   global {
+  #       pid_file ${config.home.homeDirectory}/.dict/.dictd.pid
+  #   }
+  #   database wiktionary {
+  #       data ${pkgs.dictdDBs.wiktionary}/share/wiktionary-en.dict.dz
+  #       index ${pkgs.dictdDBs.wiktionary}/share/wiktionary-en.index
+  #   }
+  # '';
+  # home.file.".dict/.dictd.pid".text = "";
 
   home.file.".config/lazygit/config.yml".source =
     config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/lazygit.config.yml";
