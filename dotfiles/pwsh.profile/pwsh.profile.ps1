@@ -1,6 +1,6 @@
 #Requires -Modules PSReadLine, PSFzf
 
-Import-Module PSReadLine, PSFzf
+Import-Module PSReadLine, PSFzf, git-completion
 
 $env:PSModulePath += "$([IO.Path]::PathSeparator)$PSScriptRoot"
 

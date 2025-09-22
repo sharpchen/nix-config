@@ -374,6 +374,18 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
         }
     }
 
+    function pathclean {
+        $path = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User) -split [IO.Path]::PathSeparator
+
+        $invalid = $path | Where-Object { -not (Test-Path -LiteralPath $_) }
+
+        [System.Environment]::SetEnvironmentVariable(
+            'Path',
+            [System.Linq.Enumerable]::Except([string[]]$path, [string[]]$invalid) -join [IO.Path]::PathSeparator,
+            [System.EnvironmentVariableTarget]::User
+        )
+    }
+
     function trash {
         param (
             [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
@@ -389,6 +401,28 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
                 [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
             } elseif  ([System.IO.Directory]::Exists($_)) {
                 [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
+            }
+        }
+    }
+
+    function exch {
+        param(
+            [Parameter(Position = 0 , Mandatory)]
+            [string]$One,
+            [Parameter(Position = 1, Mandatory)]
+            [string]$Another
+        )
+
+        begin {
+            # TODO: waiting mv --exchange flag being implemented on uutils/coreutils
+            throw [System.NotImplementedException]::new('waiting mv --exchange flag being implemented on uutils/coreutils')
+            $One = (Resolve-Path $One).Path
+            $Another = (Resolve-Path $Another).Path
+        }
+
+        end {
+            if (Get-Command mv -CommandType Application -ErrorAction Stop -OutVariable mv) {
+                & $mv[0] $One $Another --exchange
             }
         }
     }
@@ -432,6 +466,7 @@ function p {
         }
         $dest = $folders | ForEach-Object FullName | fzf
         if ($dest) {
+            Push-Location
             Set-Location $dest
         }
     }
@@ -525,6 +560,21 @@ function all {
 
     end {
         $true
+    }
+}
+
+function except {
+    param (
+        [Parameter(ValueFromPipeline)]
+        [psobject]$InputObject,
+        [Parameter(Position = 1, Mandatory)]
+        [psobject[]]$Exclude
+    )
+
+    process {
+        if ($_ -cnotin $Exclude) {
+            $_
+        }
     }
 }
 

@@ -1,15 +1,15 @@
 Set-Alias lg lazygit
 Set-Alias dn dotnet
 Set-Alias v nvim
+Set-Alias yt-dlp ydl
 Set-Alias tsp Test-Path
-Set-Alias ms Measure-Object
-Set-Alias msc Measure-Command
+Set-Alias mes Measure-Object
+Set-Alias mesc Measure-Command
 Set-Alias for ForEach-Object
 Set-Alias map ForEach-Object
 Set-Alias sel Select-Object
 Set-Alias gpd Get-PSDrive
 Set-Alias gpp Get-PSProvider
-Set-Alias now Get-Date
 Set-Alias cond Where-Object
 Set-Alias expand Resolve-Path
 Set-Alias order Sort-Object
@@ -123,5 +123,18 @@ function rd {
 }
 
 Register-ArgumentCompleter -CommandName rd -ParameterName Path -ScriptBlock {
-    Get-ChildItem -Directory | ForEach-Object Name
+    param(
+        $wordToComplete,
+        $commandAst,
+        $cursorPosition
+    )
+    Get-ChildItem -LiteralPath $PWD -Directory | ForEach-Object Name
+}
+
+function now {
+    Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+}
+
+function rand {
+    $input | Sort-Object { Get-Random }
 }

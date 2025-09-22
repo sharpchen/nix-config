@@ -28,7 +28,7 @@ Set-PSReadLineKeyHandler -Chord ' , ' -ViMode Command -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::BackwardWord()
     [Microsoft.PowerShell.PSConsoleReadLine]::DeleteWord()
 }
-Set-PSReadLineKeyHandler -Chord 'y,y' -ViMode Command -ScriptBlock {
+Set-PSReadLineKeyHandler -Chord 'y,x' -ViMode Command -ScriptBlock {
     if ($env:WSL_DISTRO_NAME) {
         if (Get-Command win32yank.exe -ErrorAction SilentlyContinue -OutVariable clip) {
             $PWD.Path | & $clip -i
