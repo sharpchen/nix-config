@@ -84,7 +84,7 @@ wezterm.on('update-right-status', function(window, _)
 end)
 
 local act = wezterm.action
-config.leader = { key = 'a', mods = 'CTRL', timeout_miliseconds = 2000 }
+config.leader = { key = 's', mods = 'CTRL', timeout_miliseconds = 2000 }
 config.keys = {
   {
     mods = 'LEADER',
