@@ -6,8 +6,10 @@ alias ls='ls --color=auto -h'
 alias ll='ls -la'
 alias grep='grep --color=auto -i'
 alias md='mkdir -p'
+alias ni='touch'
 alias rd='rm -rf'
 alias rm='rm -i'
+alias ri='rm'
 alias cp='cp -i'
 alias mv='mv -i'
 alias ..='cd ..'
@@ -21,10 +23,18 @@ alias so='source ~/.bashrc'
 alias :q='exit'
 alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
 alias lg=lazygit
-alias p='cd $(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)'
 alias vim='nvim -u ~/.vimrc'
 alias v=nvim
 alias ngc='nix-collect-garbage -d && sudo $(which nix-collect-garbage) -d'
+alias ydl='yt-dlp'
+alias p='_project_switch'
+
+_project_switch() {
+    local dir=$(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)
+    if [[ -n "$dir" ]]; then
+        cd "$dir" || return
+    fi
+}
 
 if type nix-store &>/dev/null; then
     #######################################
@@ -37,19 +47,13 @@ if type nix-store &>/dev/null; then
     }
 
     if type fzf &>/dev/null; then
-        _fzf_complete_nsp() {
-            _fzf_complete -- "$@" < <(compgen -c | sort -u)
-        }
-        _fzf_complete_type() {
-            _fzf_complete -- "$@" < <(compgen -c | sort -u)
-        }
-        _fzf_complete_which() {
+        _fzf_complete_exe() {
             _fzf_complete -- "$@" < <(compgen -c | sort -u)
         }
 
-        complete -F _fzf_complete_nsp nsp
-        complete -F _fzf_complete_type type
-        complete -F _fzf_complete_which which
+        complete -F _fzf_complete_exe nsp
+        complete -F _fzf_complete_exe type
+        complete -F _fzf_complete_exe which
     fi
 fi
 
@@ -107,10 +111,17 @@ if type zoxide &>/dev/null; then
 fi
 
 # share proxy from host in WSL when using NAT mode
-if [[ $(uname --kernel-release) =~ 'WSL' ]]; then
-    ip_bridge="$(ip route show | grep -i default | awk '{ print $3}')"
-    export HTTP_PROXY="http://${ip_bridge}:10809"
-    export HTTPS_PROXY="https://${ip_bridge}:10809"
-    export http_proxy="http://${ip_bridge}:10809"
-    export https_proxy="https://${ip_bridge}:10809"
-fi
+# if [[ $(uname --kernel-release) =~ 'WSL' ]]; then
+#     ip_bridge="$(ip route show | grep -i default | awk '{ print $3}')"
+#     export HTTP_PROXY="http://${ip_bridge}:10809"
+#     export HTTPS_PROXY="https://${ip_bridge}:10809"
+#     export http_proxy="http://${ip_bridge}:10809"
+#     export https_proxy="https://${ip_bridge}:10809"
+#
+#     noproxy() {
+#         unset HTTP_PROXY
+#         unset HTTPS_PROXY
+#         unset http_proxy
+#         unset https_proxy
+#     }
+# fi
