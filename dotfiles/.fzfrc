@@ -1,1 +1,1 @@
---cycle --height 40% --layout=reverse --margin=1 --padding=1 --info=inline
+--cycle --height 40% --layout=reverse --margin=1 --padding=1 --info=inline --bind 'tab:down,shift-tab:up'
