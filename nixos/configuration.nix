@@ -25,5 +25,16 @@
   time.timeZone = "Asia/Shanghai";
   networking.timeServers = lib.mkBefore [ "ntp.ntsc.ac.cn" ];
 
+  fonts.packages = with pkgs; [
+    ibm-plex
+    jetbrains-mono
+    cascadia-code
+    roboto-mono
+    lilex
+    noto-fonts-color-emoji
+    noto-fonts-emoji
+    nerd-fonts.symbols-only
+  ];
+
   system.stateVersion = "24.11"; # you don't have to change this value
 }
