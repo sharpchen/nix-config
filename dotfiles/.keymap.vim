@@ -74,8 +74,10 @@ xnoremap ? <C-\><C-n>`>?\%V
 nnoremap <silent> yx :let @0 = expand('<cfile>')<CR>
 nnoremap <silent> <leader>yx :let @+ = expand('<cfile>')<CR>
 nnoremap <silent> <leader>yf :let @+ = expand('%:p')<CR>
-nnoremap g[ <C-o>
-nnoremap g] <C-i>
+nnoremap <expr> j v:count ? 'j' : 'gj'
+nnoremap <expr> k v:count ? 'k' : 'gk'
+nnoremap gj <C-o>
+nnoremap gk <C-i>
 nnoremap x "_x
 nnoremap X x
 nnoremap <silent> <M-[> :tabp<CR>

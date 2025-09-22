@@ -99,8 +99,8 @@ nnoremap <Tab> %
 xnoremap <Tab> $%
 xnoremap / <C-\><C-n>`</\%V
 xnoremap ? <C-\><C-n>`>?\%V
-nnoremap g[ <C-o>
-nnoremap g] <C-i>
+nnoremap gj <C-o>
+nnoremap gk <C-i>
 nnoremap x "_x
 nnoremap X x
 nnoremap <C-j> <C-w>j
