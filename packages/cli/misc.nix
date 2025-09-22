@@ -6,7 +6,6 @@
     cargo
     wget
     openssh
-    lazygit
     tree-sitter
     ripgrep
     gzip
@@ -46,6 +45,10 @@
     file
     nurl
     nix-init
+    bottom
+    yt-dlp
+    glib
+    dig
   ];
   # home.file.".dict/.dict.conf".text = ''
   #   server localhost
@@ -61,8 +64,6 @@
   # '';
   # home.file.".dict/.dictd.pid".text = "";
 
-  home.file.".config/lazygit/config.yml".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/lazygit.config.yml";
   home.file.".config/yazi/yazi.toml".source =
     config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/yazi.toml";
   home.file.".config/yazi/keymap.toml".source =
