@@ -18,7 +18,7 @@ return {
     enabled = true,
   },
   { 'Bilal2453/luvit-meta', lazy = true },
-  { 'gonstoll/wezterm-types', lazy = true },
+  { 'DrKJeff16/wezterm-types', lazy = true, version = false },
   { 'LuaCATS/luassert', lazy = true },
   { 'LuaCATS/busted', lazy = true },
 }

@@ -14,40 +14,33 @@ local postfix = require('luasnip.extras.postfix').postfix
 local ts_post = require('luasnip.extras.treesitter_postfix').treesitter_postfix
 local postfix_builtin = require('luasnip.extras.treesitter_postfix').builtin
 
-local wrap_cs_stm = require('utils.luasnip').ts_wrap_stm {
-  lang = 'c_sharp',
+local wrap_js_stm = require('utils.luasnip').ts_wrap_stm {
+  lang = 'javascript',
   query = [[
             [
-              (invocation_expression)
-              (member_access_expression)
-              (element_access_expression)
-              (integer_literal)
-              (real_literal)
-              (string_literal)
-              (character_literal)
+              (member_expression)
+              (subscript_expression)
+              (call_expression)
+              (new_expression)
+              (string)
+              (number)
               (identifier)
             ] @prefix
         ]],
 }
 
 return {
-  wrap_cs_stm { trig = '.var', format = 'var {} = {stm};' },
-  wrap_cs_stm { trig = '.wl', format = 'Console.WriteLine({stm});' },
-  wrap_cs_stm {
-    trig = '.foreach',
-    format = [[
-  foreach (var {item} in {stm}) {{
-    {}
-  }}
-  ]],
-  },
+  wrap_js_stm { trig = '.const', format = 'const {} = {stm}' },
+  wrap_js_stm { trig = '.var', format = 'var {} = {stm}' },
+  wrap_js_stm { trig = '.let', format = 'let {} = {stm}' },
+  wrap_js_stm { trig = '.wl', format = 'console.log({stm})' },
   snip(
     'lambda',
     fmt('({param}) => {body}', {
       param = ins(1),
       body = oneof(2, {
-        sn(nil, fmta('{ <> }', { ins(1) })),
         ins(nil),
+        sn(nil, fmta('{ <> }', { ins(1) })),
       }),
     })
   ),

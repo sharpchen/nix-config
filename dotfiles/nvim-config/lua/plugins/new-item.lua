@@ -5,7 +5,12 @@ return {
   event = 'VeryLazy',
   submodules = true,
   config = function()
-    require('new-item').setup { picker = { name = 'snacks', preview = false } }
+    require('new-item').setup {
+      picker = {
+        name = 'snacks',
+        preview = false,
+      },
+    }
     local groups = require('new-item.groups')
     local file = require('new-item.items').FileItem
     local folder = require('new-item.items').FolderItem
@@ -15,6 +20,7 @@ return {
       cond = true,
       items = {
         file {
+          iname = 'markdown',
           label = 'Markdown file',
           filetype = 'markdown',
           suffix = '.md',
@@ -24,6 +30,7 @@ return {
     }
     groups.config:append {
       file {
+        iname = 'stylua',
         label = 'stylua',
         link = vim.fn.expand('~/.config/.stylua.toml'),
         filetype = 'toml',
@@ -42,6 +49,7 @@ return {
       end,
       items = {
         file {
+          iname = 'lazyplug',
           label = 'Lazy plug',
           content = util.dedent([[
             ---@module 'lazy'

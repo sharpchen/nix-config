@@ -10,6 +10,7 @@ return {
         stopline = 500,
       },
       matchparen = {
+        enabled = 0,
         offscreen = {
           method = 'status_manual',
         },

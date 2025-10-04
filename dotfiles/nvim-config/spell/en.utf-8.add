@@ -74,3 +74,6 @@ github
 colorscheme
 lua
 keycode
+vscode
+async
+treesitter

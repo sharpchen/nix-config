@@ -1,6 +1,6 @@
 return {
   'glacambre/firenvim',
-  cond = IsWindows,
+  cond = vim.g.started_by_firenvim,
   build = ':call firenvim#install(0)',
   config = function()
     vim.api.nvim_create_autocmd('UIEnter', {
@@ -14,15 +14,36 @@ return {
     })
     vim.api.nvim_create_autocmd('BufEnter', {
       pattern = 'github.com_*.txt',
+      callback = function(args) vim.bo.filetype = 'markdown' end,
+    })
+    vim.api.nvim_create_autocmd('BufEnter', {
       callback = function(args)
-        vim.bo.filetype = 'markdown'
-        vim.keymap.set('i', '<C-v>', '<C-r><C-p>+', { buffer = args.buf })
+        if vim.g.started_by_firenvim then
+          vim.keymap.set('i', '<C-v>', '<C-r><C-p>+', { buffer = args.buf })
+        end
       end,
     })
 
+    local disable = vim
+      .iter({
+        'https?://github.com.*/blob/*.',
+        'https?://chat.*',
+        'https?://gemini.*',
+        'https?://www.overleaf.com/.*',
+        'https?://live.bilibili.com/.*',
+        'https?://grok.*',
+      })
+      :fold({}, function(sum, curr)
+        sum[curr] = {
+          takeover = 'never',
+          priority = 1,
+        }
+        return sum
+      end)
+
     vim.g.firenvim_config = {
       globalSettings = { alt = 'all' },
-      localSettings = {
+      localSettings = vim.tbl_extend('error', {
         ['.*'] = {
           cmdline = 'neovim',
           content = 'text',
@@ -30,27 +51,7 @@ return {
           selector = 'textarea',
           takeover = 'always',
         },
-        ['https?://github.com.*/blob/*.'] = {
-          takeover = 'never',
-          priority = 1,
-        },
-        ['https?://chat.*'] = { -- disable for ai chat
-          takeover = 'never',
-          priority = 1, -- priority matters to override the .* pattern
-        },
-        ['https?://gemini.*'] = {
-          takeover = 'never',
-          priority = 1,
-        },
-        ['https?://www.overleaf.com/.*'] = {
-          takeover = 'never',
-          priority = 1,
-        },
-        ['https?://live.bilibili.com/.*'] = {
-          takeover = 'never',
-          priority = 1,
-        },
-      },
+      }, disable),
     }
   end,
 }

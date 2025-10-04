@@ -143,6 +143,7 @@ vim.api.nvim_create_autocmd('FileType', {
       or bufname:match('.*glibc.*/include/')
       or bufname:match('%.log$')
       or bufname:match('^/nix/store/')
+      or bufname:match('.*%.cache.+')
       or vim.startswith(bufname, vim.env.VIMRUNTIME)
 
     if cond then vim.bo[args.buf].modifiable = false end

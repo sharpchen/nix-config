@@ -35,6 +35,7 @@ vim.opt.guicursor =
 if vim.fn.executable('rg') == 1 then vim.opt.grepprg = 'rg --vimgrep --pcre2 ' end
 vim.opt.spell = true
 vim.opt.spelloptions = 'camel'
+vim.opt.spelllang:append { 'cjk' } -- disable spellcheck for East Asian characters
 
 vim.opt.showmode = false
 
@@ -226,6 +227,11 @@ vim.api.nvim_create_user_command(
 
 vim.api.nvim_create_user_command(
   'Edit',
+  function(args) vim.cmd.edit(vim.fs.joinpath(vim.fn.expand('%:p:h'), args.args)) end,
+  { nargs = 1 }
+)
+vim.api.nvim_create_user_command(
+  'E',
   function(args) vim.cmd.edit(vim.fs.joinpath(vim.fn.expand('%:p:h'), args.args)) end,
   { nargs = 1 }
 )

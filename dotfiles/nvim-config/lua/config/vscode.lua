@@ -47,11 +47,17 @@ require('lazy').setup {
 
 local vscode = require('vscode')
 
-vim.keymap.set(
-  'n',
-  '<leader>k',
-  function() vscode.action('editor.action.formatDocument') end
-)
+vim.notify = vscode.notify
+
+-- NOTE: because indentation is broken on paste
+vim.keymap.set('i', '<C-v>', '<C-r><C-p>+')
+
+vim.keymap.set('n', '<leader>o', function() vscode.call('outline.focus') end)
+
+vim.keymap.set('n', '<leader>k', function()
+  -- formatting(vscode.action()) is async here
+  vscode.action('editor.action.formatDocument')
+end)
 vim.keymap.set(
   'n',
   '<leader>ca',
@@ -61,14 +67,19 @@ vim.keymap.set(
 vim.keymap.set(
   'n',
   '<leader>ff',
-  [[<cmd>call VSCodeNotify('workbench.action.quickOpen', '')<CR>]],
+  function() vscode.call('workbench.action.quickOpen', { args = { '' } }) end,
   { desc = 'search files' }
 )
 
 vim.keymap.set(
   'n',
   [[<leader>fg]],
-  [[<cmd>call VSCodeNotify('workbench.action.quickOpen', '%'.expand('<cword>'))<CR>]],
+  function()
+    vscode.call(
+      'workbench.action.quickOpen',
+      { args = { '%' .. vim.fn.expand('<cword>') } }
+    )
+  end,
   { desc = 'desc' }
 )
 

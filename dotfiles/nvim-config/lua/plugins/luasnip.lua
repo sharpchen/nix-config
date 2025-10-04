@@ -19,13 +19,13 @@ return {
       },
     }
 
+    require('luasnip').filetype_extend('axaml-cs', { 'cs' })
+    require('luasnip.loaders.from_vscode').lazy_load()
     require('luasnip.loaders.from_lua').lazy_load {
       paths = { vim.fs.joinpath(vim.fn.stdpath('config'), 'lua', 'luasnip') },
     }
 
     vim.keymap.set({ 'i', 's' }, '<C-n>', '<Plug>luasnip-next-choice')
     vim.keymap.set({ 'i', 's' }, '<C-p>', '<Plug>luasnip-prev-choice')
-
-    require('luasnip.loaders.from_vscode').lazy_load()
   end,
 }

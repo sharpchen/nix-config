@@ -25,19 +25,6 @@ return {
     }
 
     vim.keymap.set('n', 'K', require('hover').open, { desc = 'hover.nvim' })
-    vim.keymap.set('n', 'gK', require('hover').select, { desc = 'hover.nvim (select)' })
-    vim.keymap.set(
-      'n',
-      '<C-p>',
-      function() require('hover').switch('previous') end,
-      { desc = 'hover.nvim (previous source)' }
-    )
-    vim.keymap.set(
-      'n',
-      '<C-n>',
-      function() require('hover').switch('next') end,
-      { desc = 'hover.nvim (next source)' }
-    )
     vim.api.nvim_create_autocmd('FileType', {
       pattern = 'help',
       callback = function(args)

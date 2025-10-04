@@ -149,4 +149,11 @@ return {
       }
     end,
   },
+  {
+    'ahkohd/buffer-sticks.nvim',
+    config = function()
+      require('buffer-sticks').setup()
+      vim.keymap.set('n', 'B', function() BufferSticks.jump() end)
+    end,
+  },
 }

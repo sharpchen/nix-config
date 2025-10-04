@@ -195,28 +195,46 @@ return {
       vim.api.nvim_create_user_command(
         'Term',
         function(args)
-          Snacks.terminal.open(
-            nil,
-            { cwd = vim.fn.expand('%:p:h'):gsub('^oil:', ''), auto_close = false }
-          )
+          Snacks.terminal.open(nil, {
+            cwd = vim.fn.expand('%:p:h'):gsub('^oil:', ''),
+            auto_close = false,
+          })
         end,
         { desc = 'open parent of current buffer in term' }
       )
-      vim.keymap.set(
-        'n',
-        [[<M-`>]],
-        function()
-          Snacks.terminal.open(
-            nil,
-            { cwd = vim.fn.expand('%:p:h'):gsub('^oil:', ''), auto_close = false }
-          )
-        end,
-        { desc = 'Open terminal on current path' }
-      )
+      local current_term ---@type snacks.win
+      vim.keymap.set('n', [[<M-`>]], function()
+        if not current_term then
+          current_term = Snacks.terminal.open(nil, {
+            cwd = vim.fn.expand('%:p:h'):gsub('^oil:', ''),
+            auto_close = false,
+            auto_insert = false,
+          })
+        else
+          current_term:toggle()
+          if not current_term.closed then
+            -- NOTE: if term is already exited
+            -- close the window and spawn a new one
+            if vim.bo.buftype ~= 'terminal' then
+              current_term:close()
+              current_term = Snacks.terminal.open(nil, {
+                cwd = vim.fn.expand('%:p:h'):gsub('^oil:', ''),
+                auto_close = false,
+                auto_insert = false,
+              })
+            end
+          end
+        end
+      end, { desc = 'Open terminal on current path' })
       vim.keymap.set(
         'n',
         [[<leader>fn]],
-        function() Snacks.picker.files { cwd = vim.env.VIMRUNTIME, hidden = true } end,
+        function()
+          Snacks.picker.files {
+            cwd = vim.env.VIMRUNTIME,
+            hidden = true,
+          }
+        end,
         { desc = 'search vim runtime files' }
       )
     end,

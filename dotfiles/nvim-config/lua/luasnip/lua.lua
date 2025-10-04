@@ -13,7 +13,46 @@ local ref = require('luasnip.extras').lambda
 local postfix = require('luasnip.extras.postfix').postfix
 local ts_post = require('luasnip.extras.treesitter_postfix').treesitter_postfix
 
+local wrap_lua_stm = require('utils.luasnip').ts_wrap_stm {
+  lang = 'lua',
+  query = [[
+            [
+              (function_call)
+              (function_declaration
+                name: (MISSING identifier)) ; function literal has missing name
+              (dot_index_expression)
+              (parenthesized_expression)
+              (table_constructor)
+              (string)
+              (number)
+              (identifier)
+            ] @prefix
+        ]],
+}
+
 return {
+  wrap_lua_stm { trig = '.local', format = 'local {} = {stm}' },
+  wrap_lua_stm { trig = '.wl', format = 'print({stm})' },
+  wrap_lua_stm { trig = '.append', format = 'table.insert({stm}, {})' },
+  wrap_lua_stm { trig = '.type', format = 'type({stm})' },
+  wrap_lua_stm { trig = '.assert', format = 'assert({stm})' },
+  wrap_lua_stm { trig = '.len', format = '#{stm}' },
+  wrap_lua_stm {
+    trig = '.for',
+    format = [[
+    for _, {value} in ipairs({stm}) do
+      {}
+    end
+  ]],
+  },
+  wrap_lua_stm {
+    trig = '.forp',
+    format = [[
+    for {key}, {value} in pairs({stm}) do
+      {}
+    end
+  ]],
+  },
   snip(
     'kmap',
     fmt("vim.keymap.set('{}', '{}', {}, {{ desc = '{}' }})", {

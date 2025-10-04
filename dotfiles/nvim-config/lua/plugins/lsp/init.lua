@@ -4,31 +4,18 @@ return {
   {
     'neovim/nvim-lspconfig',
     event = 'VeryLazy',
-    -- dependencies load after main spec
-    -- so we can load plugins on cond or enabled
-    dependencies = {
-      {
-        'yioneko/nvim-vtsls',
-        ft = { 'typescript', 'javascript' },
-        cond = require('utils.lsp').use_vtsls,
-      },
-    },
     config = function()
       local lsp = require('utils.lsp')
 
-      --#region delete this when all ls were managed by vim.lsp
-      require('lspconfig.ui.windows').default_options.border = 'rounded'
-      local lspconfig = require('lspconfig')
-      lspconfig.util.default_config =
-        vim.tbl_extend('force', lspconfig.util.default_config, {
-          capabilities = require('blink.cmp').get_lsp_capabilities(),
-          on_attach = lsp.event.default_attach,
-        })
-      --#endregion
-
       vim.lsp.config('*', {
         capabilities = require('blink.cmp').get_lsp_capabilities(),
-        on_attach = lsp.event.default_attach,
+      })
+      -- NOTE: use LspAttach instead of on_attach for default use
+      vim.api.nvim_create_autocmd('LspAttach', {
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if client then lsp.event.default_attach(client, args.buf) end
+        end,
       })
 
       if lsp.use_vtsls then
@@ -129,8 +116,15 @@ return {
           '--stdio',
         },
       }
+      vim.api.nvim_create_autocmd('LspAttach', {
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if client and client.name == 'roslyn' then
+            lsp.event.disable_semantic(client)
+          end
+        end,
+      })
       vim.lsp.config('roslyn', {
-        on_init = function(client) lsp.event.disable_semantic(client) end,
         filetypes = lsp.config.ft_extend('roslyn_ls', { 'axaml-cs' }),
       })
     end,
@@ -143,5 +137,10 @@ return {
         require('csharpls_extended').buf_read_cmd_bind()
       end
     end,
+  },
+  {
+    'yioneko/nvim-vtsls',
+    ft = { 'typescript', 'javascript' },
+    cond = require('utils.lsp').use_vtsls,
   },
 }

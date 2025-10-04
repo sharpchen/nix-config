@@ -93,3 +93,4 @@ nnoremap <C-c> <C-w>q
 
 nnoremap <silent> <leader>yr :let @+ = expand("%:~:.")<CR>
 nnoremap <silent> yr :let @0 = expand("%:~:.")<CR>
+nnoremap <F1> <nop>
