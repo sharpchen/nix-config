@@ -1,20 +1,24 @@
 // Place your key bindings in this file to override the defaults
 [
     {
+        "key": "alt+.",
         "command": "workbench.action.nextEditor",
-        "key": "alt+."
+        "when": "editorTextFocus"
     },
     {
+        "key": "alt+,",
         "command": "workbench.action.previousEditor",
-        "key": "alt+,"
+        "when": "editorTextFocus"
     },
     {
+        "key": "alt-c",
         "command": "workbench.action.closeActiveEditor",
-        "key": "alt-c"
+        "when": "editorTextFocus"
     },
     {
+        "key": "alt-a",
         "command": "workbench.action.closeAllEditors",
-        "key": "alt-a"
+        "when": "editorTextFocus"
     },
     {
         "key": "ctrl+j",
@@ -35,22 +39,22 @@
     {
         "key": "alt+j",
         "command": "editor.action.moveLinesDownAction",
-        "when": "neovim.mode == 'normal'"
+        "when": "neovim.init && neovim.mode == normal"
     },
     {
         "key": "alt+k",
         "command": "editor.action.moveLinesUpAction",
-        "when": "neovim.mode == 'normal'"
+        "when": "neovim.init && neovim.mode == normal"
     },
     {
         "key": "alt+j",
         "command": "editor.action.moveLinesDownAction",
-        "when": "neovim.mode == 'insert'"
+        "when": "neovim.init && neovim.mode == insert"
     },
     {
         "key": "alt+k",
         "command": "editor.action.moveLinesUpAction",
-        "when": "neovim.mode == 'insert'"
+        "when": "neovim.init && neovim.mode == insert"
     },
         {
         "key": "ctrl+j",
@@ -72,5 +76,48 @@
         "command": "workbench.action.quickOpenSelectPrevious",
         "when": "inQuickOpen"
     },
+        {
+        "key": "ctrl+h",
+        "command": "workbench.action.navigateLeft",
+        "when": "neovim.init && neovim.mode != insert"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.navigateRight",
+        "when": "neovim.init && neovim.mode != insert"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.navigateUp",
+        "when": "neovim.init && neovim.mode != insert && !inQuickOpen"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.navigateDown",
+        "when": "neovim.init && neovim.mode != insert && !inQuickOpen"
+    },
+    {
+        "key": "alt+c",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "sideBarFocus"
+    },
+    {
+        "command": "-outline.focus",
+        "key": "space o",
+        "when": "editorTextFocus && neovim.mode == normal"
+    },
+    {
+        "key": "escape",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "outlineFocused"
+    },
+    {
+        "key": "alt+enter",
+        "command": "workbench.action.toggleFullScreen"
+    },
+    {
+        "key": "alt+`",
+        "command": "workbench.action.terminal.toggleTerminal"
+    }
 ]
 

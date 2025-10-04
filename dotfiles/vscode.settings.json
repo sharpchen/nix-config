@@ -12,6 +12,9 @@
     "editor.scrollBeyondLastLine": false,
     "editor.formatOnSave": true,
     "editor.semanticHighlighting.enabled": true,
+    "terminal.integrated.commandsToSkipShell": [
+        "workbench.action.closePanel"
+    ],
 
     "files.trimTrailingWhitespace": true,
 
