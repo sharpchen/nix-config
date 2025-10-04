@@ -33,7 +33,7 @@ nnoremap K :vsc Edit.QuickInfo<CR>
 noremap <leader>fg :vsc Edit.GoToText<CR>
 nnoremap <leader>ff :vsc Edit.GoToFile<CR>
 nnoremap gcc :vsc Edit.ToggleLineComment<CR><Esc>
-xnoremap gc :vsc Edit.ToggleLineComment<CR><Esc>
+xnoremap gc :vsc Edit.ToggleLineComment<CR>|<Esc>
 " nnoremap <leader>so :source ~/.vsvimrc<CR>
 nnoremap <leader>k :vsc Edit.FormatDocument<CR>
 
