@@ -481,9 +481,8 @@ function ds {
         [string]$Unit,
 
         [Parameter(ValueFromPipelineByPropertyName, ValueFromPipeline, ParameterSetName = 'Pipeline')]
-        [ValidateScript({ [IO.File]::Exists((Resolve-Path $_)) })]
-        [Alias('PSPath')]
-        [string]$Path
+        [Alias('FullName')]
+        [string]$InputObject
     )
     begin {
         if (-not $Dir) {
@@ -494,9 +493,9 @@ function ds {
     end {
         if (Get-Command du -CommandType Application -ErrorAction Ignore -OutVariable du) {
             if ($PSCmdlet.ParameterSetName -eq 'Pipeline') {
-                $length = (((& $du[0] --bytes --total --summarize @input)[-1] -split '\s+')[0]) -as [long]
+                $length = (((& $du[0] -L --bytes --total --summarize @input)[-1] -split '\s+')[0]) -as [long]
             } else {
-                $length = (((& $du[0] --bytes --total --summarize $Dir)[-1] -split '\s+')[0]) -as [long]
+                $length = (((& $du[0] -L --bytes --total --summarize $Dir)[-1] -split '\s+')[0]) -as [long]
             }
         } else {
             if ($PSCmdlet.ParameterSetName -eq 'Pipeline') {
@@ -575,6 +574,21 @@ function except {
         if ($_ -cnotin $Exclude) {
             $_
         }
+    }
+}
+
+function skip {
+    param (
+        [uint]$Count
+    )
+    begin {
+        $i = 1
+    }
+    process {
+        if ($i -gt $Count) {
+            $_
+        }
+        $i++
     }
 }
 

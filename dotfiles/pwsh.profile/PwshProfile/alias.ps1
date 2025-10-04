@@ -1,7 +1,7 @@
 Set-Alias lg lazygit
 Set-Alias dn dotnet
 Set-Alias v nvim
-Set-Alias yt-dlp ydl
+Set-Alias ydl yt-dlp
 Set-Alias tsp Test-Path
 Set-Alias mes Measure-Object
 Set-Alias mesc Measure-Command
@@ -124,11 +124,21 @@ function rd {
 
 Register-ArgumentCompleter -CommandName rd -ParameterName Path -ScriptBlock {
     param(
+        $commandName,
+        $parameterName,
         $wordToComplete,
         $commandAst,
-        $cursorPosition
+        $fakeBoundParameters
     )
-    Get-ChildItem -LiteralPath $PWD -Directory | ForEach-Object Name
+    $default = Get-ChildItem -LiteralPath $PWD -Directory
+    $res = $default | Where-Object Name -Like "*$wordToComplete*"
+    if ($res) {
+        $res | ForEach-Object Name
+    } else {
+        # NOTE: $res might be empty
+        # so we fallback to all folders
+        $default | ForEach-Object Name
+    }
 }
 
 function now {
