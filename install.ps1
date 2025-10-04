@@ -16,6 +16,7 @@ if (-not (Get-Command scoop -ea SilentlyContinue)) {
 }
 
 scoop bucket add extras
+scoop bucket add versions
 scoop bucket add nerd-fonts
 scoop bucket add fonts 'https://github.com/KnotUntied/scoop-fonts.git'
 RefreshPath
@@ -56,6 +57,7 @@ $scoopPackages = @(
     'powertoys',
     'ditto',
     'perl',
+    'scoop-completion'
 )
 
 $scoopFonts = @(
@@ -67,7 +69,7 @@ $scoopFonts = @(
 $wingetPackages = @(
     'wez.wezterm',
     'File-New-Project.EarTrumpet',
-    'dotPDN.PaintDotNet',
+    'dotPDN.PaintDotNet'
 )
 
 & ./dotfiles.ps1
