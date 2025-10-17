@@ -4,6 +4,7 @@ set backspace=indent,eol,start
 
 syntax on
 set termguicolors
+colo habamax
 
 set shiftwidth=4
 set tabstop=4
@@ -38,7 +39,7 @@ let $LANG = 'en_US.UTF8'
 
 source ~/.keymap.vim
 
-function s:CurrentFileName(a, l, p) abort
+function s:CurrentFileName(a, l, p) abort ":h command-completion-custom
     return expand('%:p:t')
 endfunction
 
@@ -48,6 +49,4 @@ autocmd VimResized * wincmd =
 
 if has('nvim')
     au! TextYankPost * lua vim.hl.on_yank { timeout = 300 }
-else
-    colo habamax
 endif
