@@ -38,6 +38,10 @@ function mklink {
 }
 
 if (Get-Command scoop -ea SilentlyContinue) {
+    # NOTE: scoop aliases
+    scoop alias add add 'scoop install @args'
+    scoop alias add del 'scoop uninstall @args'
+
     if (& { scoop prefix librewolf *> $null; 0 -eq $LASTEXITCODE }) {
         mklink (Join-Path (scoop prefix librewolf) 'Profiles/Default/librewolf.overrides.cfg') ./dotfiles/librewolf.cfg
     }
@@ -90,12 +94,9 @@ mklink ~/.config/wezterm/wezterm.lua ./dotfiles/.wezterm.lua
 mklink -SpecialParent APPDATA -ChildPath 'yazi/config/yazi.toml' -Target ./dotfiles/yazi.toml
 mklink -SpecialParent APPDATA -ChildPath 'yazi/config/keymap.toml' -Target ./dotfiles/yazi.keymap.toml
 if (Get-Command ya -ErrorAction SilentlyContinue) {
-    ya pack -a 'Reledia/glow'
-    ya pack -a 'ndtoan96/ouch'
-    ya pack -a 'Reledia/miller'
-    ya pack -a 'Tyarel8/video-ffmpeg'
-    ya pack -a 'kirasok/torrent-preview'
-    ya pack -a 'yazi-rs/plugins:max-preview'
+    ya pkg add yazi-rs/plugins:toggle-pane
+    ya pkg add yazi-rs/plugins:jump-to-char
+    ya pkg add AnirudhG07/rich-preview
 }
 
 mklink ~/.wslconfig ./dotfiles/.wslconfig

@@ -1,9 +1,7 @@
 [[mgr.prepend_keymap]]
 on = "T"
-# run  = "plugin --sync max-preview"
-# For upcoming Yazi 0.4 (nightly version):
-run = "plugin max-preview"
-desc = "Maximize or restore preview"
+run = "plugin toggle-pane max-preview"
+desc = "Maximize or restore the preview pane"
 
 [[mgr.prepend_keymap]]
 on = ["C"]
@@ -14,3 +12,8 @@ desc = "Compress with ouch"
 on = ["O"]
 run = "open --hovered"
 desc = "Open current entry"
+
+[[mgr.prepend_keymap]]
+on = "f"
+run = "plugin jump-to-char"
+desc = "Jump to char"

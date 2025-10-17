@@ -117,62 +117,45 @@ suppress_preload = false
 
 [plugin]
 
-prepend_preloaders = [{ mime = "video/*", run = "video-ffmpeg" }]
-
 prepend_previewers = [
-    { mime = "video/*", run = "video-ffmpeg" },
-    { mime = "text/csv", run = "miller" },
-    { name = "*.md", run = "glow" },
-    # Archive previewer
-    { mime = "application/*zip", run = "ouch" },
-    { mime = "application/x-tar", run = "ouch" },
-    { mime = "application/x-bzip2", run = "ouch" },
-    { mime = "application/x-7z-compressed", run = "ouch" },
-    { mime = "application/x-rar", run = "ouch" },
-    { mime = "application/x-xz", run = "ouch" },
-    # torrent
-    { mime = "application/x-bittorrent", run = "torrent-preview" },
+    { name = "*.csv", run = "rich-preview" },
+    { name = "*.md", run = "rich-preview" },
+    { name = "*.rst", run = "rich-preview" },
+    { name = "*.ipynb", run = "rich-preview" },
 ]
 
 fetchers = [
-    # Mimetype
     { id = "mime", name = "*", run = "mime", if = "!mime", prio = "high" },
 ]
 preloaders = [
-    # Image
-    { mime = "image/{avif,hei?,jxl,svg+xml}", run = "magick" },
+    { mime = "image/{avif,hei?,jxl}", run = "magick" },
     { mime = "image/*", run = "image" },
-    # Video
     { mime = "video/*", run = "video" },
-    # PDF
     { mime = "application/pdf", run = "pdf" },
-    # Font
     { mime = "font/*", run = "font" },
     { mime = "application/vnd.ms-opentype", run = "font" },
 ]
 previewers = [
     { name = "*/", run = "folder", sync = true },
-    # Code
     { mime = "text/*", run = "code" },
     { mime = "*/{xml,javascript,x-wine-extension-ini}", run = "code" },
-    # JSON
     { mime = "application/{json,x-ndjson}", run = "json" },
-    # Image
-    { mime = "image/{avif,hei?,jxl,svg+xml}", run = "magick" },
+
     { mime = "image/*", run = "image" },
-    # Video
+    { mime = "image/svg+xml}", run = "svg" },
+    { mime = "image/{avif,hei?,jxl,svg+xml}", run = "magick" },
+
     { mime = "video/*", run = "video" },
-    # PDF
+
     { mime = "application/pdf", run = "pdf" },
-    # Archive
+
     { mime = "application/{,g}zip", run = "archive" },
     { mime = "application/x-{tar,bzip*,7z-compressed,xz,rar,iso9660-image}", run = "archive" },
-    # Font
+
     { mime = "font/*", run = "font" },
     { mime = "application/vnd.ms-opentype", run = "font" },
-    # Empty file
+
     { mime = "inode/x-empty", run = "empty" },
-    # Fallback
     { name = "*", run = "file" },
 ]
 

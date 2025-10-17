@@ -64,10 +64,6 @@
   # '';
   # home.file.".dict/.dictd.pid".text = "";
 
-  home.file.".config/yazi/yazi.toml".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/yazi.toml";
-  home.file.".config/yazi/keymap.toml".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/yazi.keymap.toml";
   home.file.".config/helix/config.toml".source =
     config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/helix.config.toml";
 
