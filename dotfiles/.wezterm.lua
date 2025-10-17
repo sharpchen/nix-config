@@ -12,6 +12,10 @@ local config = wezterm.config_builder()
 
 config.front_end = 'OpenGL'
 config.color_scheme = random { 'kanagawabones', 'rose-pine-moon' }
+config.colors = {
+  selection_bg = '#d2d0e7',
+  selection_fg = '#26233a',
+}
 
 config.default_prog = { 'pwsh', '--nologo' }
 
