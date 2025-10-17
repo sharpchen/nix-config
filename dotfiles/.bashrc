@@ -6,7 +6,7 @@ alias ls='ls --color=auto -h'
 alias ll='ls -la'
 alias grep='grep --color=auto -i'
 alias md='mkdir -p'
-alias ni='touch'
+alias new='touch'
 alias rd='rm -rf'
 alias rm='rm -i'
 alias ri='rm'
@@ -28,11 +28,20 @@ alias v=nvim
 alias ngc='nix-collect-garbage -d && sudo $(which nix-collect-garbage) -d'
 alias ydl='yt-dlp'
 alias p='_project_switch'
+alias rall='find -path ".*" -delete'
 
 _project_switch() {
     local dir=$(ls -d ~/projects/* | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)
     if [[ -n "$dir" ]]; then
         cd "$dir" || return
+    fi
+}
+
+tsp() {
+    if [[ -f "$1" || -d "$1" || -L "$1" ]]; then
+        true
+    else
+        false
     fi
 }
 
@@ -45,16 +54,7 @@ if type nix-store &>/dev/null; then
     nsp() {
         nix-store -q --outputs "$(type -fP "$1")"
     }
-
-    if type fzf &>/dev/null; then
-        _fzf_complete_exe() {
-            _fzf_complete -- "$@" < <(compgen -c | sort -u)
-        }
-
-        complete -F _fzf_complete_exe nsp
-        complete -F _fzf_complete_exe type
-        complete -F _fzf_complete_exe which
-    fi
+    complete -c nsp
 fi
 
 if type fzf &>/dev/null; then

@@ -5,16 +5,16 @@
   ...
 }:
 let
-  append = # sh
+  append_blesh = # sh
     ''
       source -- "${pkgs.blesh}/share/blesh/ble.sh" --attach=none
       ble-import -d "${pkgs.blesh}/share/blesh/contrib/integration/fzf-completion.bash"
       ble-import -d "${pkgs.blesh}/share/blesh/contrib/integration/fzf-key-bindings.bash"
 
-      function sharpchen/vim-load-hook {
+      function __vim-load-hook {
           bleopt keymap_vi_mode_show=
       }
-      blehook/eval-after-load keymap_vi sharpchen/vim-load-hook
+      blehook/eval-after-load keymap_vi __vim-load-hook
 
       ble-face -s syntax_command fg=blue
       ble-face -s syntax_function_name fg=blue
@@ -34,10 +34,7 @@ let
       ble-face -s auto_complete fg=gray
       bleopt highlight_filename=
       bleopt highlight_variable=
-      bleopt prompt_eol_mark=""
       bleopt prompt_eol_mark="↵"
-
-      [[ ! ''${BLE_VERSION-} ]] || ble-attach
     '';
 in
 {
@@ -45,18 +42,31 @@ in
     enable = true;
     sessionVariables = {
       EDITOR = "nvim";
-      XDG_RUNTIME_DIR = "$HOME/.cache/";
     };
     # prepend content for auto-gen rc by hm
-    initExtra = (builtins.readFile ../../dotfiles/.bashrc) + "\n" + append;
-    # append content fot auto-gen profile by hm
+    initExtra = builtins.concatStringsSep "\n" [
+      (builtins.readFile ../../dotfiles/.bashrc)
+      append_blesh
+      "[[ ! \${BLE_VERSION-} ]] || ble-attach"
+    ];
+    # append content for auto-gen profile by hm
     profileExtra = builtins.readFile ../../dotfiles/bash.profile.sh;
   };
 
   home.packages = with pkgs; [
     blesh
+    complete-alias
   ];
-
+  # NOTE: import complete-alias support in custom bash completion
+  # for setting completion for alias, see: 'append_completealias' variable above
+  home.file.".bash_completion".text = # sh
+    ''
+      . ${pkgs.complete-alias}/bin/complete_alias
+      complete -F _complete_alias ll
+      complete -F _complete_alias ydl
+      complete -c which
+      complete -c type
+    '';
   home.file.".inputrc" = {
     source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.inputrc";
   };
