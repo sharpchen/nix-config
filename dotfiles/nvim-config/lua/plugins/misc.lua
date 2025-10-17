@@ -156,4 +156,19 @@ return {
       vim.keymap.set('n', 'B', function() BufferSticks.jump() end)
     end,
   },
+  {
+    'saecki/live-rename.nvim',
+    config = function()
+      vim.api.nvim_create_autocmd('LspAttach', {
+        callback = function(args)
+          vim.keymap.set(
+            'n',
+            'r',
+            function() require('live-rename').rename() end,
+            { buffer = args.buf }
+          )
+        end,
+      })
+    end,
+  },
 }

@@ -16,7 +16,12 @@ require('config.wsl') -- requires plugin
 require('utils.lsp') -- tasks
 require('utils.dap') -- tasks
 
-local colo = { 'Eva-Dark', 'vscode', 'kanagawa-dragon', 'rose-pine-moon' }
+local colo = {
+  'vscode',
+  'Eva-Dark',
+  'rose-pine-moon',
+  'habamax',
+}
 if IsWindows then
   vim.cmd.colorscheme('vscode')
 else

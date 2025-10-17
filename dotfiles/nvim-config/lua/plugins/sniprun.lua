@@ -28,7 +28,6 @@ return {
         },
       },
     }
-
     vim.keymap.set({ 'v', 'x' }, '<leader>e', ":'<,'>SnipRun<CR>", { desc = 'sniprun' })
     vim.keymap.set(
       'n',
@@ -36,5 +35,9 @@ return {
       require('utils.static').mark.wrap(function() vim.cmd('SnipRun') end),
       { desc = 'sniprun' }
     )
+    vim.api.nvim_create_autocmd({ 'TextChangedI', 'BufWrite' }, {
+      command = 'SnipClose',
+      desc = 'close SnipRun virtual text',
+    })
   end,
 }

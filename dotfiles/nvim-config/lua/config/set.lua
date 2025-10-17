@@ -237,3 +237,8 @@ vim.api.nvim_create_user_command(
 )
 
 vim.api.nvim_create_user_command('W', 'noautocmd w', { desc = 'pure write' })
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = 'habamax',
+  callback = function() vim.cmd('hi WinSeparator guibg=none') end,
+})

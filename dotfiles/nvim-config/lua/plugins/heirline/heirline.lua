@@ -35,7 +35,15 @@ end
 
 vim.api.nvim_create_augroup('Heirline', { clear = true })
 vim.api.nvim_create_autocmd('ColorScheme', {
-  callback = function() utils.on_colorscheme(setup_colors) end,
+  callback = function(args)
+    if args.match == 'habamax' then
+      vim.o.statusline = _G.__default_statusline
+      vim.o.laststatus = vim.opt.laststatus._info.default
+    else
+      utils.on_colorscheme(setup_colors)
+      vim.cmd('Heirline')
+    end
+  end,
   group = 'Heirline',
 })
 

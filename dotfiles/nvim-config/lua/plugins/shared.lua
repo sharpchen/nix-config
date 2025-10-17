@@ -12,6 +12,7 @@ return {
       'vue',
       'svelte',
       'html',
+      'python',
     },
     -- enabled = false,
     config = function()

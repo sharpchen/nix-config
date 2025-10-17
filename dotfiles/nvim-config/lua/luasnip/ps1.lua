@@ -41,4 +41,22 @@ return {
       { ins(1, 'cmd'), ins(0) }
     )
   ),
+  snip('discard', fmt('$null = {}', { ins(1) })),
+  snip(
+    'regcomplete',
+    fmta(
+      [[
+Register-ArgumentCompleter -CommandName <> -ParameterName <> -ScriptBlock {
+    param(
+        $commandName,
+        $parameterName,
+        $wordToComplete,
+        $commandAst,
+        $fakeBoundParameters
+    )
+}
+  ]],
+      { ins(1), ins(2) }
+    )
+  ),
 }

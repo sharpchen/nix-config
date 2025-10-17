@@ -55,6 +55,15 @@ return {
       vim.api.nvim_create_autocmd('FileType', {
         callback = function(args)
           if
+            vim.g.colors_name == 'habamax'
+            and vim.list_contains(
+              { 'javascript', 'typescript', 'ps1', 'python' },
+              args.match
+            )
+          then
+            return
+          end
+          if
             vim.list_contains(
               treesitter.get_installed(),
               vim.treesitter.language.get_lang(args.match)
