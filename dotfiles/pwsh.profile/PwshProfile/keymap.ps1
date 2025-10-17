@@ -40,4 +40,55 @@ Set-PSReadLineKeyHandler -Chord 'y,x' -ViMode Command -ScriptBlock {
     }
 }
 
+Set-PSReadLineKeyHandler -Chord 'y,y' -ViMode Command -ScriptBlock {
+    $line = $null
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$null)
+    if ($env:WSL_DISTRO_NAME) {
+        if (Get-Command win32yank.exe -ErrorAction SilentlyContinue -OutVariable clip) {
+            $line | & $clip -i
+        } else {
+            [System.Console]::Beep()
+        }
+    } else {
+        Set-Clipboard $line
+    }
+}
+
+foreach ($brace in ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}')) {
+    Set-PSReadLineKeyHandler -Chord $brace[0] -ScriptBlock {
+        $line = $pos = $null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$pos)
+
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[0])
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[1])
+        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($pos + 1)
+    }.GetNewClosure()
+}
+
+Set-PSReadLineKeyHandler -Key Backspace -ScriptBlock {
+    $braces = ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}')
+
+    $line = $pos = $null
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$pos)
+
+    $deleted = $false
+    foreach ($brace in $braces) {
+        $left = $pos - 1
+        $right = $pos
+        if ($line[$left] -eq $brace[0] -and $line[$right] -eq $brace[1] ) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar()
+            # NOTE: cursor position would change after deletion
+            # now right brace is on the position of previous/deleted left
+            # so we need to go back to original right position
+            [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($right)
+            [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar()
+            $deleted = $true
+            break
+        }
+    }
+    if (-not $deleted) {
+        [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar()
+    }
+}
+
 Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }

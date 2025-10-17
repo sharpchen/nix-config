@@ -5,8 +5,7 @@ Set-Alias ydl yt-dlp
 Set-Alias tsp Test-Path
 Set-Alias mes Measure-Object
 Set-Alias mesc Measure-Command
-Set-Alias for ForEach-Object
-Set-Alias map ForEach-Object
+Set-Alias each ForEach-Object
 Set-Alias sel Select-Object
 Set-Alias gpd Get-PSDrive
 Set-Alias gpp Get-PSProvider
@@ -14,6 +13,10 @@ Set-Alias cond Where-Object
 Set-Alias expand Resolve-Path
 Set-Alias order Sort-Object
 Set-Alias ll Get-ChildItem
+
+if ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') {
+    Set-Alias bsdtar tar
+}
 
 if (Get-Command nvim -ErrorAction Ignore) {
     function vim {
@@ -47,6 +50,15 @@ function :q {
 
 function .. {
     Set-Location ..
+}
+
+
+function md {
+    $null = New-Item -ItemType Directory @args
+}
+
+function new {
+    $null = New-Item -ItemType File @args
 }
 
 function so {
@@ -120,25 +132,6 @@ function rd {
         [string]$Path
     )
     Remove-Item -Recurse -Force -LiteralPath $Path
-}
-
-Register-ArgumentCompleter -CommandName rd -ParameterName Path -ScriptBlock {
-    param(
-        $commandName,
-        $parameterName,
-        $wordToComplete,
-        $commandAst,
-        $fakeBoundParameters
-    )
-    $default = Get-ChildItem -LiteralPath $PWD -Directory
-    $res = $default | Where-Object Name -Like "*$wordToComplete*"
-    if ($res) {
-        $res | ForEach-Object Name
-    } else {
-        # NOTE: $res might be empty
-        # so we fallback to all folders
-        $default | ForEach-Object Name
-    }
 }
 
 function now {

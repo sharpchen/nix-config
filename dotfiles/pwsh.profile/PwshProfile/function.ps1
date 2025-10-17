@@ -327,23 +327,11 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
     function vdcompact {
         param (
             [ValidateScript({ (Test-Path -LiteralPath $_) -and (Split-Path $_ -Extension) -eq '.vhdx' })]
-            [Parameter(Position = 1)]
-            [string]$Path,
-            [switch]$IsNotWSL
+            [Parameter(Position = 0)]
+            [string]$Path
         )
         begin {
             $null = Get-Command diskpart -CommandType Application -ea Stop
-
-            if (-not $IsNotWSL) {
-                $origEncoding = [Console]::OutputEncoding
-                [Console]::OutputEncoding = [System.Text.Encoding]::Unicode # wsl outputs unicode 16
-                if (wsl --list --verbose | Select-String Running) {
-                    Write-Warning 'Please make sure distro were terminated by `wsl -t <distro>`'
-                    return
-                }
-                [Console]::OutputEncoding = $origEncoding
-                wsl --shutdown
-            }
             $Path = Resolve-Path $Path
         }
         end {
@@ -604,5 +592,44 @@ function fir {
             $_
             break
         }
+    }
+}
+
+function map {
+    param(
+        [Parameter(Position = 0, Mandatory)]
+        [string]$PropertyPath,
+        [Parameter(ValueFromPipeline, Mandatory)]
+        [psobject]$InputObject
+    )
+    begin {
+        $propertyNames = $PropertyPath -split '\.'
+    }
+
+    process {
+        $val = $InputObject
+
+        $count = 0
+        while ($val."$($propertyNames[$count])") {
+            $val = $val."$($propertyNames[$count])"
+            $count++
+        }
+
+        if ($count -eq $propertyNames.Length) {
+            $val
+        }
+    }
+}
+
+function rall {
+    if (Get-Command robocopy -ErrorAction Ignore -CommandType Application) {
+        $empty = New-Item -ItemType Directory -Path (Join-Path $env:TEMP ([guid]::NewGuid()))
+        try {
+            robocopy $empty (Resolve-Path .) /mir 1>$null
+        } finally {
+            Remove-Item $empty
+        }
+    } else {
+        Remove-Item * -Recurse -Force
     }
 }
