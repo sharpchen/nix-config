@@ -3,7 +3,7 @@
   home.packages = with pkgs; [
     ruff
     basedpyright
-    python312Full
+    python312
     uv
   ];
 }

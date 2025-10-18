@@ -8,28 +8,20 @@
     openssh
     tree-sitter
     ripgrep
-    gzip
-    unzip
     csharprepl
     rainfrog
     which
     bat
     tokei
     fzf
-    yazi
     fd
-    ouch
-    miller
-    imagemagick
     mpv
     glow
     jq
     ffmpeg
-    poppler
     nix-prefetch
     nix-prefetch-github
     evil-helix
-    viu
     sioyek
     postgresql
     zoxide
@@ -49,6 +41,13 @@
     yt-dlp
     glib
     dig
+    ocrmypdf
+    tesseract # NOTE: dependency of ocrmypdf
+    tty-clock
+    qpdf
+    tocpdf
+    libarchive
+    _7zz-rar
   ];
   # home.file.".dict/.dict.conf".text = ''
   #   server localhost
@@ -69,9 +68,4 @@
 
   home.file.".ssh/config".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/sshconfig";
   home.file.".fzfrc".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.fzfrc";
-
-  programs.nix-index = {
-    enable = true;
-    enableBashIntegration = true;
-  };
 }
