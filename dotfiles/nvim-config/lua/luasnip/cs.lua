@@ -21,6 +21,8 @@ local wrap_cs_stm = require('utils.luasnip').ts_wrap_stm {
               (invocation_expression)
               (member_access_expression)
               (element_access_expression)
+              (conditional_access_expression)
+              (range_expression)
               (integer_literal)
               (real_literal)
               (string_literal)

@@ -47,18 +47,30 @@ local function setup()
   }
 end
 
-return os.getenv('eva') == nil
-    and {
-      'sharpchen/Eva-Theme.nvim',
-      lazy = false,
-      priority = 1000,
-      build = ':EvaCompile',
-      config = setup,
-    }
-  or {
+return {
+  os.getenv('eva') == nil and {
+    'sharpchen/Eva-Theme.nvim',
+    lazy = false,
+    priority = 1000,
+    build = ':EvaCompile',
+    config = setup,
+  } or {
     dir = '~/projects/Eva-Theme.nvim',
     lazy = false,
     priority = 1000,
     build = ':EvaCompile',
     config = setup,
-  }
+  },
+  {
+    'Mofiqul/vscode.nvim',
+  },
+  {
+    'xeind/nightingale.nvim',
+    lazy = false,
+    priority = 1000,
+  },
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+  },
+}

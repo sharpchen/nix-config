@@ -32,6 +32,7 @@ return {
         'https?://www.overleaf.com/.*',
         'https?://live.bilibili.com/.*',
         'https?://grok.*',
+        'https?://www.keybr.com/.*',
       })
       :fold({}, function(sum, curr)
         sum[curr] = {

@@ -43,7 +43,7 @@ return {
   ),
   snip('discard', fmt('$null = {}', { ins(1) })),
   snip(
-    'regcomplete',
+    'completecmd',
     fmta(
       [[
 Register-ArgumentCompleter -CommandName <> -ParameterName <> -ScriptBlock {
@@ -57,6 +57,21 @@ Register-ArgumentCompleter -CommandName <> -ParameterName <> -ScriptBlock {
 }
   ]],
       { ins(1), ins(2) }
+    )
+  ),
+  snip(
+    'completenative',
+    fmta(
+      [[
+Register-ArgumentCompleter -Native -CommandName <> -ScriptBlock {
+    param(
+        $wordToComplete,
+        $commandAst,
+        $cursorPosition
+    )
+}
+  ]],
+      { ins(1) }
     )
   ),
 }

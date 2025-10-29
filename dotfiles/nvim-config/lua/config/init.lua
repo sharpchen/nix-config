@@ -21,6 +21,7 @@ local colo = {
   'Eva-Dark',
   'rose-pine-moon',
   'habamax',
+  'nightingale',
 }
 if IsWindows then
   vim.cmd.colorscheme('vscode')
