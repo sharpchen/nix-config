@@ -59,10 +59,37 @@ foreach ($brace in ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}')) {
         $line = $pos = $null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$pos)
 
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[0])
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[1])
-        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($pos + 1)
+        if ($brace[0] -ne $brace[1]) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[0])
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[1])
+            [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($pos + 1)
+        } else {
+            $left = $pos - 1
+            $right = $pos
+            if ($line[$left] -eq $brace[0] -and $line[$right] -eq $brace[1] ) {
+                [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($right + 1)
+            } else {
+                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[0])
+                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[1])
+                [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($pos + 1)
+            }
+        }
     }.GetNewClosure()
+
+    if ($brace[0] -ne $brace[1]) {
+        Set-PSReadLineKeyHandler -Chord $brace[1] -ScriptBlock {
+            $line = $pos = $null
+            [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$pos)
+            $left = $pos - 1
+            $right = $pos
+            if ($line[$left] -eq $brace[0] -and $line[$right] -eq $brace[1] ) {
+                [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($right + 1)
+            } else {
+                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[1])
+                [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($pos + 1)
+            }
+        }.GetNewClosure()
+    }
 }
 
 Set-PSReadLineKeyHandler -Key Backspace -ScriptBlock {
@@ -88,6 +115,18 @@ Set-PSReadLineKeyHandler -Key Backspace -ScriptBlock {
     }
     if (-not $deleted) {
         [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar()
+    }
+}
+
+Set-PSReadLineKeyHandler -Chord ' ,p' -ViMode Command -ScriptBlock {
+    if ($env:WSL_DISTRO_NAME) {
+        if (Get-Command win32yank.exe -ErrorAction SilentlyContinue -OutVariable clip) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert((& $clip -o --lf) -join "`n")
+        } else {
+            [System.Console]::Beep()
+        }
+    } else {
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert((Get-Clipboard -Raw))
     }
 }
 

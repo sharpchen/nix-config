@@ -36,14 +36,15 @@ if ($IsLegacy) {
 }
 
 $syntaxColors = @{
-    Parameter = 'Magenta'
-    Operator  = 'Cyan'
-    Type      = 'Cyan'
-    Keyword   = 'Magenta'
-    Command   = 'Blue'
-    Number    = 'Yellow'
-    Member    = 'Red'
-    String    = 'Green'
+    Parameter = [System.ConsoleColor]::Magenta
+    Operator  = [System.ConsoleColor]::Cyan
+    Type      = [System.ConsoleColor]::Cyan
+    Keyword   = [System.ConsoleColor]::Magenta
+    Command   = [System.ConsoleColor]::Blue
+    Number    = [System.ConsoleColor]::Yellow
+    Member    = [System.ConsoleColor]::Red
+    String    = [System.ConsoleColor]::Green
+    Variable  = [System.ConsoleColor]::DarkGreen
 }
 
 if ((Get-Module -Name PSReadLine).Version -lt '2.0.0') {

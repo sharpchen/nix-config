@@ -5,25 +5,28 @@ function adbin {
         [string]$Str,
         [switch]$Enter
     )
-    $special = @( ' ', '\|', '\$', '&', '\(', '\)', '~', '\*', "\'", '"', '<', '>')
-    foreach ($char in $special) {
-        $repl = if ($char.Length -gt 1) {
-            $char
-        } else {
-            "\$char"
-        }
-        $Str = $Str -replace $char, $repl
+    begin {
+        $null = Get-Command adb -ErrorAction Stop -CommandType Application
     }
-    adb shell input text $Str
-    if ($Enter) {
-        adb shell input keyevent KEYCODE_ENTER
+    end {
+        $special = @( ' ', '\|', '\$', '&', '\(', '\)', '~', '\*', "\'", '"', '<', '>')
+        foreach ($char in $special) {
+            $repl = if ($char.Length -gt 1) {
+                $char
+            } else {
+                "\$char"
+            }
+            $Str = $Str -replace $char, $repl
+        }
+        adb shell input text $Str
+        if ($Enter) {
+            adb shell input keyevent KEYCODE_ENTER
+        }
     }
 }
 
 function pinfo {
     [CmdletBinding(DefaultParameterSetName = 'Attribute')]
-    [OutputType([string], ParameterSetName = 'ParameterSet')]
-    [OutputType([void], ParameterSetName = 'Attribute')]
     param (
         [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
         [ValidateScript({ Get-Command $_ -ErrorAction Ignore })]
@@ -34,6 +37,10 @@ function pinfo {
         [switch]$Pipeline,
         [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Alias,
+        [Parameter(ParameterSetName = 'Attribute')]
+        [switch]$Mandatory,
+        [Parameter(ParameterSetName = 'Attribute')]
+        [switch]$All,
 
         [Parameter(ParameterSetName = 'ParameterSet')]
         [switch]$ParameterSet
@@ -61,44 +68,59 @@ function pinfo {
 
     end {
         if (Get-Command $Command -ErrorAction SilentlyContinue -OutVariable cmd) {
-            if ($PSCmdlet.ParameterSetName -eq 'Attribute') {
-                $cmd.Parameters.GetEnumerator() | Where-Object { $_.Value.Name -notin $CommonParams } | ForEach-Object {
-                    $name, $attr = $_.Value.Name, $_.Value.Attributes
-                    $pipe = [System.Collections.Generic.List[string]]@()
-                    $paramInfo = [pscustomobject]@{}
+            switch ($PSCmdlet.ParameterSetName) {
+                'Attribute' {
+                    $cmd.Parameters.GetEnumerator() | Where-Object { $_.Value.Name -notin $CommonParams } | ForEach-Object {
+                        $name, $attr = $_.Value.Name, $_.Value.Attributes
+                        $pipe = [System.Collections.Generic.List[string]]@()
+                        $paramInfo = [pscustomobject]@{}
 
-                    if ($Pipeline) {
-                        if ($attr.ValueFromPipeline) {
-                            $pipe.Add('Value')
+                        if ($Pipeline -or $All) {
+                            if ($attr.ValueFromPipeline) {
+                                $pipe.Add('Value')
+                            }
+                            if ($attr.ValueFromPipelineByPropertyName) {
+                                $pipe.Add('Property')
+                            }
+                            $paramInfo | Add-Member -MemberType NoteProperty -Name Pipeline -Value $pipe
                         }
-                        if ($attr.ValueFromPipelineByPropertyName) {
-                            $pipe.Add('Property')
+                        # MinValue meaning Position attribute is not assigned
+                        if ($All -or $Positional -and $attr.Position -ne [int]::MinValue) {
+                            $paramInfo | Add-Member -MemberType NoteProperty -Name Position -Value $attr.Position
                         }
-                        $paramInfo | Add-Member -MemberType NoteProperty -Name Pipeline -Value $pipe
-                    }
-                    # MinValue meaning Position attribute is not assigned
-                    if ($Positional -and $attr.Position -ne [int]::MinValue) {
-                        $paramInfo | Add-Member -MemberType NoteProperty -Name Position -Value $attr.Position
-                    }
-                    if ($Alias) {
-                        $paramInfo | Add-Member -MemberType NoteProperty -Name Alias -Value $attr.AliasNames
-                    }
+                        if ($Alias -or $All) {
+                            $paramInfo | Add-Member -MemberType NoteProperty -Name Alias -Value $attr.AliasNames
+                        }
+                        if ($Mandatory -or $All) {
+                            $paramInfo | Add-Member -MemberType NoteProperty -Name Mandatory -Value $attr.Mandatory
+                        }
 
-                    $info.Add($name, $paramInfo)
+                        $info.Add($name, $paramInfo)
+                    }
+                    $format = @{
+                        Property = @(
+                            @{ Name = 'Parameter'; Expression = 'Key' }
+                            if ($Positional -or $All) {
+                                @{ Name = 'Position'; Expression = { $_.Value.Position } }
+                            }
+                            if ($Mandatory -or $All) {
+                                @{ Name = 'Mandatory'; Expression = { $_.Value.Mandatory } }
+                            }
+                            if ($Pipeline -or $All) {
+                                @{ Name = 'Pipeline'; Expression = { $_.Value.Pipeline -join ', ' } }
+                            }
+                            if ($Alias -or $All) {
+                                @{ Name = 'Alias'; Expression = { $_.Value.Alias -join ', ' } }
+                            }
+                        )
+                    }
+                    $info.GetEnumerator() | Format-Table @format -AutoSize
                 }
-                $format = @{
-                    Property = @(
-                        @{ Name = 'Parameter'; Expression = 'Key' }
-                        @{ Name = 'Pipeline'; Expression = { $_.Value.Pipeline -join ', ' } }
-                        @{ Name = 'Position'; Expression = { $_.Value.Position } }
-                        @{ Name = 'Alias'; Expression = { $_.Value.Alias -join ', ' } }
-                    )
+                default {
+                    # TODO: group by ParameterSetName
+                    throw [System.NotImplementedException]::new()
+                    $cmd.Parameters.GetEnumerator() | Group-Object { $_.Value.ParameterSets.Keys }
                 }
-                $info.GetEnumerator() | Format-Table @format -AutoSize
-            } else {
-                # TODO: group by ParameterSetName
-                throw [System.NotImplementedException]::new()
-                $cmd.Parameters.GetEnumerator() | Group-Object { $_.Value.ParameterSets.Keys }
             }
         } else {
             Write-Error $Error[-1]
@@ -248,10 +270,13 @@ function play {
     }
 
     end {
-        if ($PSCmdlet.ParameterSetName -eq 'Extension') {
-            $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Include ($Extension | ForEach-Object { "*.$_" })
-        } else {
-            $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Filter $Filter
+        switch ($PSCmdlet.ParameterSetName) {
+            'Extension' {
+                $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Include ($Extension | ForEach-Object { "*.$_" })
+            }
+            'Filter' {
+                $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Filter $Filter
+            }
         }
 
         if ($ByDate) {
@@ -326,7 +351,8 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
 
     function vdcompact {
         param (
-            [ValidateScript({ (Test-Path -LiteralPath $_) -and (Split-Path $_ -Extension) -eq '.vhdx' })]
+            [ValidateScript({ (Test-Path -LiteralPath $_) })]
+            [ValidateScript({ (Split-Path $_ -Extension) -eq '.vhdx' })]
             [Parameter(Position = 0)]
             [string]$Path
         )
@@ -377,6 +403,7 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
     function trash {
         param (
             [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+            [ValidateScript({ Test-Path -LiteralPath $_ })]
             [Alias('FullName')]
             [string]$Path
         )
@@ -387,7 +414,7 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
             $abs = Resolve-Path $Path
             if ([System.IO.File]::Exists($abs)) {
                 [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
-            } elseif  ([System.IO.Directory]::Exists($_)) {
+            } elseif  ([System.IO.Directory]::Exists($abs)) {
                 [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
             }
         }
@@ -395,7 +422,7 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
 
     function exch {
         param(
-            [Parameter(Position = 0 , Mandatory)]
+            [Parameter(Position = 0, Mandatory)]
             [string]$One,
             [Parameter(Position = 1, Mandatory)]
             [string]$Another
@@ -418,7 +445,7 @@ if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
 
 function pmclean {
     param (
-        [ValidateSet('scoop', 'npm', 'nuget')]
+        [ValidateSet('scoop', 'npm', 'nuget', 'nix')]
         [Parameter(Position = 1)]
         [string]$PackageManager
     )
@@ -436,6 +463,10 @@ function pmclean {
         'npm' {
             $null = Get-Command npm -ea Stop
             npm cache clean --force
+        }
+        'nix' {
+            $null = Get-Command nh -ErrorAction Stop
+            nh clean all
         }
         default {
             Write-Warning "Cannot handle $PackageManager"
@@ -461,8 +492,10 @@ function p {
 }
 
 function ds {
+    [CmdletBinding(DefaultParameterSetName = 'Directory')]
     param (
         [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
+        [Parameter(Position = 0, ParameterSetName = 'Directory')]
         [string]$Dir,
 
         [ValidateSet('kb', 'mb', 'gb')]
@@ -476,20 +509,25 @@ function ds {
         if (-not $Dir) {
             $Dir = $PWD.Path
         }
+        $length = 0
     }
 
     end {
-        if (Get-Command du -CommandType Application -ErrorAction Ignore -OutVariable du) {
-            if ($PSCmdlet.ParameterSetName -eq 'Pipeline') {
-                $length = (((& $du[0] -L --bytes --total --summarize @input)[-1] -split '\s+')[0]) -as [long]
-            } else {
-                $length = (((& $du[0] -L --bytes --total --summarize $Dir)[-1] -split '\s+')[0]) -as [long]
+        switch ($PSCmdlet.ParameterSetName) {
+            'Pipeline' {
+                $files = $input | Where-Object { [IO.File]::Exists($_) }
+                if (Get-Command du -CommandType Application -ErrorAction Ignore -OutVariable du) {
+                    $length = (((& $du[0] -L --bytes --total --summarize @files)[-1] -split '\s+')[0]) -as [long]
+                } else {
+                    $length = ($input | ForEach-Object { Get-Item $_ -Force } | Measure-Object Length -Sum).Sum
+                }
             }
-        } else {
-            if ($PSCmdlet.ParameterSetName -eq 'Pipeline') {
-                $length = ($input | ForEach-Object { Get-Item $_ -Force } | Measure-Object Length -Sum).Sum
-            } else {
-                $length = (Get-ChildItem -File -Force -Recurse -LiteralPath $Dir | Measure-Object Length -Sum).Sum
+            'Directory' {
+                if (Get-Command du -CommandType Application -ErrorAction Ignore -OutVariable du) {
+                    $length = (((& $du[0] -L --bytes --total --summarize $Dir)[-1] -split '\s+')[0]) -as [long]
+                } else {
+                    $length = (Get-ChildItem -File -Force -Recurse -LiteralPath $Dir | Measure-Object Length -Sum).Sum
+                }
             }
         }
 
@@ -595,7 +633,7 @@ function fir {
     }
 }
 
-function map {
+function get {
     param(
         [Parameter(Position = 0, Mandatory)]
         [string]$PropertyPath,
@@ -622,14 +660,17 @@ function map {
 }
 
 function rall {
-    if (Get-Command robocopy -ErrorAction Ignore -CommandType Application) {
-        $empty = New-Item -ItemType Directory -Path (Join-Path $env:TEMP ([guid]::NewGuid()))
-        try {
-            robocopy $empty (Resolve-Path .) /mir 1>$null
-        } finally {
-            Remove-Item $empty
+    begin {
+        $target = Resolve-Path .
+    }
+    end {
+        if (Get-Command robocopy -ErrorAction Ignore -CommandType Application) {
+            $empty = New-Item -ItemType Directory -Path (Join-Path $env:TEMP (New-Guid))
+            robocopy $empty $target /mir 1>$null
+        } elseif (Get-Command rsync -ErrorAction Ignore -CommandType Application) {
+            rsync --archive --delete "$(mktemp -d)/" "$target/"
+        } else {
+            Remove-Item * -Recurse -Force
         }
-    } else {
-        Remove-Item * -Recurse -Force
     }
 }

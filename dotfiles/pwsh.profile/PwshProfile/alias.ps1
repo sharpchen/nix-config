@@ -12,7 +12,14 @@ Set-Alias gpp Get-PSProvider
 Set-Alias cond Where-Object
 Set-Alias expand Resolve-Path
 Set-Alias order Sort-Object
-Set-Alias ll Get-ChildItem
+Set-Alias json ConvertFrom-Json
+Set-Alias tojson ConvertTo-Json
+Set-Alias csv ConvertFrom-Csv
+Set-Alias tocsv ConvertFrom-Csv
+
+function ll {
+    Get-ChildItem @args -Force
+}
 
 if ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') {
     Set-Alias bsdtar tar
@@ -131,7 +138,21 @@ function rd {
         [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
         [string]$Path
     )
-    Remove-Item -Recurse -Force -LiteralPath $Path
+    begin {
+        $target = Resolve-Path $Path
+    }
+    end {
+        if (Get-Command robocopy -ErrorAction Ignore -CommandType Application) {
+            $empty = New-Item -ItemType Directory -Path (Join-Path $env:TEMP (New-Guid))
+            robocopy $empty $target /mir 1>$null
+            Remove-Item $target
+        } elseif (Get-Command rsync -ErrorAction Ignore -CommandType Application) {
+            rsync --archive --delete "$(mktemp -d)/" "$target/"
+            Remove-Item $target
+        } else {
+            Remove-Item -Recurse -Force -LiteralPath $Path
+        }
+    }
 }
 
 function now {
