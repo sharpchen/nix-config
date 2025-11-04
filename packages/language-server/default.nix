@@ -20,7 +20,8 @@
       ts_query_ls
     ]
     ++ [
-      (callPackage ./msbuild_ls/default.nix { inherit pkgs; })
-      (callPackage ./avalonia_ls/default.nix { inherit pkgs; })
+      (callPackage ./msbuild_ls/package.nix { })
+      (callPackage ./avalonia_ls/package.nix { })
+      (callPackage ./ds_pinyin_lsp/package.nix { })
     ];
 }

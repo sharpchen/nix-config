@@ -26,7 +26,7 @@
     postgresql
     zoxide
     devenv
-    ncdu
+    gdu
     # dict
     # dictdDBs.wiktionary
     nh
@@ -37,7 +37,7 @@
     file
     nurl
     nix-init
-    bottom
+    btop
     yt-dlp
     glib
     dig
@@ -48,6 +48,7 @@
     tocpdf
     libarchive
     _7zz-rar
+    hyperfine
   ];
   # home.file.".dict/.dict.conf".text = ''
   #   server localhost

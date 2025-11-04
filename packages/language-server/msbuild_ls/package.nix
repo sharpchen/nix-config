@@ -1,16 +1,19 @@
 {
+  lib,
+  fetchFromGitHub,
+  dotnetCorePackages,
+  buildDotnetModule,
   nix-update-script,
-  pkgs,
 }:
 let
   owner = "tintoy";
   repo = "msbuild-project-tools-server";
-  dotnet-sdk = pkgs.dotnetCorePackages.sdk_8_0_1xx;
+  dotnet-sdk = dotnetCorePackages.sdk_8_0_1xx;
 in
-pkgs.buildDotnetModule rec {
+buildDotnetModule rec {
   pname = repo;
   version = "0.6.6";
-  src = pkgs.fetchFromGitHub {
+  src = fetchFromGitHub {
     inherit owner repo;
     rev = "v${version}";
     hash = "sha256-dhE94gnH8s758a9JmdMXV2/7nzm4JD6mcVaq75NRXLQ=";
@@ -22,7 +25,7 @@ pkgs.buildDotnetModule rec {
   useDotnetFromEnv = true;
   passthru.updateScript = nix-update-script { };
 
-  meta = with pkgs.lib; {
+  meta = with lib; {
     description = "";
     homepage = "";
     license = licenses.mit;

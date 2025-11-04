@@ -1,15 +1,19 @@
 {
-  pkgs ? import <nixpkgs> { },
+  lib,
+  buildDotnetModule,
+  dotnetCorePackages,
+  fetchFromGitHub,
+  nix-update-script,
 }:
 let
   owner = "Eugenenoble2005";
   repo = "Avalonia-ls";
-  dotnet-sdk = pkgs.dotnetCorePackages.sdk_9_0;
+  dotnet-sdk = dotnetCorePackages.sdk_9_0;
 in
-pkgs.buildDotnetModule {
+buildDotnetModule {
   pname = "avalonia-ls";
   version = "0.0.1";
-  src = pkgs.fetchFromGitHub {
+  src = fetchFromGitHub {
     inherit owner repo;
     rev = "c2e21ee62e139c1d4f81589d64f45b55c8068dc8";
     hash = "sha256-3ZmZy6/6fVbeJrZham5Nwx3mAk2y0IGLst1tYlmxdys=";
@@ -27,9 +31,9 @@ pkgs.buildDotnetModule {
 
   nugetDeps = ./deps.json;
   useDotnetFromEnv = true;
-  passthru.updateScript = pkgs.nix-update-script { };
+  passthru.updateScript = nix-update-script { };
 
-  meta = with pkgs.lib; {
+  meta = with lib; {
     description = "";
     homepage = "";
     license = licenses.mit;
