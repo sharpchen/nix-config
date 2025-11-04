@@ -19,7 +19,7 @@
       home-manager,
       nixos-wsl,
       ...
-    }:
+    }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -31,6 +31,9 @@
     {
       nixosConfigurations = {
         nixos-wsl = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            flakeinputs = inputs;
+          };
           modules = [
             ./nixos/configuration.nix
             nixos-wsl.nixosModules.default
@@ -61,7 +64,10 @@
             ./home-manager/home.nix
             allowUnfree
           ];
-          extraSpecialArgs = { inherit stable; };
+          extraSpecialArgs = {
+            inherit stable;
+            flakeinputs = inputs;
+          };
         };
       };
     };

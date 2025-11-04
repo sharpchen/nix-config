@@ -3,6 +3,7 @@
   pkgs,
   stable,
   lib,
+  flakeinputs,
   ...
 }:
 {
@@ -29,6 +30,7 @@
           "flakes"
         ];
       };
+      nixPath = [ "nixpkgs=${flakeinputs.nixpkgs}" ];
     };
 
     home = rec {

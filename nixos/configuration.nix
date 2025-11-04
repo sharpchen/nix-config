@@ -2,11 +2,14 @@
   config,
   lib,
   pkgs,
+  flakeinputs,
   ...
 }:
 
 {
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  nix.channel.enable = false;
+  nix.nixPath = [ "nixpkgs=${flakeinputs.nixpkgs}" ];
   nix.settings = {
     experimental-features = [
       "nix-command"
