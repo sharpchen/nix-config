@@ -64,8 +64,8 @@ in
       . ${pkgs.complete-alias}/bin/complete_alias
       complete -F _complete_alias ll
       complete -F _complete_alias ydl
-      complete -c which
-      complete -c type
+      complete -F _complete_alias ri
+      complete -c which type
     '';
   home.file.".inputrc" = {
     source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.inputrc";

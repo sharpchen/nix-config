@@ -8,7 +8,7 @@ alias grep='grep --color=auto -i'
 alias md='mkdir -p'
 alias new='touch'
 alias rm='rm -i'
-alias ri='rm'
+alias ri='\rm'
 alias cp='cp -i'
 alias mv='mv -i'
 alias ..='cd ..'
@@ -26,7 +26,6 @@ alias vim='nvim -u ~/.vimrc'
 alias v=nvim
 alias ngc='nix-collect-garbage -d && sudo $(which nix-collect-garbage) -d'
 alias ydl='yt-dlp'
-alias p='_project_switch'
 if type rsync &>/dev/null; then
     alias rall='rsync --archive --delete "$(mktemp -d)/" "$(pwd)/"'
     rd() {
@@ -43,7 +42,7 @@ else
     complete -d rd
 fi
 
-_project_switch() {
+p() {
     local dir
     dir=$(find ~/projects/* -maxdepth 0 -type d | cat - <(echo -n "${HOME}/.config/home-manager/") | fzf)
     if [[ -n "$dir" ]]; then
