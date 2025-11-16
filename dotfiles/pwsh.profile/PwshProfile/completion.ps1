@@ -6,8 +6,8 @@ $filecomplete = {
         $commandAst,
         $fakeBoundParameters
     )
-    Resolve-Path "*$wordToComplete*" -Relative -ErrorAction Ignore |
-        Where-Object { [IO.File]::Exists($_) }
+    Get-ChildItem -Filter "*$wordToComplete*" -File -Force |
+        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
 $foldercomplete = {
@@ -18,8 +18,19 @@ $foldercomplete = {
         $commandAst,
         $fakeBoundParameters
     )
-    Resolve-Path "*$wordToComplete*" -Relative -ErrorAction Ignore |
-        Where-Object { [IO.Directory]::Exists($_) }
+    Get-ChildItem -Filter "*$wordToComplete*" -Directory -Force |
+        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
+}
+
+$foldercompletenative = {
+    param(
+        $wordToComplete,
+        $commandAst,
+        $cursorPosition
+    )
+
+    Get-ChildItem -Filter "*$wordToComplete*" -Directory -Force |
+        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
 $dotnetcomplete = {
@@ -42,3 +53,7 @@ $dotnetcomplete = {
 Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock $dotnetcomplete
 Register-ArgumentCompleter -CommandName dn -ScriptBlock $dotnetcomplete
 Register-ArgumentCompleter -CommandName rd -ParameterName Path -ScriptBlock $foldercomplete
+Register-ArgumentCompleter -CommandName unpack -ParameterName Path -ScriptBlock $filecomplete
+Register-ArgumentCompleter -CommandName unpack -ParameterName Destination -ScriptBlock $foldercomplete
+Register-ArgumentCompleter -CommandName epubpack -ParameterName Folder -ScriptBlock $foldercomplete
+Register-ArgumentCompleter -Native -CommandName ll -ScriptBlock $foldercompletenative

@@ -54,7 +54,9 @@ Set-PSReadLineKeyHandler -Chord 'y,y' -ViMode Command -ScriptBlock {
     }
 }
 
-foreach ($brace in ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}')) {
+$script:braces = ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')
+
+foreach ($brace in $braces) {
     Set-PSReadLineKeyHandler -Chord $brace[0] -ScriptBlock {
         $line = $pos = $null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$pos)
@@ -93,8 +95,6 @@ foreach ($brace in ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}')) {
 }
 
 Set-PSReadLineKeyHandler -Key Backspace -ScriptBlock {
-    $braces = ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}')
-
     $line = $pos = $null
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$pos)
 
@@ -116,12 +116,12 @@ Set-PSReadLineKeyHandler -Key Backspace -ScriptBlock {
     if (-not $deleted) {
         [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar()
     }
-}
+}.GetNewClosure()
 
 Set-PSReadLineKeyHandler -Chord ' ,p' -ViMode Command -ScriptBlock {
     if ($env:WSL_DISTRO_NAME) {
         if (Get-Command win32yank.exe -ErrorAction SilentlyContinue -OutVariable clip) {
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert((& $clip -o --lf) -join "`n")
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert((& $clip -o --lf))
         } else {
             [System.Console]::Beep()
         }

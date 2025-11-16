@@ -10,7 +10,7 @@ Set-Alias sel Select-Object
 Set-Alias gpd Get-PSDrive
 Set-Alias gpp Get-PSProvider
 Set-Alias cond Where-Object
-Set-Alias expand Resolve-Path
+Set-Alias expand Convert-Path
 Set-Alias order Sort-Object
 Set-Alias json ConvertFrom-Json
 Set-Alias tojson ConvertTo-Json
@@ -59,7 +59,6 @@ function .. {
     Set-Location ..
 }
 
-
 function md {
     $null = New-Item -ItemType Directory @args
 }
@@ -84,18 +83,10 @@ if (Get-Command 'home-manager' -ErrorAction Ignore) {
 if (Get-Command nix-store -ErrorAction Ignore) {
     function nsp {
         param(
-            [Parameter(Position = 1)]
+            [Parameter(Position = 1, Mandatory)]
             [string]$MainProgram
         )
         nix-store -q --outputs (Get-Command $MainProgram).Source
-    }
-}
-
-if ((Get-Command scoop -ea Ignore) -and -not (Get-Command sioyek -ea Ignore -CommandType Application)) {
-    if (& { scoop prefix sioyek *> $null; 0 -eq $LASTEXITCODE }) {
-        function sioyek {
-            & (Join-Path (scoop prefix sioyek) 'sioyek.exe') @args
-        }
     }
 }
 
@@ -143,8 +134,11 @@ function rd {
     }
     end {
         if (Get-Command robocopy -ErrorAction Ignore -CommandType Application) {
-            $empty = New-Item -ItemType Directory -Path (Join-Path $env:TEMP (New-Guid))
-            robocopy $empty $target /mir 1>$null
+            $empty = New-Item -ItemType Directory -Path (Join-Path temp:/ (New-Guid))
+            # TODO: why is it slow?
+            # perf similar to Remove-Item
+            # use git@github.com:sharpchen/nixpkgs.git as sample repo
+            robocopy $empty $target /mir /sl 1>$null
             Remove-Item $target
         } elseif (Get-Command rsync -ErrorAction Ignore -CommandType Application) {
             rsync --archive --delete "$(mktemp -d)/" "$target/"

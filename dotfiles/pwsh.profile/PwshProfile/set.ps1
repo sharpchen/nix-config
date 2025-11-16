@@ -3,18 +3,7 @@ if ($Host.Name -ne 'ConsoleHost') {
     return
 }
 
-$env:DOTNET_CLI_UI_LANGUAGE = 'en'
-if (Test-Path ~/.fzfrc) {
-    $env:FZF_DEFAULT_OPTS_FILE = (Resolve-Path ~/.fzfrc).Path
-}
-
-if ($IsLinux -or $IsMacOS) {
-    $env:MANPAGER = 'nvim +Man!'
-}
-
 Set-PsFzfOption -TabExpansion
-
-$IsLegacy = $PSVersionTable.PSEdition -eq 'Desktop'
 
 if ($IsWindows -or $IsLegacy) {
     [Console]::InputEncoding = [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -47,13 +36,7 @@ $syntaxColors = @{
     Variable  = [System.ConsoleColor]::DarkGreen
 }
 
-if ((Get-Module -Name PSReadLine).Version -lt '2.0.0') {
-    $syntaxColors.Keys | ForEach-Object {
-        Set-PSReadLineOption -TokenKind $_ -ForegroundColor $syntaxColors[$_]
-    }
-} else {
-    Set-PSReadLineOption -Colors $syntaxColors
-}
+Set-PSReadLineOption -Colors $syntaxColors
 
 function prompt {
     $left = "`e[1;32m"

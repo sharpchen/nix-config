@@ -40,6 +40,8 @@ function pinfo {
         [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Mandatory,
         [Parameter(ParameterSetName = 'Attribute')]
+        [switch]$ParameterType,
+        [Parameter(ParameterSetName = 'Attribute')]
         [switch]$All,
 
         [Parameter(ParameterSetName = 'ParameterSet')]
@@ -67,179 +69,81 @@ function pinfo {
     }
 
     end {
-        if (Get-Command $Command -ErrorAction SilentlyContinue -OutVariable cmd) {
-            switch ($PSCmdlet.ParameterSetName) {
-                'Attribute' {
-                    $cmd.Parameters.GetEnumerator() | Where-Object { $_.Value.Name -notin $CommonParams } | ForEach-Object {
-                        $name, $attr = $_.Value.Name, $_.Value.Attributes
-                        $pipe = [System.Collections.Generic.List[string]]@()
-                        $paramInfo = [pscustomobject]@{}
+        $cmd = Get-Command $Command
+        switch ($PSCmdlet.ParameterSetName) {
+            'Attribute' {
+                $cmd.Parameters.GetEnumerator() | Where-Object { $_.Value.Name -notin $CommonParams } | ForEach-Object {
+                    $name, $attr = $_.Value.Name, $_.Value.Attributes
+                    $pipe = [System.Collections.Generic.List[string]]@()
+                    $paramInfo = [pscustomobject]@{}
 
-                        if ($Pipeline -or $All) {
-                            if ($attr.ValueFromPipeline) {
-                                $pipe.Add('Value')
-                            }
-                            if ($attr.ValueFromPipelineByPropertyName) {
-                                $pipe.Add('Property')
-                            }
-                            $paramInfo | Add-Member -MemberType NoteProperty -Name Pipeline -Value $pipe
+                    if ($Pipeline -or $All) {
+                        if ($attr.ValueFromPipeline) {
+                            $pipe.Add('Value')
                         }
-                        # MinValue meaning Position attribute is not assigned
-                        if ($All -or $Positional -and $attr.Position -ne [int]::MinValue) {
-                            $paramInfo | Add-Member -MemberType NoteProperty -Name Position -Value $attr.Position
+                        if ($attr.ValueFromPipelineByPropertyName) {
+                            $pipe.Add('Property')
                         }
-                        if ($Alias -or $All) {
-                            $paramInfo | Add-Member -MemberType NoteProperty -Name Alias -Value $attr.AliasNames
+                        $paramInfo | Add-Member -MemberType NoteProperty -Name Pipeline -Value $pipe
+                    }
+                    # MinValue meaning Position attribute is not assigned
+                    if ($All -or $Positional -and $attr.Position -ne [int]::MinValue) {
+                        $paramInfo | Add-Member -MemberType NoteProperty -Name Position -Value $attr.Position
+                    }
+                    if ($Alias -or $All) {
+                        $paramInfo | Add-Member -MemberType NoteProperty -Name Alias -Value $attr.AliasNames
+                    }
+                    if (($Mandatory -or $All) -and $attr.Mandatory) {
+                        $paramInfo | Add-Member -MemberType NoteProperty -Name Mandatory -Value $attr.Mandatory
+                    }
+                    if ($ParameterType -or $All) {
+                        $paramInfo | Add-Member -MemberType NoteProperty -Name ParameterType -Value $_.Value.ParameterType.FullName
+                    }
+
+                    $info.Add($name, $paramInfo)
+                }
+                $format = @{
+                    Property = @(
+                        @{ Name = 'Parameter'; Expression = 'Key' }
+                        if ($Positional -or $All) {
+                            @{ Name = 'Position'; Expression = { $_.Value.Position } }
                         }
                         if ($Mandatory -or $All) {
-                            $paramInfo | Add-Member -MemberType NoteProperty -Name Mandatory -Value $attr.Mandatory
+                            @{ Name = 'Mandatory'; Expression = { $_.Value.Mandatory } }
                         }
-
-                        $info.Add($name, $paramInfo)
-                    }
-                    $format = @{
-                        Property = @(
-                            @{ Name = 'Parameter'; Expression = 'Key' }
-                            if ($Positional -or $All) {
-                                @{ Name = 'Position'; Expression = { $_.Value.Position } }
-                            }
-                            if ($Mandatory -or $All) {
-                                @{ Name = 'Mandatory'; Expression = { $_.Value.Mandatory } }
-                            }
-                            if ($Pipeline -or $All) {
-                                @{ Name = 'Pipeline'; Expression = { $_.Value.Pipeline -join ', ' } }
-                            }
-                            if ($Alias -or $All) {
-                                @{ Name = 'Alias'; Expression = { $_.Value.Alias -join ', ' } }
-                            }
-                        )
-                    }
-                    $info.GetEnumerator() | Format-Table @format -AutoSize
+                        if ($Pipeline -or $All) {
+                            @{ Name = 'Pipeline'; Expression = { $_.Value.Pipeline -join ', ' } }
+                        }
+                        if ($Alias -or $All) {
+                            @{ Name = 'Alias'; Expression = { $_.Value.Alias -join ', ' } }
+                        }
+                        if ($ParameterType -or $All) {
+                            @{ Name = 'ParameterType'; Expression = { $_.Value.ParameterType } }
+                        }
+                    )
                 }
-                default {
-                    # TODO: group by ParameterSetName
-                    throw [System.NotImplementedException]::new()
-                    $cmd.Parameters.GetEnumerator() | Group-Object { $_.Value.ParameterSets.Keys }
-                }
+                $info.GetEnumerator() | Format-Table @format -AutoSize
             }
-        } else {
-            Write-Error $Error[-1]
+            default {
+                # TODO: group by ParameterSetName
+                throw [System.NotImplementedException]::new()
+                $cmd.Parameters.GetEnumerator() | Group-Object { $_.Value.ParameterSets.Keys }
+            }
         }
     }
 }
 
-function mkvideo {
-    param (
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [Alias('FullName')]
-        [string]$Path,
-
-        [ValidateScript({ Test-Path -LiteralPath $_ })]
-        [Parameter(Mandatory)]
-        [string]$Destination,
-
-        [ValidateScript({ [IO.File]::Exists((Resolve-Path $_)) })]
-        [string]$Cover,
-
-        [switch]$MakeInfo,
-        [switch]$Convert
-    )
-
-    begin {
-        $null = Get-Command ffmpeg -ea Stop
-        $null = Get-Command ffprobe -ea Stop
-        if (-not $Destination) {
-            $Destination = $PWD.Path
-        }
-
-        if (-not (Test-Path $Destination)) {
-            Write-Verbose 'Destination does not exist, creating forcibly'
-            $null = New-Item -ItemType Directory -Path $Destination -ea Ignore
-        }
-
-        [System.Collections.Generic.List[string]]$info = @()
-        $invalidChar = @(
-            ('\\', '.'),
-            ('/', '.'),
-            (':', '：'),
-            ('\?', '？')
-        )
-    }
-
-    end {
-        $current = 0.0
-        $allMusic = @($input)
-        if (-not $Cover) {
-            $Cover = [System.IO.Path]::GetTempFileName()
-            Write-Verbose 'Cover unspecified, extracting from audio file'
-            ffmpeg -hide_banner -i $allMusic[0] -an -vcodec copy $Cover *>$null
-        }
-        foreach ($music in $allMusic) {
-            Write-Progress -Activity 'Creating Videos' -Status $music -PercentComplete (($current++ / $allMusic.Length) * 100)
-
-            $json = ffprobe -v error -show_format -show_streams -hide_banner -of json -i $music
-            $mediaInfo = $json | ConvertFrom-Json
-            $filename = Split-Path $music -Leaf
-            $musicName = $mediaInfo.format.tags.title
-
-            if ($filename -match '^(?<Index>\d+)\.?(?<Name>.*)$') {
-                $index = $matches.Index
-                if ([string]::IsNullOrEmpty($musicName)) {
-                    Write-Verbose 'Title not found in tags, extracting from filename'
-                    $musicName = Split-Path $matches.Name.Trim() -LeafBase
-                }
-            }
-
-            $duration = [uint]$mediaInfo.format.duration + 1
-            $videoname = "$index.「$musicName」"
-            foreach ($group in $invalidChar) {
-                $videoname = $videoname -replace $group
-            }
-            $info.Add($videoname)
-
-            $output = if ($Convert) {
-                [IO.Path]::GetTempFileName() -replace '\.tmp$', '.mp4'
-            } else {
-                Join-Path $Destination "$videoname.mp4"
-            }
-
-            ffmpeg -v error -framerate 24 -loop 1 -i $Cover -i $music -strict -2 -t $duration -c:v libx264 -c:a copy -hide_banner $output *>$null
-
-            if ($Convert) {
-                ffmpeg -i $output -c:v copy -c:a flac -sample_fmt s32 -ar 48000 (Join-Path $Destination "$videoname.mp4") *>$null
-            }
-
-            Write-Progress -Activity 'Creating Videos' -Status $musicName -PercentComplete (($current / $allMusic.Length) * 100)
-        }
-
-        if ($MakeInfo) {
-            $head = "$($mediaInfo.format.tags.ALBUM) ($($mediaInfo.format.tags.DATE)) - $($mediaInfo.format.tags.ARTIST)"
-            $info.InsertRange(0, [string[]]@($head, [string]::Empty))
-            $info -join [System.Environment]::NewLine > (Join-Path $Destination "$head.txt")
-        }
-
-        if ((Split-Path $Cover).TrimEnd([IO.Path]::DirectorySeparatorChar) -eq ([System.IO.Path]::GetTempPath()).TrimEnd([IO.Path]::DirectorySeparatorChar)) {
-            Remove-Item -Path $Cover
-        }
-
-        if ($Convert) {
-            Remove-Item -Path $output
-        }
-    }
-}
-
-function ago {
+function daysago {
     param(
+        [Parameter(Mandatory)]
         [uint]$Days,
-        [Parameter(ValueFromPipelineByPropertyName, ValueFromPipeline)]
-        [ValidateScript({ Test-Path -LiteralPath $_ })]
-        [string]$Path
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [datetime]$CreationTime
     )
 
     process {
-        $item = Get-Item -Path $Path
-        if ($item.CreationTime -gt [datetime]::Now.AddDays(-$Days)) {
-            $item
+        if ($CreationTime -gt [datetime]::Now.AddDays(-$Days)) {
+            $_
         }
     }
 }
@@ -306,140 +210,6 @@ function dnpack {
                 --preview-window=down `
                 --preview='echo {2..} | tr "\t" "\n"' `
                 --bind 'enter:execute(dotnet add package {1})+abort'
-    }
-}
-if ($PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows) {
-    function vs {
-        param (
-            [ValidateScript({ Test-Path -LiteralPath $_ })]
-            [string]$Path
-        )
-
-        begin {
-            if (-not (Get-Command devenv -ea Ignore)) {
-                $null = Get-Command vswhere -ea Stop
-            }
-            if (-not $Path) {
-                $Path = $PWD.ProviderPath
-            }
-        }
-
-        end {
-            $sln = Get-ChildItem $Path -Filter *.sln
-            $slnx = Get-ChildItem $Path -Filter *.slnx
-            $proj = Get-ChildItem $Path -Filter *.*proj
-
-            if ($slnx) {
-                $file = $slnx | Select-Object -First 1
-            } elseif ($sln) {
-                $file = $sln | Select-Object -First 1
-            } elseif ($proj) {
-                $file = $proj | Select-Object -First 1
-            } else {
-                Write-Warning "$($Path.FullName) contains no *proj or *.sln or *.slnx"
-                return
-            }
-
-            if (Get-Command devenv -ea Ignore) {
-                devenv $file.FullName
-            } else {
-                $devenv = (vswhere -latest -property productPath)
-                & $devenv $file
-            }
-        }
-    }
-
-    function vdcompact {
-        param (
-            [ValidateScript({ (Test-Path -LiteralPath $_) })]
-            [ValidateScript({ (Split-Path $_ -Extension) -eq '.vhdx' })]
-            [Parameter(Position = 0)]
-            [string]$Path
-        )
-        begin {
-            $null = Get-Command diskpart -CommandType Application -ea Stop
-            $Path = Resolve-Path $Path
-        }
-        end {
-            $tempScript = New-TemporaryFile
-            try {
-                @"
-                select vdisk file=`"$Path`"
-                compact vdisk
-"@ > $tempScript
-                diskpart /s $tempScript.FullName
-            } finally {
-                Remove-Item $tempScript
-            }
-        }
-    }
-
-    function pathadd {
-        param (
-            [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_).Path) })]
-            [Parameter(Position = 0)]
-            [string]$Dir
-        )
-
-        $Dir = (Resolve-Path $Dir).Path
-        $path = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User)
-        if (-not $path.Contains($Dir)) {
-            [System.Environment]::SetEnvironmentVariable('Path', ($path + [IO.Path]::PathSeparator + $Dir), [System.EnvironmentVariableTarget]::User)
-        }
-    }
-
-    function pathclean {
-        $path = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User) -split [IO.Path]::PathSeparator
-
-        $invalid = $path | Where-Object { -not (Test-Path -LiteralPath $_) }
-
-        [System.Environment]::SetEnvironmentVariable(
-            'Path',
-            [System.Linq.Enumerable]::Except([string[]]$path, [string[]]$invalid) -join [IO.Path]::PathSeparator,
-            [System.EnvironmentVariableTarget]::User
-        )
-    }
-
-    function trash {
-        param (
-            [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-            [ValidateScript({ Test-Path -LiteralPath $_ })]
-            [Alias('FullName')]
-            [string]$Path
-        )
-        begin {
-            Add-Type -AssemblyName Microsoft.VisualBasic
-        }
-        process {
-            $abs = Resolve-Path $Path
-            if ([System.IO.File]::Exists($abs)) {
-                [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
-            } elseif  ([System.IO.Directory]::Exists($abs)) {
-                [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
-            }
-        }
-    }
-
-    function exch {
-        param(
-            [Parameter(Position = 0, Mandatory)]
-            [string]$One,
-            [Parameter(Position = 1, Mandatory)]
-            [string]$Another
-        )
-
-        begin {
-            # TODO: waiting mv --exchange flag being implemented on uutils/coreutils
-            throw [System.NotImplementedException]::new('waiting mv --exchange flag being implemented on uutils/coreutils')
-            $One = (Resolve-Path $One).Path
-            $Another = (Resolve-Path $Another).Path
-        }
-
-        end {
-            if (Get-Command mv -CommandType Application -ErrorAction Stop -OutVariable mv) {
-                & $mv[0] $One $Another --exchange
-            }
-        }
     }
 }
 
@@ -552,12 +322,12 @@ function any {
     param (
         [Parameter(ValueFromPipeline)]
         [psobject]$InputObject,
-        [Parameter(Position = 1, Mandatory)]
+        [Parameter(Position = 1)]
         [scriptblock]$Condition
     )
 
     process {
-        if ($Condition.InvokeWithContext($null, [psvariable]::new('_', $_))) {
+        if ($Condition -and $Condition.InvokeWithContext($null, [psvariable]::new('_', $_)) -or $_) {
             $true
             break
         }
@@ -618,7 +388,7 @@ function skip {
     }
 }
 
-function fir {
+function first {
     param (
         [Parameter(ValueFromPipeline)]
         [psobject]$InputObject,
@@ -638,7 +408,7 @@ function get {
         [Parameter(Position = 0, Mandatory)]
         [string]$PropertyPath,
         [Parameter(ValueFromPipeline, Mandatory)]
-        [psobject]$InputObject
+        [psobject]$InputObject # FIXME: how to prevent implicit casting to psobject
     )
     begin {
         $propertyNames = $PropertyPath -split '\.'
@@ -648,8 +418,12 @@ function get {
         $val = $InputObject
 
         $count = 0
-        while ($val."$($propertyNames[$count])") {
-            $val = $val."$($propertyNames[$count])"
+        while ($prop = $val."$($propertyNames[$count])") {
+            if ($prop -is [System.Management.Automation.PSMethod]) {
+                $val = $prop.Invoke()
+            } else {
+                $val = $prop
+            }
             $count++
         }
 
@@ -665,12 +439,127 @@ function rall {
     }
     end {
         if (Get-Command robocopy -ErrorAction Ignore -CommandType Application) {
-            $empty = New-Item -ItemType Directory -Path (Join-Path $env:TEMP (New-Guid))
-            robocopy $empty $target /mir 1>$null
+            $empty = New-Item -ItemType Directory -Path (Join-Path temp:/ (New-Guid))
+            robocopy $empty $target /mir /sl 1>$null
         } elseif (Get-Command rsync -ErrorAction Ignore -CommandType Application) {
             rsync --archive --delete "$(mktemp -d)/" "$target/"
         } else {
             Remove-Item * -Recurse -Force
         }
+    }
+}
+
+function epubpack {
+    param (
+        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
+        [Parameter(Position = 0, Mandatory)]
+        [string]$Folder,
+        [Parameter(Position = 1)]
+        [ValidateScript({ Test-Path -IsValid $_ })]
+        [string]$Destination
+    )
+
+    begin {
+        $zip = Get-Command zip -CommandType Application -ErrorAction Stop
+        $null = Get-Item (Join-Path $Folder 'mimetype') -ErrorAction Stop
+        $output = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Destination)
+        # delete if file already exist, otherwise zip would *append* contents to it.
+        if (Test-Path $output) {
+            Remove-Item $output -Confirm
+        }
+    }
+
+    end {
+        $parameters = @{
+            FilePath         = $zip.Source
+            WorkingDirectory = Resolve-Path $Folder
+            ArgumentList     = "-Xr9Dq $output mimetype *"
+        }
+
+        Start-Process @parameters -Wait -NoNewWindow -UseNewEnvironment
+    }
+}
+
+function unpack {
+    # NOTE: to enforce pwsh accept a shorter syntax
+    # __AllParameterSets can be a arbitrary name other than defined ParameterSetNames
+    [CmdletBinding(DefaultParameterSetName = '__AllParameterSets')]
+    param (
+        [ValidateScript({ [IO.File]::Exists((Resolve-Path $_)) })]
+        [Parameter(Position = 0, Mandatory)]
+        [string]$Path,
+
+        [ValidateScript({ Test-Path $_ -IsValid })]
+        [Parameter(Position = 1, ParameterSetName = 'Destination')]
+        [string]$Destination,
+
+        [Parameter(ParameterSetName = 'Auto')]
+        [switch]$Direct
+    )
+    begin {
+        $tar = Get-Command bsdtar -ErrorAction Stop
+    }
+
+    end {
+        switch ($PSCmdlet.ParameterSetName) {
+            'Direct' {
+                & $tar xf $Path --cd $PWD
+            }
+            'Destination' {
+                if (-not $Destination) {
+                    $Destination = $PWD
+                } elseif ($Destination -and -not [IO.Directory]::Exists((Convert-Path $Destination))) {
+                    $null = New-Item -ItemType Directory -Path $Destination
+                }
+                & $tar xf $Path --cd $Destination
+            }
+            default {
+                [string]$first = & $tar tf $Path | Select-Object -First 1
+                # if first entry is a folder
+                # should unpack it directly
+                # TODO: what if the list is invisible?
+                if ($first.EndsWith('/') -and ($first -split '/').Count -eq 2) {
+                    & $tar xf $Path --cd $PWD
+                } else {
+                    # if not, create a dedicated directory in the basename of the archive
+                    $basename = (Get-Item $Path).BaseName
+                    $null = New-Item -ItemType Directory -Path $basename
+                    try {
+                        & $tar xf $Path --cd $basename
+                    } catch {
+                        Remove-Item -Recurse $basename
+                    }
+                }
+            }
+        }
+    }
+}
+
+function cptree {
+    param (
+        [Alias('Root')]
+        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
+        [Parameter(Position = 0, Mandatory)]
+        [string]$Path,
+        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
+        [Parameter(Position = 1, Mandatory)]
+        [string]$Destination,
+        [switch]$ExcludeRoot,
+        [switch]$Force
+    )
+
+    begin {
+        $root = Convert-Path $Path
+        $dest = Convert-Path $Destination
+        if (-not $ExcludeRoot) {
+            $dest = Join-Path $dest (Split-Path $root -Leaf)
+        }
+    }
+
+    end {
+        $null = Get-ChildItem -Path $root -Directory -Recurse -Force:$Force |
+            Resolve-Path -Relative -RelativeBasePath $root |
+            ForEach-Object { [pscustomobject]@{ Path = Join-Path $dest $_ } } | # NOTE: wrap it as Path property, New-Item requires to do so
+            New-Item -ItemType Directory
     }
 }
