@@ -1,10 +1,14 @@
 require('utils.lsp').setup('yamlls', {
   settings = {
     yaml = {
-      schemas = {
-        ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
-        ['https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json'] = '/*.k8s.yaml',
+      schemaStore = {
+        -- You must disable built-in schemaStore support if you want to use
+        -- this plugin and its advanced options like `ignore`.
+        enable = false,
+        -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+        url = '',
       },
+      schemas = require('schemastore').yaml.schemas(),
     },
   },
 })

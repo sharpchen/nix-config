@@ -4,10 +4,12 @@ return {
   {
     'neovim/nvim-lspconfig',
     event = 'VeryLazy',
+    dependencies = { 'b0o/schemastore.nvim' },
     config = function()
       local lsp = require('utils.lsp')
 
       vim.lsp.config('*', {
+        ---@diagnostic disable-next-line: param-type-not-match
         capabilities = require('blink.cmp').get_lsp_capabilities(),
       })
       -- NOTE: use LspAttach instead of on_attach for default use
@@ -32,7 +34,14 @@ return {
       })
       lsp.setup('bashls') -- settings: https://github.com/bash-lsp/bash-language-server/blob/main/server/src/config.ts
       lsp.setup('emmet_language_server')
-      lsp.setup('jsonls')
+      lsp.setup('jsonls', {
+        settings = {
+          json = {
+            schemas = require('schemastore').json.schemas(),
+            validate = { enable = true },
+          },
+        },
+      })
       lsp.setup('cssls')
       lsp.setup('html')
       lsp.setup('vimls')
@@ -71,20 +80,44 @@ return {
         end,
       })
 
-      require('plugins.lsp.lua_ls')
+      -- require('plugins.lsp.lua_ls')
+      lsp.setup('emmylua_ls', {
+        on_attach = lsp.event.disable_semantic,
+        settings = {
+          Lua = {
+            completion = {
+              autoRequire = false,
+              displayContext = 1,
+            },
+            hint = {
+              enable = true,
+              paramName = 'Literal',
+              semicolon = 'Disable',
+            },
+            runtime = {
+              version = 'LuaJIT',
+            },
+            diagnostics = {
+              globals = { 'vim' },
+              disable = { 'need-check-nil' },
+            },
+            workspace = {
+              library = {
+                vim.env.VIMRUNTIME,
+              },
+            },
+          },
+        },
+      })
       require('plugins.lsp.yamlls')
       require('plugins.lsp.vue_language_server')
       require('plugins.lsp.pwsh_es')
       require('plugins.lsp.msbuild_ls')
       require('plugins.lsp.query_ls')
       require('plugins.lsp.lemminx')
+      require('plugins.lsp.ds_pinyin_lsp')
+      require('plugins.lsp.nixd')
 
-      lsp.setup('nixd', {
-        on_init = function(client)
-          lsp.event.disable_semantic(client)
-          lsp.event.disable_formatter(client)
-        end,
-      })
       lsp.setup('avalonia_ls', {
         name = 'avalonia_ls',
         cmd = { 'AvaloniaLanguageServer' },

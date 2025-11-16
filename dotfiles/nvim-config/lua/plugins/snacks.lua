@@ -202,7 +202,7 @@ return {
         end,
         { desc = 'open parent of current buffer in term' }
       )
-      local current_term ---@type snacks.win
+      local current_term ---@type snacks.win?
       vim.keymap.set('n', [[<M-`>]], function()
         if not current_term then
           current_term = Snacks.terminal.open(nil, {

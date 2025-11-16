@@ -1,6 +1,6 @@
 local ls = require('luasnip')
 local snip = ls.snippet --[[@as fun(trigger: string | { trig: string, name: string, desc: string }, node: any[] | any)]]
-local ins = ls.insert_node --[[@as fun(idx: integer, placeholder?: string)]]
+local ins = ls.insert_node
 local oneof = ls.choice_node
 local sn = ls.snippet_node
 local fn = ls.function_node
@@ -12,6 +12,8 @@ local fmta = require('luasnip.extras.fmt').fmta --[[@as fun(body: string, nodes:
 local ref = require('luasnip.extras').lambda
 local postfix = require('luasnip.extras.postfix').postfix
 local ts_post = require('luasnip.extras.treesitter_postfix').treesitter_postfix
+local opt = require('luasnip.nodes.optional_arg').new_opt
+local key = require('luasnip.nodes.key_indexer').new_key
 
 local wrap_lua_stm = require('utils.luasnip').ts_wrap_stm {
   lang = 'lua',
@@ -93,7 +95,19 @@ return {
   snip(
     'usercmd',
     fmt("vim.api.nvim_create_user_command('{}', {}, {{ desc = '{}' }})", {
-      ins(1),
+      dyn(1, function(args)
+        if args[1] and not require('utils.text').case.is_pascal(tostring(args[1])) then
+          return sn(nil, {
+            ins(
+              1,
+              require('utils.text').case.convert(tostring(args[1]), 'pascal'),
+              { key = 'cmd' }
+            ),
+          })
+        else
+          return sn(nil, { ins(1, args[1], { key = 'cmd' }) })
+        end
+      end, { opt(key('cmd')) }, { snippetstring_args = true }),
       oneof(2, {
         sn(nil, fmt('function(args)\n  {}\nend', { ins(1) })),
         sn(nil, fmt("'{}'", { ins(1) })),

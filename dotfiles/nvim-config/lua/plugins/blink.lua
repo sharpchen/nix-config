@@ -2,9 +2,10 @@
 ---@type LazySpec
 return {
   'Saghen/blink.cmp',
-  version = '*',
-  build = IsWindows and ''
-    or 'CARGO_NET_GIT_FETCH_WITH_CLI=true nix run .#build-plugin --accept-flake-config',
+  version = '1.*',
+  build = HasNix
+      and 'CARGO_NET_GIT_FETCH_WITH_CLI=true nix run .#build-plugin --accept-flake-config'
+    or '',
   event = 'BufReadPost',
   dependencies = {
     'moyiz/blink-emoji.nvim',

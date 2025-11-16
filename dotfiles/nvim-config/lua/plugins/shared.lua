@@ -98,4 +98,13 @@ return {
       }
     end,
   },
+  {
+    'moll/vim-bbye',
+    config = function()
+      vim.cmd([[
+          nnoremap <silent> <A-c> :Bdelete<CR>
+          nnoremap <silent> <A-a> :bufdo Bdelete<CR>
+      ]])
+    end,
+  },
 }

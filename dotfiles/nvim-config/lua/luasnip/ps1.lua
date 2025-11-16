@@ -74,4 +74,13 @@ Register-ArgumentCompleter -Native -CommandName <> -ScriptBlock {
       { ins(1) }
     )
   ),
+  snip(
+    'filevalidate',
+    text('[ValidateScript({ [IO.File]::Exists((Resolve-Path $_)) })]')
+  ),
+  snip(
+    'foldervalidate',
+    text('[ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]')
+  ),
+  snip('pathvalidate', text('[ValidateScript({ Test-Path -LiteralPath $_ })]')),
 }
