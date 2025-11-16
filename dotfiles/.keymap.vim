@@ -57,7 +57,7 @@ nnoremap <silent> <A-a> :bufdo bd<CR>
 nnoremap gh ^
 nnoremap gl $
 xnoremap gh ^
-xnoremap gl $
+xnoremap gl $<left>
 " nnoremap <silent> <leader>so :source ~/.vimrc<CR>
 nmap <leader><leader> diw
 nnoremap <leader>z I(<Esc>A)<Esc>

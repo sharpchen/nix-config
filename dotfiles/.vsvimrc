@@ -87,7 +87,7 @@ nnoremap <leader>a ggVG
 nnoremap gh ^
 nnoremap gl $
 xnoremap gh ^
-xnoremap gl $
+xnoremap gl $<left>
 
 nnoremap <leader><leader> diw
 nnoremap <leader>z I(<Esc>A)<Esc>
