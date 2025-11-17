@@ -3,7 +3,7 @@
   home.packages =
     with pkgs;
     [
-      lua-language-server
+      emmylua-ls
       taplo
       nixd
       lemminx

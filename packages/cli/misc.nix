@@ -49,6 +49,8 @@
     libarchive
     _7zz-rar
     hyperfine
+    lstr
+    zip
   ];
   # home.file.".dict/.dict.conf".text = ''
   #   server localhost
