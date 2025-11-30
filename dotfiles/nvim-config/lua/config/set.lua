@@ -219,6 +219,11 @@ vim.api.nvim_create_autocmd('TermOpen', {
   desc = 'disable spell in terminal',
 })
 
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'qf',
+  callback = function() vim.opt_local.spell = false end,
+})
+
 vim.api.nvim_create_user_command(
   'LspLog',
   string.format('e %s', vim.lsp.log.get_filename()),
@@ -239,6 +244,21 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command('W', 'noautocmd w', { desc = 'pure write' })
 
 vim.api.nvim_create_autocmd('ColorScheme', {
-  pattern = 'habamax',
-  callback = function() vim.cmd('hi WinSeparator guibg=none') end,
+  pattern = { 'habamax', 'xamabah' },
+  callback = function(args)
+    vim.cmd('hi WinSeparator guibg=none')
+    local highlight = require('utils.static').highlight
+    local normal = highlight.get('Normal')
+
+    if args.match == 'habamax' then
+      local visual_bg = highlight.get('Identifier').fg
+      highlight.set('Visual', { fg = normal.bg, bg = visual_bg })
+    elseif args.match == 'xamabah' then
+      highlight.override('Cursor', { fg = 'red' })
+    end
+
+    highlight.set('NormalFloat', { bg = normal.bg })
+    highlight.set('@variable', { fg = normal.fg })
+    highlight.set('Operator', { link = 'Keyword' })
+  end,
 })

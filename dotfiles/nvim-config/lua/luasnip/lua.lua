@@ -31,14 +31,36 @@ local wrap_lua_stm = require('utils.luasnip').ts_wrap_stm {
             ] @prefix
         ]],
 }
+local wrap_lua_string_stm = require('utils.luasnip').ts_wrap_stm {
+  lang = 'lua',
+  query = [[
+            [
+              (string)
+            ] @prefix
+        ]],
+}
 
 return {
   wrap_lua_stm { trig = '.local', format = 'local {} = {stm}' },
   wrap_lua_stm { trig = '.wl', format = 'print({stm})' },
   wrap_lua_stm { trig = '.append', format = 'table.insert({stm}, {})' },
+  wrap_lua_stm { trig = '.remove', format = 'table.remove({stm}, {})' },
   wrap_lua_stm { trig = '.type', format = 'type({stm})' },
   wrap_lua_stm { trig = '.assert', format = 'assert({stm})' },
   wrap_lua_stm { trig = '.len', format = '#{stm}' },
+  wrap_lua_string_stm { trig = '.format', format = 'string.format({stm}, {})' },
+  wrap_lua_stm {
+    trig = '.any',
+    format = [[
+    vim.iter({stm}):any(function({x}) {} end)
+  ]],
+  },
+  wrap_lua_stm {
+    trig = '.all',
+    format = [[
+    vim.iter({stm}):all(function({x}) {} end)
+  ]],
+  },
   wrap_lua_stm {
     trig = '.for',
     format = [[

@@ -36,7 +36,7 @@ end
 vim.api.nvim_create_augroup('Heirline', { clear = true })
 vim.api.nvim_create_autocmd('ColorScheme', {
   callback = function(args)
-    if args.match == 'habamax' then
+    if vim.list_contains({ 'habamax', 'xamabah' }, args.match) then
       vim.o.statusline = _G.__default_statusline
       vim.o.laststatus = vim.opt.laststatus._info.default
     else

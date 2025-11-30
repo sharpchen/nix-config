@@ -39,6 +39,27 @@ M.ts = {
   end,
 }
 
+M.highlight = {}
+
+---@param name string
+---@return vim.api.keyset.get_hl_info
+function M.highlight.get(name)
+  return vim.api.nvim_get_hl(0, { name = name, link = false, create = false })
+end
+
+---@param name string
+---@param style vim.api.keyset.highlight
+function M.highlight.set(name, style) vim.api.nvim_set_hl(0, name, style) end
+
+---@param name string
+---@param style vim.api.keyset.highlight
+function M.highlight.override(name, style)
+  -- WARN: highlight.get returns vim.api.keyset.get_hl_info
+  -- which is different than vim.api.keyset.highlight
+  -- so this might not work expected for all fields defined in vim.api.keyset.highlight
+  vim.api.nvim_set_hl(0, name, vim.tbl_extend('force', M.highlight.get(name), style))
+end
+
 ---@param next boolean
 local function mv_qf_item(next, init_bufnr)
   local is_top = vim.fn.line('.') == 1

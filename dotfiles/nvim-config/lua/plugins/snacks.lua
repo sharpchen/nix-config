@@ -237,6 +237,18 @@ return {
         end,
         { desc = 'search vim runtime files' }
       )
+
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'snacks_picker_input',
+        callback = function(args)
+          vim.keymap.set(
+            'n',
+            '<leader>b',
+            [[mzhebi\b<Esc>ea\b<Esc>`z]],
+            { buffer = args.buf }
+          )
+        end,
+      })
     end,
   },
   {

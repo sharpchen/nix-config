@@ -23,6 +23,7 @@ local function setup()
     SymbolUsageText = function(_, p) return { fg = p.comment, italic = false } end,
     SnacksPickerMatch = function(_, p) return { fg = p.property, bold = true } end,
     MatchParen = function(_, p) return { bg = 'none', fg = '#C57BDB' } end,
+    ['@lsp.type.keyword.lua'] = function() return {} end,
   }
   require('Eva-Theme').setup {
     override_palette = {
@@ -64,13 +65,5 @@ return {
   {
     'Mofiqul/vscode.nvim',
   },
-  {
-    'xeind/nightingale.nvim',
-    lazy = false,
-    priority = 1000,
-  },
-  {
-    'rose-pine/neovim',
-    name = 'rose-pine',
-  },
+  'habamax/vim-habamax',
 }

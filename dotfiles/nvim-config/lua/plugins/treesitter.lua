@@ -55,11 +55,8 @@ return {
       vim.api.nvim_create_autocmd('FileType', {
         callback = function(args)
           if
-            vim.g.colors_name == 'habamax'
-            and vim.list_contains(
-              { 'javascript', 'typescript', 'ps1', 'python' },
-              args.match
-            )
+            vim.list_contains({ 'habamax', 'xamabah' }, vim.g.colors_name)
+            and vim.list_contains({ 'javascript', 'ps1', 'python' }, args.match)
           then
             return
           end

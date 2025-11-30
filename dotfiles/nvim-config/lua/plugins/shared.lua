@@ -101,10 +101,25 @@ return {
   {
     'moll/vim-bbye',
     config = function()
-      vim.cmd([[
-          nnoremap <silent> <A-c> :Bdelete<CR>
-          nnoremap <silent> <A-a> :bufdo Bdelete<CR>
-      ]])
+      local function has_terminal()
+        return vim
+          .iter(vim.fn.tabpagebuflist())
+          :any(function(buf) return vim.bo[buf].buftype == 'terminal' end)
+      end
+
+      vim.keymap.set(
+        'n',
+        '<A-c>',
+        function() return has_terminal() and ':Bdelete<CR>' or ':bd<CR>' end,
+        { silent = true, expr = true }
+      )
+
+      vim.keymap.set(
+        'n',
+        '<A-a>',
+        function() return has_terminal() and ':bufdo Bdelete<CR>' or ':bufdo bd<CR>' end,
+        { silent = true, expr = true }
+      )
     end,
   },
 }

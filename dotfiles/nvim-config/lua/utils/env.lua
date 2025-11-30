@@ -40,7 +40,6 @@ end
 M.shell = {
   bash_cmd = bash_cmd,
   pwsh_cmd = pwsh_cmd,
-  cmd_wrap = (not M.is_windows) and bash_cmd or pwsh_cmd,
 }
 
 --- Generate a command array that query the store path of a nix package

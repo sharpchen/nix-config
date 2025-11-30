@@ -79,3 +79,5 @@ async
 treesitter
 concat
 mimetype
+fsharp
+deepcopy

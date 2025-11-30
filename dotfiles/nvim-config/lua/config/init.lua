@@ -19,13 +19,8 @@ require('utils.dap') -- tasks
 local colo = {
   'vscode',
   'Eva-Dark',
-  'rose-pine-moon',
   'habamax',
-  'nightingale',
+  'xamabah',
 }
-if IsWindows then
-  vim.cmd.colorscheme('vscode')
-else
-  math.randomseed(os.time())
-  vim.cmd.colo(colo[math.random(#colo)])
-end
+math.randomseed(os.time())
+vim.cmd.colo(colo[math.random(#colo)])

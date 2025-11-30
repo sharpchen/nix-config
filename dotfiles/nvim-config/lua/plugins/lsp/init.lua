@@ -81,34 +81,7 @@ return {
       })
 
       -- require('plugins.lsp.lua_ls')
-      lsp.setup('emmylua_ls', {
-        on_attach = lsp.event.disable_semantic,
-        settings = {
-          Lua = {
-            completion = {
-              autoRequire = false,
-              displayContext = 1,
-            },
-            hint = {
-              enable = true,
-              paramName = 'Literal',
-              semicolon = 'Disable',
-            },
-            runtime = {
-              version = 'LuaJIT',
-            },
-            diagnostics = {
-              globals = { 'vim' },
-              disable = { 'need-check-nil' },
-            },
-            workspace = {
-              library = {
-                vim.env.VIMRUNTIME,
-              },
-            },
-          },
-        },
-      })
+      require('plugins.lsp.emmylua')
       require('plugins.lsp.yamlls')
       require('plugins.lsp.vue_language_server')
       require('plugins.lsp.pwsh_es')
