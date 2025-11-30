@@ -2,7 +2,6 @@
 {
   home.packages = with pkgs; [
     nodejs_22
-    nodePackages.ts-node
     nodePackages.prettier
     pnpm
     quick-lint-js
