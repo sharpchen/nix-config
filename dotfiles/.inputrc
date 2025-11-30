@@ -21,3 +21,7 @@ set keymap vi-command
 "\e[B": history-search-forward
 "k": history-search-backward
 "j": history-search-forward
+
+set keymap vi-insert
+"\e[A": history-search-backward
+"\e[B": history-search-forward
