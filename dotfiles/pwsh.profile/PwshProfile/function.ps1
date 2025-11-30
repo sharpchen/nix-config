@@ -403,23 +403,37 @@ function first {
     }
 }
 
+function reverse {
+    param (
+        [Parameter(ValueFromPipeline)]
+        [psobject]$InputObject
+    )
+
+    for ($i = $input.Count - 1; $i -ge 0 ; $i--) {
+        $input[$i]
+    }
+}
+
 function get {
     param(
         [Parameter(Position = 0, Mandatory)]
         [string]$PropertyPath,
         [Parameter(ValueFromPipeline, Mandatory)]
-        [psobject]$InputObject # FIXME: how to prevent implicit casting to psobject
+        [psobject]$InputObject
     )
     begin {
         $propertyNames = $PropertyPath -split '\.'
     }
 
     process {
+        $type = $InputObject.GetType()
         $val = $InputObject
 
         $count = 0
         while ($prop = $val."$($propertyNames[$count])") {
-            if ($prop -is [System.Management.Automation.PSMethod]) {
+            if ($propertyNames[$count] -eq 'GetType') {
+                $val = $type
+            } elseif ($prop -is [System.Management.Automation.PSMethod]) {
                 $val = $prop.Invoke()
             } else {
                 $val = $prop

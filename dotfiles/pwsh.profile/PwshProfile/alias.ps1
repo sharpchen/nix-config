@@ -35,20 +35,6 @@ if (Get-Command nvim -ErrorAction Ignore) {
         set wrap
 '@
     }
-
-    function vf {
-        begin {
-            $null = Get-Command fzf -ea Stop
-            $null = Get-Command vim -ea Stop -CommandType Function
-        }
-
-        end {
-            $item = fzf
-            if ($item) {
-                vim $item
-            }
-        }
-    }
 }
 
 function :q {
@@ -87,20 +73,6 @@ if (Get-Command nix-store -ErrorAction Ignore) {
             [string]$MainProgram
         )
         nix-store -q --outputs (Get-Command $MainProgram).Source
-    }
-}
-
-if (Get-Command sioyek -ErrorAction Ignore) {
-    function sio {
-        begin {
-            $null = Get-Command fzf -ErrorAction Stop
-        }
-        end {
-            $file = fzf
-            if ($file) {
-                sioyek $file @args
-            }
-        }
     }
 }
 

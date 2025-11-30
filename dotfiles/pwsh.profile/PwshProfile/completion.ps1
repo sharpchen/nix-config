@@ -10,6 +10,16 @@ $filecomplete = {
         Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
+$filecompletenative = {
+    param(
+        $wordToComplete,
+        $commandAst,
+        $cursorPosition
+    )
+    Get-ChildItem -Filter "*$wordToComplete*" -File -Force |
+        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
+}
+
 $foldercomplete = {
     param(
         $commandName,
@@ -51,9 +61,11 @@ $dotnetcomplete = {
 }
 
 Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock $dotnetcomplete
+Register-ArgumentCompleter -Native -CommandName ll -ScriptBlock $foldercompletenative
+Register-ArgumentCompleter -Native -CommandName file -ScriptBlock $filecompletenative
+
 Register-ArgumentCompleter -CommandName dn -ScriptBlock $dotnetcomplete
 Register-ArgumentCompleter -CommandName rd -ParameterName Path -ScriptBlock $foldercomplete
 Register-ArgumentCompleter -CommandName unpack -ParameterName Path -ScriptBlock $filecomplete
 Register-ArgumentCompleter -CommandName unpack -ParameterName Destination -ScriptBlock $foldercomplete
 Register-ArgumentCompleter -CommandName epubpack -ParameterName Folder -ScriptBlock $foldercomplete
-Register-ArgumentCompleter -Native -CommandName ll -ScriptBlock $foldercompletenative

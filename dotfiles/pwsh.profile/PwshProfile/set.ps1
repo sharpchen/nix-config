@@ -3,8 +3,6 @@ if ($Host.Name -ne 'ConsoleHost') {
     return
 }
 
-Set-PsFzfOption -TabExpansion
-
 if ($IsWindows -or $IsLegacy) {
     [Console]::InputEncoding = [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 }
