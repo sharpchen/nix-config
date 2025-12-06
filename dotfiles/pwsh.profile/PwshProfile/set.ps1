@@ -22,7 +22,7 @@ if ($IsLegacy) {
     Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler $OnViModeChange
 }
 
-$syntaxColors = @{
+Set-PSReadLineOption -Colors @{
     Parameter = [System.ConsoleColor]::Magenta
     Operator  = [System.ConsoleColor]::Cyan
     Type      = [System.ConsoleColor]::Cyan
@@ -34,7 +34,7 @@ $syntaxColors = @{
     Variable  = [System.ConsoleColor]::DarkGreen
 }
 
-Set-PSReadLineOption -Colors $syntaxColors
+$PSStyle.FileInfo.Directory = $PSStyle.Foreground.BrightBlue + $PSStyle.Bold
 
 function prompt {
     $left = "`e[1;32m"

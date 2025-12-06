@@ -1,6 +1,7 @@
 $IsLegacy = $PSVersionTable.PSEdition -eq 'Desktop'
 
 $env:DOTNET_CLI_UI_LANGUAGE = 'en'
+$env:EDITOR = 'nvim'
 
 if ($IsLinux -or $IsMacOS) {
     $env:MANPAGER = 'nvim +Man!'
