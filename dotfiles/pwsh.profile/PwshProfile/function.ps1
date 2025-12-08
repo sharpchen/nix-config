@@ -577,3 +577,47 @@ function cptree {
             New-Item -ItemType Directory
     }
 }
+
+function dbconnectstr {
+    param (
+        [ValidateSet('postgres')]
+        [string]$Driver,
+        [string]$UserName,
+        [string]$DriverHost = 'localhost',
+        [ushort]$Port = 5432
+    )
+
+    begin {
+        if (-not $Driver) {
+            $null = Get-Command fzf -ErrorAction Stop
+            $Driver = 'postgres' | fzf --prompt 'Pick database engine'
+        }
+        if (-not $UserName) {
+            $UserName = Read-Host -Prompt 'UserName'
+        }
+        $database = Read-Host -Prompt 'Datebase'
+        $password = Read-Host -Prompt 'Password' -AsSecureString
+        # convert SecureString to literal, ref: https://stackoverflow.com/a/40166959/28562451
+        $password = [pscredential]::new(0, $password).GetNetworkCredential().Password
+    }
+    end {
+        switch($Driver) {
+            'postgres' {
+                if (-not $UserName) {
+                    $UserName = 'postgres'
+                }
+                "postgres://$($UserName):$($password)@$($DriverHost):$($Port)/$($database)"
+            }
+        }
+    }
+}
+
+function connectdb {
+    begin {
+        $null = Get-Command rainfrog -ErrorAction Stop
+    }
+
+    end {
+        rainfrog --url (dbconnectstr)
+    }
+}

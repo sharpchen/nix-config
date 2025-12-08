@@ -134,3 +134,21 @@ function exch {
         }
     }
 }
+
+function enterfirmware {
+    [CmdletBinding(
+        SupportsShouldProcess,
+        ConfirmImpact = 'High')] # always prompt for confirmation
+    param()
+
+    if ($PSCmdlet.ShouldProcess('Reboot to Firmware', '', '')) {
+        shutdown /r /fw /t 0
+
+        # The system could not find the environment option that was entered.(203)
+        if ($LASTEXITCODE -eq 203) {
+            Dism /Online /Cleanup-Image /RestoreHealth
+            shutdown /r /fw /t 0
+        }
+    }
+
+}

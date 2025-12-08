@@ -34,6 +34,19 @@ Set-PSReadLineOption -Colors @{
     Variable  = [System.ConsoleColor]::DarkGreen
 }
 
+Set-PSReadLineOption -AddToHistoryHandler {
+    param($history)
+
+    switch -Regex ($history) {
+        '\b(?:aria2c|rainfrog)\b' {
+            $false
+        }
+        default {
+            $true
+        }
+    }
+}
+
 $PSStyle.FileInfo.Directory = $PSStyle.Foreground.BrightBlue + $PSStyle.Bold
 
 function prompt {
