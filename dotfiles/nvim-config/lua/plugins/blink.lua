@@ -62,10 +62,9 @@ return {
       nerd_font_variant = 'mono',
     },
     enabled = function()
-      return not vim.list_contains(
-        { 'lazy', 'rip-substitute', 'DressingInput', 'typr' },
-        vim.bo.filetype
-      ) and vim.bo.buftype ~= 'prompt' and vim.b.completion ~= false
+      return not vim.list_contains({ 'lazy', 'rip-substitute' }, vim.bo.filetype)
+        and vim.bo.buftype ~= 'prompt'
+        and vim.b.completion ~= false
     end,
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
@@ -88,8 +87,14 @@ return {
           -- end,
         },
         lsp = {
+          name = 'LSP',
           score_offset = 3,
+          module = 'blink.cmp.sources.lsp',
+          fallbacks = {}, -- always show buffer source
         },
+        -- lsp = {
+        --   score_offset = 3,
+        -- },
         buffer = {
           -- min_keyword_length = 3,
           score_offset = 1,

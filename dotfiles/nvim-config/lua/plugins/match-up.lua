@@ -19,5 +19,10 @@ return {
         keepjumps = true,
       },
     }
+
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = { 'xaml', 'msbuild', 'slnx', 'axaml' },
+      callback = function() vim.b.match_words = vim.fn['matchup#util#standard_xml']() end,
+    })
   end,
 }

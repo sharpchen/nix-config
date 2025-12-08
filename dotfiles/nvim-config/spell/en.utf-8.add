@@ -81,3 +81,5 @@ concat
 mimetype
 fsharp
 deepcopy
+eval
+pwsh

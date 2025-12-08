@@ -201,9 +201,9 @@ vim.api.nvim_create_user_command('Delete', function()
   vim.cmd.bd()
   vim.fs.rm(path)
   vim.notify(path .. ' deleted')
-end, { desc = 'delete current file' })
+end, { desc = 'delete current file', bang = true })
 
-if IsWindows then
+if HasScoop then
   vim.system({ 'scoop', 'prefix', 'git' }, { text = true }, function(out)
     if out.code == 0 then
       vim.schedule(function()
@@ -262,3 +262,21 @@ vim.api.nvim_create_autocmd('ColorScheme', {
     highlight.set('Operator', { link = 'Keyword' })
   end,
 })
+
+vim.api.nvim_create_user_command('Readonly', function(args)
+  vim.bo.modifiable = false
+
+  vim.keymap.set(
+    'n',
+    [[d]],
+    [[<C-d>]],
+    { desc = 'scroll down', remap = true, buffer = args.buf }
+  )
+
+  vim.keymap.set(
+    'n',
+    [[u]],
+    [[<C-u>]],
+    { desc = 'scroll up', remap = true, buffer = args.buf }
+  )
+end, { desc = 'make current buffer readonly' })

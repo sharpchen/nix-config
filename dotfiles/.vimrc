@@ -44,6 +44,7 @@ function s:CurrentFileName(a, l, p) abort ":h command-completion-custom
 endfunction
 
 command! -nargs=1 -complete=custom,s:CurrentFileName Rename execute $'saveas {expand('%:p:h')}/{"<args>"}' | call delete(expand('#'))
+command! Delete call delete(expand('%')) | bdelete!
 autocmd BufReadPost * silent! normal! g`"zvzz
 autocmd VimResized * wincmd =
 
