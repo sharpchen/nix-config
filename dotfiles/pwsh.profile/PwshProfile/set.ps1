@@ -1,8 +1,3 @@
-if ($Host.Name -ne 'ConsoleHost') {
-    Write-Information 'Current Host is not ConsoleHost'
-    return
-}
-
 if ($IsWindows -or $IsLegacy) {
     [Console]::InputEncoding = [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 }
@@ -38,7 +33,7 @@ Set-PSReadLineOption -AddToHistoryHandler {
     param($history)
 
     switch -Regex ($history) {
-        '\b(?:aria2c|rainfrog)\b' {
+        '\b(?:aria2c|rainfrog|sioyek)\b(\.exe)?' {
             $false
         }
         default {
@@ -48,6 +43,10 @@ Set-PSReadLineOption -AddToHistoryHandler {
 }
 
 $PSStyle.FileInfo.Directory = $PSStyle.Foreground.BrightBlue + $PSStyle.Bold
+
+$global:PSDefaultParameterValues = @{
+    'Update-Help:UICulture' = 'en-US'
+}
 
 function prompt {
     $left = "`e[1;32m"
@@ -69,3 +68,5 @@ function prompt {
         return $ps1
     }
 }
+
+# Set-PSReadLineOption -PredictionViewStyle ListView

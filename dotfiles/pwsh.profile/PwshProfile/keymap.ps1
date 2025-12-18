@@ -2,7 +2,6 @@ $script:braces = ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}'), ('<
 
 Set-PSReadLineOption -EditMode Vi
 
-Set-PSReadLineKeyHandler -Key 'Ctrl+ ' -Function MenuComplete -ViMode Insert
 Set-PSReadLineKeyHandler -Key Tab -Function Complete
 Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
@@ -12,6 +11,8 @@ Set-PSReadLineKeyHandler -Chord 'g,h' -Function GotoFirstNonBlankOfLine -ViMode 
 Set-PSReadLineKeyHandler -Key Tab -Function ViGotoBrace -ViMode Command
 Set-PSReadLineKeyHandler -Key Y -Function ViYankToEndOfLine -ViMode Command
 Set-PSReadLineKeyHandler -Chord 'g,l' -Function MoveToEndOfLine -ViMode Command
+# Set-PSReadLineKeyHandler -Chord 'Ctrl+j' -Function NextSuggestion -ViMode Insert
+# Set-PSReadLineKeyHandler -Chord 'Ctrl+k' -Function PreviousSuggestion -ViMode Insert
 
 # conditionally accept when buffer contains newline
 Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {
@@ -89,7 +90,7 @@ foreach ($brace in $script:braces) {
 
         if (
             ($pos -ne $line.Length) -and # not at the end of line
-            ($line[$pos] -ne ' ') -and # not next to a real char
+            ($line[$pos] -match '\w') -and # next to a word char
             ($line[$pos] -ne $brace[1]) -and # not next to closing brace
             ($line[$pos] -ne [Environment]::NewLine) # not next to newline on multi-line editing
         ) {

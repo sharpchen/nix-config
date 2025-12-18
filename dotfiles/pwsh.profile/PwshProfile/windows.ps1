@@ -1,6 +1,4 @@
-if (-not ($IsLegacy -or $IsWindows)) {
-    return
-}
+Set-Alias reboot Restart-Computer
 
 function vs {
     param (
@@ -69,7 +67,7 @@ function vdcompact {
 
 function pathadd {
     param (
-        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_).Path) })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 0)]
         [string]$Dir
     )
@@ -104,10 +102,9 @@ function trash {
         Add-Type -AssemblyName Microsoft.VisualBasic
     }
     process {
-        $abs = Resolve-Path $Path
-        if ([System.IO.File]::Exists($abs)) {
+        if (Test-Path -LiteralPath $Path -PathType Leaf) {
             [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
-        } elseif  ([System.IO.Directory]::Exists($abs)) {
+        } elseif  (Test-Path -LiteralPath $Path -PathType Container) {
             [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
         }
     }
@@ -141,7 +138,7 @@ function enterfirmware {
         ConfirmImpact = 'High')] # always prompt for confirmation
     param()
 
-    if ($PSCmdlet.ShouldProcess('Reboot to Firmware', '', '')) {
+    if ($PSCmdlet.ShouldProcess('Reboot to Firmware', $null, $null)) {
         shutdown /r /fw /t 0
 
         # The system could not find the environment option that was entered.(203)
@@ -150,5 +147,55 @@ function enterfirmware {
             shutdown /r /fw /t 0
         }
     }
+}
 
+function colo {
+    param(
+        [ValidateSet('Dark', 'Light')]
+        [Parameter(Position = 0, Mandatory)]
+        $Mode
+    )
+
+    begin {
+        $modeRegistry = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'
+        $useLightMode = [int]($Mode -eq 'Light')
+    }
+
+    end {
+        Set-ItemProperty -Path $modeRegistry -Name 'AppsUseLightTheme' -Value $useLightMode
+        Set-ItemProperty -Path $modeRegistry -Name 'SystemUsesLightTheme' -Value $useLightMode
+    }
+}
+
+if (Test-Path alias:rd) {
+    Remove-Item alias:rd
+}
+
+function rd {
+    param (
+        [Parameter(Position = 1, Mandatory)]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [string]$Path
+    )
+    begin {
+        $target = Resolve-Path $Path
+    }
+    end {
+        $empty = New-Item -ItemType Directory -Path (Join-Path temp:/ (New-Guid))
+        # TODO: why is it slow?
+        # perf similar to Remove-Item
+        # use git@github.com:sharpchen/nixpkgs.git as sample repo
+        robocopy $empty $target /mir /sl 1>$null
+        Remove-Item $target
+    }
+}
+
+function rall {
+    begin {
+        $target = Resolve-Path .
+    }
+    end {
+        $empty = New-Item -ItemType Directory -Path (Join-Path temp:/ (New-Guid))
+        robocopy $empty $target /mir /sl 1>$null
+    }
 }

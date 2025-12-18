@@ -54,7 +54,7 @@ $dotnetcomplete = {
         [System.Management.Automation.CompletionResult]::new(
             $_,               # completionText
             $_,               # listItemText
-            'ParameterValue', # resultType
+            [System.Management.Automation.CompletionResultType]::ParameterValue,
             $_                # toolTip
         )
     }

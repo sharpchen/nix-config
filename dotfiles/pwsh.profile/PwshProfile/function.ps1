@@ -264,7 +264,7 @@ function p {
 function ds {
     [CmdletBinding(DefaultParameterSetName = 'Directory')]
     param (
-        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 0, ParameterSetName = 'Directory')]
         [string]$Dir,
 
@@ -272,28 +272,34 @@ function ds {
         [string]$Unit,
 
         [Parameter(ValueFromPipelineByPropertyName, ValueFromPipeline, ParameterSetName = 'Pipeline')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [Alias('FullName')]
         [string]$InputObject
     )
     begin {
+        $du = Get-Command du -ErrorAction SilentlyContinue | Select-Object -First 1
         if (-not $Dir) {
             $Dir = $PWD.Path
         }
         $length = 0
     }
 
-    end {
+    process {
         switch ($PSCmdlet.ParameterSetName) {
             'Pipeline' {
-                $files = $input | Where-Object { [IO.File]::Exists($_) }
-                if (Get-Command du -CommandType Application -ErrorAction Ignore -OutVariable du) {
-                    $length = (((& $du[0] -L --bytes --total --summarize @files)[-1] -split '\s+')[0]) -as [long]
+                if ($du) {
+                    $length += (((& $du -L --bytes --total --summarize $InputObject)[-1] -split '\s+')[0]) -as [long]
                 } else {
-                    $length = ($input | ForEach-Object { Get-Item $_ -Force } | Measure-Object Length -Sum).Sum
+                    $length += (Get-Item $InputObject).Length
                 }
             }
+        }
+    }
+
+    end {
+        switch ($PSCmdlet.ParameterSetName) {
             'Directory' {
-                if (Get-Command du -CommandType Application -ErrorAction Ignore -OutVariable du) {
+                if ($du) {
                     $length = (((& $du[0] -L --bytes --total --summarize $Dir)[-1] -split '\s+')[0]) -as [long]
                 } else {
                     $length = (Get-ChildItem -File -Force -Recurse -LiteralPath $Dir | Measure-Object Length -Sum).Sum
@@ -426,13 +432,12 @@ function get {
     }
 
     process {
-        $type = $InputObject.GetType()
         $val = $InputObject
 
         $count = 0
         while ($prop = $val."$($propertyNames[$count])") {
             if ($propertyNames[$count] -eq 'GetType') {
-                $val = $type
+                $val = $val.GetType()
             } elseif ($prop -is [System.Management.Automation.PSMethod]) {
                 $val = $prop.Invoke()
             } else {
@@ -447,37 +452,22 @@ function get {
     }
 }
 
-function rall {
-    begin {
-        $target = Resolve-Path .
-    }
-    end {
-        if (Get-Command robocopy -ErrorAction Ignore -CommandType Application) {
-            $empty = New-Item -ItemType Directory -Path (Join-Path temp:/ (New-Guid))
-            robocopy $empty $target /mir /sl 1>$null
-        } elseif (Get-Command rsync -ErrorAction Ignore -CommandType Application) {
-            rsync --archive --delete "$(mktemp -d)/" "$target/"
-        } else {
-            Remove-Item * -Recurse -Force
-        }
-    }
-}
 
 function epubpack {
     param (
-        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 0, Mandatory)]
         [string]$Folder,
         [Parameter(Position = 1)]
         [ValidateScript({ Test-Path -IsValid $_ })]
-        [string]$Destination
+        [string]$OutFile
     )
 
     begin {
         $zip = Get-Command zip -CommandType Application -ErrorAction Stop
         $null = Get-Item (Join-Path $Folder 'mimetype') -ErrorAction Stop
-        $output = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Destination)
-        # delete if file already exist, otherwise zip would *append* contents to it.
+        $output = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutFile)
+        # NOTE: delete if file already exist, otherwise zip would silently *append* contents to it.
         if (Test-Path $output) {
             Remove-Item $output -Confirm
         }
@@ -494,12 +484,13 @@ function epubpack {
     }
 }
 
+# TODO: support encrypted archive
 function unpack {
     # NOTE: to enforce pwsh accept a shorter syntax
     # __AllParameterSets can be a arbitrary name other than defined ParameterSetNames
     [CmdletBinding(DefaultParameterSetName = '__AllParameterSets')]
     param (
-        [ValidateScript({ [IO.File]::Exists((Resolve-Path $_)) })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [Parameter(Position = 0, Mandatory)]
         [string]$Path,
 
@@ -507,7 +498,7 @@ function unpack {
         [Parameter(Position = 1, ParameterSetName = 'Destination')]
         [string]$Destination,
 
-        [Parameter(ParameterSetName = 'Auto')]
+        [Parameter(ParameterSetName = 'Direct')]
         [switch]$Direct
     )
     begin {
@@ -520,19 +511,22 @@ function unpack {
                 & $tar xf $Path --cd $PWD
             }
             'Destination' {
-                if (-not $Destination) {
-                    $Destination = $PWD
-                } elseif ($Destination -and -not [IO.Directory]::Exists((Convert-Path $Destination))) {
+                if (-not (Test-Path $Destination)) {
                     $null = New-Item -ItemType Directory -Path $Destination
                 }
+
                 & $tar xf $Path --cd $Destination
+
+                if ($LASTEXITCODE -ne 0) {
+                    Remove-Item $Destination -Recurse -Force
+                }
             }
             default {
                 [string]$first = & $tar tf $Path | Select-Object -First 1
                 # if first entry is a folder
                 # should unpack it directly
                 # TODO: what if the list is invisible?
-                if ($first.EndsWith('/') -and ($first -split '/').Count -eq 2) {
+                if ($first.EndsWith('/')) {
                     & $tar xf $Path --cd $PWD
                 } else {
                     # if not, create a dedicated directory in the basename of the archive
@@ -552,10 +546,10 @@ function unpack {
 function cptree {
     param (
         [Alias('Root')]
-        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 0, Mandatory)]
         [string]$Path,
-        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 1, Mandatory)]
         [string]$Destination,
         [switch]$ExcludeRoot,
@@ -619,5 +613,15 @@ function connectdb {
 
     end {
         rainfrog --url (dbconnectstr)
+    }
+}
+
+function pubip {
+    try {
+        (Invoke-WebRequest myip.90daili.com).Content |
+            Select-String '\b[0-9\.]+\b' |
+            ForEach-Object { $_.Matches[0].Value }
+    } catch {
+        (Invoke-WebRequest -Uri 'https://api.ipify.org/').Content
     }
 }

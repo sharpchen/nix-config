@@ -21,7 +21,7 @@ function ll {
     Get-ChildItem @args -Force
 }
 
-if ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') {
+if ($IsWindows -or $IsLegacy) {
     Set-Alias bsdtar tar
 }
 
@@ -57,25 +57,6 @@ function so {
     Import-Module PwshProfile -Scope Global -Force
 }
 
-if (Get-Command 'home-manager' -ErrorAction Ignore) {
-    function hms {
-        home-manager switch --flake ((Resolve-Path '~/.config/home-manager').Path + '#' + $env:USER) `
-            --option substituters 'https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store' `
-            @args
-    }
-    Set-Alias hm home-manager
-}
-
-if (Get-Command nix-store -ErrorAction Ignore) {
-    function nsp {
-        param(
-            [Parameter(Position = 1, Mandatory)]
-            [string]$MainProgram
-        )
-        nix-store -q --outputs (Get-Command $MainProgram).Source
-    }
-}
-
 if (Get-Command yazi -ea Ignore) {
     function y {
         $tmp = [System.IO.Path]::GetTempFileName()
@@ -90,35 +71,6 @@ if (Get-Command yazi -ea Ignore) {
 
 if (Get-Command tree-sitter -ErrorAction Ignore) {
     Set-Alias ts tree-sitter
-}
-
-if (Test-Path alias:rd) {
-    Remove-Item alias:rd
-}
-function rd {
-    param (
-        [Parameter(Position = 1, Mandatory)]
-        [ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]
-        [string]$Path
-    )
-    begin {
-        $target = Resolve-Path $Path
-    }
-    end {
-        if (Get-Command robocopy -ErrorAction Ignore -CommandType Application) {
-            $empty = New-Item -ItemType Directory -Path (Join-Path temp:/ (New-Guid))
-            # TODO: why is it slow?
-            # perf similar to Remove-Item
-            # use git@github.com:sharpchen/nixpkgs.git as sample repo
-            robocopy $empty $target /mir /sl 1>$null
-            Remove-Item $target
-        } elseif (Get-Command rsync -ErrorAction Ignore -CommandType Application) {
-            rsync --archive --delete "$(mktemp -d)/" "$target/"
-            Remove-Item $target
-        } else {
-            Remove-Item -Recurse -Force -LiteralPath $Path
-        }
-    }
 }
 
 function now {
