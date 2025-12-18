@@ -7,7 +7,7 @@ param (
     [Parameter(Mandatory)]
     [string]$Destination,
 
-    [ValidateScript({ [IO.File]::Exists((Resolve-Path $_)) })]
+    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
     [string]$Cover,
 
     [switch]$MakeInfo,
