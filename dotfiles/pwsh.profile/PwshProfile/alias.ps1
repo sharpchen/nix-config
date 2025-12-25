@@ -41,13 +41,19 @@ function :q {
     exit
 }
 
+function :map {
+    Get-PSReadLineKeyHandler -Chord @args
+}
+
 function .. {
     Set-Location ..
 }
 
-function md {
+function __md {
     $null = New-Item -ItemType Directory @args
 }
+
+Set-Alias md __md -Option AllScope -Scope Global
 
 function new {
     $null = New-Item -ItemType File @args

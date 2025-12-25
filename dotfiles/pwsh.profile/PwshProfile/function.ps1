@@ -333,7 +333,11 @@ function any {
     )
 
     process {
-        if ($Condition -and $Condition.InvokeWithContext($null, [psvariable]::new('_', $_)) -or $_) {
+        if (
+            $Condition -and
+            $Condition.InvokeWithContext($null, [psvariable]::new('_', $_)) -or
+            $_ # nullable | any
+        ) {
             $true
             break
         }
@@ -435,7 +439,7 @@ function get {
         $val = $InputObject
 
         $count = 0
-        while ($prop = $val."$($propertyNames[$count])") {
+        while ($null -ne ($prop = $val."$($propertyNames[$count])")) {
             if ($propertyNames[$count] -eq 'GetType') {
                 $val = $val.GetType()
             } elseif ($prop -is [System.Management.Automation.PSMethod]) {
@@ -451,7 +455,6 @@ function get {
         }
     }
 }
-
 
 function epubpack {
     param (
@@ -588,18 +591,20 @@ function dbconnectstr {
         }
         if (-not $UserName) {
             $UserName = Read-Host -Prompt 'UserName'
+            if (-not $UserName) {
+                $UserName = switch($Driver) {
+                    'postgres' {
+                        'postgres'
+                    }
+                }
+            }
         }
         $database = Read-Host -Prompt 'Datebase'
-        $password = Read-Host -Prompt 'Password' -AsSecureString
-        # convert SecureString to literal, ref: https://stackoverflow.com/a/40166959/28562451
-        $password = [pscredential]::new(0, $password).GetNetworkCredential().Password
+        $password = Read-Host -Prompt 'Password' -MaskInput
     }
     end {
         switch($Driver) {
             'postgres' {
-                if (-not $UserName) {
-                    $UserName = 'postgres'
-                }
                 "postgres://$($UserName):$($password)@$($DriverHost):$($Port)/$($database)"
             }
         }

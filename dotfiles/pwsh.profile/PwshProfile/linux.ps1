@@ -18,11 +18,16 @@ function rd {
 }
 
 function rall {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
+    param()
+
     begin {
         $target = Resolve-Path .
     }
     end {
-        rsync --archive --delete "$(mktemp -d)/" "$target/"
+        if ($PSCmdlet.ShouldProcess("Delete all content of $target", $null, $null)) {
+            rsync --archive --delete "$(mktemp -d)/" "$target/"
+        }
     }
 }
 

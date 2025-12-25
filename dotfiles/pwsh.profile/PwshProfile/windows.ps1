@@ -191,11 +191,17 @@ function rd {
 }
 
 function rall {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
+    param()
+
     begin {
         $target = Resolve-Path .
     }
+
     end {
-        $empty = New-Item -ItemType Directory -Path (Join-Path temp:/ (New-Guid))
-        robocopy $empty $target /mir /sl 1>$null
+        if ($PSCmdlet.ShouldProcess("Delete all content of $target", $null, $null)) {
+            $empty = New-Item -ItemType Directory -Path (Join-Path temp:/ (New-Guid))
+            robocopy $empty $target /mir /sl 1>$null
+        }
     }
 }
