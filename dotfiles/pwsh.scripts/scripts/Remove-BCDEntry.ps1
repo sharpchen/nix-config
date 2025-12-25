@@ -1,7 +1,14 @@
+#Requires -RunAsAdministrator
+
 [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
 param (
     [ArgumentCompleter({
             $raw = bcdedit /enum firmware
+
+            if ($LASTEXITCODE -ne 0) {
+                return @()
+            }
+
             $result = @()
             $shouldAddToResult = $true
             for ($i = 0; $i -lt $raw.Count; $i++) {
@@ -36,6 +43,7 @@ param (
             }
             $result
         })]
+    [Parameter(Mandatory)]
     [string]$Identifier
 )
 
