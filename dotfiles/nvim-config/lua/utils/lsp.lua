@@ -2,6 +2,8 @@ local M = {
   use_vtsls = vim.fn.executable('vtsls') == 1,
 }
 
+_G.Lsp = M
+
 --- wrapper for setting up and enabling language-server
 ---@param ls string server name
 ---@param config? vim.lsp.Config

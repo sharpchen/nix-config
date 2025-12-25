@@ -64,6 +64,10 @@ return {
   },
   {
     'Mofiqul/vscode.nvim',
+    priority = 1000,
   },
-  'habamax/vim-habamax',
+  {
+    'habamax/vim-habamax',
+    priority = 1000,
+  },
 }

@@ -249,6 +249,12 @@ return {
           )
         end,
       })
+
+      vim.api.nvim_create_autocmd('TermOpen', {
+        callback = function(args)
+          vim.keymap.set('i', '<Esc><Esc>', '<C-\\><C-n>', { buffer = args.buf })
+        end,
+      })
     end,
   },
   {

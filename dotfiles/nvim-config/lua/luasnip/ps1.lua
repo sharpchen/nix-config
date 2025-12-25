@@ -76,11 +76,11 @@ Register-ArgumentCompleter -Native -CommandName <> -ScriptBlock {
   ),
   snip(
     'filevalidate',
-    text('[ValidateScript({ [IO.File]::Exists((Resolve-Path $_)) })]')
+    text('[ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]')
   ),
   snip(
     'foldervalidate',
-    text('[ValidateScript({ [IO.Directory]::Exists((Resolve-Path $_)) })]')
+    text('[ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]')
   ),
   snip('pathvalidate', text('[ValidateScript({ Test-Path -LiteralPath $_ })]')),
 }

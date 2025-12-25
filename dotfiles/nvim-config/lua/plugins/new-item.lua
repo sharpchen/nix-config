@@ -6,10 +6,7 @@ return {
   submodules = true,
   config = function()
     require('new-item').setup {
-      picker = {
-        name = 'snacks',
-        preview = false,
-      },
+      picker = { name = 'snacks' },
       init = function(groups, ctors)
         groups.md = {
           cond = true,

@@ -9,6 +9,7 @@ return {
         if client and client.name == 'Firenvim' then
           vim.o.laststatus = 0
           vim.o.background = 'light'
+          vim.cmd.colo('xamabah')
         end
       end,
     })

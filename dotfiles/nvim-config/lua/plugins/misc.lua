@@ -110,7 +110,7 @@ return {
 
       vim.api.nvim_create_autocmd('BufWritePost', {
         callback = function(args)
-          if vim.list_contains({ 'markdown' }, vim.bo[args.buf].filetype) then
+          if vim.list_contains({ 'markdown', 'ps1' }, vim.bo[args.buf].filetype) then
             require('whitespace-nvim').trim()
           end
         end,

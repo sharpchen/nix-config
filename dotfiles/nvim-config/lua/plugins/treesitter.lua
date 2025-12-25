@@ -32,7 +32,6 @@ return {
         'html',
         'http',
         'json',
-        'jsonc',
         'sql',
         'python',
         'csv',

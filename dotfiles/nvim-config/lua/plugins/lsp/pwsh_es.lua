@@ -9,6 +9,7 @@ if HasNix then
       lsp.setup('powershell_es', {
         on_attach = function(client) lsp.event.disable_semantic(client) end,
         bundle_path = lsp.path.pwsh_es,
+        -- see: https://github.com/PowerShell/vscode-powershell/blob/main/src/settings.ts
         settings = {
           powershell = {
             codeFormatting = {
