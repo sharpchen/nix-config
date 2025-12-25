@@ -28,6 +28,8 @@
   time.timeZone = "Asia/Shanghai";
   networking.timeServers = lib.mkBefore [ "ntp.ntsc.ac.cn" ];
 
+  programs.nix-ld.enable = true;
+
   fonts.packages = with pkgs; [
     ibm-plex
     jetbrains-mono
@@ -35,7 +37,6 @@
     roboto-mono
     lilex
     noto-fonts-color-emoji
-    noto-fonts-emoji
     nerd-fonts.symbols-only
   ];
 
