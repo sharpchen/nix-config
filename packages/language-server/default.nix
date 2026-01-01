@@ -13,7 +13,7 @@
       nodePackages.yaml-language-server
       vim-language-server
       ast-grep
-      postgres-lsp
+      postgres-language-server
       sqlfluff
       eslint
       marksman
