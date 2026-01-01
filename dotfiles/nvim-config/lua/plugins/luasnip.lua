@@ -8,6 +8,7 @@ return {
   event = 'VeryLazy',
   config = function()
     require('luasnip').setup {
+      region_check_events = { 'InsertEnter' }, -- NOTE: see: https://github.com/L3MON4D3/LuaSnip/discussions/1402#discussioncomment-14983410
       update_events = { 'TextChanged', 'TextChangedI' },
       history = true,
       ext_opts = {

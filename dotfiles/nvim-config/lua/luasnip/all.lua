@@ -38,4 +38,5 @@ return {
   make_comment('fixme'),
   make_comment('note'),
   make_comment('warn'),
+  make_comment('perf'),
 }

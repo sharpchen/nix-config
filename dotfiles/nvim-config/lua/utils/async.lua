@@ -1,4 +1,5 @@
 local M = {}
+_G.Async = M
 
 ---simple async cmd to fetch single result.
 ---@param cmd string[]

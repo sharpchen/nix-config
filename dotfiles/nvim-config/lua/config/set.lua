@@ -230,14 +230,33 @@ vim.api.nvim_create_user_command(
   { desc = 'open lsp log' }
 )
 
+vim.api.nvim_create_user_command('Playground', function(e)
+  local ft = vim.bo.filetype
+  -- NOTE: scratch buffer would attach lsp
+  -- see tracking issue: https://github.com/neovim/neovim/issues/36775
+  local buf = vim.api.nvim_create_buf(true, true)
+
+  if e.args ~= '' then
+    vim.bo[buf].filetype = e.args
+  else
+    vim.bo[buf].filetype = ft
+  end
+
+  vim.api.nvim_set_current_buf(buf)
+end, {
+  nargs = '?',
+  complete = 'filetype',
+  desc = 'Open a playground buffer in current filetype',
+})
+
 vim.api.nvim_create_user_command(
   'Edit',
-  function(args) vim.cmd.edit(vim.fs.joinpath(vim.fn.expand('%:p:h'), args.args)) end,
+  function(e) vim.cmd.edit(vim.fs.joinpath(vim.fn.expand('%:p:h'), e.args)) end,
   { nargs = 1 }
 )
 vim.api.nvim_create_user_command(
   'E',
-  function(args) vim.cmd.edit(vim.fs.joinpath(vim.fn.expand('%:p:h'), args.args)) end,
+  function(e) vim.cmd.edit(vim.fs.joinpath(vim.fn.expand('%:p:h'), e.args)) end,
   { nargs = 1 }
 )
 

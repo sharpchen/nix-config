@@ -59,6 +59,7 @@ return {
           then
             return
           end
+
           if
             vim.list_contains(
               treesitter.get_installed(),
@@ -137,6 +138,7 @@ return {
   },
   {
     'tree-sitter-grammars/tree-sitter-test',
+    enabled = not IsWindows, -- Windows is not supported by the makefile
     -- compile on your own on Windows
     build = 'make parser/test.so',
     ft = 'test',

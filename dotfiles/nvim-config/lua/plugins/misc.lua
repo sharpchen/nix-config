@@ -59,12 +59,6 @@ return {
       }
     end,
   },
-  -- { 'LunarVim/bigfile.nvim', event = { 'BufReadPre', 'BufNewFile' } },
-  { 'nvchad/volt', lazy = true },
-  {
-    'nvchad/minty',
-    cmd = { 'Shades', 'Huefy' },
-  },
   {
     'nvzone/showkeys',
     event = 'VeryLazy',
@@ -151,6 +145,7 @@ return {
   },
   {
     'ahkohd/buffer-sticks.nvim',
+    event = 'VeryLazy',
     config = function()
       require('buffer-sticks').setup()
       vim.keymap.set('n', 'B', function() BufferSticks.jump() end)
@@ -158,6 +153,7 @@ return {
   },
   {
     'saecki/live-rename.nvim',
+    event = 'VeryLazy',
     config = function()
       vim.api.nvim_create_autocmd('LspAttach', {
         callback = function(args)

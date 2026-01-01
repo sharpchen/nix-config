@@ -1,3 +1,4 @@
+# NOTE: shared config for all nixos hosts
 {
   config,
   lib,
@@ -29,16 +30,6 @@
   networking.timeServers = lib.mkBefore [ "ntp.ntsc.ac.cn" ];
 
   programs.nix-ld.enable = true;
-
-  fonts.packages = with pkgs; [
-    ibm-plex
-    jetbrains-mono
-    cascadia-code
-    roboto-mono
-    lilex
-    noto-fonts-color-emoji
-    nerd-fonts.symbols-only
-  ];
 
   system.stateVersion = "24.11"; # you don't have to change this value
 }

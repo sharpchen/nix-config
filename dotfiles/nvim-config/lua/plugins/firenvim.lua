@@ -1,6 +1,9 @@
+---@module 'lazy'
+---@type LazySpec
 return {
   'glacambre/firenvim',
-  cond = vim.g.started_by_firenvim,
+  lazy = not vim.g.started_by_firenvim,
+  module = false,
   build = ':call firenvim#install(0)',
   config = function()
     vim.api.nvim_create_autocmd('UIEnter', {
@@ -10,13 +13,33 @@ return {
           vim.o.laststatus = 0
           vim.o.background = 'light'
           vim.cmd.colo('xamabah')
+
+          if IsWindows then
+            vim.system(
+              Env.shell.pwsh_cmd(
+                [[Get-ItemPropertyValue -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize -Name AppsUseLightTheme]]
+              ),
+              { text = true },
+              function(out)
+                if out.code == 0 then
+                  local number = tonumber(vim.trim(out.stdout))
+                  local light = number and number == 1
+                  if not light then
+                    vim.schedule(function() vim.cmd.colo('habamax') end)
+                  end
+                end
+              end
+            )
+          end
         end
       end,
     })
+
     vim.api.nvim_create_autocmd('BufEnter', {
       pattern = 'github.com_*.txt',
       callback = function(args) vim.bo.filetype = 'markdown' end,
     })
+
     vim.api.nvim_create_autocmd('BufEnter', {
       callback = function(args)
         if vim.g.started_by_firenvim then
@@ -34,6 +57,7 @@ return {
         'https?://live.bilibili.com/.*',
         'https?://grok.*',
         'https?://www.keybr.com/.*',
+        'https://monkeytype.com/.*',
       })
       :fold({}, function(sum, curr)
         sum[curr] = {

@@ -14,7 +14,6 @@ return {
       'html',
       'python',
     },
-    -- enabled = false,
     config = function()
       require('template-string').setup {
         remove_template_string = true,
@@ -120,6 +119,28 @@ return {
         function() return has_terminal() and ':bufdo Bdelete<CR>' or ':bufdo bd<CR>' end,
         { silent = true, expr = true }
       )
+    end,
+  },
+  {
+    'esmuellert/vscode-diff.nvim',
+    dependencies = { 'MunifTanjim/nui.nvim' },
+    cmd = 'CodeDiff',
+    build = IsWindows and 'cmd /c build.cmd' or 'sh build.sh',
+    config = function()
+      require('vscode-diff').setup {
+        explorer = {
+          position = 'bottom', -- "left" | "bottom"
+          indent_markers = true,
+          view_mode = 'tree', -- "list" | "tree"
+        },
+      }
+      vim.api.nvim_create_autocmd('BufWinEnter', {
+        callback = function(args)
+          if vim.bo[args.buf].filetype == 'vscode-diff-explorer' then
+            vim.opt_local.spell = false
+          end
+        end,
+      })
     end,
   },
 }

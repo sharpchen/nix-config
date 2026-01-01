@@ -6,7 +6,7 @@ return {
   build = HasNix
       and 'CARGO_NET_GIT_FETCH_WITH_CLI=true nix run .#build-plugin --accept-flake-config'
     or '',
-  event = 'BufReadPost',
+  event = 'VeryLazy',
   dependencies = {
     'moyiz/blink-emoji.nvim',
     {

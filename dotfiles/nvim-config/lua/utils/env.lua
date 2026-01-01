@@ -11,6 +11,7 @@ local M = {
   is_wsl = vim.env.WSL_DISTRO_NAME ~= nil,
 }
 
+_G.Env = M
 _G.IsWindows = M.is_windows
 _G.IsLinux = M.is_linux
 _G.HasNix = M.has_nix
@@ -32,7 +33,7 @@ end
 ---@param cmd string the direct command to run within bash
 ---@return string[]
 local function pwsh_cmd(cmd)
-  local ret = { (M.has_pwsh and 'pwsh' or 'powershell'), '-noprofile', '-nologo', '-c' }
+  local ret = { 'powershell', '-noprofile', '-nologo', '-noninteractive', '-c' }
   table.insert(ret, cmd)
   return ret
 end
