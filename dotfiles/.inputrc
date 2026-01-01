@@ -17,10 +17,10 @@ set keymap vi-command
 " z": "I$(\eA)\e"
 " Z": "i$(\eA)\e"
 "\C-I": "%"
-"\e[A": history-search-backward
-"\e[B": history-search-forward
-"k": history-search-backward
-"j": history-search-forward
+"\e[A": previous-history
+"\e[B": next-history
+"k": previous-history
+"j": next-history
 
 set keymap vi-insert
 "\e[A": history-search-backward

@@ -1,6 +1,7 @@
 [[ $- != *i* ]] && return
 
 export PS1="\n\[\033[1;32m\][\u@\h:\w]\$\[\033[0m\] "
+export HISTCONTROL=ignorespace:ignoredups:erasedups
 
 alias ls='ls --color=auto -h'
 alias ll='ls -la'
