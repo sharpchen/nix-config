@@ -69,26 +69,80 @@ function pathadd {
     param (
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 0)]
-        [string]$Dir
+        [string]$Directory,
+        [EnvironmentVariableTarget]$Target
     )
+    begin {
+        $add = (Resolve-Path $Directory).Path
+        $sep = [IO.Path]::PathSeparator
 
-    $Dir = (Resolve-Path $Dir).Path
-    $path = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User)
-    if (-not $path.Contains($Dir)) {
-        [System.Environment]::SetEnvironmentVariable('Path', ($path + [IO.Path]::PathSeparator + $Dir), [System.EnvironmentVariableTarget]::User)
+        if (-not $Target) {
+            $target = [System.EnvironmentVariableTarget]::User
+        }
+    }
+
+    end {
+        $before = [System.Environment]::GetEnvironmentVariable('Path', $target)
+        $paths = [System.Environment]::GetEnvironmentVariable('Path', $target) -split $sep
+
+        if ($add -notin $paths) {
+            # Path is empty, do not insert leading separator
+            if ($paths.Length -eq 1 -and $paths[0] -eq [string]::Empty) {
+                [System.Environment]::SetEnvironmentVariable('Path', "$add", $target)
+            } else {
+                [System.Environment]::SetEnvironmentVariable('Path', "$before$sep$add", $target)
+            }
+        }
+    }
+}
+
+function pathdel {
+    param (
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
+        [Parameter(Position = 0)]
+        [string]$Directory,
+        [EnvironmentVariableTarget]$Target
+    )
+    begin {
+        $del = (Resolve-Path $Directory).Path
+        $sep = [IO.Path]::PathSeparator
+        if (-not $Target) {
+            $target = [System.EnvironmentVariableTarget]::User
+        }
+    }
+
+    end {
+        $before = [System.Environment]::GetEnvironmentVariable('Path', $target)
+        $after = [System.Linq.Enumerable]::Except(
+            [string[]]($before -split $sep),
+            [string[]]@($del)
+        ) -join $sep
+
+        [System.Environment]::SetEnvironmentVariable('Path', $after, $target)
     }
 }
 
 function pathclean {
-    $path = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User) -split [IO.Path]::PathSeparator
-
-    $invalid = $path | Where-Object { -not (Test-Path -LiteralPath $_) }
-
-    [System.Environment]::SetEnvironmentVariable(
-        'Path',
-        [System.Linq.Enumerable]::Except([string[]]$path, [string[]]$invalid) -join [IO.Path]::PathSeparator,
-        [System.EnvironmentVariableTarget]::User
+    param(
+        [EnvironmentVariableTarget]$Target
     )
+
+    begin {
+        $sep = [IO.Path]::PathSeparator
+        if (-not $Target) {
+            $target = [System.EnvironmentVariableTarget]::User
+        }
+    }
+
+    end {
+        $paths = [System.Environment]::GetEnvironmentVariable('Path', $target) -split $sep
+        $valid = $paths | Where-Object { Test-Path -LiteralPath $_ }
+        [System.Environment]::SetEnvironmentVariable(
+            'Path',
+            $valid -join $sep,
+            $target
+        )
+    }
 }
 
 function trash {
@@ -162,8 +216,8 @@ function colo {
     }
 
     end {
-        Set-ItemProperty -Path $modeRegistry -Name 'AppsUseLightTheme' -Value $useLightMode
-        Set-ItemProperty -Path $modeRegistry -Name 'SystemUsesLightTheme' -Value $useLightMode
+        Set-ItemProperty -Path $modeRegistry -Name AppsUseLightTheme -Value $useLightMode
+        Set-ItemProperty -Path $modeRegistry -Name SystemUsesLightTheme -Value $useLightMode
     }
 }
 
@@ -186,7 +240,7 @@ function rd {
         # perf similar to Remove-Item
         # use git@github.com:sharpchen/nixpkgs.git as sample repo
         robocopy $empty $target /mir /sl 1>$null
-        Remove-Item $target
+        Remove-Item $target -Force
     }
 }
 

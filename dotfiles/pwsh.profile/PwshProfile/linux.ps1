@@ -13,7 +13,7 @@ function rd {
     }
     end {
         rsync --archive --delete "$(mktemp -d)/" "$target/"
-        Remove-Item $target
+        Remove-Item $target -Force
     }
 }
 

@@ -525,21 +525,31 @@ function unpack {
                 }
             }
             default {
-                [string]$first = & $tar tf $Path | Select-Object -First 1
-                # if first entry is a folder
-                # should unpack it directly
-                # TODO: what if the list is invisible?
-                if ($first.EndsWith('/')) {
-                    & $tar xf $Path --cd $PWD
-                } else {
+                $foldersAtRoot = 0
+                $filesAtRoot = 0
+                $null = & $tar tf $Path |
+                    Where-Object { $_ -ne './' } |
+                    ForEach-Object {
+                        # Folder at archive root(./foo/)
+                        if ($_.EndsWith('/') -and ($_ -split '/').Count -eq 3) {
+                            $foldersAtRoot++
+                        } elseif(-not $_.EndsWith('/') -and ($_ -split '/').Count -eq 2) {
+                            $filesAtRoot++
+                        }
+                        # NOTE: you can't break inside ForEach-Object when source come from native command
+                        # see: https://github.com/PowerShell/PowerShell/issues/26662
+                        if (($filesAtRoot + $foldersAtRoot) -gt 1) {
+                            $_ # pipe a non-null value so that Select-Object can capture
+                        }
+                    } | Select-Object -First 1 # terminate pipeline early
+
+                if (($filesAtRoot + $foldersAtRoot) -gt 1) {
                     # if not, create a dedicated directory in the basename of the archive
                     $basename = (Get-Item $Path).BaseName
                     $null = New-Item -ItemType Directory -Path $basename
-                    try {
-                        & $tar xf $Path --cd $basename
-                    } catch {
-                        Remove-Item -Recurse $basename
-                    }
+                    & $tar xf $Path --cd $basename
+                } else {
+                    & $tar xf $Path --cd $PWD
                 }
             }
         }
