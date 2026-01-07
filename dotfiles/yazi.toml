@@ -142,7 +142,7 @@ previewers = [
     { mime = "application/{json,x-ndjson}", run = "json" },
 
     { mime = "image/*", run = "image" },
-    { mime = "image/svg+xml}", run = "svg" },
+    { mime = "image/{svg+xml}", run = "svg" },
     { mime = "image/{avif,hei?,jxl,svg+xml}", run = "magick" },
 
     { mime = "video/*", run = "video" },
