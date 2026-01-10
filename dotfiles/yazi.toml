@@ -31,34 +31,34 @@ ueberzug_offset = [0, 0, 0, 0]
 
 [opener]
 edit = [
-    { run = 'nvim --clean -c "source ~/.vimrc" "$@"', block = true, for = "unix" },
-    { run = 'nvim --clean -c "source ~/.vimrc" %*', block = true, orphan = true, for = "windows" },
+    { run = 'nvim --clean -c "source ~/.vimrc" %s', block = true, for = "unix" },
+    { run = 'nvim --clean -c "source ~/.vimrc" %s', block = true, orphan = true, for = "windows" },
 ]
 open = [
-    { run = 'xdg-open "$1"', desc = "Open", for = "linux" },
-    { run = 'open "$@"', desc = "Open", for = "macos" },
+    { run = 'gio open "$1"', desc = "Open", for = "linux" },
+    { run = 'open %s', desc = "Open", for = "macos" },
     { run = 'start "" "%1"', orphan = true, desc = "Open", for = "windows" },
 ]
 reveal = [
-    { run = 'xdg-open "$(dirname "$1")"', desc = "Reveal", for = "linux" },
+    { run = 'gio open "$(dirname "$1")"', desc = "Reveal", for = "linux" },
     { run = 'open -R "$1"', desc = "Reveal", for = "macos" },
     { run = 'explorer /select,"%1"', orphan = true, desc = "Reveal", for = "windows" },
     { run = '''exiftool "$1"; echo "Press enter to exit"; read _''', block = true, desc = "Show EXIF", for = "unix" },
 ]
 extract = [
-    { run = 'ya pub extract --list "$@"', desc = "Extract here", for = "unix" },
-    { run = 'ya pub extract --list %*', desc = "Extract here", for = "windows" },
+    { run = 'ya pub extract --list %s', desc = "Extract here", for = "unix" },
+    { run = 'ya pub extract --list %s', desc = "Extract here", for = "windows" },
 ]
 play = [
-    { run = 'mpv --force-window "$@"', orphan = true, for = "unix" },
-    { run = 'mpv --force-window %*', orphan = true, for = "windows" },
+    { run = 'mpv --force-window %s', orphan = true, for = "unix" },
+    { run = 'mpv --force-window %s', orphan = true, for = "windows" },
     { run = '''mediainfo "$1"; echo "Press enter to exit"; read _''', block = true, desc = "Show media info", for = "unix" },
 ]
 
 [open]
 rules = [
     # Folder
-    { name = "*/", use = [
+    { url = "*/", use = [
         "open",
         "reveal",
     ] },
@@ -101,7 +101,7 @@ rules = [
         "reveal",
     ] },
     # Fallback
-    { name = "*", use = [
+    { url = "*", use = [
         "open",
         "reveal",
     ] },
@@ -118,14 +118,15 @@ suppress_preload = false
 [plugin]
 
 prepend_previewers = [
-    { name = "*.csv", run = "rich-preview" },
-    { name = "*.md", run = "rich-preview" },
-    { name = "*.rst", run = "rich-preview" },
-    { name = "*.ipynb", run = "rich-preview" },
+    { url = "*.csv", run = "rich-preview" },
+    { url = "*.md", run = "rich-preview" },
+    { url = "*.rst", run = "rich-preview" },
+    { url = "*.ipynb", run = "rich-preview" },
 ]
 
 fetchers = [
-    { id = "mime", name = "*", run = "mime", if = "!mime", prio = "high" },
+    { id = "mime", url = "*", run = "mime.local", if = "!mime", prio = "high" },
+    { id = "mime", url = "*/", run = "mime.dir", if = "!mime", prio = "high" },
 ]
 preloaders = [
     { mime = "image/{avif,hei?,jxl}", run = "magick" },
@@ -136,7 +137,7 @@ preloaders = [
     { mime = "application/vnd.ms-opentype", run = "font" },
 ]
 previewers = [
-    { name = "*/", run = "folder", sync = true },
+    { url = "*/", run = "folder", sync = true },
     { mime = "text/*", run = "code" },
     { mime = "*/{xml,javascript,x-wine-extension-ini}", run = "code" },
     { mime = "application/{json,x-ndjson}", run = "json" },
@@ -156,7 +157,7 @@ previewers = [
     { mime = "application/vnd.ms-opentype", run = "font" },
 
     { mime = "inode/x-empty", run = "empty" },
-    { name = "*", run = "file" },
+    { url = "*", run = "file" },
 ]
 
 [input]
