@@ -62,6 +62,12 @@ return {
   ]],
   },
   wrap_lua_stm {
+    trig = '.find',
+    format = [[
+    vim.iter({stm}):find(function({x}) {} end)
+  ]],
+  },
+  wrap_lua_stm {
     trig = '.for',
     format = [[
     for _, {value} in ipairs({stm}) do

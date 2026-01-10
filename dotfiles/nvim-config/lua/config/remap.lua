@@ -47,23 +47,21 @@ vim.keymap.set('n', '<leader>cc', function()
 end, { desc = '[C]onvert to [C]amel case' })
 
 vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
-vim.keymap.set(
-  'n',
-  '<leader>hh',
-  function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = 0 }) end,
-  { desc = 'toggle inlay [H]int' }
-)
 
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
 
-if IsLinux then
-  vim.keymap.set(
-    'n',
-    '<leader>x',
-    '<cmd>!chmod +x %<CR>',
-    { silent = true, desc = 'make current file executable' }
-  )
-end
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'sh', 'bash', 'zsh' },
+  callback = function(args)
+    if IsLinux then
+      vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', {
+        buffer = args.buf,
+        silent = true,
+        desc = 'make current file executable',
+      })
+    end
+  end,
+})
 
 vim.api.nvim_create_autocmd('LspAttach', {
   desc = 'LSP actions',
@@ -81,6 +79,14 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
     vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+    vim.keymap.set(
+      'n',
+      '<leader>hh',
+      function()
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = 0 })
+      end,
+      opts
+    )
   end,
 })
 
