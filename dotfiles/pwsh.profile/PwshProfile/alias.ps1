@@ -16,6 +16,7 @@ Set-Alias json ConvertFrom-Json
 Set-Alias tojson ConvertTo-Json
 Set-Alias csv ConvertFrom-Csv
 Set-Alias tocsv ConvertFrom-Csv
+Set-Alias eval Invoke-Expression
 
 function ll {
     Get-ChildItem @args -Force

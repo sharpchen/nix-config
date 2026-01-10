@@ -1,30 +1,3 @@
-function adbin {
-    [OutputType([void])]
-    param(
-        [Parameter(Mandatory)]
-        [string]$Str,
-        [switch]$Enter
-    )
-    begin {
-        $null = Get-Command adb -ErrorAction Stop -CommandType Application
-    }
-    end {
-        $special = @( ' ', '\|', '\$', '&', '\(', '\)', '~', '\*', "\'", '"', '<', '>')
-        foreach ($char in $special) {
-            $repl = if ($char.Length -gt 1) {
-                $char
-            } else {
-                "\$char"
-            }
-            $Str = $Str -replace $char, $repl
-        }
-        adb shell input text $Str
-        if ($Enter) {
-            adb shell input keyevent KEYCODE_ENTER
-        }
-    }
-}
-
 function pinfo {
     [CmdletBinding(DefaultParameterSetName = 'Attribute')]
     param (
@@ -383,21 +356,6 @@ function except {
     }
 }
 
-function skip {
-    param (
-        [uint]$Count
-    )
-    begin {
-        $i = 1
-    }
-    process {
-        if ($i -gt $Count) {
-            $_
-        }
-        $i++
-    }
-}
-
 function first {
     param (
         [Parameter(ValueFromPipeline)]
@@ -638,5 +596,25 @@ function pubip {
             ForEach-Object { $_.Matches[0].Value }
     } catch {
         (Invoke-WebRequest -Uri 'https://api.ipify.org/').Content
+    }
+}
+
+function delhis {
+    param([string]$Pattern)
+
+    begin {
+        $history = (Get-PSReadLineOption).HistorySavePath
+        $filtered = [System.Collections.Generic.List[string]]::new()
+    }
+    end {
+        switch -Regex -File $history {
+            $pattern {
+            }
+            default {
+                $filtered.Add($_)
+            }
+        }
+
+        Set-Content -Path $history -Value $filtered
     }
 }
