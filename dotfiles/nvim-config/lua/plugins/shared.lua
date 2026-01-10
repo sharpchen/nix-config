@@ -100,34 +100,37 @@ return {
   {
     'moll/vim-bbye',
     config = function()
-      local function has_terminal()
-        return vim
-          .iter(vim.fn.tabpagebuflist())
-          :any(function(buf) return vim.bo[buf].buftype == 'terminal' end)
+      local function has_dock()
+        return vim.iter(vim.fn.tabpagebuflist()):any(
+          function(buf)
+            return vim.bo[buf].buftype == 'terminal'
+              or (vim.bo[buf].filetype == 'qf' and vim.bo.filetype ~= 'qf')
+          end
+        )
       end
 
       vim.keymap.set(
         'n',
         '<A-c>',
-        function() return has_terminal() and ':Bdelete<CR>' or ':bd<CR>' end,
+        function() return has_dock() and ':Bdelete<CR>' or ':bd<CR>' end,
         { silent = true, expr = true }
       )
 
       vim.keymap.set(
         'n',
         '<A-a>',
-        function() return has_terminal() and ':bufdo Bdelete<CR>' or ':bufdo bd<CR>' end,
+        function() return has_dock() and ':bufdo Bdelete<CR>' or ':bufdo bd<CR>' end,
         { silent = true, expr = true }
       )
     end,
   },
   {
-    'esmuellert/vscode-diff.nvim',
+    'esmuellert/codediff.nvim',
     dependencies = { 'MunifTanjim/nui.nvim' },
     cmd = 'CodeDiff',
     build = IsWindows and 'cmd /c build.cmd' or 'sh build.sh',
     config = function()
-      require('vscode-diff').setup {
+      require('codediff').setup {
         explorer = {
           position = 'bottom', -- "left" | "bottom"
           indent_markers = true,
@@ -136,7 +139,7 @@ return {
       }
       vim.api.nvim_create_autocmd('BufWinEnter', {
         callback = function(args)
-          if vim.bo[args.buf].filetype == 'vscode-diff-explorer' then
+          if vim.bo[args.buf].filetype == 'codediff-explorer' then
             vim.opt_local.spell = false
           end
         end,

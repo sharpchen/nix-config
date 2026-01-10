@@ -8,8 +8,13 @@ return {
           command = 'xstyler',
           args = { '--write-to-stdout', '--take-pipe' },
         },
+        jq = {
+          command = 'jq',
+          args = { '.' },
+        },
       },
       formatters_by_ft = {
+        json = { 'jq' },
         lua = { 'stylua' },
         javascript = { 'prettier' },
         typescript = { 'prettier' },
