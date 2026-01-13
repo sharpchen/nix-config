@@ -11,7 +11,12 @@ end
 local config = wezterm.config_builder()
 
 config.front_end = 'OpenGL'
-config.color_scheme = random { 'kanagawabones', 'rose-pine-moon', 'rose-pine-dawn' }
+
+-- see: https://wezterm.org/config/lua/wezterm.gui/get_appearance.html
+config.color_scheme = wezterm.gui
+    and wezterm.gui.get_appearance():find('Dark')
+    and random { 'kanagawabones', 'rose-pine-moon' }
+  or random { 'rose-pine-dawn' }
 
 if config.color_scheme == 'rose-pine-moon' then
   config.colors = {
