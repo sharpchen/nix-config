@@ -31,7 +31,7 @@ ueberzug_offset = [0, 0, 0, 0]
 
 [opener]
 edit = [
-    { run = 'nvim --clean -c "source ~/.vimrc" %s', block = true, for = "unix" },
+    { run = 'nvim %s', block = true, for = "unix" },
     { run = 'nvim --clean -c "source ~/.vimrc" %s', block = true, orphan = true, for = "windows" },
 ]
 open = [

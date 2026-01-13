@@ -4,11 +4,6 @@ run = "plugin toggle-pane max-preview"
 desc = "Maximize or restore the preview pane"
 
 [[mgr.prepend_keymap]]
-on = ["C"]
-run = "plugin ouch --args=zip"
-desc = "Compress with ouch"
-
-[[mgr.prepend_keymap]]
 on = ["O"]
 run = "open --hovered"
 desc = "Open current entry"
