@@ -1,0 +1,32 @@
+{
+  "$help": "https://aka.ms/terminal-documentation",
+  "$schema": "https://aka.ms/terminal-profiles-schema",
+  "actions": [],
+  "centerOnLaunch": true,
+  "trimPaste": true,
+  "disableAnimations": true,
+  "launchMode": "fullscreen",
+  "compatibility.enableUnfocusedAcrylic": false,
+  "copyFormatting": "none",
+  "copyOnSelect": false,
+  "keybindings": [],
+  "newTabMenu": [
+    {
+      "type": "remainingProfiles"
+    }
+  ],
+  "profiles": {
+    "defaults": {
+      "font": {
+        "face": "Cascadia Mono NF"
+      },
+      "colorScheme": {
+        "dark": "Tango Dark",
+        "light": "Tango Light"
+      }
+    }
+  },
+  "schemes": [],
+  "theme": "system",
+  "themes": []
+}

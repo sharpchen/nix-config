@@ -24,24 +24,25 @@ function mklink {
     )
 
     $Target = Resolve-Path $Target
-    if ($PSCmdlet.ParameterSetName -eq 'Normal') {
-        mkdir (Split-Path $Path) -ErrorAction SilentlyContinue
-        New-Item -ItemType SymbolicLink -Force -Value $Target -Path $Path
-    } else {
-        if ($SpecialParent -eq 'HOME') {
-            New-Item -ItemType SymbolicLink -Force -Value $Target -Path (Join-Path $HOME $ChildPath)
-        } else {
-            New-Item -ItemType SymbolicLink -Force -Value $Target -Path (Join-Path (Get-Item -Path "env:/$SpecialParent").Value $ChildPath)
+    switch ($PSCmdlet.ParameterSetName) {
+        'Normal' {
+            mkdir (Split-Path $Path) -ErrorAction SilentlyContinue
+            New-Item -ItemType SymbolicLink -Force -Value $Target -Path $Path
+        }
+        default {
+            switch ($SpecialParent) {
+                'HOME' {
+                    New-Item -ItemType SymbolicLink -Force -Value $Target -Path (Join-Path $HOME $ChildPath)
+                }
+                default {
+                    New-Item -ItemType SymbolicLink -Force -Value $Target -Path (Join-Path (Get-Item -Path "env:/$SpecialParent").Value $ChildPath)
+                }
+            }
         }
     }
-
 }
 
 if (Get-Command scoop -ea SilentlyContinue) {
-    # NOTE: scoop aliases
-    scoop alias add add 'scoop install @args'
-    scoop alias add del 'scoop uninstall @args'
-
     if (& { scoop prefix librewolf *> $null; 0 -eq $LASTEXITCODE }) {
         mklink (Join-Path (scoop prefix librewolf) 'Profiles/Default/librewolf.overrides.cfg') ./dotfiles/librewolf.cfg
     }
@@ -110,3 +111,17 @@ if (& { scoop prefix vscodium *> $null; 0 -eq $LASTEXITCODE }) {
 }
 
 mklink ~/.ssh/config ./dotfiles/sshconfig
+
+if (& { scoop prefix windows-terminal *> $null; 0 -eq $LASTEXITCODE }) {
+    $settings = Join-Path (scoop prefix windows-terminal) 'settings' 'settings.json'
+    if (Test-Path $settings -PathType Leaf) {
+        # windows-terminal always generate profiles automatically
+        # scoop would probably add profiles(wsl profiles ect) on installation too
+        # so if settings.json already exists, we should add those generated profiles
+        $generated = Get-Content $settings | ConvertFrom-Json
+        $mySettings = Get-Content ./dotfiles/windows-terminal.settings.json | ConvertFrom-Json
+        $mySettings.profiles.list = $generated.profiles.list
+        $mySettings.defaultProfile = $generated.defaultProfile
+        Set-Content $settings (ConvertTo-Json $mySettings)
+    }
+}
