@@ -3,8 +3,8 @@
 export PS1="\n\[\033[1;32m\][\u@\h:\w]\$\[\033[0m\] "
 export HISTCONTROL=ignorespace:ignoredups:erasedups
 
-alias ls='ls --color=auto -h'
-alias ll='ls -la'
+alias ls='\ls -l --all --almost-all --human-readable --color=auto --sort=size --group-directories-first --time-style=long-iso -v'
+alias ll='\ls -l --all --almost-all --human-readable --color=auto --sort=size --group-directories-first --time-style=long-iso -v'
 alias grep='grep --color=auto -i'
 alias md='mkdir -p'
 alias new='touch'
