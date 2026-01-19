@@ -382,6 +382,12 @@ function reverse {
     }
 }
 
+function string {
+    process {
+        $_.ToString()
+    }
+}
+
 function get {
     param(
         [Parameter(Position = 0, Mandatory)]
@@ -397,7 +403,10 @@ function get {
         $val = $InputObject
 
         $count = 0
-        while ($null -ne ($prop = $val."$($propertyNames[$count])")) {
+        while (
+            $count -lt $propertyNames.Count -and
+            $null -ne ($prop = $val."$($propertyNames[$count])")
+        ) {
             if ($propertyNames[$count] -eq 'GetType') {
                 $val = $val.GetType()
             } elseif ($prop -is [System.Management.Automation.PSMethod]) {
@@ -407,7 +416,7 @@ function get {
             }
             $count++
         }
-
+        # return only when the whole path was enumerated
         if ($count -eq $propertyNames.Length) {
             $val
         }
