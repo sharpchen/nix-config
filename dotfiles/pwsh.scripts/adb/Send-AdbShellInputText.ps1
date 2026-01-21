@@ -17,14 +17,14 @@ param(
                 $commandAst,
                 $fakeBoundParameters
             )
-            ./Complete-SerialNumber.ps1 @PSBoundParameters
+            & "$PSScriptRoot/_Complete-SerialNumber.ps1" @PSBoundParameters
         })]
     [string]$SerialNumber,
     [switch]$AcceptLine
 )
 
 begin {
-    & ./Assert-AdbServer.ps1 @PSBoundParameters
+    & "$PSScriptRoot/Assert-AdbServer.ps1" @PSBoundParameters
 
     if (-not $SerialNumber) {
         $flags = @('-P', $Port)

@@ -10,14 +10,14 @@ param (
                 $commandAst,
                 $fakeBoundParameters
             )
-            ./Complete-SerialNumber.ps1 @PSBoundParameters
+            & "$PSScriptRoot/_Complete-SerialNumber.ps1" @PSBoundParameters
         })]
     [string]$SerialNumber,
     [ushort]$Port = 5037
 )
 
 begin {
-    & ./Assert-AdbServer.ps1 @PSBoundParameters
+    & "$PSScriptRoot/Assert-AdbServer.ps1" @PSBoundParameters
     $null = Get-Command fastboot -ErrorAction Stop -CommandType Application
 
     if (-not $SerialNumber) {
