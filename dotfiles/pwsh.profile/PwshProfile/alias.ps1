@@ -22,6 +22,17 @@ function ll {
     Get-ChildItem @args -Force
 }
 
+Remove-Alias gl -Force
+function gl {
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Filter,
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]$ExtraArgs
+    )
+    Invoke-Expression "Get-ChildItem '*$Filter*' $ExtraArgs"
+}
+
 if ($IsWindows -or $IsLegacy) {
     Set-Alias bsdtar tar
 }

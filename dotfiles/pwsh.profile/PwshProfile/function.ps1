@@ -492,26 +492,31 @@ function unpack {
                 }
             }
             default {
-                $foldersAtRoot = 0
-                $filesAtRoot = 0
+                $rootEntries = 0
+                $prevFirstSegment = $null
                 $null = & $tar tf $Path |
                     Where-Object { $_ -ne './' } |
                     ForEach-Object {
-                        # Folder at archive root(./foo/)
-                        if ($_.EndsWith('/') -and ($_ -split '/').Count -eq 3) {
-                            $foldersAtRoot++
-                        } elseif(-not $_.EndsWith('/') -and ($_ -split '/').Count -eq 2) {
-                            $filesAtRoot++
+                        # two kinds of folders tar can list, depending on how the archive was created
+                        # - Explicit Folder: ./foo/, foo/bar/ etc.
+                        # - Implicit Folder: foo/bar/file.txt etc.
+                        $normalized = $_ -replace '^\./', '' # trim leading portion if relative
+                        # get the first segment of the path, which is either the topmost container name or the filename itself at root
+                        # file at root: <filename>
+                        # sub path: <name>/foo/bar/[file]
+                        $currentFirstSegment = ($normalized -split '/', 2)[0]
+                        if ($currentFirstSegment -ne $prevFirstSegment) {
+                            $rootEntries++
+                            $prevFirstSegment = $currentFirstSegment
                         }
                         # NOTE: you can't break inside ForEach-Object when source come from native command
                         # see: https://github.com/PowerShell/PowerShell/issues/26662
-                        if (($filesAtRoot + $foldersAtRoot) -gt 1) {
-                            $_ # pipe a non-null value so that Select-Object can capture
+                        if ($rootEntries -gt 1) {
+                            $true # pipe a non-null value so that Select-Object can capture
                         }
                     } | Select-Object -First 1 # terminate pipeline early
 
-                if (($filesAtRoot + $foldersAtRoot) -gt 1) {
-                    # if not, create a dedicated directory in the basename of the archive
+                if ($rootEntries -gt 1) {
                     $basename = (Get-Item $Path).BaseName
                     $null = New-Item -ItemType Directory -Path $basename
                     & $tar xf $Path --cd $basename
