@@ -16,11 +16,14 @@ require('config.wsl') -- requires plugin
 require('utils.lsp') -- tasks
 require('utils.dap') -- tasks
 
-local colo = {
-  'vscode',
-  'Eva-Dark',
-  'habamax',
-  'xamabah',
-}
-math.randomseed(os.time())
-vim.cmd.colo(colo[math.random(#colo)])
+local function random(arr)
+  math.randomseed(os.time())
+  return arr[math.random(#arr)]
+end
+
+local now = os.date('*t') --[[@as std.osdate]]
+
+vim.cmd.colo(
+  now.hour > 7 and now.hour < 17 and random { 'xamabah', 'Eva-Light' }
+    or random { 'Eva-Dark', 'habamax', 'vscode' }
+)

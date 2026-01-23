@@ -23,7 +23,7 @@ return {
           ps1 = {
             supported_filetypes = { 'ps1' },
             extension = '.ps1',
-            interpreter = 'pwsh -noprofile -nologo -f',
+            interpreter = 'pwsh -noprofile -nologo -noninteractive -f',
           },
         },
       },

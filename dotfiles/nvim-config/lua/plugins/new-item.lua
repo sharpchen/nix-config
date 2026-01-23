@@ -1,18 +1,42 @@
 ---@module 'lazy'
 ---@type LazySpec
 return {
-  dir = '~/projects/new-item.nvim',
+  -- dir = '~/projects/new-item.nvim',
+  'sharpchen/new-item.nvim',
   event = 'VeryLazy',
-  submodules = true,
+  dependencies = {
+    'github/gitignore',
+    'gitattributes/gitattributes',
+  },
   config = function()
     require('new-item').setup {
-      picker = { name = 'snacks' },
+      -- picker = { name = 'snacks', preview = true },
+      groups = {
+        gitignore = {
+          visible = false,
+          sources = {
+            {
+              name = 'new-item',
+              function() return require('new-item.groups.gitignore')() end,
+            },
+          },
+        },
+        gitattributes = {
+          visible = false,
+          sources = {
+            {
+              name = 'new-item',
+              function() return require('new-item.groups.gitattributes')() end,
+            },
+          },
+        },
+      },
       init = function(groups, ctors)
         groups.md = {
           cond = true,
           items = {
             ctors.file {
-              iname = 'markdown',
+              id = 'markdown',
               label = 'Markdown file',
               filetype = 'markdown',
               suffix = '.md',
@@ -22,7 +46,7 @@ return {
         }
         groups.config:append {
           ctors.file {
-            iname = 'stylua',
+            id = 'stylua',
             label = 'stylua',
             link = vim.fn.expand('~/.config/.stylua.toml'),
             filetype = 'toml',
@@ -41,7 +65,7 @@ return {
           end,
           items = {
             ctors.file {
-              iname = 'lazyplug',
+              id = 'lazyplug',
               label = 'Lazy plug',
               content = vim.text.indent(
                 0,

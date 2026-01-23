@@ -48,10 +48,9 @@ return {
       lsp.setup('postgres_lsp')
       lsp.setup('marksman')
       lsp.setup('eslint')
-      lsp.setup('fsautocomplete', {
+      lsp.setup('clangd', {
         on_attach = lsp.event.disable_semantic,
       })
-      lsp.setup('clangd')
       lsp.setup('neocmake')
       -- lsp.setup('csharp_ls', {
       --   on_init = lsp.event.disable_semantic,
@@ -84,32 +83,42 @@ return {
       require('plugins.lsp.emmylua')
       require('plugins.lsp.yamlls')
       require('plugins.lsp.vue_language_server')
-      require('plugins.lsp.pwsh_es')
-      require('plugins.lsp.msbuild_ls')
+
+      if Env.has_dotnet then
+        if Env.has_pwsh then require('plugins.lsp.pwsh_es') end
+
+        require('plugins.lsp.msbuild_ls')
+
+        lsp.setup('fsautocomplete', {
+          on_attach = lsp.event.disable_semantic,
+        })
+
+        lsp.setup('avalonia_ls', {
+          name = 'avalonia_ls',
+          cmd = { 'AvaloniaLanguageServer' },
+          filetypes = { 'axaml' },
+          root_markers = { 'App.axaml' },
+          on_init = function(client)
+            vim.system(
+              { 'SolutionParser', client.root_dir },
+              {},
+              function() vim.system({ 'dotnet', 'build' }, { cwd = client.root_dir }) end
+            )
+          end,
+        })
+      end
+
       require('plugins.lsp.query_ls')
       require('plugins.lsp.lemminx')
       require('plugins.lsp.ds_pinyin_lsp')
       require('plugins.lsp.nixd')
-
-      lsp.setup('avalonia_ls', {
-        name = 'avalonia_ls',
-        cmd = { 'AvaloniaLanguageServer' },
-        filetypes = { 'axaml' },
-        root_markers = { 'App.axaml' },
-        on_init = function(client)
-          vim.system(
-            { 'SolutionParser', client.root_dir },
-            {},
-            function() vim.system({ 'dotnet', 'build' }, { cwd = client.root_dir }) end
-          )
-        end,
-      })
     end,
   },
   {
     'seblyng/roslyn.nvim',
     ft = { 'cs', 'axaml-cs' },
-    -- enabled = false,
+    enabled = Env.has_dotnet
+      and vim.fn.executable('Microsoft.CodeAnalysis.LanguageServer') == 1,
     config = function()
       local lsp = require('utils.lsp')
 
@@ -137,6 +146,7 @@ return {
   },
   {
     'Decodetalkers/csharpls-extended-lsp.nvim',
+    enabled = Env.has_dotnet and vim.fn.executable('csharp-ls') == 1,
     ft = { 'cs', 'axaml-cs' },
     config = function()
       if vim.lsp.is_enabled('csharp_ls') then

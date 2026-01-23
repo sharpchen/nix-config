@@ -31,7 +31,7 @@ return {
     )
   ),
   snip(
-    'codeif',
+    'cmdok',
     fmt(
       [[
     if (& {{ {} *> $null; 0 -eq $LASTEXITCODE }}) {{

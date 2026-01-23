@@ -14,6 +14,7 @@ return {
         'c_sharp',
         'vim',
         'c',
+        'cpp',
         'printf',
         'powershell',
         'nix',

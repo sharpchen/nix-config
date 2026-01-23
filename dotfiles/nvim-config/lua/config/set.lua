@@ -118,7 +118,6 @@ vim.opt.formatoptions:remove { 'c', 'r', 'o' }
 
 vim.filetype.add {
   extension = {
-    foo = 'foo',
     axaml = 'axaml',
     xaml = 'xaml',
     props = 'msbuild',
