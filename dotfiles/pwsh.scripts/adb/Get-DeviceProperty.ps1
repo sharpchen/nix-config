@@ -1,5 +1,5 @@
 param(
-    [ArgumentCompletions('CodeName', 'SerialNumber', 'IMEI', 'IMEI1', 'IMEI2', 'APIVersion', 'AndriodVersion')]
+    [ValidateSet('CodeName', 'SerialNumber', 'IMEI', 'IMEI1', 'IMEI2', 'APIVersion', 'AndriodVersion')]
     [string]$Property,
     [ushort]$Port = 5037,
     [ArgumentCompleter({
@@ -18,10 +18,10 @@ param(
 begin {
     & "$PSScriptRoot/Assert-AdbServer.ps1" @PSBoundParameters
 
-    if (-not $SerialNumber) {
-        $flags = @('-P', $Port)
-    } else {
-        $flags = @('-P', $Port, '-s', $SerialNumber)
+    $flags = '-P', $Port
+
+    if ($SerialNumber) {
+        $flags += '-s', $SerialNumber
     }
 }
 

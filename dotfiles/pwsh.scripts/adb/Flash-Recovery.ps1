@@ -20,10 +20,10 @@ begin {
     & "$PSScriptRoot/Assert-AdbServer.ps1" @PSBoundParameters
     $null = Get-Command fastboot -ErrorAction Stop -CommandType Application
 
-    if (-not $SerialNumber) {
-        $flags = @('-P', $Port)
-    } else {
-        $flags = @('-P', $Port, '-s', $SerialNumber)
+    $flags = '-P', $Port
+
+    if ($SerialNumber) {
+        $flags += '-s', $SerialNumber
     }
 }
 

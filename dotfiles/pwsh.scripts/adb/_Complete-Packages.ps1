@@ -17,4 +17,4 @@ if ($fakeBoundParameters.ContainsKey('SerialNumber')) {
 
 # -3 third-party packages only
 # -s system packages only
-adb @flags shell pm list packages -3 | ForEach-Object { $_ -replace '^package:', '' }
+adb @flags shell pm list packages | ForEach-Object { $_ -replace '^package:', '' }

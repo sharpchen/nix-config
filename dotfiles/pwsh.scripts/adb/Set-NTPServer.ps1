@@ -1,5 +1,10 @@
 param(
+    [Parameter(Mandatory)]
+    [ArgumentCompletions('ntp.ntsc.ac.cn')]
+    [string]$Server,
+
     [ushort]$Port = 5037,
+
     [ArgumentCompleter({
             param (
                 $commandName,
@@ -10,19 +15,16 @@ param(
             )
             & "$PSScriptRoot/_Complete-SerialNumber.ps1" @PSBoundParameters
         })]
-    [string]$SerialNumber,
-    [Parameter(Mandatory)]
-    [ArgumentCompletions('ntp.ntsc.ac.cn')]
-    [string]$Server
+    [string]$SerialNumber
 )
 
 begin {
     & "$PSScriptRoot/Assert-AdbServer.ps1" @PSBoundParameters
 
-    if (-not $SerialNumber) {
-        $flags = @('-P', $Port)
-    } else {
-        $flags = @('-P', $Port, '-s', $SerialNumber)
+    $flags = '-P', $Port
+
+    if ($SerialNumber) {
+        $flags += '-s', $SerialNumber
     }
 }
 

@@ -6,10 +6,10 @@ param (
     $fakeBoundParameters
 )
 
+$flags = 'devices', '-l'
+
 if ($fakeBoundParameters.ContainsKey('Port')) {
-    $flags = @('-P', $fakeBoundParameters.Port, 'devices', '-l')
-} else {
-    $flags = @('devices', '-l')
+    $flags = '-P', $fakeBoundParameters.Port + $flags
 }
 
 adb @flags | Select-Object -Skip 1 -SkipLast 1 | ForEach-Object {

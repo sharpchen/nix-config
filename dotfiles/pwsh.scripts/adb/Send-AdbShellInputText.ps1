@@ -26,10 +26,10 @@ param(
 begin {
     & "$PSScriptRoot/Assert-AdbServer.ps1" @PSBoundParameters
 
-    if (-not $SerialNumber) {
-        $flags = @('-P', $Port)
-    } else {
-        $flags = @('-P', $Port, '-s', $SerialNumber)
+    $flags = '-P', $Port
+
+    if ($SerialNumber) {
+        $flags += '-s', $SerialNumber
     }
 
     $specials = @'
