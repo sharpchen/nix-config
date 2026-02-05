@@ -33,7 +33,7 @@ Set-PSReadLineOption -AddToHistoryHandler {
     param($history)
 
     switch -Regex ($history) {
-        '\b(?:aria2c|rainfrog|sioyek)\b(\.exe)?' {
+        '\b(?:aria2c|sioyek)\b(\.exe)?' {
             $false
         }
         default {

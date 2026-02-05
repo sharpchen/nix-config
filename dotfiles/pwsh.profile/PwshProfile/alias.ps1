@@ -1,7 +1,6 @@
 Set-Alias lg lazygit
 Set-Alias dn dotnet
 Set-Alias v nvim
-Set-Alias ydl yt-dlp
 Set-Alias tsp Test-Path
 Set-Alias mes Measure-Object
 Set-Alias mesc Measure-Command
@@ -22,7 +21,9 @@ function ll {
     Get-ChildItem @args -Force
 }
 
-Remove-Alias gl -Force
+if (Test-Path alias:gl) {
+    Remove-Alias gl -Force
+}
 function gl {
     param(
         [Parameter(Mandatory, Position = 0)]

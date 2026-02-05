@@ -1,5 +1,10 @@
 Set-Alias reboot Restart-Computer
 
+function which {
+    param ([string]$Name)
+    (Get-Command $Name).Source
+}
+
 function vs {
     param (
         [ValidateScript({ Test-Path -LiteralPath $_ })]

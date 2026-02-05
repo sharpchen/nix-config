@@ -518,7 +518,9 @@ function unpack {
 
                 if ($rootEntries -gt 1) {
                     $basename = (Get-Item $Path).BaseName
-                    $null = New-Item -ItemType Directory -Path $basename
+                    if (-not (Test-Path $basename -PathType Container)) {
+                        $null = New-Item -ItemType Directory -Path $basename
+                    }
                     & $tar xf $Path --cd $basename
                 } else {
                     & $tar xf $Path --cd $PWD
@@ -595,11 +597,11 @@ function dbconnectstr {
 
 function connectdb {
     begin {
-        $null = Get-Command rainfrog -ErrorAction Stop
+        $null = Get-Command sqlit -ErrorAction Stop
     }
 
     end {
-        rainfrog --url (dbconnectstr)
+        sqlit (dbconnectstr)
     }
 }
 
@@ -613,7 +615,7 @@ function pubip {
     }
 }
 
-function delhis {
+function hisdel {
     param([string]$Pattern)
 
     begin {
@@ -630,5 +632,58 @@ function delhis {
         }
 
         Set-Content -Path $history -Value $filtered
+    }
+}
+
+function ydl {
+    param (
+        [Parameter(Mandatory, Position = 1)]
+        [string]$Url,
+
+        [string]$Format,
+
+        [Parameter(ParameterSetName = 'ListDetails')]
+        [switch]$ListDetails,
+
+        [Parameter(ParameterSetName = 'ListFormat')]
+        [switch]$ListFormat
+    )
+
+    begin {
+        $ydl = Get-Command yt-dlp -ErrorAction Stop
+        $flags = @()
+        if ($Format) {
+            $flags += 'f', $Format
+        }
+    }
+
+    end {
+        switch ($PSCmdlet.ParameterSetName) {
+            ListFormat {
+                & $ydl -q --dump-json $Url |
+                    ConvertFrom-Json |
+                    Select-Object -ExpandProperty formats |
+                    Format-Table format_id, ext, resolution, fps, protocol, vcodec, acodec, language
+            }
+            ListDetails {
+                $template = [ordered]@{
+                    Id            = '%(id)s'
+                    Title         = '%(title)s'
+                    Uploader      = '%(uploader)s'
+                    'Upload Date' = '%(upload_date)s'
+                    Views         = '%(view_count)s'
+                    Description   = '%(description)s'
+
+                    Size          = '%(filesize_approx)#.2DB'
+                    Duration      = '%(duration_string)s'
+                    Resolution    = '%(resolution)s'
+                    'Format ID'   = '%(format_id)s' # default format_id picked
+                }
+                & $ydl --simulate --print (ConvertTo-Json $template) $Url | ConvertFrom-Json
+            }
+            default {
+                & $ydl @flags $Url
+            }
+        }
     }
 }
