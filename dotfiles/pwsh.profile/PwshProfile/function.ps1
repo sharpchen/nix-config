@@ -388,6 +388,21 @@ function string {
     }
 }
 
+if (Test-Path alias:type) {
+    Remove-Alias type
+}
+function type {
+    process {
+        $_.GetType()
+    }
+}
+
+function typename {
+    process {
+        $_.GetType().FullName
+    }
+}
+
 function get {
     param(
         [Parameter(Position = 0, Mandatory)]
@@ -636,6 +651,7 @@ function hisdel {
 }
 
 function ydl {
+    [CmdletBinding(DefaultParameterSetName = '__AllParameterSets')]
     param (
         [Parameter(Mandatory, Position = 1)]
         [string]$Url,
@@ -645,8 +661,10 @@ function ydl {
         [Parameter(ParameterSetName = 'ListDetails')]
         [switch]$ListDetails,
 
-        [Parameter(ParameterSetName = 'ListFormat')]
-        [switch]$ListFormat
+        [Parameter(ParameterSetName = 'ListFormats')]
+        [switch]$ListFormats,
+
+        [switch]$PassThru
     )
 
     begin {
@@ -659,11 +677,19 @@ function ydl {
 
     end {
         switch ($PSCmdlet.ParameterSetName) {
-            ListFormat {
-                & $ydl -q --dump-json $Url |
+            ListFormats {
+                $result = & $ydl -q --dump-json --compat-options manifest-filesize-approx $Url |
                     ConvertFrom-Json |
                     Select-Object -ExpandProperty formats |
-                    Format-Table format_id, ext, resolution, fps, protocol, vcodec, acodec, language
+                    Select-Object format_id,
+                    @{ name = 'filesize'; expr = { __humanize-size $_.filesize_approx } },
+                    ext, resolution, fps, protocol, vcodec, acodec, language
+
+                if ($PassThru) {
+                    $result
+                } else {
+                    $result | Format-Table
+                }
             }
             ListDetails {
                 $template = [ordered]@{
@@ -684,6 +710,32 @@ function ydl {
             default {
                 & $ydl @flags $Url
             }
+        }
+    }
+}
+
+function __humanize-size {
+    param([long]$Bytes)
+
+    switch ($Bytes) {
+        { $_ -ge 1TB } {
+            '{0:N2} TB' -f ($Bytes / 1TB)
+            break
+        }
+        { $_ -ge 1GB } {
+            '{0:N2} GB' -f ($Bytes / 1GB)
+            break
+        }
+        { $_ -ge 1MB } {
+            '{0:N2} MB' -f ($Bytes / 1MB)
+            break
+        }
+        { $_ -ge 1KB } {
+            '{0:N2} KB' -f ($Bytes / 1KB)
+            break
+        }
+        default {
+            "$Bytes Bytes"
         }
     }
 }
