@@ -1,5 +1,12 @@
 param(
-    [ValidateSet('CodeName', 'SerialNumber', 'IMEI', 'IMEI1', 'IMEI2', 'APIVersion', 'AndriodVersion')]
+    [ValidateSet(
+        'CodeName',
+        'SerialNumber',
+        'IMEI', 'IMEI1', 'IMEI2',
+        'APIVersion',
+        'AndriodVersion',
+        'ABIList'
+    )]
     [string]$Property,
     [ushort]$Port = 5037,
     [ArgumentCompleter({
@@ -46,6 +53,9 @@ end {
         }
         'APIVersion' {
             adb @flags shell getprop ro.build.version.sdk
+        }
+        'ABIList' {
+            adb @flags shell getprop ro.vendor.product.cpu.abilist
         }
     }
 }
