@@ -23,7 +23,7 @@ alias so='source ~/.bashrc'
 alias :q='exit'
 alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
 alias lg=lazygit
-alias vim='nvim -u ~/.vimrc'
+alias vim='MINIMAL_NVIM=1 nvim'
 alias v=nvim
 alias ngc='nix-collect-garbage -d && sudo $(which nix-collect-garbage) -d'
 alias ydl='yt-dlp'
