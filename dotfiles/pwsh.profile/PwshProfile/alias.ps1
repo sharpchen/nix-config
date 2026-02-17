@@ -22,7 +22,7 @@ function ll {
 }
 
 if (Test-Path alias:gl) {
-    Remove-Alias gl -Force
+    Remove-Item alias:gl -Force
 }
 function gl {
     param(
@@ -40,13 +40,12 @@ if ($IsWindows -or $IsLegacy) {
 
 if (Get-Command nvim -ErrorAction Ignore) {
     function vim {
-        nvim -u '~/.vimrc' @args
-    }
-
-    function vw {
-        nvim -u '~/.vimrc' @args -c @'
-        set wrap
-'@
+        $flags = @{
+            FilePath     = 'nvim'
+            ArgumentList = $args
+            Environment  = @{ MINIMAL_NVIM = 1 }
+        }
+        Start-Process @flags -NoNewWindow -Wait
     }
 }
 
@@ -73,7 +72,7 @@ function new {
 }
 
 function so {
-    Import-Module PwshProfile -Scope Global -Force
+    Import-Module PwshProfile -Scope Global -Force -DisableNameChecking
 }
 
 if (Get-Command yazi -ea Ignore) {

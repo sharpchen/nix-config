@@ -4,7 +4,7 @@ Import-Module PSReadLine, PSFzf, git-completion
 
 $env:PSModulePath += "$([IO.Path]::PathSeparator)$PSScriptRoot"
 
-Import-Module PwshProfile -Scope Global
+Import-Module PwshProfile -Scope Global -DisableNameChecking
 
 if (Get-Command zoxide -ea Ignore) {
     zoxide init powershell | Out-String | Invoke-Expression

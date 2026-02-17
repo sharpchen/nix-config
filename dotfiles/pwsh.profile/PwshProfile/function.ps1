@@ -389,7 +389,7 @@ function string {
 }
 
 if (Test-Path alias:type) {
-    Remove-Alias type
+    Remove-Item alias:type
 }
 function type {
     process {
