@@ -9,7 +9,6 @@
     tree-sitter
     ripgrep
     csharprepl
-    rainfrog
     which
     bat
     tokei
@@ -51,6 +50,7 @@
     hyperfine
     lstr
     zip
+    sqlit-tui
   ];
   # home.file.".dict/.dict.conf".text = ''
   #   server localhost

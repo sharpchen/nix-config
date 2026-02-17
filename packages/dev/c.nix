@@ -7,9 +7,9 @@
 {
   home.packages = with pkgs; [
     clang-tools
-    gcc
+    clang
+    # gcc
     cmake
     gnumake
-    neocmakelsp
   ];
 }
