@@ -9,7 +9,7 @@ local M = {
   has_pwsh = vim.fn.executable('pwsh') == 1,
   has_scoop = vim.fn.executable('scoop') == 1,
   has_dotnet = vim.fn.executable('dotnet') == 1,
-  is_wsl = vim.env.WSL_DISTRO_NAME ~= nil,
+  is_wsl = vim.fn.has('wsl') == 1,
 }
 
 _G.Env = M

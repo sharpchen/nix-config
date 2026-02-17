@@ -1,4 +1,11 @@
 vim.cmd.source(vim.fn.expand('~/.vimrc'))
+
+if IsWindows then
+  require('config.windows')
+elseif IsLinux then
+  require('config.linux')
+end
+
 -- line number
 vim.opt.nu = true
 vim.opt.rnu = true
@@ -201,17 +208,6 @@ vim.api.nvim_create_user_command('Delete', function()
   vim.fs.rm(path)
   vim.notify(path .. ' deleted')
 end, { desc = 'delete current file', bang = true })
-
-if HasScoop then
-  vim.system({ 'scoop', 'prefix', 'git' }, { text = true }, function(out)
-    if out.code == 0 then
-      vim.schedule(function()
-        vim.o.shell = vim.fs.joinpath(vim.trim(out.stdout), 'bin/bash.exe')
-        vim.o.shellcmdflag = '-c'
-      end)
-    end
-  end)
-end
 
 vim.api.nvim_create_autocmd('TermOpen', {
   callback = function(_) vim.opt_local.spell = false end,

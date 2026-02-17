@@ -61,4 +61,4 @@ local function set_windows_clipboard()
   }
 end
 
-if vim.uv.os_uname().release:find('WSL2') ~= nil then set_windows_clipboard() end
+if vim.fn.has('wsl') == 1 then set_windows_clipboard() end

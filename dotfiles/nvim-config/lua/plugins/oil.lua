@@ -213,5 +213,6 @@ return {
       pattern = 'oil',
       callback = function(args) vim.keymap.set('n', 'J', '<nop>', { buffer = args.buf }) end,
     })
+    vim.keymap.set('n', '<A-o>', '<cmd>Oil<CR>', { desc = 'open oil' })
   end,
 }

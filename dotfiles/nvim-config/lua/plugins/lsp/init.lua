@@ -23,7 +23,7 @@ return {
       if lsp.use_vtsls then
         require('plugins.lsp.vtsls')
       else
-        require('plugins.lsp.ts_ls')
+        lsp.setup('tsgo')
       end
 
       lsp.setup('taplo')
@@ -51,7 +51,6 @@ return {
       lsp.setup('clangd', {
         on_attach = lsp.event.disable_semantic,
       })
-      lsp.setup('neocmake')
       -- lsp.setup('csharp_ls', {
       --   on_init = lsp.event.disable_semantic,
       --   filetypes = lsp.config.ft_extend('csharp_ls', { 'axaml-cs' }),

@@ -61,12 +61,8 @@ return {
             return
           end
 
-          if
-            vim.list_contains(
-              treesitter.get_installed(),
-              vim.treesitter.language.get_lang(args.match)
-            )
-          then
+          local lang = vim.treesitter.language.get_lang(args.match)
+          if vim.treesitter.language.add(lang or args.match) then
             vim.treesitter.start(args.buf)
           end
         end,

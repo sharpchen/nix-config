@@ -10,6 +10,9 @@ end
 
 if vim.g.neovide then require('config.neovide') end
 
+-- my custom env to indicate whether should load plugins
+if vim.env.MINIMAL_NVIM == '1' then return end
+
 require('config.lazy')
 
 require('config.wsl') -- requires plugin
@@ -24,6 +27,6 @@ end
 local now = os.date('*t') --[[@as std.osdate]]
 
 vim.cmd.colo(
-  now.hour > 7 and now.hour < 17 and random { 'xamabah', 'Eva-Light' }
+  now.hour > 7 and now.hour < 17 and random { 'xamabah', 'Eva-Light', 'mfd-paper' }
     or random { 'Eva-Dark', 'habamax', 'vscode' }
 )

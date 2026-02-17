@@ -50,19 +50,6 @@ vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>', { desc = 'Inspect' })
 
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
 
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'sh', 'bash', 'zsh' },
-  callback = function(args)
-    if IsLinux then
-      vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', {
-        buffer = args.buf,
-        silent = true,
-        desc = 'make current file executable',
-      })
-    end
-  end,
-})
-
 vim.api.nvim_create_autocmd('LspAttach', {
   desc = 'LSP actions',
   callback = function(event)

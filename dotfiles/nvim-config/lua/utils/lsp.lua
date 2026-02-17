@@ -1,5 +1,5 @@
 local M = {
-  use_vtsls = vim.fn.executable('vtsls') == 1,
+  use_vtsls = vim.fn.executable('tsgo') ~= 0 and vim.fn.executable('vtsls') == 1,
 }
 
 _G.Lsp = M

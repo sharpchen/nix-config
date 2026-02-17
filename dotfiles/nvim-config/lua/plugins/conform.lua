@@ -16,8 +16,8 @@ return {
       formatters_by_ft = {
         json = { 'jq' },
         lua = { 'stylua' },
-        javascript = { 'prettier' },
-        typescript = { 'prettier' },
+        javascript = { 'biome' },
+        typescript = { 'biome' },
         sh = { 'shfmt' },
         yaml = { 'yamlfmt' },
         sql = { 'sqlfluff' },
