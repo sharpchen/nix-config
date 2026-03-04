@@ -202,13 +202,6 @@ vim.api.nvim_create_autocmd({ 'DirChanged', 'VimEnter' }, {
   end,
 })
 
-vim.api.nvim_create_user_command('Delete', function()
-  local path = vim.fn.expand('%:p')
-  vim.cmd.bd()
-  vim.fs.rm(path)
-  vim.notify(path .. ' deleted')
-end, { desc = 'delete current file', bang = true })
-
 vim.api.nvim_create_autocmd('TermOpen', {
   callback = function(_) vim.opt_local.spell = false end,
   desc = 'disable spell in terminal',

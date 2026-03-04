@@ -88,3 +88,5 @@ stackoverflow
 cwd
 gitignore
 nixos
+Charset
+neovim

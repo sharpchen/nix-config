@@ -1,7 +1,10 @@
 local lsp = require('utils.lsp')
 
 lsp.setup('vue_ls', {
-  filetypes = { 'markdown', 'vue' },
+  filetypes = {
+    'vue',
+    -- 'markdown',
+  },
   on_attach = function(client, _)
     if vim.bo.filetype == 'markdown' then
       -- lsp.event.abort_on_root_not_matched(client, 'package.json')

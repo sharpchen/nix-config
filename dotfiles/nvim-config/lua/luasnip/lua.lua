@@ -137,7 +137,7 @@ return {
         end
       end, { opt(key('cmd')) }, { snippetstring_args = true }),
       oneof(2, {
-        sn(nil, fmt('function(args)\n  {}\nend', { ins(1) })),
+        sn(nil, fmt('function(ctx)\n  {}\nend', { ins(1) })),
         sn(nil, fmt("'{}'", { ins(1) })),
       }),
       ins(3),

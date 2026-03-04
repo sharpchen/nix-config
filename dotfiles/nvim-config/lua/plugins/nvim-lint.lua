@@ -6,7 +6,6 @@ return {
   config = function()
     local lint = require('lint')
     lint.linters_by_ft = {
-      javascript = { 'eslint' },
       sql = { 'sqlfluff' },
       plsql = { 'sqlfluff' },
       nix = { 'nix' },

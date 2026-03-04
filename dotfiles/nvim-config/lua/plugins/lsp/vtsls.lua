@@ -13,9 +13,12 @@ local inlayhint_setting = {
 
 local function setup()
   lsp.setup('vtsls', {
-    filetypes = lsp.config.ft_extend('vtsls', { 'vue', 'markdown' }),
+    filetypes = lsp.config.ft_extend('vtsls', {
+      'vue',
+      -- 'markdown'
+    }),
     on_attach = function(client, bufnr)
-      if vim.bo.filetype == 'markdown' then
+      if vim.bo[bufnr].filetype == 'markdown' then
         lsp.event.disable_formatter(client)
         vim.schedule(function() vim.lsp.stop_client(client.id) end)
       else
@@ -32,7 +35,10 @@ local function setup()
             {
               name = '@vue/typescript-plugin',
               location = lsp.path.vue_language_server,
-              languages = { 'vue', 'markdown' },
+              languages = {
+                'vue',
+                -- 'markdown',
+              },
               configNamespace = 'typescript',
               enableForWorkspaceTypeScriptVersions = true,
             },

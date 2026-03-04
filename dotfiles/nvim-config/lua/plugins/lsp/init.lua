@@ -8,10 +8,13 @@ return {
     config = function()
       local lsp = require('utils.lsp')
 
-      vim.lsp.config('*', {
-        ---@diagnostic disable-next-line: param-type-not-match
-        capabilities = require('blink.cmp').get_lsp_capabilities(),
-      })
+      local ok, blink = pcall(require, 'blink.cmp')
+      if ok then
+        vim.lsp.config('*', {
+          ---@diagnostic disable-next-line: param-type-not-match
+          capabilities = blink.get_lsp_capabilities(),
+        })
+      end
       -- NOTE: use LspAttach instead of on_attach for default use
       vim.api.nvim_create_autocmd('LspAttach', {
         callback = function(args)
@@ -44,6 +47,7 @@ return {
       })
       lsp.setup('cssls')
       lsp.setup('html')
+      lsp.setup('oxlint')
       lsp.setup('vimls')
       lsp.setup('postgres_lsp')
       lsp.setup('marksman')

@@ -9,7 +9,15 @@ _G.Lsp = M
 ---@param config? vim.lsp.Config
 function M.setup(ls, config)
   if config then vim.lsp.config[ls] = config end
-  vim.lsp.enable(ls)
+  if
+    vim.lsp.config[ls]
+    and (
+      type(vim.lsp.config[ls].cmd) == 'function'
+      or vim.fn.executable(vim.lsp.config[ls].cmd[1]) == 1
+    )
+  then
+    vim.lsp.enable(ls)
+  end
 end
 
 M.path = {
