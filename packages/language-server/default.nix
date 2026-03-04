@@ -15,7 +15,6 @@
       ast-grep
       postgres-language-server
       sqlfluff
-      eslint
       marksman
       ts_query_ls
     ]

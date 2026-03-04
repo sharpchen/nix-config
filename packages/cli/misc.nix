@@ -51,6 +51,8 @@
     lstr
     zip
     sqlit-tui
+    imagemagick
+    mediainfo
   ];
   # home.file.".dict/.dict.conf".text = ''
   #   server localhost

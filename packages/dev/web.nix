@@ -2,7 +2,8 @@
 {
   home.packages = with pkgs; [
     nodejs_22
-    biome
+    oxlint
+    oxfmt
     pnpm
     quick-lint-js
     emmet-language-server
