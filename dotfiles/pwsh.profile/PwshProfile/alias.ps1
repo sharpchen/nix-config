@@ -14,7 +14,7 @@ Set-Alias order Sort-Object
 Set-Alias json ConvertFrom-Json
 Set-Alias tojson ConvertTo-Json
 Set-Alias csv ConvertFrom-Csv
-Set-Alias tocsv ConvertFrom-Csv
+Set-Alias tocsv ConvertTo-Csv
 Set-Alias eval Invoke-Expression
 
 function ll {

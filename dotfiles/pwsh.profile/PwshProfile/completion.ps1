@@ -43,6 +43,26 @@ $foldercompletenative = {
         Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
+$cmdcomplete = {
+    param(
+        $commandName,
+        $parameterName,
+        $wordToComplete,
+        $commandAst,
+        $fakeBoundParameters
+    )
+    [System.Management.Automation.CompletionCompleters]::CompleteCommand($wordToComplete)
+}
+
+$cmdcompletenative = {
+    param(
+        $wordToComplete,
+        $commandAst,
+        $cursorPosition
+    )
+    [System.Management.Automation.CompletionCompleters]::CompleteCommand($wordToComplete)
+}
+
 $dotnetcomplete = {
     param(
         $wordToComplete,
@@ -60,11 +80,14 @@ $dotnetcomplete = {
     }
 }
 
+# native complete
+Register-ArgumentCompleter -CommandName dn -ScriptBlock $dotnetcomplete
 Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock $dotnetcomplete
 Register-ArgumentCompleter -Native -CommandName ll -ScriptBlock $foldercompletenative
 Register-ArgumentCompleter -Native -CommandName file -ScriptBlock $filecompletenative
+Register-ArgumentCompleter -Native -CommandName which -ScriptBlock $cmdcompletenative
 
-Register-ArgumentCompleter -CommandName dn -ScriptBlock $dotnetcomplete
+# non-native complete
 Register-ArgumentCompleter -CommandName rd -ParameterName Path -ScriptBlock $foldercomplete
 Register-ArgumentCompleter -CommandName unpack -ParameterName Path -ScriptBlock $filecomplete
 Register-ArgumentCompleter -CommandName unpack -ParameterName Destination -ScriptBlock $foldercomplete

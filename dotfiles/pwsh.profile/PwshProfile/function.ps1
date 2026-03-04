@@ -207,6 +207,10 @@ function pmclean {
             $null = Get-Command npm -ea Stop
             npm cache clean --force
         }
+        'pnpm' {
+            $null = Get-Command pnpm -ErrorAction Stop
+            pnpm store prune
+        }
         'nix' {
             $null = Get-Command nh -ErrorAction Stop
             nh clean all
@@ -385,6 +389,18 @@ function reverse {
 function string {
     process {
         $_.ToString()
+    }
+}
+
+function int {
+    process {
+        [int]$_
+    }
+}
+
+function char {
+    process {
+        [char]$_
     }
 }
 
@@ -631,22 +647,31 @@ function pubip {
 }
 
 function hisdel {
-    param([string]$Pattern)
+    param(
+        [Parameter(Mandatory)]
+        [string]$Pattern,
+        [switch]$Escape
+    )
 
     begin {
+        $count = 0
         $history = (Get-PSReadLineOption).HistorySavePath
         $filtered = [System.Collections.Generic.List[string]]::new()
+        if ($Escape) {
+            $Pattern = [regex]::Escape($Pattern)
+        }
     }
     end {
         switch -Regex -File $history {
             $pattern {
+                $count++
             }
             default {
                 $filtered.Add($_)
             }
         }
-
         Set-Content -Path $history -Value $filtered
+        Write-Host "hisdel: $count entries deleted." -ForegroundColor Yellow
     }
 }
 
@@ -737,5 +762,31 @@ function __humanize-size {
         default {
             "$Bytes Bytes"
         }
+    }
+}
+
+function title {
+    $Host.UI.RawUI.WindowTitle = $args
+}
+
+function distinct {
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [psobject]$InputObject,
+        [Parameter(Position = 0)]
+        [object]$Property
+    )
+
+    begin {
+        $sort = { Sort-Object $Property -Unique }.GetSteppablePipeline($MyInvocation.CommandOrigin)
+        $sort.Begin($PSCmdlet)
+    }
+
+    process {
+        $sort.Process($InputObject)
+    }
+
+    end {
+        $sort.End()
     }
 }
