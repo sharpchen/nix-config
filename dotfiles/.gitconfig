@@ -15,6 +15,8 @@
     open = "!gio open $(git remote get-url origin | sed -E \"s|git@([^:]+):|https://\\1/|; s|\\.git$||\")"
 [url "git@github.com:"]
     insteadOf = https://github.com/
+[fetch]
+    prune = true
 [pull]
     rebase = true
 [includeIf "gitdir:C:/**"]
