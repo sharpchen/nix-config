@@ -1,6 +1,6 @@
 [[ $- != *i* ]] && return
 
-export PS1="\n\[\033[1;32m\][\u@\h:\w]\$\[\033[0m\] "
+export PS1="\n\[\e[1;32m\][\u@\h:\w]\$\[\e[0m\] "
 export HISTCONTROL=ignorespace:ignoredups:erasedups
 
 alias ls='\ls -l --all --almost-all --human-readable --color=auto --sort=size --group-directories-first --time-style=long-iso -v'
@@ -21,11 +21,11 @@ alias cls='clear'
 alias now='date "+%Y-%m-%d %H:%M:%S"'
 alias so='source ~/.bashrc'
 alias :q='exit'
-alias hms='home-manager switch --flake ~/.config/home-manager#$USER'
+alias hms='home-manager switch --flake ~/.config/home-manager#$USER --option fallback true'
 alias lg=lazygit
 alias vim='MINIMAL_NVIM=1 nvim'
 alias v=nvim
-alias ngc='nix-collect-garbage -d && sudo $(which nix-collect-garbage) -d'
+alias ngc='nix-collect-garbage -d && sudo $(type -p nix-collect-garbage) -d'
 alias ydl='yt-dlp'
 if type rsync &>/dev/null; then
     alias rall='rsync --archive --delete "$(mktemp -d)/" "$(pwd)/"'
@@ -141,5 +141,5 @@ fi
 # fi
 
 title() {
-    echo -ne "\033]0;$*\007"
+    echo -ne "\e]0;$*\007"
 }
