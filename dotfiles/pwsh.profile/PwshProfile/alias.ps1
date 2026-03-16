@@ -98,3 +98,14 @@ function now {
 function rand {
     $input | Sort-Object { Get-Random }
 }
+
+function pow {
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        $Base,
+        [Parameter(Mandatory, Position = 1)]
+        $Power
+    )
+
+    [System.Math]::Pow($Base, $Power)
+}

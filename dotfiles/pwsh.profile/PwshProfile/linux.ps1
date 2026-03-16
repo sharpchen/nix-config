@@ -45,7 +45,7 @@ if (Get-Command 'home-manager' -ErrorAction Ignore) {
     function hms {
         home-manager switch --flake ((Resolve-Path '~/.config/home-manager').Path + '#' + $env:USER) `
             --option substituters 'https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store' `
+            --option fallback true `
             @args
     }
-    Set-Alias hm home-manager
 }

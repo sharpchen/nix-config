@@ -1,4 +1,5 @@
 Set-Alias reboot Restart-Computer
+Set-Alias uptime Get-Uptime
 
 function which {
     param ([string]$Name)
