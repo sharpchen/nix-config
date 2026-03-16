@@ -33,7 +33,7 @@ return {
   wrap_js_stm { trig = '.const', format = 'const {} = {stm}' },
   wrap_js_stm { trig = '.var', format = 'var {} = {stm}' },
   wrap_js_stm { trig = '.let', format = 'let {} = {stm}' },
-  wrap_js_stm { trig = '.wl', format = 'console.log({stm})' },
+  wrap_js_stm { trig = '.pp', format = 'console.log({stm})' },
   snip(
     'lambda',
     fmt('({param}) => {body}', {
@@ -44,4 +44,5 @@ return {
       }),
     })
   ),
+  snip('ll', fmt('=> {}', { ins(0) })),
 }

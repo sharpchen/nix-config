@@ -70,9 +70,4 @@ return {
     'habamax/vim-habamax',
     priority = 1000,
   },
-  {
-    'kungfusheep/mfd.nvim',
-    lazy = false,
-    priority = 1000,
-  },
 }

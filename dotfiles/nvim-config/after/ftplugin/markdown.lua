@@ -12,6 +12,20 @@ vim.keymap.set(
   { buffer = vim.fn.bufnr('%'), desc = 'boldify selection', silent = true }
 )
 
+vim.keymap.set(
+  'n',
+  '<C-s>',
+  [[mzhebi*<Esc>ea*<Esc>`z]],
+  { buffer = vim.fn.bufnr('%'), desc = 'boldify cursor word', silent = true }
+)
+
+vim.keymap.set(
+  'x',
+  '<C-s>',
+  [[mz<Esc>gv<Esc>a*<Esc>gvO<Esc>i*<Esc>`z]],
+  { buffer = vim.fn.bufnr('%'), desc = 'italify selection', silent = true }
+)
+
 local checklist_pattern = '^(%s*[%-%*]) %[([ x])%]'
 vim.keymap.set('n', '<leader>tk', function()
   local line = vim.api.nvim_get_current_line()

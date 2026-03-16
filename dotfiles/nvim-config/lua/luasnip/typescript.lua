@@ -33,5 +33,6 @@ return {
   wrap_ts_stm { trig = '.const', format = 'const {} = {stm}' },
   wrap_ts_stm { trig = '.var', format = 'var {} = {stm}' },
   wrap_ts_stm { trig = '.let', format = 'let {} = {stm}' },
-  wrap_ts_stm { trig = '.wl', format = 'console.log({stm})' },
+  wrap_ts_stm { trig = '.pp', format = 'console.log({stm})' },
+  snip('ll', fmt('=> {}', { ins(0) })),
 }

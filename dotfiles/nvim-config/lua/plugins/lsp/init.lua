@@ -63,18 +63,7 @@ return {
       --   on_init = function(client) lsp.event.disable_semantic(client) end,
       --   filetypes = lsp.config.ft_extend('roslyn_ls', { 'axaml-cs' }),
       -- })
-      lsp.setup('basedpyright', {
-        settings = {
-          pyright = {
-            disableOrganizeImports = true,
-          },
-        },
-        python = {
-          analysis = {
-            ignore = { '*' },
-          },
-        },
-      })
+      lsp.setup('zuban')
       lsp.setup('ruff', {
         on_attach = function(client)
           -- disable this if using basedpyright as language server

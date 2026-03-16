@@ -171,7 +171,7 @@ return {
               ellipsis = false,
               text = function(ctx)
                 return require('utils.const').lsp.completion_kind_icons[ctx.kind]
-                  .. ctx.icon_gap
+                  .. (ctx.icon_gap or '')
                   .. ' '
               end,
               highlight = function(ctx) return 'BlinkCmpKind' .. ctx.kind end,

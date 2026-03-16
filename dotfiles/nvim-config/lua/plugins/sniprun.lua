@@ -4,6 +4,7 @@ return {
   'michaelb/sniprun',
   branch = 'master',
   build = 'sh install.sh 1',
+  enabled = not IsWindows, -- sniprun does not support Windows
   event = 'VeryLazy',
   config = function()
     require('sniprun').setup {
@@ -25,10 +26,40 @@ return {
             extension = '.ps1',
             interpreter = 'pwsh -noprofile -nologo -noninteractive -f',
           },
+          csharp = {
+            supported_filetypes = { 'cs' },
+            interpreter = 'dotnet run --verbosity quiet -p:AllowUnsafeBlocks=true',
+            extension = '.cs',
+            boilerplate_pre = [[
+            using System;
+            using System.Collections.Generic;
+            using System.Linq;
+            using System.Threading.Tasks;
+            using System.IO;
+            using System.Text;
+            using System.Text.Json;
+            using System.Globalization;
+            ]],
+          },
+          fsharp = {
+            supported_filetypes = { 'fsharp' },
+            interpreter = 'dotnet fsi --nologo --exec --utf8output',
+            extension = '.fsx',
+            boilerplate_pre = [[
+            open System;
+            open System.Collections.Generic;
+            open System.Linq;
+            open System.Threading.Tasks;
+            open System.IO;
+            open System.Text;
+            open System.Text.Json;
+            using System.Globalization;
+            ]],
+          },
         },
       },
     }
-    vim.keymap.set({ 'v', 'x' }, '<leader>e', ":'<,'>SnipRun<CR>", { desc = 'sniprun' })
+    vim.keymap.set({ 'v', 'x' }, '<leader>e', ':SnipRun<CR>', { desc = 'sniprun' })
     vim.keymap.set(
       'n',
       '<leader>e',

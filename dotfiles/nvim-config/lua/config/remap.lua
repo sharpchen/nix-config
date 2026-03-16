@@ -167,3 +167,8 @@ vim.keymap.set(
   [[<cmd>tchdir %:h<CR>]],
   { desc = 'change dir to current parent' }
 )
+
+vim.keymap.set('n', '<leader>m', function()
+  vim.cmd.make()
+  if #vim.fn.getqflist() > 0 then vim.cmd.copen() end
+end)

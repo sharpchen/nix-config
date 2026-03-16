@@ -34,17 +34,24 @@ local wrap_cs_stm = require('utils.luasnip').ts_wrap_stm {
 
 return {
   wrap_cs_stm { trig = '.var', format = 'var {} = {stm};' },
-  wrap_cs_stm { trig = '.wl', format = 'Console.WriteLine({stm});' },
+  wrap_cs_stm { trig = '.pp', format = 'Console.WriteLine({stm});' },
+  wrap_cs_stm { trig = '.jj', format = 'string.Join({}, {stm});' },
   wrap_cs_stm {
-    trig = '.foreach',
+    trig = '.fe',
     format = [[
   foreach (var {item} in {stm}) {{
     {}
   }}
   ]],
   },
+  wrap_cs_stm {
+    trig = '.fm',
+    format = [[
+    string.Format({}, {stm})
+  ]],
+  },
   snip(
-    'lambda',
+    'ld',
     fmt('({param}) => {body}', {
       param = ins(1),
       body = oneof(2, {
@@ -53,4 +60,5 @@ return {
       }),
     })
   ),
+  snip('ll', fmt('=> {}', { ins(0) })),
 }

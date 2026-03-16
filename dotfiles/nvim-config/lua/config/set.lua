@@ -178,26 +178,28 @@ vim.opt.diffopt = {
 vim.api.nvim_create_autocmd({ 'DirChanged', 'VimEnter' }, {
   callback = function(args)
     local cwd = vim.uv.cwd()
+    local should_change_dir = cwd and cwd:find('playground') ~= nil
+
+    if args.event == 'VimEnter' then vim.opt.autochdir = should_change_dir end
 
     if args.event == 'DirChanged' then vim.notify('DirChanged to ' .. cwd) end
 
-    if cwd and cwd:find('playground') then
-      vim.opt.autochdir = true
-    else
-      vim.opt.autochdir = false
-    end
+    local use_global_compiler = args.event == 'VimEnter' and not vim.opt.autochdir
 
-    if vim.fs.root(0, function(name, _) return name:match('%.%w+proj$') ~= nil end) then
-      vim.g.dotnet_errors_only = true
-      vim.g.dotnet_show_project_file = false
-      vim.cmd.compiler { bang = true, 'dotnet' }
-    end
+    Env.set_compiler {
+      buf = args.buf,
+      global = use_global_compiler,
+    }
+  end,
+})
 
-    if
-      vim.fs.root(0, function(name, _) return name:match('tsconfig%.json$') ~= nil end)
-    then
-      vim.g.tsc_makeprg = 'npx tsc --noEmit'
-      vim.cmd.compiler { bang = true, 'tsc' }
+vim.api.nvim_create_autocmd('BufEnter', {
+  callback = function(args)
+    if vim.opt.autochdir then
+      Env.set_compiler {
+        buf = args.buf,
+        global = false,
+      }
     end
   end,
 })
@@ -287,3 +289,26 @@ vim.api.nvim_create_user_command('Readonly', function(args)
     { desc = 'scroll up', remap = true, buffer = args.buf }
   )
 end, { desc = 'make current buffer readonly' })
+
+if (vim.env.TERM_PROGRAM or ''):lower():match('wezterm') then
+  vim.api.nvim_create_autocmd({ 'VimEnter', 'ColorScheme' }, {
+    callback = function()
+      local highlight = require('utils.static').highlight
+      vim.fn.chansend(
+        vim.v.stderr,
+        string.format(
+          '\x1b]1337;SetUserVar=NVIM_COLO=%s\a',
+          vim.base64.encode(string.format('#%x', highlight.get('Normal').bg))
+        )
+      )
+    end,
+  })
+  vim.api.nvim_create_autocmd({ 'VimLeavePre' }, {
+    callback = function()
+      vim.fn.chansend(
+        vim.v.stderr,
+        string.format('\x1b]1337;SetUserVar=NVIM_LEAVE=%s\a', vim.base64.encode('foo'))
+      )
+    end,
+  })
+end

@@ -6,7 +6,14 @@ return {
     ft = 'qf',
     ---@module "quicker"
     ---@type quicker.SetupOptions
-    opts = {},
+    opts = {
+      opts = {
+        wrap = true,
+      },
+      highlight = {
+        lsp = false,
+      },
+    },
   },
   {
     'kevinhwang91/nvim-bqf',

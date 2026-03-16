@@ -27,6 +27,6 @@ end
 local now = os.date('*t') --[[@as std.osdate]]
 
 vim.cmd.colo(
-  now.hour > 7 and now.hour < 17 and random { 'xamabah', 'Eva-Light', 'mfd-paper' }
+  now.hour > 7 and now.hour < 17 and random { 'xamabah', 'Eva-Light' }
     or random { 'Eva-Dark', 'habamax', 'vscode' }
 )

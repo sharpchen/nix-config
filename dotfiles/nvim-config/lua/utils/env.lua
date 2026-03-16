@@ -51,4 +51,25 @@ function M.nix_store_query(pkg)
   return bash_cmd(([[nix-store -q --outputs "$(type -fP %s)"]]):format(pkg))
 end
 
+---@param opts { pattern: string, buf: integer }
+function M.has_root(opts)
+  opts.buf = opts.buf or 0
+  return vim.fs.root(
+    opts.buf,
+    function(name, _) return name:match(opts.pattern) ~= nil end
+  ) ~= nil
+end
+
+---@param opts { buf: integer, global: boolean }
+function M.set_compiler(opts)
+  if M.has_root { pattern = '%.%w+proj$', buf = opts.buf } then
+    vim.g.dotnet_errors_only = true
+    vim.g.dotnet_show_project_file = false
+    vim.cmd.compiler { bang = opts.global, 'dotnet' }
+  elseif M.has_root { pattern = 'tsconfig%.json$', buf = opts.buf } then
+    vim.g.tsc_makeprg = 'npx tsc --noEmit'
+    vim.cmd.compiler { bang = opts.global, 'tsc' }
+  end
+end
+
 return M

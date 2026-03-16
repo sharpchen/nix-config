@@ -83,4 +83,21 @@ return {
       { ins(1, 'sh'), ins(2, 'title') }
     )
   ),
+  snip(
+    'math-block',
+    fmta(
+      [[
+  $$
+  \begin{<layout>}
+  <>
+  \end{<layout>}
+  $$
+  ]],
+      {
+        ins(0),
+        layout = oneof(1, { text('gather'), text('align') }),
+      },
+      { repeat_duplicates = true }
+    )
+  ),
 }
