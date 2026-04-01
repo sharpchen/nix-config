@@ -13,6 +13,9 @@
     ck = checkout
     mod = submodule
     open = "!gio open $(git remote get-url origin | sed -E \"s|git@([^:]+):|https://\\1/|; s|\\.git$||\")"
+    exclude = update-index --assume-unchanged
+    include = update-index --no-assume-unchanged
+    list-excluded = "!git ls-files -v | grep '^h' | cut -c 3-"
 [url "git@github.com:"]
     insteadOf = https://github.com/
 [fetch]
