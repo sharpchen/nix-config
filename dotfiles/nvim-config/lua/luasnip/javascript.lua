@@ -35,9 +35,12 @@ return {
   wrap_js_stm { trig = '.let', format = 'let {} = {stm}' },
   wrap_js_stm { trig = '.pp', format = 'console.log({stm})' },
   snip(
-    'lambda',
-    fmt('({param}) => {body}', {
-      param = ins(1),
+    'ld',
+    fmt('{paramlist} => {body}', {
+      paramlist = oneof(1, {
+        sn(nil, fmt('{}', { ins(1) })),
+        sn(nil, fmt('({})', { ins(1) })),
+      }),
       body = oneof(2, {
         ins(nil),
         sn(nil, fmta('{ <> }', { ins(1) })),
@@ -45,4 +48,6 @@ return {
     })
   ),
   snip('ll', fmt('=> {}', { ins(0) })),
+  snip('ge', fmt('>= {}', { ins(0) })),
+  snip('le', fmt('<= {}', { ins(0) })),
 }

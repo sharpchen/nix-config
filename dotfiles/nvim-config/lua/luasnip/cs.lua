@@ -52,13 +52,18 @@ return {
   },
   snip(
     'ld',
-    fmt('({param}) => {body}', {
-      param = ins(1),
+    fmt('{paramlist} => {body}', {
+      paramlist = oneof(1, {
+        sn(nil, fmt('{}', { ins(1) })),
+        sn(nil, fmt('({})', { ins(1) })),
+      }),
       body = oneof(2, {
-        sn(nil, fmta('{ <> }', { ins(1) })),
         ins(nil),
+        sn(nil, fmta('{ <> }', { ins(1) })),
       }),
     })
   ),
   snip('ll', fmt('=> {}', { ins(0) })),
+  snip('ge', fmt('>= {}', { ins(0) })),
+  snip('le', fmt('<= {}', { ins(0) })),
 }

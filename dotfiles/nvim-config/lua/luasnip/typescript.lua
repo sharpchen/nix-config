@@ -34,5 +34,20 @@ return {
   wrap_ts_stm { trig = '.var', format = 'var {} = {stm}' },
   wrap_ts_stm { trig = '.let', format = 'let {} = {stm}' },
   wrap_ts_stm { trig = '.pp', format = 'console.log({stm})' },
+  snip(
+    'ld',
+    fmt('{paramlist} => {body}', {
+      paramlist = oneof(1, {
+        sn(nil, fmt('{}', { ins(1) })),
+        sn(nil, fmt('({})', { ins(1) })),
+      }),
+      body = oneof(2, {
+        ins(nil),
+        sn(nil, fmta('{ <> }', { ins(1) })),
+      }),
+    })
+  ),
   snip('ll', fmt('=> {}', { ins(0) })),
+  snip('ge', fmt('>= {}', { ins(0) })),
+  snip('le', fmt('<= {}', { ins(0) })),
 }

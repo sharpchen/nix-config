@@ -64,7 +64,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
     vim.cmd('match WhiteSpaceMol / /')
     vim.api.nvim_set_hl(0, 'WhiteSpaceMol', {
       fg = string.format(
-        '#%x',
+        '#%06x',
         vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 16777215
       ),
     })
@@ -290,25 +290,15 @@ vim.api.nvim_create_user_command('Readonly', function(args)
   )
 end, { desc = 'make current buffer readonly' })
 
-if (vim.env.TERM_PROGRAM or ''):lower():match('wezterm') then
-  vim.api.nvim_create_autocmd({ 'VimEnter', 'ColorScheme' }, {
+if not vim.g.started_by_firenvim then
+  vim.api.nvim_create_autocmd({ 'UIEnter', 'ColorScheme' }, {
     callback = function()
-      local highlight = require('utils.static').highlight
-      vim.fn.chansend(
-        vim.v.stderr,
-        string.format(
-          '\x1b]1337;SetUserVar=NVIM_COLO=%s\a',
-          vim.base64.encode(string.format('#%x', highlight.get('Normal').bg))
-        )
-      )
+      local bg = require('utils.static').highlight.get('Normal').bg
+      if bg then io.write(string.format('\x1b]11;%s\a', string.format('#%06x', bg))) end
     end,
   })
-  vim.api.nvim_create_autocmd({ 'VimLeavePre' }, {
-    callback = function()
-      vim.fn.chansend(
-        vim.v.stderr,
-        string.format('\x1b]1337;SetUserVar=NVIM_LEAVE=%s\a', vim.base64.encode('foo'))
-      )
-    end,
+
+  vim.api.nvim_create_autocmd('UILeave', {
+    callback = function() io.write('\x1b]111\a') end,
   })
 end

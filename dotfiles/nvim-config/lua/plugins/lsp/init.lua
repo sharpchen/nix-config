@@ -110,7 +110,10 @@ return {
     'seblyng/roslyn.nvim',
     ft = { 'cs', 'axaml-cs' },
     enabled = Env.has_dotnet
-      and vim.fn.executable('Microsoft.CodeAnalysis.LanguageServer') == 1,
+      and (
+        vim.fn.executable('roslyn-language-server') == 1
+        or vim.fn.executable('Microsoft.CodeAnalysis.LanguageServer') == 1
+      ),
     config = function()
       local lsp = require('utils.lsp')
 
@@ -140,6 +143,7 @@ return {
     'Decodetalkers/csharpls-extended-lsp.nvim',
     enabled = Env.has_dotnet and vim.fn.executable('csharp-ls') == 1,
     ft = { 'cs', 'axaml-cs' },
+    dependencies = { 'neovim/nvim-lspconfig' },
     config = function()
       if vim.lsp.is_enabled('csharp_ls') then
         require('csharpls_extended').buf_read_cmd_bind()
@@ -148,6 +152,7 @@ return {
   },
   {
     'yioneko/nvim-vtsls',
+    dependencies = { 'neovim/nvim-lspconfig' },
     ft = { 'typescript', 'javascript' },
     cond = require('utils.lsp').use_vtsls,
   },

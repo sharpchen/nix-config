@@ -29,7 +29,7 @@ return {
         end
 
         -- Navigation
-        map('n', ']h', function()
+        map('n', ']c', function()
           if vim.wo.diff then
             vim.cmd.normal { ']c', bang = true }
           else
@@ -37,7 +37,7 @@ return {
           end
         end, { desc = 'Navigate to next hunk' })
 
-        map('n', '[h', function()
+        map('n', '[c', function()
           if vim.wo.diff then
             vim.cmd.normal { '[c', bang = true }
           else
