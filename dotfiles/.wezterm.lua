@@ -1,6 +1,6 @@
 local wezterm = require('wezterm') --[[@as Wezterm]]
 local mux = wezterm.mux
-local act = wezterm.action
+local action = wezterm.action
 local config = wezterm.config_builder()
 
 local env = {
@@ -17,11 +17,11 @@ local function random(arr)
 end
 
 local font = random {
-  'JetBrains Mono NL',
-  'SF Mono',
-  'Cascadia Mono',
   'IBM Plex Mono',
-  'Roboto Mono',
+  -- 'SF Mono',
+  -- 'Cascadia Mono',
+  -- 'Roboto Mono',
+  -- 'JetBrains Mono NL',
 }
 
 local function regular()
@@ -46,18 +46,43 @@ local function regular()
       and random { 'kanagawabones', 'rose-pine-moon' }
     or random { 'rose-pine-dawn' }
 
-  if config.color_scheme == 'rose-pine-moon' then
-    config.colors = {
-      selection_bg = '#d2d0e7',
-      selection_fg = '#26233a',
-    }
-  elseif config.color_scheme == 'rose-pine-dawn' then
-    config.colors = {
-      selection_bg = '#575279',
-      selection_fg = '#faf4ed',
-    }
-  end
-
+  local colorscheme = wezterm.color.get_builtin_schemes()[config.color_scheme] or {}
+  local blue = colorscheme.ansi[5]
+  local white = colorscheme.ansi[8]
+  local black = colorscheme.ansi[1]
+  config.colors = {
+    selection_bg = white,
+    selection_fg = black,
+    tab_bar = {
+      background = blue,
+      active_tab = {
+        bg_color = blue,
+        fg_color = wezterm.gui and wezterm.gui.get_appearance():find('Dark') and white
+          or colorscheme.background,
+        intensity = 'Bold',
+      },
+      inactive_tab = {
+        bg_color = blue,
+        fg_color = colorscheme.background,
+        intensity = 'Half',
+      },
+      inactive_tab_hover = {
+        bg_color = colorscheme.background,
+        fg_color = white,
+        intensity = 'Half',
+      },
+      new_tab = {
+        bg_color = blue,
+        fg_color = white,
+        intensity = 'Half',
+      },
+      new_tab_hover = {
+        bg_color = blue,
+        fg_color = white,
+        intensity = 'Bold',
+      },
+    },
+  }
   config.default_prog = { 'pwsh', '--nologo' }
   config.animation_fps = 60
   config.window_padding = {
@@ -80,78 +105,79 @@ local function regular()
   config.cursor_blink_ease_in = 'Constant'
   config.cursor_blink_ease_out = 'Constant'
 end
+
 local function keymaps()
   config.leader = { key = 's', mods = 'CTRL', timeout_miliseconds = 2000 }
   config.keys = {
     {
       mods = 'LEADER',
       key = 'a',
-      action = wezterm.action.SpawnTab('CurrentPaneDomain'),
+      action = action.SpawnTab('CurrentPaneDomain'),
     },
     {
       mods = 'LEADER',
       key = 'c',
-      action = wezterm.action.CloseCurrentPane { confirm = true },
+      action = action.CloseCurrentPane { confirm = true },
     },
     {
       mods = 'LEADER',
       key = 'b',
-      action = wezterm.action.ActivateTabRelative(-1),
+      action = action.ActivateTabRelative(-1),
     },
     {
       mods = 'LEADER',
       key = 'n',
-      action = wezterm.action.ActivateTabRelative(1),
+      action = action.ActivateTabRelative(1),
     },
     {
       mods = 'LEADER',
       key = '\\',
-      action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
+      action = action.SplitHorizontal { domain = 'CurrentPaneDomain' },
     },
     {
       mods = 'LEADER',
       key = '-',
-      action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
+      action = action.SplitVertical { domain = 'CurrentPaneDomain' },
     },
     {
       mods = 'LEADER',
       key = 'h',
-      action = wezterm.action.ActivatePaneDirection('Left'),
+      action = action.ActivatePaneDirection('Left'),
     },
     {
       mods = 'LEADER',
       key = 'j',
-      action = wezterm.action.ActivatePaneDirection('Down'),
+      action = action.ActivatePaneDirection('Down'),
     },
     {
       mods = 'LEADER',
       key = 'k',
-      action = wezterm.action.ActivatePaneDirection('Up'),
+      action = action.ActivatePaneDirection('Up'),
     },
     {
       mods = 'LEADER',
       key = 'l',
-      action = wezterm.action.ActivatePaneDirection('Right'),
+      action = action.ActivatePaneDirection('Right'),
     },
     {
       mods = 'LEADER',
       key = 'LeftArrow',
-      action = wezterm.action.AdjustPaneSize { 'Left', 5 },
+      action = action.AdjustPaneSize { 'Left', 5 },
     },
     {
       mods = 'LEADER',
       key = 'RightArrow',
-      action = wezterm.action.AdjustPaneSize { 'Right', 5 },
+      action = action.AdjustPaneSize { 'Right', 5 },
     },
     {
       mods = 'LEADER',
       key = 'DownArrow',
-      action = wezterm.action.AdjustPaneSize { 'Down', 5 },
+      action = action.AdjustPaneSize { 'Down', 5 },
     },
     {
       mods = 'LEADER',
       key = 'UpArrow',
-      action = wezterm.action.AdjustPaneSize { 'Up', 5 },
+      action = action.AdjustPaneSize { 'Up', 5 },
     },
   }
   config.mouse_bindings = {
@@ -161,72 +187,22 @@ local function keymaps()
       action = wezterm.action_callback(function(window, pane)
         local has_selection = window:get_selection_text_for_pane(pane) ~= ''
         if has_selection then
-          window:perform_action(act.CopyTo('ClipboardAndPrimarySelection'), pane)
-          window:perform_action(act.ClearSelection, pane)
+          window:perform_action(action.CopyTo('ClipboardAndPrimarySelection'), pane)
+          window:perform_action(action.ClearSelection, pane)
         else
-          window:perform_action(act { PasteFrom = 'Clipboard' }, pane)
+          window:perform_action(action { PasteFrom = 'Clipboard' }, pane)
         end
       end),
     },
   }
 end
+
 local function events()
   wezterm.on('gui-startup', function(cmd)
     local tab, pane, window = mux.spawn_window(cmd or {})
     local gui_window = window:gui_window()
     gui_window:maximize()
-    gui_window:perform_action(wezterm.action.ToggleFullScreen, pane)
-  end)
-
-  wezterm.on('user-var-changed', function(window, pane, name, value)
-    if name == 'NVIM_COLO' then
-      pane:inject_output(string.format('\x1b]11;%s\a', value))
-    elseif name == 'NVIM_LEAVE' then
-      pane:inject_output('\x1b]111\a') -- OSC 111 resets background
-    end
-  end)
-
-  wezterm.on('update-right-status', function(window, _)
-    local curr_config = window:effective_config()
-    local colorscheme = wezterm.color.get_builtin_schemes()[curr_config.color_scheme]
-      or {}
-    local blue = colorscheme.ansi[5]
-    local white = colorscheme.ansi[8]
-    window:set_config_overrides {
-      colors = {
-        tab_bar = {
-          background = blue,
-          active_tab = {
-            bg_color = blue,
-            fg_color = wezterm.gui
-                and wezterm.gui.get_appearance():find('Dark')
-                and white
-              or colorscheme.background,
-            intensity = 'Bold',
-          },
-          inactive_tab = {
-            bg_color = blue,
-            fg_color = colorscheme.background,
-            intensity = 'Half',
-          },
-          inactive_tab_hover = {
-            bg_color = colorscheme.background,
-            fg_color = white,
-            intensity = 'Half',
-          },
-          new_tab = {
-            bg_color = blue,
-            fg_color = white,
-            intensity = 'Half',
-          },
-          new_tab_hover = {
-            bg_color = blue,
-            fg_color = white,
-            intensity = 'Bold',
-          },
-        },
-      },
-    }
+    gui_window:perform_action(action.ToggleFullScreen, pane)
   end)
 end
 
