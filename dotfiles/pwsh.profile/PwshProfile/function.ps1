@@ -122,47 +122,39 @@ function daysago {
 }
 
 function play {
-    [CmdletBinding(DefaultParameterSetName = 'Extension')]
+    [CmdletBinding(DefaultParameterSetName = '__AllParameterSets')]
     param (
-        [ValidateScript({ Test-Path -LiteralPath $_ })]
-        [string]$Path,
-        [switch]$Recurse,
+        [Parameter(Position = 0, ValueFromPipelineByPropertyName, ValueFromPipeline)]
+        [Alias('FullName')]
+        [string]$LiteralPath,
+
+        [Parameter(ParameterSetName = 'ByDate')]
         [switch]$ByDate,
-        [switch]$Randomize,
-
-        [Parameter(ParameterSetName = 'Extension')]
-        [ValidateSet('mp4', 'flac', 'mp3')]
-        [string[]]$Extension = 'mp4',
-
-        [Parameter(ParameterSetName = 'Filter')]
-        [SupportsWildcards()]
-        [string]$Filter
+        [Parameter(ParameterSetName = 'Randomize')]
+        [switch]$Randomize
     )
-    begin {
-        $null = Get-Command mpv -ea Stop
 
-        if (-not $Path) {
-            $Path = $PWD.Path
-        }
+    begin {
+        $null = Get-Command mpv -ErrorAction Stop
+        $playlist = [System.Collections.Generic.List[string]]::new()
+    }
+
+    process {
+        $playlist.Add($LiteralPath)
     }
 
     end {
-        switch ($PSCmdlet.ParameterSetName) {
-            'Extension' {
-                $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Include ($Extension | ForEach-Object { "*.$_" })
+        if ($MyInvocation.ExpectingInput) {
+            if ($ByDate) {
+                $playlist = $playlist |
+                    Sort-Object { (Get-Item -LiteralPath $_).CreationTime } -Descending
+            } elseif ($Randomize) {
+                $playlist = $playlist | Sort-Object { Get-Random }
             }
-            'Filter' {
-                $playlist = Get-ChildItem -Path $Path -Recurse:$Recurse -File -Filter $Filter
-            }
+            $null = Start-Job { $input | mpv --force-window --playlist=- } -InputObject $playlist
+        } else {
+            $null = Start-Job { mpv --force-window $args } -ArgumentList $LiteralPath
         }
-
-        if ($ByDate) {
-            $playlist = $playlist | Sort-Object CreationTime -Descending
-        } elseif ($Randomize) {
-            $playlist = $playlist | Sort-Object { Get-Random }
-        }
-
-        $playlist | ForEach-Object FullName | mpv --playlist=-
     }
 }
 
@@ -689,6 +681,8 @@ function ydl {
         [Parameter(ParameterSetName = 'ListFormats')]
         [switch]$ListFormats,
 
+        [switch]$AudioOnly,
+
         [switch]$PassThru
     )
 
@@ -697,6 +691,9 @@ function ydl {
         $flags = @()
         if ($Format) {
             $flags += 'f', $Format
+        }
+        if ($AudioOnly) {
+            $flags += '--extract-audio'
         }
     }
 
