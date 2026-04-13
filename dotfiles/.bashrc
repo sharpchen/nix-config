@@ -21,7 +21,25 @@ alias cls='clear'
 alias now='date "+%Y-%m-%d %H:%M:%S"'
 alias so='source ~/.bashrc'
 alias :q='exit'
-alias hms='home-manager switch --flake ~/.config/home-manager#$USER --option fallback true'
+
+if [[ -e /etc/NIXOS ]]; then
+    hms() {
+        local flake
+        local configBase
+        configBase="$(realpath ~/.config/home-manager)"
+
+        if [[ -n $WSL_DISTRO_NAME ]]; then
+            flake="${configBase}#nixos-wsl"
+        elif type home-manager &>/dev/null; then
+            flake="${configBase}#$USER"
+        fi
+
+        nixos-rebuild switch --flake "${flake}" --option fallback true
+    }
+elif type home-manager &>/dev/null; then
+    alias hms='home-manager switch --flake ~/.config/home-manager#$USER --option fallback true'
+fi
+
 alias lg=lazygit
 alias vim='MINIMAL_NVIM=1 nvim'
 alias v=nvim
