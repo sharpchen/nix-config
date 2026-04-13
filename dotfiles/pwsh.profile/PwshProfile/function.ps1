@@ -1,28 +1,42 @@
 function pinfo {
-    [CmdletBinding(DefaultParameterSetName = 'Attribute')]
     param (
         [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
         [ValidateScript({ Get-Command $_ -ErrorAction Ignore })]
         [string]$Command,
-        [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Positional,
-        [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Pipeline,
-        [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Alias,
-        [Parameter(ParameterSetName = 'Attribute')]
         [switch]$Mandatory,
-        [Parameter(ParameterSetName = 'Attribute')]
         [switch]$ParameterType,
-        [Parameter(ParameterSetName = 'Attribute')]
         [switch]$All,
 
+        [ArgumentCompleter({
+                param (
+                    $commandName,
+                    $parameterName,
+                    $wordToComplete,
+                    $commandAst,
+                    $fakeBoundParameters
+                )
+
+                if ($fakeBoundParameters.ContainsKey('Command')) {
+                    $cmd = Get-Command $fakeBoundParameters['Command']
+                    if ($cmd -is [System.Management.Automation.AliasInfo]) {
+                        $cmd = Get-Command $cmd.Definition
+                    }
+                    $cmd.ParameterSets.Name
+                }
+            })]
         [Parameter(ParameterSetName = 'ParameterSet')]
-        [switch]$ParameterSet
+        [string]$ParameterSet
     )
 
     begin {
-        $info = @{}
+        $cmd = Get-Command $Command
+        if ($cmd -is [System.Management.Automation.AliasInfo]) {
+            $cmd = Get-Command $cmd.Definition
+        }
+        $eachSet = @()
         $CommonParams = @(
             'Verbose',
             'Debug',
@@ -42,20 +56,28 @@ function pinfo {
     }
 
     end {
-        $cmd = Get-Command $Command
-        switch ($PSCmdlet.ParameterSetName) {
-            'Attribute' {
-                $cmd.Parameters.GetEnumerator() | Where-Object { $_.Value.Name -notin $CommonParams } | ForEach-Object {
-                    $name, $attr = $_.Value.Name, $_.Value.Attributes
-                    $pipe = [System.Collections.Generic.List[string]]@()
-                    $paramInfo = [pscustomobject]@{}
+        if ($ParameterSet) {
+            $parameterSets = $cmd.ParameterSets | Where-Object Name -EQ $ParameterSet
+        } else {
+            $parameterSets = $cmd.ParameterSets
+        }
+        foreach ($pset in $parameterSets) {
+            $childParameters = [System.Collections.Generic.List[pscustomobject]]@()
+            $pset.Parameters | Where-Object { $_.Name -notin $CommonParams } |
+                ForEach-Object {
+                    $name, $attr = $_.Name, $_.Attributes
+                    $pipe = @()
+                    $paramInfo = [pscustomobject]@{
+                        Name         = $name
+                        ParameterSet = "$($cmd.Name)::$($pset.Name)"
+                    }
 
                     if ($Pipeline -or $All) {
                         if ($attr.ValueFromPipeline) {
-                            $pipe.Add('Value')
+                            $pipe += 'Value'
                         }
                         if ($attr.ValueFromPipelineByPropertyName) {
-                            $pipe.Add('Property')
+                            $pipe += 'Property'
                         }
                         $paramInfo | Add-Member -MemberType NoteProperty -Name Pipeline -Value $pipe
                     }
@@ -70,39 +92,35 @@ function pinfo {
                         $paramInfo | Add-Member -MemberType NoteProperty -Name Mandatory -Value $attr.Mandatory
                     }
                     if ($ParameterType -or $All) {
-                        $paramInfo | Add-Member -MemberType NoteProperty -Name ParameterType -Value $_.Value.ParameterType.FullName
+                        $paramInfo | Add-Member -MemberType NoteProperty -Name ParameterType -Value $_.ParameterType.FullName
                     }
 
-                    $info.Add($name, $paramInfo)
+                    $childParameters.Add($paramInfo)
                 }
-                $format = @{
-                    Property = @(
-                        @{ Name = 'Parameter'; Expression = 'Key' }
-                        if ($Positional -or $All) {
-                            @{ Name = 'Position'; Expression = { $_.Value.Position } }
-                        }
-                        if ($Mandatory -or $All) {
-                            @{ Name = 'Mandatory'; Expression = { $_.Value.Mandatory } }
-                        }
-                        if ($Pipeline -or $All) {
-                            @{ Name = 'Pipeline'; Expression = { $_.Value.Pipeline -join ', ' } }
-                        }
-                        if ($Alias -or $All) {
-                            @{ Name = 'Alias'; Expression = { $_.Value.Alias -join ', ' } }
-                        }
-                        if ($ParameterType -or $All) {
-                            @{ Name = 'ParameterType'; Expression = { $_.Value.ParameterType } }
-                        }
-                    )
-                }
-                $info.GetEnumerator() | Format-Table @format -AutoSize
-            }
-            default {
-                # TODO: group by ParameterSetName
-                throw [System.NotImplementedException]::new()
-                $cmd.Parameters.GetEnumerator() | Group-Object { $_.Value.ParameterSets.Keys }
-            }
+
+            $eachSet += $childParameters
         }
+        $format = @{
+            Property = @(
+                @{ Name = 'Parameter'; Expression = { $_.Name } }
+                if ($Positional -or $All) {
+                    @{ Name = 'Position'; Expression = { $_.Position } }
+                }
+                if ($Mandatory -or $All) {
+                    @{ Name = 'Mandatory'; Expression = { $_.Mandatory } }
+                }
+                if ($Pipeline -or $All) {
+                    @{ Name = 'Pipeline'; Expression = { $_.Pipeline -join ', ' } }
+                }
+                if ($Alias -or $All) {
+                    @{ Name = 'Alias'; Expression = { $_.Alias -join ', ' } }
+                }
+                if ($ParameterType -or $All) {
+                    @{ Name = 'ParameterType'; Expression = { $_.ParameterType } }
+                }
+            )
+        }
+        $eachSet | ForEach-Object { $_ } | Format-Table @format -GroupBy ParameterSet -AutoSize
     }
 }
 
@@ -160,9 +178,9 @@ function play {
 
 function dnpack {
     begin {
-        $null = Get-Command dotnet -ea Stop
-        $null = Get-Command fzf -ea Stop
-        $null = Get-Command tr -ea Stop
+        $null = Get-Command dotnet -ErrorAction Stop
+        $null = Get-Command fzf -ErrorAction Stop
+        $null = Get-Command tr -ErrorAction Stop
     }
 
     end {
@@ -187,16 +205,16 @@ function pmclean {
 
     switch -Exact ($PackageManager) {
         'scoop' {
-            $null = Get-Command scoop -ea Stop
+            $null = Get-Command scoop -ErrorAction Stop
             scoop cleanup *
             scoop cache rm *
         }
         'nuget' {
-            $null = Get-Command dotnet -ea Stop
+            $null = Get-Command dotnet -ErrorAction Stop
             dotnet nuget locals all --clear
         }
         'npm' {
-            $null = Get-Command npm -ea Stop
+            $null = Get-Command npm -ErrorAction Stop
             npm cache clean --force
         }
         'pnpm' {
@@ -207,15 +225,12 @@ function pmclean {
             $null = Get-Command nh -ErrorAction Stop
             nh clean all
         }
-        default {
-            Write-Warning "Cannot handle $PackageManager"
-        }
     }
 }
 
 function p {
     begin {
-        $null = Get-Command fzf -ea Stop
+        $null = Get-Command fzf -ErrorAction Stop
     }
     end {
         $folders = @(Get-ChildItem '~/projects' -Directory)
@@ -337,17 +352,28 @@ function all {
     }
 }
 
-function except {
+function exclude {
     param (
         [Parameter(ValueFromPipeline)]
         [psobject]$InputObject,
+
         [Parameter(Position = 1, Mandatory)]
-        [psobject[]]$Exclude
+        [psobject]$Exclude
     )
 
+    begin {
+        $excludeFilter = $Exclude -is [scriptblock]
+    }
+
     process {
-        if ($_ -cnotin $Exclude) {
-            $_
+        if ($excludeFilter) {
+            if (-not $Exclude.InvokeWithContext($null, [psvariable]::new('_', $_))) {
+                $_
+            }
+        } else {
+            if ($_ -cnotin $Exclude) {
+                $_
+            }
         }
     }
 }
@@ -356,13 +382,29 @@ function first {
     param (
         [Parameter(ValueFromPipeline)]
         [psobject]$InputObject,
+
+        [ValidateScript({ ($_ -is [int] -and $_ -ge 0) -or $_ -is [scriptblock] })]
         [Parameter(Position = 1, Mandatory)]
-        [scriptblock]$Condition
+        [psobject]$Selector
     )
+
+    begin {
+        $useCount = $Selector -is [int]
+        $count = 0
+    }
+
     process {
-        if ($Condition.InvokeWithContext($null, [psvariable]::new('_', $_))) {
-            $_
-            break
+        if ($useCount) {
+            if ($count++ -lt $Selector) {
+                $_
+            } else {
+                break
+            }
+        } else {
+            if ($Selector.InvokeWithContext($null, [psvariable]::new('_', $_))) {
+                $_
+                break
+            }
         }
     }
 }
@@ -379,8 +421,35 @@ function reverse {
 }
 
 function string {
+    [CmdletBinding(DefaultParameterSetName = 'FormatSpecifier')]
+    param (
+        [Parameter(ValueFromPipeline)]
+        $InputObject,
+
+        [Parameter(Position = 0, ParameterSetName = 'FormatSpecifier')]
+        [string]$FormatSpecifier,
+
+        [Parameter(ParameterSetName = 'Format')]
+        [string]$Format
+    )
+
+    begin {
+        $ErrorActionPreference = 'Stop'
+    }
+
     process {
-        $_.ToString()
+        switch($PSCmdlet.ParameterSetName) {
+            FormatSpecifier {
+                if ($PSBoundParameters.ContainsKey('FormatSpecifier')) {
+                    $InputObject.ToString($FormatSpecifier)
+                } else {
+                    $InputObject.ToString()
+                }
+            }
+            Format {
+                $Format -f $InputObject
+            }
+        }
     }
 }
 
@@ -408,6 +477,22 @@ function type {
 function typename {
     process {
         $_.GetType().FullName
+    }
+}
+
+function default {
+    param(
+        [Parameter(ValueFromPipeline)]
+        $InputObject,
+        [Parameter(Mandatory, Position = 0)]
+        $Default
+    )
+    process {
+        if ($null -eq $_) {
+            $Default
+        } else {
+            $_
+        }
     }
 }
 
@@ -485,7 +570,7 @@ function unpack {
     param (
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [Parameter(Position = 0, Mandatory)]
-        [string]$Path,
+        [string]$LiteralPath,
 
         [ValidateScript({ Test-Path $_ -IsValid })]
         [Parameter(Position = 1, ParameterSetName = 'Destination')]
@@ -501,14 +586,14 @@ function unpack {
     end {
         switch ($PSCmdlet.ParameterSetName) {
             'Direct' {
-                & $tar xf $Path --cd $PWD
+                & $tar xf $LiteralPath --cd $PWD
             }
             'Destination' {
                 if (-not (Test-Path $Destination)) {
                     $null = New-Item -ItemType Directory -Path $Destination
                 }
 
-                & $tar xf $Path --cd $Destination
+                & $tar xf $LiteralPath --cd $Destination
 
                 if ($LASTEXITCODE -ne 0) {
                     Remove-Item $Destination -Recurse -Force
@@ -517,7 +602,7 @@ function unpack {
             default {
                 $rootEntries = 0
                 $prevFirstSegment = $null
-                $null = & $tar tf $Path |
+                $null = & $tar tf $LiteralPath |
                     Where-Object { $_ -ne './' } |
                     ForEach-Object {
                         # two kinds of folders tar can list, depending on how the archive was created
@@ -540,13 +625,13 @@ function unpack {
                     } | Select-Object -First 1 # terminate pipeline early
 
                 if ($rootEntries -gt 1) {
-                    $basename = (Get-Item $Path).BaseName
+                    $basename = (Get-Item $LiteralPath).BaseName
                     if (-not (Test-Path $basename -PathType Container)) {
                         $null = New-Item -ItemType Directory -Path $basename
                     }
-                    & $tar xf $Path --cd $basename
+                    & $tar xf $LiteralPath --cd $basename
                 } else {
-                    & $tar xf $Path --cd $PWD
+                    & $tar xf $LiteralPath --cd $PWD
                 }
             }
         }
@@ -558,7 +643,7 @@ function cptree {
         [Alias('Root')]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 0, Mandatory)]
-        [string]$Path,
+        [string]$LiteralPath,
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 1, Mandatory)]
         [string]$Destination,
@@ -567,7 +652,7 @@ function cptree {
     )
 
     begin {
-        $root = Convert-Path $Path
+        $root = Convert-Path $LiteralPath
         $dest = Convert-Path $Destination
         if (-not $ExcludeRoot) {
             $dest = Join-Path $dest (Split-Path $root -Leaf)

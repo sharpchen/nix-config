@@ -41,7 +41,20 @@ if (Get-Command nix-store -ErrorAction Ignore) {
     }
 }
 
-if (Get-Command 'home-manager' -ErrorAction Ignore) {
+if ($IsNixOS) {
+    function hms {
+        $configBase = (Resolve-Path '~/.config/home-manager').Path
+        if ($env:WSL_DISTRO_NAME) {
+            $flake = "$($configBase)#nixos-wsl"
+        } else {
+            $flake = "$($configBase)#$($env:USER)"
+        }
+        nixos-rebuild switch --flake $flake `
+            --option substituters 'https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store' `
+            --option fallback true `
+            @args
+    }
+} elseif (Get-Command home-manager -ErrorAction SilentlyContinue) {
     function hms {
         home-manager switch --flake ((Resolve-Path '~/.config/home-manager').Path + '#' + $env:USER) `
             --option substituters 'https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store' `

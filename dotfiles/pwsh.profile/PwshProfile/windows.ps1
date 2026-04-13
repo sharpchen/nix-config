@@ -9,22 +9,22 @@ function which {
 function vs {
     param (
         [ValidateScript({ Test-Path -LiteralPath $_ })]
-        [string]$Path
+        [string]$LiteralPath
     )
 
     begin {
-        if (-not (Get-Command devenv -ea Ignore)) {
-            $null = Get-Command vswhere -ea Stop
+        if (-not (Get-Command devenv -ErrorAction Ignore)) {
+            $null = Get-Command vswhere -ErrorAction Stop
         }
-        if (-not $Path) {
-            $Path = $PWD.ProviderPath
+        if (-not $LiteralPath) {
+            $LiteralPath = $PWD.ProviderPath
         }
     }
 
     end {
-        $sln = Get-ChildItem $Path -Filter *.sln
-        $slnx = Get-ChildItem $Path -Filter *.slnx
-        $proj = Get-ChildItem $Path -Filter *.*proj
+        $sln = Get-ChildItem $LiteralPath -Filter *.sln
+        $slnx = Get-ChildItem $LiteralPath -Filter *.slnx
+        $proj = Get-ChildItem $LiteralPath -Filter *.*proj
 
         if ($slnx) {
             $file = $slnx | Select-Object -First 1
@@ -33,11 +33,11 @@ function vs {
         } elseif ($proj) {
             $file = $proj | Select-Object -First 1
         } else {
-            Write-Warning "$($Path.FullName) contains no *proj or *.sln or *.slnx"
+            Write-Warning "$($LiteralPath.FullName) contains no *proj or *.sln or *.slnx"
             return
         }
 
-        if (Get-Command devenv -ea Ignore) {
+        if (Get-Command devenv -ErrorAction Ignore) {
             devenv $file.FullName
         } else {
             $devenv = (vswhere -latest -property productPath)
@@ -48,20 +48,20 @@ function vs {
 
 function vdcompact {
     param (
-        [ValidateScript({ (Test-Path -LiteralPath $_) })]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [ValidateScript({ (Split-Path $_ -Extension) -eq '.vhdx' })]
         [Parameter(Position = 0)]
-        [string]$Path
+        [string]$LiteralPath
     )
     begin {
-        $null = Get-Command diskpart -CommandType Application -ea Stop
-        $Path = Resolve-Path $Path
+        $null = Get-Command diskpart -CommandType Application -ErrorAction Stop
+        $path = Resolve-Path $LiteralPath
     }
     end {
         $tempScript = New-TemporaryFile
         try {
             @"
-            select vdisk file=`"$Path`"
+            select vdisk file=`"$path`"
             compact vdisk
 "@ > $tempScript
             diskpart /s $tempScript.FullName
@@ -156,15 +156,16 @@ function trash {
         [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateScript({ Test-Path -LiteralPath $_ })]
         [Alias('FullName')]
-        [string]$Path
+        [string]$LiteralPath
     )
     begin {
         Add-Type -AssemblyName Microsoft.VisualBasic
     }
     process {
-        if (Test-Path -LiteralPath $Path -PathType Leaf) {
+        $abs = Convert-Path $LiteralPath -ErrorAction Continue
+        if (Test-Path -LiteralPath $LiteralPath -PathType Leaf) {
             [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
-        } elseif  (Test-Path -LiteralPath $Path -PathType Container) {
+        } elseif  (Test-Path -LiteralPath $LiteralPath -PathType Container) {
             [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
         }
     }
@@ -235,10 +236,10 @@ function rd {
     param (
         [Parameter(Position = 1, Mandatory)]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
-        [string]$Path
+        [string]$LiteralPath
     )
     begin {
-        $target = Resolve-Path $Path
+        $target = Resolve-Path $LiteralPath
     }
     end {
         $empty = New-Item -ItemType Directory -Path (Join-Path temp:/ (New-Guid))

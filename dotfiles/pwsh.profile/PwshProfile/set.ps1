@@ -43,7 +43,9 @@ Set-PSReadLineOption -AddToHistoryHandler {
 }
 
 $global:PSDefaultParameterValues = @{
-    'Update-Help:UICulture' = 'en-US'
+    'Update-Help:UICulture'            = 'en-US'
+    'Update-Help:ProgressAction'       = 'SilentlyContinue'
+    'Invoke-WebRequest:ProgressAction' = 'SilentlyContinue'
 }
 
 function prompt {

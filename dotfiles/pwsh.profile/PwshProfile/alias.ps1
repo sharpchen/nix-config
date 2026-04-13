@@ -75,7 +75,7 @@ function so {
     Import-Module PwshProfile -Scope Global -Force -DisableNameChecking
 }
 
-if (Get-Command yazi -ea Ignore) {
+if (Get-Command yazi -ErrorAction Ignore) {
     function y {
         $tmp = [System.IO.Path]::GetTempFileName()
         yazi $args --cwd-file="$tmp"
