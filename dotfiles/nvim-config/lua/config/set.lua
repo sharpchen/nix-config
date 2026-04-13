@@ -6,34 +6,6 @@ elseif IsLinux then
   require('config.linux')
 end
 
--- line number
-vim.opt.nu = true
-vim.opt.rnu = true
-
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true -- use space as indentation
-vim.opt.smartindent = true
-
-vim.opt.wrap = false
-
-vim.opt.swapfile = false
-vim.opt.backup = false
--- vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir'
-vim.opt.undofile = true
-
-vim.opt.conceallevel = 0 -- do not hide identifiers with highlight group with conceal=true
-
-vim.opt.hlsearch = false -- disable search result highlight
-vim.opt.incsearch = true
-vim.opt.smartcase = true
-vim.opt.ignorecase = true
-
-vim.opt.termguicolors = true
-vim.opt.exrc = true
-
-vim.opt.scrolloff = 8
 vim.opt.signcolumn = 'yes'
 vim.opt.isfname:append('@-@')
 vim.opt.guicursor =
@@ -41,10 +13,8 @@ vim.opt.guicursor =
 
 if vim.fn.executable('rg') == 1 then vim.opt.grepprg = 'rg --vimgrep --pcre2 ' end
 vim.opt.spell = true
-vim.opt.spelloptions = 'camel'
+vim.opt.spelloptions:append { 'camel', 'noplainbuffer' }
 vim.opt.spelllang:append { 'cjk' } -- disable spellcheck for East Asian characters
-
-vim.opt.showmode = false
 
 -- render listchars on colorcolumn loaded
 -- local listchars = [[nbsp:␣,eol:↵,space:·,tab:» ]]
@@ -54,7 +24,7 @@ vim.o.listchars = listchars
 vim.cmd([[2match WhiteSpaceBol /^ \+/]])
 vim.cmd('match WhiteSpaceMol / /')
 vim.api.nvim_set_hl(0, 'WhiteSpaceMol', {
-  fg = string.format('#%x', vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 16777215),
+  fg = string.format('#%06x', vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 0xFFFFFF),
 })
 vim.api.nvim_create_autocmd('ColorScheme', {
   callback = function()
@@ -65,7 +35,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
     vim.api.nvim_set_hl(0, 'WhiteSpaceMol', {
       fg = string.format(
         '#%06x',
-        vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 16777215
+        vim.api.nvim_get_hl(0, { name = 'Normal' }).bg or 0xFFFFFF
       ),
     })
   end,
@@ -294,11 +264,26 @@ if not vim.g.started_by_firenvim then
   vim.api.nvim_create_autocmd({ 'UIEnter', 'ColorScheme' }, {
     callback = function()
       local bg = require('utils.static').highlight.get('Normal').bg
-      if bg then io.write(string.format('\x1b]11;%s\a', string.format('#%06x', bg))) end
+      if bg then
+        vim.api.nvim_ui_send(string.format('\x1b]11;%s\a', string.format('#%06x', bg)))
+      end
     end,
   })
 
-  vim.api.nvim_create_autocmd('UILeave', {
-    callback = function() io.write('\x1b]111\a') end,
+  vim.api.nvim_create_autocmd('VimLeavePre', {
+    callback = function() vim.api.nvim_ui_send('\x1b]111\a') end,
   })
 end
+
+function _findfunc(arglead)
+  local files = vim.fn.systemlist('fd --type file --full-path --color never')
+
+  local matches = vim.fn.matchfuzzy(
+    files,
+    arglead,
+    { text_cb = function(s) return vim.fs.basename(s) end }
+  )
+  return #matches > 0 and matches or files
+end
+
+vim.o.findfunc = 'v:lua._findfunc'

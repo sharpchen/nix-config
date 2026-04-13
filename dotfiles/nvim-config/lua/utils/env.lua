@@ -19,11 +19,14 @@ _G.HasNix = M.has_nix
 _G.HasScoop = M.has_scoop
 _G.IsWSL = M.is_wsl
 
+local now = os.date('*t') --[[@as std.osdate]]
+M.light = now.hour > 7 and now.hour < 17
 M.new_line = M.is_windows and '\r\n' or '\n'
 
 ---generate a command args array for running on new bash process
 ---@param cmd string the direct command to run within bash
 ---@return string[]
+---@nodiscard
 local function bash_cmd(cmd)
   local ret = { 'bash', '--noprofile', '--norc', '-c' }
   table.insert(ret, cmd)
@@ -31,9 +34,10 @@ local function bash_cmd(cmd)
 end
 
 ---generate a command args array for running on new powershell process
----@param cmd string the direct command to run within bash
+---@param cmd string the direct command to run within powershell
 ---@return string[]
-local function pwsh_cmd(cmd)
+---@nodiscard
+local function powershell_cmd(cmd)
   local ret = { 'powershell', '-noprofile', '-nologo', '-noninteractive', '-c' }
   table.insert(ret, cmd)
   return ret
@@ -41,7 +45,7 @@ end
 
 M.shell = {
   bash_cmd = bash_cmd,
-  pwsh_cmd = pwsh_cmd,
+  powershell_cmd = powershell_cmd,
 }
 
 --- Generate a command array that query the store path of a nix package

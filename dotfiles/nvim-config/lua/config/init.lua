@@ -10,23 +10,25 @@ end
 
 if vim.g.neovide then require('config.neovide') end
 
--- my custom env to indicate whether should load plugins
-if vim.env.MINIMAL_NVIM == '1' then return end
+if vim.env.MINIMAL_NVIM == '1' then
+  local colo = Env.light and 'default' or 'habamax'
+  local bg = Env.light and 'light' or 'dark'
+  if bg ~= vim.o.background then vim.o.background = bg end
+  if colo ~= vim.g.colors_name then vim.cmd.colo(colo) end
+  return
+end
 
 require('config.lazy')
-
-require('config.wsl') -- requires plugin
-require('utils.lsp') -- tasks
-require('utils.dap') -- tasks
+-- require('config.wsl')
+require('utils.lsp')
+require('utils.dap')
 
 local function random(arr)
   math.randomseed(os.time())
   return arr[math.random(#arr)]
 end
 
-local now = os.date('*t') --[[@as std.osdate]]
-
 vim.cmd.colo(
-  now.hour > 7 and now.hour < 17 and random { 'xamabah', 'Eva-Light' }
+  Env.light and random { 'xamabah', 'Eva-Light' }
     or random { 'Eva-Dark', 'habamax', 'vscode' }
 )

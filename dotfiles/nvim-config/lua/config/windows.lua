@@ -1,9 +1,13 @@
+vim.g.clipboard = 'win32yank'
+
 if HasScoop then
   vim.system({ 'scoop', 'prefix', 'git' }, { text = true }, function(out)
     if out.code == 0 then
       vim.schedule(function()
-        vim.o.shell = vim.fs.joinpath(vim.trim(out.stdout), 'bin', 'bash.exe')
+        local path = vim.fs.joinpath(vim.trim(out.stdout), 'bin', 'bash.exe')
+        vim.o.shell = path:match('%s') and string.format('"%s"', path) or path
         vim.o.shellcmdflag = '-c'
+        vim.o.shellxquote = ''
       end)
     end
   end)

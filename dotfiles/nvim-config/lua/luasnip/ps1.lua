@@ -83,4 +83,11 @@ Register-ArgumentCompleter -Native -CommandName <> -ScriptBlock {
     text('[ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]')
   ),
   snip('pathvalidate', text('[ValidateScript({ Test-Path -LiteralPath $_ })]')),
+  snip(
+    'pathexpand',
+    fmt(
+      '$ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath({})',
+      { ins(0) }
+    )
+  ),
 }

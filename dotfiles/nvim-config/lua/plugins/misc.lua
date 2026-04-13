@@ -51,7 +51,6 @@ return {
     config = function()
       require('nvim-web-devicons').set_icon_by_filetype {
         msbuild = 'sln',
-        slnx = 'sln',
         axaml = 'xaml',
         typescript = 'ts',
         javascript = 'js',
