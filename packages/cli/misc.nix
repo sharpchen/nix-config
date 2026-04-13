@@ -14,14 +14,12 @@
     tokei
     fzf
     fd
-    mpv
     glow
     jq
     ffmpeg
     nix-prefetch
     nix-prefetch-github
     evil-helix
-    sioyek
     postgresql
     zoxide
     devenv
@@ -32,7 +30,7 @@
     tree
     tlrc
     sqlite
-    ollama
+    # ollama
     file
     nurl
     nix-init

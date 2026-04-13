@@ -2,7 +2,7 @@
 {
   home.packages = with pkgs; [
     ruff
-    basedpyright
+    zuban
     python312
     uv
   ];

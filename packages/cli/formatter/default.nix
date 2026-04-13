@@ -6,7 +6,7 @@
       stylua
       shfmt
       yamlfmt
-      nixfmt-rfc-style
+      nixfmt
     ]
     ++ [
       (callPackage ./xstyler/default.nix { inherit pkgs; })

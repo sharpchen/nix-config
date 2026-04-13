@@ -9,8 +9,8 @@
       lemminx
       actionlint
       ast-grep
-      nodePackages.bash-language-server
-      nodePackages.yaml-language-server
+      bash-language-server
+      yaml-language-server
       vim-language-server
       ast-grep
       postgres-language-server

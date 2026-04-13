@@ -35,6 +35,8 @@ let
       bleopt highlight_filename=
       bleopt highlight_variable=
       bleopt prompt_eol_mark="↵"
+      # see: https://github.com/akinomyoga/ble.sh/discussions/683#discussioncomment-16115650
+      # bleopt complete_auto_complete_opts+=syntax-disabled
     '';
 in
 {
@@ -45,12 +47,12 @@ in
     };
     # prepend content for auto-gen rc by hm
     initExtra = builtins.concatStringsSep "\n" [
-      (builtins.readFile ../../dotfiles/.bashrc)
+      (builtins.readFile ../../../dotfiles/.bashrc)
       append_blesh
       "[[ ! \${BLE_VERSION-} ]] || ble-attach"
     ];
     # append content for auto-gen profile by hm
-    profileExtra = builtins.readFile ../../dotfiles/bash.profile.sh;
+    profileExtra = builtins.readFile ../../../dotfiles/bash.profile.sh;
   };
 
   home.packages = with pkgs; [

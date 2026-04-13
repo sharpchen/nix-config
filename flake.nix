@@ -47,9 +47,26 @@
             ./nixos/configuration.nix
             ./nixos/nixos-wsl.nix
             nixos-wsl.nixosModules.default
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.sharpchen = {
+                imports = [
+                  ./home-manager/home.nix
+                  ./packages/cli/default.nix
+                  allowUnfree
+                ];
+              };
+              home-manager.extraSpecialArgs = {
+                inherit stable;
+                flakeinputs = inputs;
+              };
+            }
           ];
         };
       };
+      # NOTE: for non-nixos system:
       homeConfigurations = {
         sharpchen = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;

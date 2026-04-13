@@ -5,6 +5,7 @@ let
     combinePackages [
       sdk_9_0
       sdk_10_0
+      # sdk_8_0
     ]
   );
 in
@@ -14,11 +15,11 @@ in
     netcoredbg
     csharpier
     roslyn-ls
-    rzls
+    # rzls
     fsautocomplete
     fantomas
     ilspycmd
-    csharp-ls
+    # csharp-ls
   ];
 
   home.sessionVariables = {

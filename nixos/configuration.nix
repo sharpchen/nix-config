@@ -9,6 +9,7 @@
 
 {
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  nixpkgs.config.allowUnfree = true;
   nix.channel.enable = false;
   nix.nixPath = [ "nixpkgs=${flakeinputs.nixpkgs}" ];
   nix.settings = {

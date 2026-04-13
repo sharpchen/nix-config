@@ -7,10 +7,6 @@
   ...
 }:
 {
-  imports = [
-    ../packages/default.nix
-  ];
-
   options = {
     dotfiles = lib.mkOption {
       type = lib.types.path;
@@ -23,7 +19,7 @@
 
   config = {
     nix = {
-      package = pkgs.nixVersions.latest;
+      # package = pkgs.nixVersions.latest;
       settings = {
         experimental-features = [
           "nix-command"

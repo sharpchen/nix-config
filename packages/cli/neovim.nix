@@ -7,6 +7,8 @@
 {
   programs.neovim = {
     enable = true;
+    withPython3 = false;
+    withRuby = true;
   };
 
   home.file.".config/nvim" = {
