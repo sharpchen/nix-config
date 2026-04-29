@@ -775,10 +775,17 @@ function ydl {
         $ydl = Get-Command yt-dlp -ErrorAction Stop
         $flags = @()
         if ($Format) {
-            $flags += 'f', $Format
+            $flags += '-f', $Format
         }
         if ($AudioOnly) {
             $flags += '--extract-audio'
+        }
+        if (Get-Command deno -ErrorAction Ignore) {
+            $flags += '--js-runtimes', 'deno'
+        } elseif (Get-Command bun -ErrorAction Ignore) {
+            $flags += '--js-runtimes', 'bun'
+        } elseif (Get-Command node -ErrorAction Ignore) {
+            $flags += '--js-runtimes', 'node'
         }
     }
 

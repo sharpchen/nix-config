@@ -88,7 +88,8 @@ Register-ArgumentCompleter -Native -CommandName file -ScriptBlock $filecompleten
 Register-ArgumentCompleter -Native -CommandName which -ScriptBlock $cmdcompletenative
 
 # non-native complete
-Register-ArgumentCompleter -CommandName rd -ParameterName Path -ScriptBlock $foldercomplete
-Register-ArgumentCompleter -CommandName unpack -ParameterName Path -ScriptBlock $filecomplete
+Register-ArgumentCompleter -CommandName rd -ParameterName LiteralPath -ScriptBlock $foldercomplete
+Register-ArgumentCompleter -CommandName unpack -ParameterName LiteralPath -ScriptBlock $filecomplete
 Register-ArgumentCompleter -CommandName unpack -ParameterName Destination -ScriptBlock $foldercomplete
 Register-ArgumentCompleter -CommandName epubpack -ParameterName Folder -ScriptBlock $foldercomplete
+Register-ArgumentCompleter -CommandName play -ParameterName LiteralPath -ScriptBlock $filecomplete

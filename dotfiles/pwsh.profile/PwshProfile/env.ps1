@@ -1,4 +1,6 @@
 $IsLegacy = $PSVersionTable.PSEdition -eq 'Desktop'
+$IsNixOS = Test-Path /etc/NIXOS
+$IsWSL = $null -ne $env:WSL_DISTRO_NAME
 
 $env:DOTNET_CLI_UI_LANGUAGE = 'en'
 $env:EDITOR = 'nvim'
@@ -9,12 +11,4 @@ if ($IsLinux -or $IsMacOS) {
 
 if (Test-Path ~/.fzfrc) {
     $env:FZF_DEFAULT_OPTS_FILE = (Resolve-Path ~/.fzfrc).Path
-}
-
-if (Test-Path /etc/NIXOS) {
-    $IsNixOS = $true
-}
-
-if ($env:WSL_DISTRO_NAME) {
-    $IsWSL = $true
 }
