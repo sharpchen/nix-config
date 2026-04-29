@@ -125,3 +125,6 @@ if (& { scoop prefix windows-terminal *> $null; 0 -eq $LASTEXITCODE }) {
         Set-Content $settings (ConvertTo-Json $mySettings -Depth 100)
     }
 }
+
+mklink -SpecialParent APPDATA -ChildPath 'zed/settings.json' -Target $PSScriptRoot/dotfiles/zed.settings.json
+mklink -SpecialParent APPDATA -ChildPath 'zed/keymap.json' -Target $PSScriptRoot/dotfiles/zed.keymap.json

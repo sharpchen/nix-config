@@ -1,0 +1,43 @@
+// -*- mode: jsonc -*-
+// vim: set ft=jsonc:
+
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette
+{
+  "project_panel": {
+    "dock": "right",
+  },
+  "ui_font_size": 16,
+  "buffer_font_size": 16,
+  "auto_update": false,
+  "cursor_blink": false,
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+  },
+  "icon_theme": {
+    "mode": "dark",
+    "light": "Zed (Default)",
+    "dark": "Zed (Default)",
+  },
+  "theme": {
+    "mode": "light",
+    "light": "One Light",
+    "dark": "Ayu Dark",
+  },
+  "vim_mode": true,
+  "vim": {
+    "default_mode": "normal",
+    "use_system_clipboard": "never",
+    "use_smartcase_find": true,
+    "gdefault": true,
+    "toggle_relative_line_numbers": true,
+    "highlight_on_yank_duration": 300,
+  },
+}

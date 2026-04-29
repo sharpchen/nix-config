@@ -1,0 +1,144 @@
+// -*- mode: jsonc -*-
+// vim: set ft=jsonc:
+
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Workspace || EmptyPane",
+    "bindings": {
+      "shift shift": "file_finder::Toggle",
+    },
+  },
+  {
+    "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+    "bindings": {
+      "space a": "editor::SelectAll",
+      "space f f": "file_finder::Toggle",
+      "space k": "editor::Format",
+      "g l": "vim::EndOfLine",
+      "g h": "vim::StartOfLineDownward",
+      "space space": ["workspace::SendKeystrokes", "d i w"],
+      "space y": ["workspace::SendKeystrokes", "\" + y"],
+      "space Y": ["workspace::SendKeystrokes", "\" + y $"],
+      "space d": ["workspace::SendKeystrokes", "\" _ d"],
+      "space D": ["workspace::SendKeystrokes", "\" _ D"],
+      "space p": ["workspace::SendKeystrokes", "\" 0 p"],
+      "space P": ["workspace::SendKeystrokes", "\" 0 P"],
+      "ctrl-u": ["workspace::SendKeystrokes", "ctrl-u z z"],
+      "ctrl-d": ["workspace::SendKeystrokes", "ctrl-d z z"],
+      "g j": ["workspace::SendKeystrokes", "ctrl-i"],
+      "g k": ["workspace::SendKeystrokes", "ctrl-o"],
+      "alt-j": "editor::MoveLineDown",
+      "alt-k": "editor::MoveLineUp",
+      "tab": ["workspace::SendKeystrokes", "%"],
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "space c a": "editor::ToggleCodeActions",
+      "f2": "editor::Rename",
+      "g d": "editor::GoToDefinition",
+      "g D": "editor::GoToDefinitionSplit",
+      "g t": "editor::GoToTypeDefinition",
+      "g T": "editor::GoToTypeDefinitionSplit",
+      "g r": "editor::FindAllReferences",
+      "] d": "editor::GoToDiagnostic",
+      "[ d": "editor::GoToPreviousDiagnostic",
+      "space o": "outline::Toggle",
+      "] c": "editor::GoToHunk",
+      "[ c": "editor::GoToPreviousHunk",
+      "alt-.": "pane::ActivateNextItem",
+      "alt-,": "pane::ActivatePreviousItem",
+      "alt-c": "pane::CloseActiveItem",
+      "space e": "workspace::ToggleRightDock",
+      "space b": "editor::ToggleBreakpoint",
+      "shift-y": ["workspace::SendKeystrokes", "y $"],
+      "space z": ["workspace::SendKeystrokes", "I ( escape A ) escape"],
+      "space Z": ["workspace::SendKeystrokes", "i ( escape A ) escape"],
+      "space ;": ["workspace::SendKeystrokes", "m z A ; escape ` z"],
+      "space ,": ["workspace::SendKeystrokes", "m z A , escape ` z"],
+      "g i": ["workspace::SendKeystrokes", "g i escape z z i"],
+      "ctrl-shift-alt-x": "vim::DeleteRight", // intermediate binding for preventing remap
+      "x": ["workspace::SendKeystrokes", "\" _ ctrl-shift-alt-x"],
+      "X": "vim::DeleteRight",
+      "space h h": "editor::ToggleInlayHints",
+      "alt-u": ["workspace::SendKeystrokes", "v i w U"],
+      "alt-l": ["workspace::SendKeystrokes", "v i w u"],
+      "n": ["workspace::SendKeystrokes", "n z z"],
+      "N": ["workspace::SendKeystrokes", "N z z"],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == visual && !VimWaiting && !menu",
+    "bindings": {
+      "tab": ["workspace::SendKeystrokes", "end %"],
+      "g l": ["workspace::SendKeystrokes", "end left"],
+      "g h": "vim::StartOfLineDownward",
+      "space y": ["workspace::SendKeystrokes", "\" + y"],
+      "space d": ["workspace::SendKeystrokes", "\" _ d"],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == insert && !VimWaiting && !menu",
+    "bindings": {
+      "alt-j": "editor::MoveLineDown",
+      "alt-k": "editor::MoveLineUp",
+    },
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-j": "workspace::ActivatePaneDown",
+    },
+  },
+  {
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      "a": "project_panel::NewFile",
+      "A": "project_panel::NewDirectory",
+      "r": "project_panel::Rename",
+      "d": "project_panel::Delete",
+      "x": "project_panel::Cut",
+      "c": "project_panel::Copy",
+      "p": "project_panel::Paste",
+      "q": "workspace::ToggleRightDock",
+      "space e": "workspace::ToggleRightDock",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-j": "workspace::ActivatePaneDown",
+    },
+  },
+  {
+    "context": "vim_operator == a || vim_operator == i || vim_operator == cs",
+    "bindings": {
+      "q": "vim::MiniQuotes",
+      "b": "vim::MiniBrackets",
+    },
+  },
+  {
+    "context": "Editor && (showing_code_actions || showing_completions)",
+    // cycling completions
+    "bindings": {
+      "ctrl-j": "editor::ContextMenuNext",
+      "ctrl-k": "editor::ContextMenuPrevious",
+    },
+  },
+  {
+    // cycling command palette entries
+    "bindings": {
+      "ctrl-j": "menu::SelectNext",
+      "ctrl-k": "menu::SelectPrevious",
+    },
+  },
+]
+
