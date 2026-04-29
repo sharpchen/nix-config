@@ -1,3 +1,6 @@
+// -*- mode: jsonc -*-
+// vim: set ft=jsonc:
+
 {
     "workbench.sideBar.location": "right",
     "editor.fontSize": 16,
