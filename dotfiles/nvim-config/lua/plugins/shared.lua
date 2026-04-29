@@ -92,7 +92,7 @@ return {
   },
   {
     'bkoropoff/clipipe',
-    enabled = IsWindows,
+    enabled = false,
     config = function()
       require('clipipe').setup {
         keep_line_endings = false, -- Set to true to disable \r\n conversion on Windows

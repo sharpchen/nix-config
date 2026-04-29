@@ -64,12 +64,7 @@ return {
       --   filetypes = lsp.config.ft_extend('roslyn_ls', { 'axaml-cs' }),
       -- })
       lsp.setup('zuban')
-      lsp.setup('ruff', {
-        on_attach = function(client)
-          -- disable this if using basedpyright as language server
-          client.server_capabilities.hoverProvider = false
-        end,
-      })
+      lsp.setup('ruff')
 
       -- require('plugins.lsp.lua_ls')
       require('plugins.lsp.emmylua')
@@ -119,12 +114,6 @@ return {
 
       require('roslyn').setup {
         filewatching = 'roslyn',
-        cmd = {
-          'Microsoft.CodeAnalysis.LanguageServer',
-          '--logLevel=Information',
-          '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.log.get_filename()),
-          '--stdio',
-        },
       }
       vim.api.nvim_create_autocmd('LspAttach', {
         callback = function(args)

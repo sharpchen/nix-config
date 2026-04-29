@@ -77,6 +77,9 @@ return {
         if ok and node and node:type():find('comment') then return { 'buffer' } end
         return { 'snippets', 'lsp', 'path', 'buffer', 'emoji' }
       end,
+      per_filetype = {
+        sql = { 'dadbod', 'buffer' },
+      },
       providers = {
         snippets = {
           min_keyword_length = 1,

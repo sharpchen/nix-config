@@ -1,5 +1,10 @@
 vim.cmd.source(vim.fn.expand('~/.vimrc'))
 
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_node_provider = 0
+
 if IsWindows then
   require('config.windows')
 elseif IsLinux then
@@ -10,6 +15,19 @@ vim.opt.signcolumn = 'yes'
 vim.opt.isfname:append('@-@')
 vim.opt.guicursor =
   'n-v-sm:block-blinkwait700-Cursor,ci-ve:ver25,r-cr-o:hor20,i-c:ver100-blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
+
+vim.o.foldenable = true
+vim.o.foldcolumn = '1'
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.foldmethod = 'indent'
+vim.opt.fillchars:append {
+  eob = ' ',
+  fold = ' ',
+  foldopen = '',
+  foldsep = ' ',
+  foldclose = '',
+}
 
 if vim.fn.executable('rg') == 1 then vim.opt.grepprg = 'rg --vimgrep --pcre2 ' end
 vim.opt.spell = true
@@ -270,7 +288,7 @@ if not vim.g.started_by_firenvim then
     end,
   })
 
-  vim.api.nvim_create_autocmd('VimLeavePre', {
+  vim.api.nvim_create_autocmd({ 'VimLeavePre', 'VimSuspend' }, {
     callback = function() vim.api.nvim_ui_send('\x1b]111\a') end,
   })
 end

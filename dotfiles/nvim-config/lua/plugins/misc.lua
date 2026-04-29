@@ -60,7 +60,6 @@ return {
   },
   {
     'nvzone/showkeys',
-    event = 'VeryLazy',
     cmd = 'ShowkeysToggle',
     opts = {
       maxkeys = 5,
@@ -91,7 +90,7 @@ return {
     config = function()
       require('whitespace-nvim').setup {
         highlight = 'DiffDelete',
-        ignored_filetypes = { 'TelescopePrompt', 'Trouble', 'help', 'dashboard' },
+        ignored_filetypes = { 'TelescopePrompt', 'Trouble', 'help', 'dashboard', 'dbout' },
         ignore_terminal = true,
         return_cursor = true,
       }
