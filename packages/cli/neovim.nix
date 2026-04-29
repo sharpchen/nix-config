@@ -5,11 +5,9 @@
   ...
 }:
 {
-  programs.neovim = {
-    enable = true;
-    withPython3 = false;
-    withRuby = true;
-  };
+  home.packages = with pkgs; [
+    neovim-unwrapped
+  ];
 
   home.file.".config/nvim" = {
     source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/nvim-config";
