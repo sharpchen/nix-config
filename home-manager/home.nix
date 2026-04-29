@@ -19,6 +19,7 @@
 
   config = {
     nix = {
+      # The option `home-manager.users.sharpchen.nix.package' is defined multiple times while it's expected to be unique.
       # package = pkgs.nixVersions.latest;
       settings = {
         experimental-features = [
@@ -32,7 +33,7 @@
     home = rec {
       username = "sharpchen";
       homeDirectory = "/home/${username}";
-      stateVersion = "24.05"; # Please read the comment before changing.
+      stateVersion = "26.05"; # Please read the comment before changing.
     };
 
     home.sessionPath = [
