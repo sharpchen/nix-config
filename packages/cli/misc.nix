@@ -1,15 +1,10 @@
 { config, pkgs, ... }:
 {
   home.packages = with pkgs; [
-    lua5_1
-    rustc
-    cargo
-    wget
     openssh
     tree-sitter
     ripgrep
-    csharprepl
-    which
+    # csharprepl
     bat
     tokei
     fzf
@@ -17,40 +12,38 @@
     glow
     jq
     ffmpeg
-    nix-prefetch
-    nix-prefetch-github
+    # nix-prefetch
+    # nix-prefetch-github
     evil-helix
     postgresql
     zoxide
-    devenv
+    # devenv
     gdu
     # dict
     # dictdDBs.wiktionary
     nh
     tree
-    tlrc
     sqlite
     # ollama
     file
-    nurl
-    nix-init
+    # nurl
+    # nix-init
     btop
     yt-dlp
     glib
-    dig
-    ocrmypdf
-    tesseract # NOTE: dependency of ocrmypdf
+    # dig
+    # ocrmypdf
+    # tesseract # NOTE: dependency of ocrmypdf
     tty-clock
-    qpdf
-    tocpdf
+    # qpdf
     libarchive
     _7zz-rar
     hyperfine
-    lstr
     zip
-    sqlit-tui
+    # sqlit-tui
     imagemagick
     mediainfo
+    aria2
   ];
   # home.file.".dict/.dict.conf".text = ''
   #   server localhost
