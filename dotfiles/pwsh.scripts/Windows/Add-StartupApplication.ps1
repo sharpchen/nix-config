@@ -12,6 +12,7 @@ param(
 
 begin {
     $ExePath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ExePath)
+    $null = Get-Item $ExePath -ErrorAction Stop
 
     if ($AllUsers) {
         $registry = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run'

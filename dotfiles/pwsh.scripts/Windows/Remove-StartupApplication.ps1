@@ -21,8 +21,6 @@ param(
 )
 
 begin {
-    $ExePath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ExePath)
-
     if ($AllUsers) {
         $registry = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run'
     } else {
