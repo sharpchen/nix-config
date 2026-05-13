@@ -12,10 +12,15 @@
     cp = cherry-pick
     ck = checkout
     mod = submodule
-    open = "!gio open $(git remote get-url origin | sed -E \"s|git@([^:]+):|https://\\1/|; s|\\.git$||\")"
+    homepage = "!gio open $(git remote get-url origin | sed -E \"s|git@([^:]+):|https://\\1/|; s|\\.git$||\")"
     exclude = update-index --assume-unchanged
     include = update-index --no-assume-unchanged
     list-excluded = "!git ls-files -v | grep '^h' | cut -c 3-"
+    github-fetch-pr = "!f() { \
+        remote=$1; pr_id=$2; \
+        git fetch $remote \"refs/pull/$pr_id/head:pr_$pr_id\"; \
+    }; f"
+
 [url "git@github.com:"]
     insteadOf = https://github.com/
 [fetch]
