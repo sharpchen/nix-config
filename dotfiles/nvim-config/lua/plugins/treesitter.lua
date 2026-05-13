@@ -6,6 +6,7 @@ return {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     branch = 'main',
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       local treesitter = require('nvim-treesitter')
       treesitter.setup {}
@@ -72,6 +73,7 @@ return {
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
     branch = 'main',
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
     },
@@ -92,24 +94,33 @@ return {
       }
       do -- move
         vim.keymap.set({ 'n', 'x', 'o' }, ']]', function()
-          require('nvim-treesitter-textobjects.move').goto_next_start(
-            '@function.outer',
-            'textobjects'
-          )
-          vim.cmd('normal! zz')
+          if
+            pcall(
+              require('nvim-treesitter-textobjects.move').goto_next_start,
+              '@function.outer',
+              'textobjects'
+            )
+          then
+            vim.cmd('normal! zz')
+          end
         end)
         vim.keymap.set({ 'n', 'x', 'o' }, '[[', function()
-          require('nvim-treesitter-textobjects.move').goto_previous_start(
-            '@function.outer',
-            'textobjects'
-          )
-          vim.cmd('normal! zz')
+          if
+            pcall(
+              require('nvim-treesitter-textobjects.move').goto_previous_start,
+              '@function.outer',
+              'textobjects'
+            )
+          then
+            vim.cmd('normal! zz')
+          end
         end)
       end
     end,
   },
   {
     'nvim-treesitter/nvim-treesitter-context',
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       require('treesitter-context').setup {
         enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
@@ -148,6 +159,7 @@ return {
   },
   {
     'Wansmer/sibling-swap.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       local swap = require('sibling-swap')
       swap.setup {
@@ -159,6 +171,7 @@ return {
   },
   {
     'Wansmer/treesj',
+    event = { 'BufRead', 'BufNewFile' },
     config = function()
       require('treesj').setup {
         use_default_keymaps = false,

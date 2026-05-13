@@ -3,7 +3,7 @@
 return {
   {
     'neovim/nvim-lspconfig',
-    event = 'VeryLazy',
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = { 'b0o/schemastore.nvim' },
     config = function()
       local lsp = require('utils.lsp')
@@ -104,6 +104,7 @@ return {
   {
     'seblyng/roslyn.nvim',
     ft = { 'cs', 'axaml-cs' },
+    dependencies = { 'neovim/nvim-lspconfig' },
     enabled = Env.has_dotnet
       and (
         vim.fn.executable('roslyn-language-server') == 1

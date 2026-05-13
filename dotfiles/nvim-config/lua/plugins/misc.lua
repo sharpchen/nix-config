@@ -27,23 +27,6 @@ return {
     },
   },
   {
-    'utilyre/barbecue.nvim',
-    name = 'barbecue',
-    enabled = false,
-    event = 'VeryLazy',
-    version = '*',
-    dependencies = {
-      'SmiteshP/nvim-navic',
-    },
-    opts = {
-      attach_navic = false,
-      symbols = {
-        separator = '▸',
-      },
-      kinds = require('utils.const').lsp.completion_kind_icons,
-    },
-  },
-  {
     'DaikyXendo/nvim-material-icon',
     -- 'sharpchen/nvim-material-icon',
     -- branch = 'rm-invalid-icon',
@@ -83,7 +66,6 @@ return {
       )
     end,
   },
-  'laytan/cloak.nvim',
   {
     'johnfrankmorgan/whitespace.nvim',
     event = 'BufReadPost',
@@ -117,7 +99,7 @@ return {
   },
   {
     'ravibrock/spellwarn.nvim',
-    event = 'VeryLazy',
+    ft = { 'markdown' },
     config = function()
       require('spellwarn').setup {
         ft_default = false,
@@ -142,16 +124,8 @@ return {
     end,
   },
   {
-    'ahkohd/buffer-sticks.nvim',
-    event = 'VeryLazy',
-    config = function()
-      require('buffer-sticks').setup()
-      vim.keymap.set('n', 'B', function() BufferSticks.jump() end)
-    end,
-  },
-  {
     'saecki/live-rename.nvim',
-    event = 'VeryLazy',
+    event = 'BufReadPost',
     config = function()
       vim.api.nvim_create_autocmd('LspAttach', {
         callback = function(args)

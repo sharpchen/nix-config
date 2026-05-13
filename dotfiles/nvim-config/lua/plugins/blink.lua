@@ -3,10 +3,11 @@
 return {
   'Saghen/blink.cmp',
   version = '1.*',
-  build = HasNix
-      and 'CARGO_NET_GIT_FETCH_WITH_CLI=true nix run .#build-plugin --accept-flake-config'
-    or '',
-  event = 'VeryLazy',
+  -- WARN: local build requires a lot rust dependencies that bloats the size
+  -- build = HasNix
+  --     and 'CARGO_NET_GIT_FETCH_WITH_CLI=true nix run .#build-plugin --accept-flake-config'
+  --   or '',
+  event = { 'BufRead', 'BufNewFile' },
   dependencies = {
     'moyiz/blink-emoji.nvim',
     {
@@ -194,7 +195,8 @@ return {
     },
     fuzzy = {
       sorts = { 'exact', 'score', 'sort_text' },
-      implementation = IsWindows and 'lua' or 'rust',
+      implementation = 'lua',
+      -- implementation = IsWindows and 'lua' or 'rust',
     },
   },
 }

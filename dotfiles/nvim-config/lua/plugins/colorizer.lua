@@ -2,7 +2,7 @@
 ---@type LazySpec
 return {
   'catgoose/nvim-colorizer.lua',
-  event = 'VeryLazy',
+  event = 'BufRead',
   config = function()
     require('colorizer').setup {
       filetypes = {

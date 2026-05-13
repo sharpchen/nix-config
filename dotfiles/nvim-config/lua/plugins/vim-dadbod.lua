@@ -8,10 +8,11 @@ return {
     dependencies = {
       'tpope/vim-dadbod',
     },
-    event = 'VeryLazy',
+    ft = { 'sql' },
   },
   {
     'davesavic/dadbod-ui-yank',
+    ft = { 'sql' },
     dependencies = { 'kristijanhusak/vim-dadbod-ui' },
     config = function() require('dadbod-ui-yank').setup() end,
   },

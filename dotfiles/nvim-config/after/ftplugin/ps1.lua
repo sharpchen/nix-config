@@ -1,5 +1,6 @@
 vim.opt_local.cindent = true
 vim.opt_local.cinoptions:append { 'J1', '(1s', '+0' }
+vim.opt_local.cinkeys:remove { '0#' }
 
 vim.opt_local.iskeyword:remove { '-' }
 

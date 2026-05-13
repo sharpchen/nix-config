@@ -11,7 +11,7 @@ return {
       nix = { 'nix' },
       fsharp = { 'fsharplint' },
     }
-    vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
+    vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
       callback = function() lint.try_lint() end,
     })
   end,

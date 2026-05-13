@@ -10,6 +10,9 @@ local M = {
   has_scoop = vim.fn.executable('scoop') == 1,
   has_dotnet = vim.fn.executable('dotnet') == 1,
   is_wsl = vim.fn.has('wsl') == 1,
+  is_vscode = vim.g.vscode ~= nil,
+  is_firenvim = vim.g.started_by_firenvim ~= nil,
+  is_wezterm = vim.env.TERM_PROGRAM and vim.env.TERM_PROGRAM:lower() == 'wezterm',
 }
 
 _G.Env = M
@@ -18,6 +21,9 @@ _G.IsLinux = M.is_linux
 _G.HasNix = M.has_nix
 _G.HasScoop = M.has_scoop
 _G.IsWSL = M.is_wsl
+_G.IsVscode = M.is_vscode
+_G.IsFirenvim = M.is_firenvim
+_G.IsWezterm = M.is_wezterm
 
 local now = os.date('*t') --[[@as std.osdate]]
 M.light = now.hour > 7 and now.hour < 17

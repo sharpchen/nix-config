@@ -115,7 +115,7 @@ return {
     fmt("vim.api.nvim_create_autocmd('{}', {{\n" .. '  {}\n' .. '}})', {
       ins(1, 'FileType'),
       oneof(2, {
-        sn(nil, fmt('callback = function(args)\n' .. '    {}\n' .. '  end', { ins(1) })),
+        sn(nil, fmt('callback = function(ctx)\n' .. '    {}\n' .. '  end', { ins(1) })),
         sn(nil, fmt("command = '{}',", { ins(1) })),
       }),
     })

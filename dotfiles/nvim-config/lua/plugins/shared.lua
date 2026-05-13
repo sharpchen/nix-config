@@ -2,7 +2,8 @@
 ---@type LazySpec
 return {
   {
-    'axelvc/template-string.nvim',
+    'sharpchen/template-string.nvim',
+    branch = 'csharp-fix',
     ft = {
       'cs',
       'javascript',
@@ -49,6 +50,7 @@ return {
   {
     'sharpchen/contextindent.nvim',
     branch = 'cindent',
+    ft = { 'markdown' },
     opts = { pattern = '*.md' },
   },
   {
@@ -62,6 +64,7 @@ return {
   {
     'echasnovski/mini.ai',
     version = false,
+    event = { 'BufReadPost', 'BufNewFile' },
     config = function()
       local ts_spec = require('mini.ai').gen_spec.treesitter
       require('mini.ai').setup {
@@ -91,18 +94,8 @@ return {
     end,
   },
   {
-    'bkoropoff/clipipe',
-    enabled = false,
-    config = function()
-      require('clipipe').setup {
-        keep_line_endings = false, -- Set to true to disable \r\n conversion on Windows
-        download = false, -- Download pre-built binary if needed
-        build = true, -- Build from source if needed
-      }
-    end,
-  },
-  {
     'moll/vim-bbye',
+    enabled = false, -- using snacks now
     config = function()
       local function has_dock()
         return vim.iter(vim.fn.tabpagebuflist()):any(

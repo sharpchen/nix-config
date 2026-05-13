@@ -2,7 +2,7 @@
 ---@type LazySpec
 return {
   'folke/flash.nvim',
-  event = 'VeryLazy',
+  event = 'BufRead',
   ---@type Flash.Config
   opts = {},
   -- stylua: ignore

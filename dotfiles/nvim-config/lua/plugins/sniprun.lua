@@ -3,7 +3,9 @@
 return {
   'michaelb/sniprun',
   branch = 'master',
-  build = 'sh install.sh 1',
+  -- WARN: do not attempt to use local build
+  -- as it bloat storage
+  build = 'sh install.sh',
   enabled = not IsWindows, -- sniprun does not support Windows
   event = 'VeryLazy',
   config = function()
@@ -38,6 +40,7 @@ return {
             using System.IO;
             using System.Text;
             using System.Text.Json;
+            using System.Text.RegularExpressions;
             using System.Globalization;
             ]],
           },

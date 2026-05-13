@@ -180,10 +180,6 @@ local Diagnostic = {
     self.hint_count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
     self.info_count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
   end,
-  on_click = {
-    callback = function() vim.cmd('FzfLua diagnostics_document') end,
-    name = 'heirline_diagnostics',
-  },
   update = { 'DiagnosticChanged', 'BufEnter' },
   {
     provider = function(self)
@@ -216,12 +212,6 @@ local Diagnostic = {
 local LSPActive = {
   condition = conditions.lsp_attached,
   update = { 'LspAttach', 'LspDetach', 'BufEnter' },
-  on_click = {
-    callback = function()
-      vim.defer_fn(function() vim.cmd('LspInfo') end, 100)
-    end,
-    name = 'heirline_LSP',
-  },
   init = function(self)
     self.names = {}
     for _, server in pairs(vim.lsp.get_clients { bufnr = 0 }) do

@@ -3,8 +3,11 @@
 ---@type LazySpec
 return {
   'andymass/vim-matchup',
-  lazy = false,
-  init = function()
+  -- NOTE: remove lazy-loading if anything goes wrong
+  event = 'BufRead',
+  -- lazy = false,
+  config = function()
+    ---@diagnostic disable-next-line: param-type-mismatch
     require('match-up').setup {
       treesitter = {
         stopline = 500,

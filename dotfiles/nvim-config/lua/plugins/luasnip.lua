@@ -5,10 +5,12 @@ return {
   branch = 'master',
   dependencies = { 'rafamadriz/friendly-snippets' },
   build = 'make install_jsregexp',
-  event = 'VeryLazy',
+  event = { 'BufRead', 'BufNewFile' },
   config = function()
     require('luasnip').setup {
-      ft_func = require('luasnip.extras.filetype_functions').from_cursor_pos,
+      -- do not use filetype under cursor
+      -- it just doesn't work well
+      -- ft_func = require('luasnip.extras.filetype_functions').from_cursor_pos,
       region_check_events = { 'InsertEnter' }, -- NOTE: see: https://github.com/L3MON4D3/LuaSnip/discussions/1402#discussioncomment-14983410
       update_events = { 'TextChanged', 'TextChangedI' },
       history = true,

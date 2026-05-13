@@ -13,8 +13,7 @@ end
 
 vim.opt.signcolumn = 'yes'
 vim.opt.isfname:append('@-@')
-vim.opt.guicursor =
-  'n-v-sm:block-blinkwait700-Cursor,ci-ve:ver25,r-cr-o:hor20,i-c:ver100-blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
+vim.opt.guicursor = 'n-v:block-Cursor,i-c-ci:ver25-Cursor'
 
 vim.o.foldenable = true
 vim.o.foldcolumn = '1'
@@ -294,7 +293,8 @@ if not vim.g.started_by_firenvim then
 end
 
 function _findfunc(arglead)
-  local files = vim.fn.systemlist('fd --type file --full-path --color never')
+  local files =
+    vim.fn.systemlist('fd --type file --full-path --color never --hidden --exclude .git')
 
   local matches = vim.fn.matchfuzzy(
     files,
@@ -305,3 +305,15 @@ function _findfunc(arglead)
 end
 
 vim.o.findfunc = 'v:lua._findfunc'
+
+vim.api.nvim_create_user_command(
+  'Spp',
+  function(ctx) vim.cmd.split(ctx.args) end,
+  { nargs = 1, complete = function(arglead) return _findfunc(arglead) end }
+)
+
+vim.api.nvim_create_user_command(
+  'Vss',
+  function(ctx) vim.cmd.vsplit(ctx.args) end,
+  { nargs = 1, complete = function(arglead) return _findfunc(arglead) end }
+)

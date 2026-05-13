@@ -7,12 +7,12 @@ vim.keymap.set(
   { desc = 'send selection to cmdline', expr = true }
 )
 
-vim.keymap.set(
-  'n',
-  '<leader>gq',
-  [[:sil grep! '\b<C-r><C-w>\b' | cw<Left><Left><Left><Left><Left><Left><Left><Left>]],
-  { desc = '[G]rep and pipe to [Q]f' }
-)
+vim.keymap.set('n', '<leader>gq', function()
+  local cword = vim.fn.expand('<cword>')
+  local format =
+    [[:sil grep! '\b%s\b' | cw<Left><Left><Left><Left><Left><Left><Left><Left>]]
+  return string.format(format, cword ~= '' and '<C-r><C-w>' or '')
+end, { desc = '[G]rep and pipe to [Q]f', expr = true })
 
 vim.keymap.set(
   'n',
@@ -54,14 +54,12 @@ vim.api.nvim_create_autocmd('LspAttach', {
   desc = 'LSP actions',
   callback = function(event)
     local opts = { buffer = event.buf, silent = true, nowait = true }
-    -- these will be buffer-local keybindings
-    -- because they only work if you have an active language server
     -- vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
     vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
     vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
     -- gi was a builtin keymap, not using go to implementation now
     -- vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
-    vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
+    vim.keymap.set('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
     vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
     vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
@@ -159,8 +157,18 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'goto next diagnostic' })
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'goto previous diagnostic' })
+vim.keymap.set(
+  'n',
+  ']d',
+  function() vim.diagnostic.jump { count = 1 } end,
+  { desc = 'goto next diagnostic' }
+)
+vim.keymap.set(
+  'n',
+  '[d',
+  function() vim.diagnostic.jump { count = -1 } end,
+  { desc = 'goto previous diagnostic' }
+)
 vim.keymap.set(
   'n',
   [[<leader>cd]],
@@ -168,7 +176,4 @@ vim.keymap.set(
   { desc = 'change dir to current parent' }
 )
 
-vim.keymap.set('n', '<leader>m', function()
-  vim.cmd.make()
-  if #vim.fn.getqflist() > 0 then vim.cmd.copen() end
-end)
+vim.keymap.set('n', '<leader>m', '<cmd>make | cwindow<CR>')

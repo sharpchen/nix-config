@@ -13,11 +13,11 @@ return {
   snip(
     'cmdif',
     fmt(
-      [[
-      if type {} &>/dev/null; then
+      [=[
+      if [[ -x "$(builtin command -v {})" ]]; then
         {}
       fi
-    ]],
+    ]=],
       { ins(1, 'cmd'), ins(0) }
     )
   ),

@@ -47,37 +47,31 @@ return {
         },
         bigfile = { enabled = true, notify = true },
       }
-      vim.api.nvim_create_user_command('GitOpen', function(e)
+
+      vim.api.nvim_create_user_command('GitLink', function(e)
+        ---@diagnostic disable-next-line: missing-fields
         ---@type snacks.gitbrowse.Config
         local opts = {
-          open = function(url)
-            if IsWSL then
-              vim.fn.setreg('+', url)
-            else
-              vim.ui.open(url)
-            end
-          end,
+          open = function(url) vim.fn.setreg('+', url) end,
         }
 
-        if e.args then
-          if e.args == 'homepage' then
-            opts.what = 'repo'
-          else
-            opts.what = e.args:is_nil_or_empty() and 'commit' or e.args
-          end
+        if e.args == 'homepage' then
+          opts.what = 'repo'
+        else
+          ---@diagnostic disable-next-line: assign-type-mismatch
+          opts.what = e.args:is_nil_or_empty() and 'permalink' or e.args
         end
 
-        if e.line1 and e.line2 then
-          opts.line_start = e.line1
-          opts.line_end = e.line2
-        end
+        opts.line_start = e.line1
+        opts.line_end = e.line2
 
         Snacks.gitbrowse.open(opts)
       end, {
         nargs = '?',
         range = true,
-        complete = function() return { 'homepage', 'permalink' } end,
+        complete = function() return { 'homepage', 'permalink', 'file', 'branch' } end,
       })
+
       vim.keymap.set('n', '<leader>fc', function()
         local config_path = IsWindows and vim.fn.stdpath('config')
           or vim.fn.expand('~/.config/home-manager/dotfiles/nvim-config/')
@@ -255,6 +249,30 @@ return {
           vim.keymap.set('i', '<Esc><Esc>', '<C-\\><C-n>', { buffer = args.buf })
         end,
       })
+
+      local function has_dock()
+        return vim.iter(vim.fn.tabpagebuflist()):any(
+          function(buf)
+            return vim.bo[buf].buftype == 'terminal'
+              or (vim.bo[buf].filetype == 'qf' and vim.bo.filetype ~= 'qf')
+          end
+        )
+      end
+      vim.keymap.set(
+        'n',
+        '<A-c>',
+        function() return has_dock() and '<cmd>lua Snacks.bufdelete()<CR>' or ':bd<CR>' end,
+        { silent = true, expr = true }
+      )
+
+      vim.keymap.set(
+        'n',
+        '<A-a>',
+        function()
+          return has_dock() and '<cmd>lua Snacks.bufdelete.all()<CR>' or ':bufdo bd<CR>'
+        end,
+        { silent = true, expr = true }
+      )
     end,
   },
   {

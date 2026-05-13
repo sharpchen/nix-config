@@ -1,8 +1,10 @@
 return {
   'stevearc/conform.nvim',
-  event = 'VeryLazy',
+  event = { 'BufRead' },
+  cmd = { 'ConformInfo' },
   config = function()
     local conform = require('conform')
+    ---@diagnostic disable-next-line: param-type-mismatch
     conform.setup {
       format_on_save = {
         -- I recommend these options. See :help conform.format for details.
@@ -16,7 +18,11 @@ return {
         },
         jq = {
           command = 'jq',
-          args = { '.' },
+          args = function(_, ctx) return { '--indent', ctx.shiftwidth, '.', '$FILENAME' } end,
+        },
+        shfmt = {
+          inherit = true,
+          prepend_args = { '--binary-next-line' },
         },
       },
       formatters_by_ft = {
@@ -47,18 +53,14 @@ return {
       },
     }
 
-    vim.keymap.set(
-      'n',
-      '<leader>k',
-      function()
-        conform.format {
-          bufnr = 0,
-          timeout_ms = 5000,
-          async = false,
-          lsp_format = 'fallback',
-        }
-      end,
-      { desc = 'format current file' }
-    )
+    vim.keymap.set('n', '<leader>k', function()
+      ---@diagnostic disable-next-line: param-type-mismatch
+      conform.format {
+        bufnr = 0,
+        timeout_ms = 5000,
+        async = false,
+        lsp_format = 'fallback',
+      }
+    end, { desc = 'format current file' })
   end,
 }
