@@ -1,6 +1,5 @@
 // -*- mode: jsonc -*-
 // vim: set ft=jsonc:
-
 // Zed settings
 //
 // For information on how to configure Zed, see the Zed
@@ -10,6 +9,7 @@
 // custom settings, run `zed: open default settings` from the
 // command palette
 {
+  "disable_ai": true,
   "project_panel": {
     "dock": "right",
   },

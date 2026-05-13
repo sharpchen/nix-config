@@ -72,6 +72,7 @@
       "alt-l": ["workspace::SendKeystrokes", "v i w u"],
       "n": ["workspace::SendKeystrokes", "n z z"],
       "N": ["workspace::SendKeystrokes", "N z z"],
+      "alt-`": "terminal_panel::Toggle",
     },
   },
   {
@@ -98,6 +99,7 @@
       "ctrl-l": "workspace::ActivatePaneRight",
       "ctrl-k": "workspace::ActivatePaneUp",
       "ctrl-j": "workspace::ActivatePaneDown",
+      "alt-`": "terminal_panel::Toggle",
     },
   },
   {
