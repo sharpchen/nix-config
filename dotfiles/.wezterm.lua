@@ -104,6 +104,7 @@ local function regular()
   config.cursor_blink_rate = 500
   config.cursor_blink_ease_in = 'Constant'
   config.cursor_blink_ease_out = 'Constant'
+  config.force_reverse_video_cursor = true
 end
 
 local function keymaps()
