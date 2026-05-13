@@ -5,6 +5,10 @@ $IsWSL = $null -ne $env:WSL_DISTRO_NAME
 $env:DOTNET_CLI_UI_LANGUAGE = 'en'
 $env:EDITOR = 'nvim'
 
+if ($IsWindows -or $IsLegacy) {
+    $env:INVALID_FILENAME_CHARS = ':"<>|?*/\'
+}
+
 if ($IsLinux -or $IsMacOS) {
     $env:MANPAGER = 'nvim +Man!'
 }

@@ -9,7 +9,6 @@ Set-Alias sel Select-Object
 Set-Alias gpd Get-PSDrive
 Set-Alias gpp Get-PSProvider
 Set-Alias cond Where-Object
-Set-Alias expand Convert-Path
 Set-Alias order Sort-Object
 Set-Alias json ConvertFrom-Json
 Set-Alias tojson ConvertTo-Json
@@ -93,19 +92,4 @@ if (Get-Command tree-sitter -ErrorAction Ignore) {
 
 function now {
     Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-}
-
-function rand {
-    $input | Sort-Object { Get-Random }
-}
-
-function pow {
-    param(
-        [Parameter(Mandatory, Position = 0)]
-        $Base,
-        [Parameter(Mandatory, Position = 1)]
-        $Power
-    )
-
-    [System.Math]::Pow($Base, $Power)
 }

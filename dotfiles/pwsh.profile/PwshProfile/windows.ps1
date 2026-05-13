@@ -3,7 +3,7 @@ Set-Alias uptime Get-Uptime
 
 function which {
     param ([string]$Name)
-    (Get-Command $Name).Source
+    (Get-Command $Name -CommandType Application).Source
 }
 
 function vs {
@@ -167,28 +167,6 @@ function trash {
             [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
         } elseif  (Test-Path -LiteralPath $LiteralPath -PathType Container) {
             [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory($abs, 'OnlyErrorDialogs', 'SendToRecycleBin')
-        }
-    }
-}
-
-function exch {
-    param(
-        [Parameter(Position = 0, Mandatory)]
-        [string]$One,
-        [Parameter(Position = 1, Mandatory)]
-        [string]$Another
-    )
-
-    begin {
-        # TODO: waiting mv --exchange flag being implemented on uutils/coreutils
-        throw [System.NotImplementedException]::new('waiting mv --exchange flag being implemented on uutils/coreutils')
-        $One = (Resolve-Path $One).Path
-        $Another = (Resolve-Path $Another).Path
-    }
-
-    end {
-        if (Get-Command mv -CommandType Application -ErrorAction Stop -OutVariable mv) {
-            & $mv[0] $One $Another --exchange
         }
     }
 }

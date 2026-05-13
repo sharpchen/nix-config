@@ -124,32 +124,15 @@ function pinfo {
     }
 }
 
-function daysago {
-    param(
-        [Parameter(Mandatory)]
-        [uint]$Days,
-        [Parameter(ValueFromPipelineByPropertyName)]
-        [datetime]$CreationTime
-    )
-
-    process {
-        if ($CreationTime -gt [datetime]::Now.AddDays(-$Days)) {
-            $_
-        }
-    }
-}
-
 function play {
     [CmdletBinding(DefaultParameterSetName = '__AllParameterSets')]
     param (
-        [Parameter(Position = 0, ValueFromPipelineByPropertyName, ValueFromPipeline)]
+        [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName, ValueFromPipeline)]
         [Alias('FullName')]
         [string]$LiteralPath,
 
         [Parameter(ParameterSetName = 'ByDate')]
-        [switch]$ByDate,
-        [Parameter(ParameterSetName = 'Randomize')]
-        [switch]$Randomize
+        [switch]$ByDate
     )
 
     begin {
@@ -164,10 +147,7 @@ function play {
     end {
         if ($MyInvocation.ExpectingInput) {
             if ($ByDate) {
-                $playlist = $playlist |
-                    Sort-Object { (Get-Item -LiteralPath $_).CreationTime } -Descending
-            } elseif ($Randomize) {
-                $playlist = $playlist | Sort-Object { Get-Random }
+                $playlist = $playlist | Sort-Object { (Get-Item -LiteralPath $_).CreationTime } -Descending
             }
             $null = Start-Job { $input | mpv --force-window --playlist=- } -InputObject $playlist
         } else {
@@ -323,6 +303,8 @@ function any {
             $_ # nullable | any
         ) {
             $true
+            # FIXME: break skips `end` block
+            # https://github.com/PowerShell/PowerShell/issues/27389
             break
         }
     }
@@ -343,6 +325,8 @@ function all {
     process {
         if (-not $Condition.InvokeWithContext($null, [psvariable]::new('_', $_))) {
             $false
+            # FIXME: break skips `end` block
+            # https://github.com/PowerShell/PowerShell/issues/27389
             break
         }
     }
@@ -373,37 +357,6 @@ function exclude {
         } else {
             if ($_ -cnotin $Exclude) {
                 $_
-            }
-        }
-    }
-}
-
-function first {
-    param (
-        [Parameter(ValueFromPipeline)]
-        [psobject]$InputObject,
-
-        [ValidateScript({ ($_ -is [int] -and $_ -ge 0) -or $_ -is [scriptblock] })]
-        [Parameter(Position = 1, Mandatory)]
-        [psobject]$Selector
-    )
-
-    begin {
-        $useCount = $Selector -is [int]
-        $count = 0
-    }
-
-    process {
-        if ($useCount) {
-            if ($count++ -lt $Selector) {
-                $_
-            } else {
-                break
-            }
-        } else {
-            if ($Selector.InvokeWithContext($null, [psvariable]::new('_', $_))) {
-                $_
-                break
             }
         }
     }
@@ -780,6 +733,9 @@ function ydl {
         if ($AudioOnly) {
             $flags += '--extract-audio'
         }
+        if (Get-Command aria2c -ErrorAction Ignore) {
+            $flags += '--downloader', 'aria2c'
+        }
         if (Get-Command deno -ErrorAction Ignore) {
             $flags += '--js-runtimes', 'deno'
         } elseif (Get-Command bun -ErrorAction Ignore) {
@@ -877,5 +833,80 @@ function distinct {
 
     end {
         $sort.End()
+    }
+}
+
+function not {
+    process {
+        -not $_
+    }
+}
+
+function rand {
+    param(
+        [Alias('n')]
+        [uint]$Count
+    )
+    if ($PSBoundParameters.ContainsKey('Count')) {
+        $input | Sort-Object { Get-Random } | Select-Object -First $Count
+    } else {
+        $input | Sort-Object { Get-Random }
+    }
+}
+
+function pow {
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        $Base,
+        [Parameter(Mandatory, Position = 1)]
+        $Power
+    )
+
+    [System.Math]::Pow($Base, $Power)
+}
+
+function expand {
+    $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($args[0])
+}
+
+function replace {
+    param(
+        [Parameter(ValueFromPipeline)]
+        [string]$InputObject,
+
+        [Parameter(Position = 0)]
+        [string]$Pattern,
+
+        [Parameter(Position = 1)]
+        [string]$Replace,
+
+        [ValidateScript({ $_ -gt 0 })]
+        [Alias('n')]
+        [int]$Count,
+
+        [Alias('c')]
+        [switch]$CaseSensitive,
+
+        [Alias('l')]
+        [switch]$Literal
+    )
+
+    begin {
+        if ($Literal) {
+            $Pattern = [regex]::Escape($Pattern)
+        }
+        if ($CaseSensitive) {
+            $regex = [regex]::new($Pattern)
+        } else {
+            $regex = [regex]::new($Pattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+        }
+    }
+
+    process {
+        if ($PSBoundParameters.ContainsKey('Count')) {
+            $regex.Replace($InputObject, $Replace, $Count)
+        } else {
+            $regex.Replace($InputObject, $Replace)
+        }
     }
 }
