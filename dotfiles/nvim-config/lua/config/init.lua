@@ -3,12 +3,9 @@ require('utils.extension')
 require('config.set')
 require('config.remap')
 
-if vim.g.vscode then
-  require('config.vscode')
-  return
-end
+if IsVscode then require('config.vscode') end
 
-if vim.g.neovide then require('config.neovide') end
+if IsNeovide then require('config.neovide') end
 
 if vim.env.MINIMAL_NVIM == '1' then
   local colo = Env.light and 'default' or 'habamax'

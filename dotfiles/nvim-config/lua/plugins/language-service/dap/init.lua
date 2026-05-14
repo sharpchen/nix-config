@@ -65,8 +65,8 @@ return {
     )
     vim.fn.sign_define('DapStopped', { text = '', texthl = 'Function' })
 
-    require('plugins.dap.netcoredbg')
-    require('plugins.dap.bashdb')
-    require('plugins.dap.vscode-js-debug')
+    require('plugins.language-service.dap.netcoredbg')
+    require('plugins.language-service.dap.bashdb')
+    require('plugins.language-service.dap.vscode-js-debug')
   end,
 }

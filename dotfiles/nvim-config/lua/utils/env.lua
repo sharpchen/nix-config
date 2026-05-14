@@ -13,6 +13,9 @@ local M = {
   is_vscode = vim.g.vscode ~= nil,
   is_firenvim = vim.g.started_by_firenvim ~= nil,
   is_wezterm = vim.env.TERM_PROGRAM and vim.env.TERM_PROGRAM:lower() == 'wezterm',
+  is_neovide = vim.g.neovide ~= nil,
+  is_nixos = vim.fn.filereadable('/etc/NIXOS') == 1,
+  is_gui = vim.fn.has('gui_running') == 1,
 }
 
 _G.Env = M
@@ -24,6 +27,9 @@ _G.IsWSL = M.is_wsl
 _G.IsVscode = M.is_vscode
 _G.IsFirenvim = M.is_firenvim
 _G.IsWezterm = M.is_wezterm
+_G.IsNeovide = M.is_neovide
+_G.IsNixOS = M.is_nixos
+_G.IsGUI = M.is_gui
 
 local now = os.date('*t') --[[@as std.osdate]]
 M.light = now.hour > 7 and now.hour < 17

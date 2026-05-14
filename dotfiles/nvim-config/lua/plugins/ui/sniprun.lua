@@ -6,7 +6,7 @@ return {
   -- WARN: do not attempt to use local build
   -- as it bloat storage
   build = 'sh install.sh',
-  enabled = not IsWindows, -- sniprun does not support Windows
+  enabled = not IsWindows and not IsVscode, -- sniprun does not support Windows
   event = 'VeryLazy',
   config = function()
     require('sniprun').setup {

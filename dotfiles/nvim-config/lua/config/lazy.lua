@@ -11,39 +11,27 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local plugins_for_windows = vim
-  .iter({
-    'shared',
-    'firenvim',
-    'colorizer',
-    'Comment',
-    'lazygit',
-    'gitsigns',
-    'nvim-rip-substitute',
-    'nvim-autopairs',
-    'oil',
-    'colo',
-    'snacks',
-    'treesitter',
-    'which-key',
-    'blink',
-    'luasnip',
-  })
-  :map(function(name) return { import = 'plugins.' .. name } end)
-  :totable()
+local lock = IsNixOS and '~/.config/home-manager/dotfiles/nvim-config/lazy-lock.json'
+  or vim.fn.stdpath('config') .. '/lazy-lock.json'
 
 require('lazy').setup {
-  lockfile = IsWindows and vim.fn.stdpath('config') .. '/lazy-lock.json'
-    or '~/.config/home-manager/dotfiles/nvim-config/lazy-lock.json',
+  lockfile = lockfile,
   git = {
     url_format = 'git@github.com:%s.git',
     timeout = 60 * 10,
   },
-  spec = IsWindows and plugins_for_windows or {
-    { import = 'plugins' },
-    { import = 'plugins.colo' },
+  spec = {
+    { import = 'plugins.firenvim' },
+    { import = 'plugins.shared' },
+    { import = 'plugins.ui', cond = not IsVscode and not IsFirenvim },
+    { import = 'plugins.completion', cond = not IsVscode },
+    { import = 'plugins.language-service', cond = not IsVscode and not IsFirenvim },
   },
   ui = {
     border = 'none',
+  },
+  install = {
+    -- do not install missing plugin
+    missing = not IsVscode and not IsFirenvim,
   },
 }

@@ -24,7 +24,7 @@ return {
       })
 
       if lsp.use_vtsls then
-        require('plugins.lsp.vtsls')
+        require('plugins.language-service.lsp.vtsls')
       else
         lsp.setup('tsgo')
       end
@@ -66,15 +66,15 @@ return {
       lsp.setup('zuban')
       lsp.setup('ruff')
 
-      -- require('plugins.lsp.lua_ls')
-      require('plugins.lsp.emmylua')
-      require('plugins.lsp.yamlls')
-      require('plugins.lsp.vue_language_server')
+      -- require('plugins.language-service.lsp.lua_ls')
+      require('plugins.language-service.lsp.emmylua')
+      require('plugins.language-service.lsp.yamlls')
+      require('plugins.language-service.lsp.vue_language_server')
 
       if Env.has_dotnet then
-        if Env.has_pwsh then require('plugins.lsp.pwsh_es') end
+        if Env.has_pwsh then require('plugins.language-service.lsp.pwsh_es') end
 
-        require('plugins.lsp.msbuild_ls')
+        require('plugins.language-service.lsp.msbuild_ls')
 
         lsp.setup('fsautocomplete', {
           on_attach = lsp.event.disable_semantic,
@@ -95,10 +95,10 @@ return {
         })
       end
 
-      require('plugins.lsp.query_ls')
-      require('plugins.lsp.lemminx')
-      require('plugins.lsp.ds_pinyin_lsp')
-      require('plugins.lsp.nixd')
+      require('plugins.language-service.lsp.query_ls')
+      require('plugins.language-service.lsp.lemminx')
+      require('plugins.language-service.lsp.ds_pinyin_lsp')
+      require('plugins.language-service.lsp.nixd')
     end,
   },
   {

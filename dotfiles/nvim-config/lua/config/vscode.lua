@@ -1,49 +1,4 @@
-if not vim.g.vscode then return end
-
 vim.opt.spell = false
-
-local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  vim.fn.system {
-    'git',
-    'clone',
-    '--filter=blob:none',
-    'git@github.com:folke/lazy.nvim.git',
-    '--branch=stable', -- latest stable release
-    lazypath,
-  }
-end
-vim.opt.rtp:prepend(lazypath)
-
----@module 'lazy'
----@type LazySpec[]
-local plugins_for_vscode = vim.list_extend(
-  vim
-    .iter({
-      'Comment',
-      'shared',
-      'treesitter',
-      'match-up',
-    })
-    :map(function(x) return { import = 'plugins.' .. x } end)
-    :totable(),
-  {
-    { 'xiyaowong/fast-cursor-move.nvim' },
-  }
-)
-
-require('lazy').setup {
-  lockfile = IsWindows and vim.fn.stdpath('config') .. '/lazy-lock.json'
-    or '~/.config/home-manager/dotfiles/nvim-config/lazy-lock.json',
-  git = {
-    url_format = 'git@github.com:%s.git',
-    timeout = 60 * 10,
-  },
-  spec = plugins_for_vscode,
-  ui = {
-    border = 'none',
-  },
-}
 
 local vscode = require('vscode')
 
