@@ -225,69 +225,6 @@ function p {
     }
 }
 
-function ds {
-    [CmdletBinding(DefaultParameterSetName = 'Directory')]
-    param (
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
-        [Parameter(Position = 0, ParameterSetName = 'Directory')]
-        [string]$Dir,
-
-        [ValidateSet('kb', 'mb', 'gb')]
-        [string]$Unit,
-
-        [Parameter(ValueFromPipelineByPropertyName, ValueFromPipeline, ParameterSetName = 'Pipeline')]
-        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
-        [Alias('FullName')]
-        [string]$InputObject
-    )
-    begin {
-        $du = Get-Command du -ErrorAction SilentlyContinue | Select-Object -First 1
-        if (-not $Dir) {
-            $Dir = $PWD.Path
-        }
-        $length = 0
-    }
-
-    process {
-        switch ($PSCmdlet.ParameterSetName) {
-            'Pipeline' {
-                if ($du) {
-                    $length += (((& $du -L --bytes --total --summarize $InputObject)[-1] -split '\s+')[0]) -as [long]
-                } else {
-                    $length += (Get-Item $InputObject).Length
-                }
-            }
-        }
-    }
-
-    end {
-        switch ($PSCmdlet.ParameterSetName) {
-            'Directory' {
-                if ($du) {
-                    $length = (((& $du[0] -L --bytes --total --summarize $Dir)[-1] -split '\s+')[0]) -as [long]
-                } else {
-                    $length = (Get-ChildItem -File -Force -Recurse -LiteralPath $Dir | Measure-Object Length -Sum).Sum
-                }
-            }
-        }
-
-        switch ($Unit) {
-            'kb' {
-                $length / 1kb
-            }
-            'mb' {
-                $length / 1mb
-            }
-            'gb' {
-                $length / 1gb
-            }
-            default {
-                $length
-            }
-        }
-    }
-}
-
 function any {
     param (
         [Parameter(ValueFromPipeline)]
@@ -733,9 +670,6 @@ function ydl {
         if ($AudioOnly) {
             $flags += '--extract-audio'
         }
-        if (Get-Command aria2c -ErrorAction Ignore) {
-            $flags += '--downloader', 'aria2c'
-        }
         if (Get-Command deno -ErrorAction Ignore) {
             $flags += '--js-runtimes', 'deno'
         } elseif (Get-Command bun -ErrorAction Ignore) {
@@ -909,4 +843,14 @@ function replace {
             $regex.Replace($InputObject, $Replace)
         }
     }
+}
+
+function def {
+    param(
+        [string]$Command
+    )
+
+    $cmd = Get-Command $Command -ErrorAction Stop
+
+    $cmd.Definition
 }
