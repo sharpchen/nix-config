@@ -51,7 +51,9 @@ return {
         'markdown_inline',
       }
 
-      treesitter.install(table.except(should_install, treesitter.get_installed()))
+      if not IsFirenvim and not IsVscode then
+        treesitter.install(table.except(should_install, treesitter.get_installed()))
+      end
 
       vim.api.nvim_create_autocmd('FileType', {
         callback = function(args)

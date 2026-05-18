@@ -11,7 +11,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local lock = IsNixOS and '~/.config/home-manager/dotfiles/nvim-config/lazy-lock.json'
+local lockfile = IsNixOS and '~/.config/home-manager/dotfiles/nvim-config/lazy-lock.json'
   or vim.fn.stdpath('config') .. '/lazy-lock.json'
 
 require('lazy').setup {
@@ -23,7 +23,8 @@ require('lazy').setup {
   spec = {
     { import = 'plugins.firenvim' },
     { import = 'plugins.shared' },
-    { import = 'plugins.ui', cond = not IsVscode and not IsFirenvim },
+    { import = 'plugins.ui', cond = not IsVscode },
+    { import = 'plugins.ui.impure', cond = not IsVscode and not IsFirenvim },
     { import = 'plugins.completion', cond = not IsVscode },
     { import = 'plugins.language-service', cond = not IsVscode and not IsFirenvim },
   },
@@ -31,7 +32,7 @@ require('lazy').setup {
     border = 'none',
   },
   install = {
-    -- do not install missing plugin
+    -- do not install missing plugin on launch
     missing = not IsVscode and not IsFirenvim,
   },
 }

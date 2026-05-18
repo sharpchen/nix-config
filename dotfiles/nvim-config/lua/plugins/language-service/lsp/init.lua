@@ -48,6 +48,7 @@ return {
       lsp.setup('cssls')
       lsp.setup('html')
       lsp.setup('oxlint')
+      lsp.setup('oxfmt')
       lsp.setup('vimls')
       lsp.setup('postgres_lsp')
       lsp.setup('marksman')

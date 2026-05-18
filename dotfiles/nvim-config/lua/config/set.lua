@@ -317,3 +317,11 @@ vim.api.nvim_create_user_command(
   function(ctx) vim.cmd.vsplit(ctx.args) end,
   { nargs = 1, complete = function(arglead) return _findfunc(arglead) end }
 )
+
+vim.api.nvim_create_user_command(
+  'Reverse',
+  function(ctx)
+    vim.cmd(string.format('%d,%dg/^/m%d', ctx.line1, ctx.line2, ctx.line1 - 1))
+  end,
+  { desc = 'reverse selected lines', range = true }
+)

@@ -10,8 +10,10 @@ if IsNeovide then require('config.neovide') end
 if vim.env.MINIMAL_NVIM == '1' then
   local colo = Env.light and 'default' or 'habamax'
   local bg = Env.light and 'light' or 'dark'
+
   if bg ~= vim.o.background then vim.o.background = bg end
   if colo ~= vim.g.colors_name then vim.cmd.colo(colo) end
+
   return
 end
 
@@ -25,7 +27,11 @@ local function random(arr)
   return arr[math.random(#arr)]
 end
 
-vim.cmd.colo(
-  Env.light and random { 'xamabah', 'Eva-Light' }
-    or random { 'Eva-Dark', 'habamax', 'vscode' }
+pcall(
+  vim.cmd,
+  'silent! colo '
+    .. (
+      Env.light and random { 'xamabah', 'Eva-Light' }
+      or random { 'Eva-Dark', 'habamax', 'vscode' }
+    )
 )

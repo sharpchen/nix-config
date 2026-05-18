@@ -14,7 +14,7 @@ local M = {
   is_firenvim = vim.g.started_by_firenvim ~= nil,
   is_wezterm = vim.env.TERM_PROGRAM and vim.env.TERM_PROGRAM:lower() == 'wezterm',
   is_neovide = vim.g.neovide ~= nil,
-  is_nixos = vim.fn.filereadable('/etc/NIXOS') == 1,
+  is_nixos = vim.uv.fs_stat('/etc/NIXOS') ~= nil,
   is_gui = vim.fn.has('gui_running') == 1,
 }
 

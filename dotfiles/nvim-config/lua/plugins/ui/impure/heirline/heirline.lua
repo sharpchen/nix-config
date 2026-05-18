@@ -398,7 +398,7 @@ vim.api.nvim_create_user_command(
   function()
     vim.cmd(
       ('source %s'):format(
-        vim.fs.joinpath(vim.fn.stdpath('config'), 'lua/plugins/ui/heirline/heirline.lua')
+        vim.fs.joinpath(vim.fn.stdpath('config'), 'lua/plugins/ui/impure/heirline/heirline.lua')
       )
     )
   end,

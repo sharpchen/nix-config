@@ -177,3 +177,57 @@ vim.keymap.set(
 )
 
 vim.keymap.set('n', '<leader>m', '<cmd>make | cwindow<CR>')
+
+vim.keymap.set({ 'n', 'x', 'o' }, '<A-n>', function()
+  local ok, ts_select = pcall(require, 'vim.treesitter._select')
+  if not ok then
+    vim.notify(
+      'remap.lua: `vim.treesitter._select` is missing/deprecated.',
+      vim.log.levels.WARN
+    )
+  end
+
+  if not ts_select.select_parent then
+    vim.notify(
+      'remap.lua: `vim.treesitter._select::select_parent` is missing/deprecated.',
+      vim.log.levels.WARN
+    )
+  end
+
+  if
+    ok
+    and ts_select.select_parent
+    and vim.treesitter.get_parser(nil, nil, { error = false })
+  then
+    ts_select.select_parent(vim.v.count1)
+  else
+    vim.lsp.buf.selection_range(vim.v.count1)
+  end
+end)
+
+vim.keymap.set({ 'n', 'x', 'o' }, '<A-m>', function()
+  local ok, ts_select = pcall(require, 'vim.treesitter._select')
+  if not ok then
+    vim.notify(
+      'remap.lua: `vim.treesitter._select` is missing/deprecated.',
+      vim.log.levels.WARN
+    )
+  end
+
+  if not ts_select.select_child then
+    vim.notify(
+      'remap.lua: `vim.treesitter._select::select_child` is missing/deprecated.',
+      vim.log.levels.WARN
+    )
+  end
+
+  if
+    ok
+    and ts_select.select_child
+    and vim.treesitter.get_parser(nil, nil, { error = false })
+  then
+    ts_select.select_child(vim.v.count1)
+  else
+    vim.lsp.buf.selection_range(-vim.v.count1)
+  end
+end)
