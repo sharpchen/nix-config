@@ -21,13 +21,23 @@ alias cls='command clear'
 alias now='command date "+%Y-%m-%d %H:%M:%S"'
 alias so='source ~/.bashrc'
 alias :q='exit'
+alias mes='command wc -l'
+alias rand='command shuf'
 
 _err() {
     local BOLD="\e[1m"
     local RED='\e[31m'
     local NC='\e[0m'
-    local source="${1:-ERROR}"
-    local msg="${2:-$1}"
+    local source msg
+
+    if [[ -z "$2" ]]; then
+        source="${FUNCNAME[1]:-ERROR}"
+        msg="$1"
+    else
+        source="${1:-ERROR}"
+        msg="$2"
+    fi
+
     echo -e "${BOLD}${RED}${source}: ${msg}${NC}" >&2
 }
 
@@ -35,8 +45,16 @@ _warn() {
     local BOLD="\e[1m"
     local WARN='\e[33m'
     local NC='\e[0m'
-    local source="${1:-WARN}"
-    local msg="${2:-$1}"
+    local source msg
+
+    if [[ -z "$2" ]]; then
+        source="${FUNCNAME[1]:-WARN}"
+        msg="$1"
+    else
+        source="${1:-WARN}"
+        msg="$2"
+    fi
+
     echo -e "${BOLD}${WARN}${source}: ${msg}${NC}" >&2
 }
 
@@ -81,17 +99,25 @@ _getoptp() {
     _exep getopt || return $?
     getopt --test &>/dev/null && true
     if [[ $? -ne 4 ]]; then
-        _err 'unpack' "\`getopt\` is not of the enhanced version."
+        _err "${FUNCNAME[1]:-${FUNCNAME[0]}}" "\`getopt\` is not of the enhanced version."
         return 1
     fi
 }
 
 _confirm() {
-    local source="${1:-confirm}"
-    local msg="${2:-$1}"
-    _warn "${source}" "${msg}"
-    local res
+    local source msg
 
+    if [[ -z "$2" ]]; then
+        source="${FUNCNAME[1]}"
+        msg="$1"
+    else
+        source="$1"
+        msg="$2"
+    fi
+
+    _warn "${source}" "${msg}"
+
+    local res
     read -r -p "Proceed? [y/N] " res
 
     case "${res}" in
@@ -130,7 +156,7 @@ alias ngc='nix-collect-garbage -d && sudo $(type -p nix-collect-garbage) -d'
 if type rsync &>/dev/null; then
     rall() {
         _exep rsync || return $?
-        _confirm "rall" "deleting $(realpath .)/*" || return $?
+        _confirm "deleting $(realpath .)/*" || return $?
 
         rsync --archive --delete "$(mktemp -d)/" "$(pwd)/"
     }
@@ -140,7 +166,7 @@ if type rsync &>/dev/null; then
         local dir="${1:?directory required}"
         _dirp "${dir}" || return $?
 
-        _confirm "rd" "deleting $(realpath "${dir}")" || return $?
+        _confirm "deleting $(realpath "${dir}")" || return $?
 
         rsync --archive --delete "$(mktemp -d)/" "${dir}/"
         rmdir "${dir}"
@@ -149,7 +175,7 @@ if type rsync &>/dev/null; then
 else
     rall() {
         _exep find || return $?
-        _confirm "rall" "deleting $(realpath .)/*" || return $?
+        _confirm "deleting $(realpath .)/*" || return $?
         find . -path ".*" -delete
     }
     rd() {
@@ -158,7 +184,7 @@ else
         local dir="${1:?directory required}"
         _dirp "${dir}" || return $?
 
-        _confirm "rd" "deleting $(realpath "${dir}")" || return $?
+        _confirm "deleting $(realpath "${dir}")" || return $?
 
         find "${dir}" -delete
         rmdir "${dir}"
@@ -291,7 +317,7 @@ unpack() {
             break # now it's all positional
             ;;
         *)
-            _err "unpack" "Unexpected option \`$1\`"
+            _err "Unexpected option \`$1\`"
             return 3
             ;;
         esac
@@ -421,7 +447,7 @@ ydl() {
             break
             ;;
         *)
-            _err "unpack" "Unexpected option \`$1\`"
+            _err "Unexpected option \`$1\`"
             return 3
             ;;
         esac
