@@ -463,16 +463,15 @@ ydl() {
         flags+=('--extract-audio')
     fi
 
-    if command -v aria2c &>/dev/null; then
-        flags+=('--downloader' 'aria2c')
-    fi
+    # WARN: aria2c won't auto-detect proxy
+    # if command -v aria2c &>/dev/null; then
+    #     flags+=('--downloader' 'aria2c')
+    # fi
 
     if command -v deno &>/dev/null; then
         flags+=('--js-runtimes' 'deno')
     elif command -v node &>/dev/null; then
         flags+=('--js-runtimes' 'node')
-    elif command -v bun &>/dev/null; then
-        flags+=('--js-runtimes' 'bun')
     fi
 
     command yt-dlp "${flags[@]}" "${@}"
