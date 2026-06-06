@@ -83,6 +83,44 @@ function string.split(text, separator)
     :totable()
 end
 
+---@param s string
+---@param width integer
+---@param padchar? string
+---@return string
+function string.padleft(s, width, padchar)
+  padchar = padchar or ' '
+  assert(width >= 0, 'width must be ge 0')
+  assert(padchar:len() == 1, 'padchar must be single char')
+
+  local old_length = s:len()
+  local count = width - old_length
+
+  if count <= 0 then
+    return s
+  else
+    return string.rep(padchar, count) .. s
+  end
+end
+
+---@param s string
+---@param width integer
+---@param padchar? string
+---@return string
+function string.padright(s, width, padchar)
+  padchar = padchar or ' '
+  assert(width >= 0, 'width must be ge 0')
+  assert(padchar:len() == 1, 'padchar must be single char')
+
+  local old_length = s:len()
+  local count = width - old_length
+
+  if count <= 0 then
+    return s
+  else
+    return s .. string.rep(padchar, count)
+  end
+end
+
 ---collect yields into array from an iterator
 ---@generic TResult
 ---@return TResult[]
@@ -93,6 +131,15 @@ function Collect(iterator)
     table.insert(ret, element)
   end
   return ret
+end
+
+---protected call on vim.cmd
+---cmd MUST results no message prompt
+---@param cmd vim.api.keyset.cmd
+---@return boolean, unknown
+function pvimcmd(cmd)
+  local ok, output = pcall(vim.api.nvim_cmd, cmd, { output = true })
+  return ok, output
 end
 
 ---@generic T
@@ -116,4 +163,15 @@ function table.except(super, sub)
   end
 
   return result
+end
+
+---@param arr any[]
+---@return unknown
+function Random(arr)
+  math.randomseed(bit.bxor(vim.uv.hrtime(), os.time()))
+  -- warm up
+  _ = math.random()
+  _ = math.random()
+  _ = math.random()
+  return arr[math.random(#arr)]
 end

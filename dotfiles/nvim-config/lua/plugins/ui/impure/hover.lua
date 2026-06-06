@@ -1,6 +1,14 @@
 return {
   'lewis6991/hover.nvim',
   event = 'BufRead',
+  init = function()
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = 'help',
+      callback = function(args)
+        vim.keymap.set('n', 'K', '<cmd>normal! K<CR>', { buffer = args.buf })
+      end,
+    })
+  end,
   config = function()
     require('hover').config {
       providers = {
@@ -25,11 +33,5 @@ return {
     }
 
     vim.keymap.set('n', 'K', require('hover').open, { desc = 'hover.nvim' })
-    vim.api.nvim_create_autocmd('FileType', {
-      pattern = 'help',
-      callback = function(args)
-        vim.keymap.set('n', 'K', '<cmd>normal! K<CR>', { buffer = args.buf })
-      end,
-    })
   end,
 }

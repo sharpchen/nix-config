@@ -64,6 +64,7 @@ return {
       --   on_init = function(client) lsp.event.disable_semantic(client) end,
       --   filetypes = lsp.config.ft_extend('roslyn_ls', { 'axaml-cs' }),
       -- })
+
       lsp.setup('zuban')
       lsp.setup('ruff')
 

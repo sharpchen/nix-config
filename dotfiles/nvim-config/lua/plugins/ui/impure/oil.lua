@@ -2,7 +2,16 @@
 ---@type LazySpec
 return {
   'stevearc/oil.nvim',
-  event = 'VeryLazy',
+  cmd = 'Oil',
+  init = function()
+    vim.keymap.set('n', '<A-o>', '<cmd>Oil<CR>', { desc = 'open oil' })
+    vim.keymap.set(
+      'n',
+      '<leader>fr',
+      function() vim.cmd(('Oil %s'):format(vim.uv.cwd())) end,
+      { desc = 'root folder' }
+    )
+  end,
   config = function()
     require('oil').setup {
       -- Oil will take over directory buffers (e.g. `vim .` or `:e src/`)
@@ -216,6 +225,5 @@ return {
       pattern = 'oil',
       callback = function(args) vim.keymap.set('n', 'J', '<nop>', { buffer = args.buf }) end,
     })
-    vim.keymap.set('n', '<A-o>', '<cmd>Oil<CR>', { desc = 'open oil' })
   end,
 }

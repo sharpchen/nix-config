@@ -231,3 +231,52 @@ vim.keymap.set({ 'n', 'x', 'o' }, '<A-m>', function()
     vim.lsp.buf.selection_range(-vim.v.count1)
   end
 end)
+
+---@param target string
+---@param opts { word: boolean, escape: boolean }
+function _global(target, opts)
+  opts.escape = opts.escape or true
+
+  local pattern = opts.escape and target:gsub([[\]], [[\\]]):gsub('/', [[\/]]) or target
+
+  pattern = opts.word and string.format([[\V\<%s\>]], pattern)
+    or string.format([[\V%s]], pattern)
+
+  local line_infos = {}
+  for linenr = 1, vim.api.nvim_buf_line_count(0) do
+    local line = vim.api.nvim_buf_get_lines(0, linenr - 1, linenr, true)[1]
+
+    if vim.fn.match(line, pattern) ~= -1 then
+      table.insert(line_infos, { linenr = linenr, line = line })
+    end
+  end
+
+  if #line_infos == 0 then return end
+
+  local digits = tostring(line_infos[#line_infos].linenr):len()
+
+  local lines = {}
+
+  for _, l in ipairs(line_infos) do
+    table.insert(lines, { tostring(l.linenr):padleft(digits + 2), 'LineNrAbove' })
+    table.insert(lines, { string.format(' %s\n', l.line) })
+  end
+
+  vim.api.nvim_echo(lines, false, {})
+end
+
+vim.keymap.set('n', '<leader>gl', function()
+  local cword = vim.fn.expand('<cword>')
+  if cword ~= '' then _global(cword, { word = true }) end
+end, { desc = '[gl]obal on cursor word' })
+
+vim.keymap.set('x', '<leader>gl', function()
+  local start_pos = vim.fn.getpos('v')
+  local end_pos = vim.fn.getpos('.')
+  local lines = vim.fn.getregion(start_pos, end_pos, { type = vim.fn.mode() })
+  local selection = table.concat(lines, '\n')
+
+  vim.api.nvim_feedkeys(vim.keycode('<Esc>'), 'x', false)
+
+  if not selection:match('^%s*$') then _global(selection, { word = false }) end
+end, { desc = '[gl]obal on selected' })

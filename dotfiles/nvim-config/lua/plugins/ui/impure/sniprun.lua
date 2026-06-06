@@ -7,7 +7,16 @@ return {
   -- as it bloat storage
   build = 'sh install.sh',
   enabled = not IsWindows and not IsVscode, -- sniprun does not support Windows
-  event = 'VeryLazy',
+  cmd = 'SnipRun',
+  init = function()
+    vim.keymap.set({ 'v', 'x' }, '<leader>e', ':SnipRun<CR>', { desc = 'sniprun' })
+    vim.keymap.set(
+      'n',
+      '<leader>e',
+      require('utils.static').mark.wrap(function() vim.cmd('SnipRun') end),
+      { desc = 'sniprun' }
+    )
+  end,
   config = function()
     require('sniprun').setup {
       display = {
@@ -62,13 +71,7 @@ return {
         },
       },
     }
-    vim.keymap.set({ 'v', 'x' }, '<leader>e', ':SnipRun<CR>', { desc = 'sniprun' })
-    vim.keymap.set(
-      'n',
-      '<leader>e',
-      require('utils.static').mark.wrap(function() vim.cmd('SnipRun') end),
-      { desc = 'sniprun' }
-    )
+
     vim.api.nvim_create_autocmd({ 'TextChangedI', 'BufWrite' }, {
       command = 'SnipClose',
       desc = 'close SnipRun virtual text',

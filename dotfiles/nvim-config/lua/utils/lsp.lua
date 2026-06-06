@@ -6,7 +6,7 @@ _G.Lsp = M
 
 --- wrapper for setting up and enabling language-server
 ---@param ls string server name
----@param config? vim.lsp.Config
+---@param config? Partial<vim.lsp.Config>
 function M.setup(ls, config)
   if config then vim.lsp.config[ls] = config end
   if

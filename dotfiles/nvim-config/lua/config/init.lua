@@ -22,16 +22,12 @@ require('config.lazy')
 require('utils.lsp')
 require('utils.dap')
 
-local function random(arr)
-  math.randomseed(os.time())
-  return arr[math.random(#arr)]
-end
+local ok = false
+local count = 0
+while not ok and count <= 5 do
+  count = count + 1
+  local colo = Env.light and Random { 'xamabah', 'Eva-Light', 'github_light_default' }
+    or Random { 'Eva-Dark', 'habamax', 'vscode' }
 
-pcall(
-  vim.cmd,
-  'silent! colo '
-    .. (
-      Env.light and random { 'xamabah', 'Eva-Light' }
-      or random { 'Eva-Dark', 'habamax', 'vscode' }
-    )
-)
+  ok = pvimcmd { cmd = 'colo', args = { colo } }
+end

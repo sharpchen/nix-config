@@ -13,8 +13,9 @@ return {
           vim.o.guifont = 'IBM Plex Mono'
           vim.o.laststatus = 0
           vim.o.background = 'light'
-          local ok, _ = pcall(vim.cmd, 'silent! colo xamabah')
-          if not ok then vim.cmd.colo('default') end
+          if not pvimcmd { cmd = 'colo', args = { 'xamabah' } } then
+            vim.cmd.colo('default')
+          end
 
           if IsWindows then
             vim.system(
@@ -60,6 +61,7 @@ return {
         'https?://grok.*',
         'https?://www.keybr.com/.*',
         'https://monkeytype.com/.*',
+        'https?://www.typescriptlang.org/.*',
       })
       :fold({}, function(sum, curr)
         sum[curr] = {

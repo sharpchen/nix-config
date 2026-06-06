@@ -1,73 +1,81 @@
 local function setup()
-  local light = require('Eva-Theme.palette').light_base
-  local dark = require('Eva-Theme.palette').dark_base
-
-  ---@module 'Eva-Theme'
-  ---@type table<string, Eva-Theme.UserHighlightHandler>
-  local oh = {
-    ['@lsp.type.enumMember'] = function(v)
-      return {
-        fg = require('Eva-Theme.utils').is_dark(v)
-            and require('Eva-Theme.palette').dark_base.digit
-          or require('Eva-Theme.palette').light_base.digit,
-        bold = true,
-      }
-    end,
-    LspInlayHint = function(_, p) return { fg = p.comment, bg = 'none' } end,
-    CursorLine = function(_, p) return { bg = p.panelBackground } end,
-    ['@string.escape'] = function(_, _) return { bold = true } end,
-    ['@punctuation.special'] = function(_, _) return { bold = true } end,
-    ['@punctuation.special.typescript'] = function(_, _) return { bold = true } end,
-    ['@keyword.operator'] = function(_, p) return { fg = p.declarative } end,
-    ['@keyword.coroutine'] = function(_, p) return { fg = p.declarative } end,
-    SymbolUsageText = function(_, p) return { fg = p.comment, italic = false } end,
-    SnacksPickerMatch = function(_, p) return { fg = p.property, bold = true } end,
-    MatchParen = function(_, p) return { bg = 'none', fg = '#C57BDB' } end,
-    ['@lsp.type.keyword.lua'] = function() return {} end,
-  }
   require('Eva-Theme').setup {
     override_palette = {
-      dark = {
-        -- operator = dark.punctuation,
-        -- background = '#14161B',
-        typeparam = dark.primitive,
-      },
-      light = {
-        -- operator = light.punctuation,
-        typeparam = light.primitive,
-      },
+      dark = function(palette)
+        ---@type Eva-Theme.Palette
+        return {
+          typeparam = palette.dark_base.primitive,
+        }
+      end,
+      light = function(palette)
+        ---@type Eva-Theme.Palette
+        return {
+          typeparam = palette.light_base.primitive,
+        }
+      end,
     },
-    override_highlight = vim.tbl_extend(
-      'error',
-      oh,
-      vim.iter({ 'Error', 'Warn', 'Hint', 'Info' }):fold({}, function(final, curr)
-        final['DiagnosticVirtualText' .. curr] = function(_, _) return { bg = 'none' } end
-        return final
-      end)
-    ),
+    override_highlight = function(v, p)
+      ---@type table<string, vim.api.keyset.highlight>
+      local hl = {
+        ['@lsp.type.enumMember'] = {
+          fg = v:match('dark') and p.dark_base.digit or p.light_base.digit,
+          bold = true,
+        },
+        LspInlayHint = { fg = p.current.comment, bg = 'none' },
+        CursorLine = { bg = p.current.panelBackground },
+        ['@string.escape'] = { bold = true },
+        ['@punctuation.special'] = { bold = true },
+        ['@punctuation.special.typescript'] = { bold = true },
+        ['@keyword.operator'] = { fg = p.current.declarative },
+        ['@keyword.coroutine'] = { fg = p.current.declarative },
+        SymbolUsageText = { fg = p.current.comment, italic = false },
+        SnacksPickerMatch = { fg = p.current.property, bold = true },
+        MatchParen = { bg = 'none', fg = '#C57BDB' },
+        StatusLine = { bg = p.current.variable, fg = p.current.panelBackground },
+        StatusLineNC = { bg = p.current.comment, fg = p.current.panelBackground },
+        ['@lsp.type.keyword.lua'] = {},
+      }
+
+      return vim.tbl_extend(
+        'error',
+        vim.iter({ 'Error', 'Warn', 'Hint', 'Info' }):fold({}, function(final, curr)
+          final['DiagnosticVirtualText' .. curr] = { bg = 'none' }
+          return final
+        end),
+        hl
+      )
+    end,
   }
 end
 
+---@module 'lazy'
+---@type LazySpec
 return {
   os.getenv('eva') == nil and {
     'sharpchen/Eva-Theme.nvim',
     lazy = false,
     priority = 1000,
-    build = ':EvaCompile',
     config = setup,
   } or {
     dir = '~/projects/Eva-Theme.nvim',
     lazy = false,
     priority = 1000,
-    build = ':EvaCompile',
     config = setup,
   },
   {
     'Mofiqul/vscode.nvim',
+    lazy = false,
     priority = 1000,
   },
   {
     'habamax/vim-habamax',
+    lazy = false,
     priority = 1000,
+  },
+  {
+    'projekt0n/github-nvim-theme',
+    lazy = false,
+    priority = 1000,
+    name = 'github-theme',
   },
 }

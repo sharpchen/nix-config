@@ -278,7 +278,7 @@ vim.api.nvim_create_user_command('Readonly', function(args)
 end, { desc = 'make current buffer readonly' })
 
 if not IsGUI then
-  vim.api.nvim_create_autocmd({ 'UIEnter', 'ColorScheme', 'VimResume' }, {
+  vim.api.nvim_create_autocmd({ 'UIEnter', 'ColorScheme' }, {
     callback = function()
       local bg = require('utils.static').highlight.get('Normal').bg
       if bg then

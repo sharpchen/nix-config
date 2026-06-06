@@ -2,7 +2,7 @@
 ---@type LazySpec
 return {
   'catgoose/nvim-colorizer.lua',
-  event = 'BufRead',
+  event = 'BufReadPre', -- Pre is required otherwise it can't read config
   config = function()
     require('colorizer').setup {
       filetypes = {

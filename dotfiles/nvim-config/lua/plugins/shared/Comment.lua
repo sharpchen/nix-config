@@ -13,6 +13,7 @@ return {
     },
   },
   event = 'BufReadPost',
+  ft = 'markdown',
   init = function()
     vim.keymap.del({ 'n', 'x', 'o' }, 'gc')
     vim.keymap.del('n', 'gcc')
@@ -63,8 +64,11 @@ return {
         local sub_cs = pos
             and curr_cs:sub(1, pos - 1) .. ' ' .. suffix .. curr_cs:sub(pos)
           or curr_cs .. suffix
-        require('Comment.ft').set(ft, sub_cs)
-        require('Comment.api').insert.linewise.eol()
+
+        require('Comment.api').insert.linewise.eol {
+          pre_hook = function() return sub_cs end,
+        }
+
         vim.api.nvim_feedkeys(esc, 'x', false)
 
         --NOTE: remove trailing space after suffix caused by required %s
@@ -74,8 +78,6 @@ return {
           sub_cs_no_escape:gsub('%]%s+', '] ')
         )
         vim.api.nvim_set_current_line(trimmed)
-
-        require('Comment.ft').set(ft, cs)
       end
     end
 

@@ -161,4 +161,6 @@ return {
       { ins(1) }
     )
   ),
+  snip('ge', fmt('>= {}', { ins(0) })),
+  snip('le', fmt('<= {}', { ins(0) })),
 }
