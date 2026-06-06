@@ -149,8 +149,11 @@ function play {
             if ($ByDate) {
                 $playlist = $playlist | Sort-Object { (Get-Item -LiteralPath $_).CreationTime } -Descending
             }
-            $null = Start-Job { $input | mpv --force-window --playlist=- } -InputObject $playlist
+            if ($playlist.Count -gt 0) {
+                $null = Start-Job { $input | mpv --force-window --playlist=- } -InputObject $playlist
+            }
         } else {
+            $null = Get-Item -LiteralPath $LiteralPath -ErrorAction Stop
             $null = Start-Job { mpv --force-window $args } -ArgumentList $LiteralPath
         }
     }
@@ -320,15 +323,23 @@ function string {
         [string]$FormatSpecifier,
 
         [Parameter(ParameterSetName = 'Format')]
-        [string]$Format
+        [string]$Format,
+
+        [Alias('l')]
+        [switch]$LowerCase,
+        [Alias('u')]
+        [switch]$UpperCase
     )
 
     begin {
         $ErrorActionPreference = 'Stop'
+        if ($PSBoundParameters.ContainsKey('LowerCase') -and $PSBoundParameters.ContainsKey('UpperCase')) {
+            Write-Error 'Cannot bind both -LowerCase and -UpperCase switch'
+        }
     }
 
     process {
-        switch($PSCmdlet.ParameterSetName) {
+        $string = switch($PSCmdlet.ParameterSetName) {
             FormatSpecifier {
                 if ($PSBoundParameters.ContainsKey('FormatSpecifier')) {
                     $InputObject.ToString($FormatSpecifier)
@@ -339,6 +350,15 @@ function string {
             Format {
                 $Format -f $InputObject
             }
+        }
+
+        # TODO: handle culture variances?
+        if ($UpperCase) {
+            $string.ToUpper()
+        } elseif ($LowerCase) {
+            $string.ToLower()
+        } else {
+            $string
         }
     }
 }
@@ -534,9 +554,11 @@ function cptree {
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 0, Mandatory)]
         [string]$LiteralPath,
+
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 1, Mandatory)]
         [string]$Destination,
+
         [switch]$ExcludeRoot,
         [switch]$Force
     )
@@ -800,7 +822,15 @@ function pow {
 }
 
 function expand {
-    $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($args[0])
+    param(
+        [ValidateScript({ Test-Path $_ -IsValid })]
+        [Parameter(ValueFromPipeline)]
+        [string]$Path
+    )
+
+    process {
+        $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path)
+    }
 }
 
 function replace {
@@ -850,7 +880,82 @@ function def {
         [string]$Command
     )
 
-    $cmd = Get-Command $Command -ErrorAction Stop
+    $cmd = Get-Command $Command -All -ErrorAction Stop
 
     $cmd.Definition
+}
+
+function timespan {
+    param(
+        [ValidatePattern('(\d+:)+\d')]
+        [Parameter(ValueFromPipeline)]
+        [string]$InputString
+    )
+
+    process {
+        $splits = $InputString.Split(':')
+
+        if ($splits.Count -eq 3) {
+            # hh:mm:ss where hh can be larger than 23
+            $hour, $min, $sec = $splits
+            [timespan]::new($hour, $min, $sec)
+        } else {
+            throw 'not implemented for this count of components'
+        }
+    }
+}
+
+function mul {
+    [Alias('times')]
+    param(
+        [Parameter(ValueFromPipeline)]
+        $InputObject,
+        [Parameter(Position = 1, Mandatory)]
+        $Value
+    )
+
+    process {
+        $InputObject * $Value
+    }
+}
+
+function sub {
+    [Alias('minus')]
+    param(
+        [Parameter(ValueFromPipeline)]
+        $InputObject,
+        [Parameter(Position = 1, Mandatory)]
+        $Value
+    )
+
+    process {
+        $InputObject - $Value
+    }
+}
+
+function add {
+    [Alias('plus')]
+    param(
+        [Parameter(ValueFromPipeline)]
+        $InputObject,
+        [Parameter(Position = 1, Mandatory)]
+        $Value
+    )
+
+    process {
+        $InputObject + $Value
+    }
+}
+
+function div {
+    param(
+        [Parameter(ValueFromPipeline)]
+        $InputObject,
+        [Parameter(Position = 1, Mandatory)]
+        $Value
+    )
+
+    process {
+        $InputObject / $Value
+    }
 }

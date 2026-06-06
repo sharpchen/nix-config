@@ -1,9 +1,10 @@
 Set-Alias reboot Restart-Computer
 Set-Alias uptime Get-Uptime
 
-function which {
-    param ([string]$Name)
-    (Get-Command $Name -CommandType Application).Source
+if ($IsLegacy) {
+    'cat', 'curl', 'wget', 'tee' | ForEach-Object { Remove-Item "alias:$_" -ErrorAction Ignore }
+} else {
+    Remove-Item alias:tee -ErrorAction Ignore
 }
 
 function vs {
