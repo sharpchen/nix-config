@@ -1,4 +1,4 @@
-$filecomplete = {
+$script:filecomplete = {
     param(
         $commandName,
         $parameterName,
@@ -10,7 +10,7 @@ $filecomplete = {
         Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
-$filecompletenative = {
+$script:filecompletenative = {
     param(
         $wordToComplete,
         $commandAst,
@@ -20,7 +20,7 @@ $filecompletenative = {
         Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
-$foldercomplete = {
+$script:foldercomplete = {
     param(
         $commandName,
         $parameterName,
@@ -32,7 +32,7 @@ $foldercomplete = {
         Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
-$foldercompletenative = {
+$script:foldercompletenative = {
     param(
         $wordToComplete,
         $commandAst,
@@ -43,7 +43,7 @@ $foldercompletenative = {
         Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
-$cmdcomplete = {
+$script:cmdcomplete = {
     param(
         $commandName,
         $parameterName,
@@ -54,7 +54,7 @@ $cmdcomplete = {
     [System.Management.Automation.CompletionCompleters]::CompleteCommand($wordToComplete)
 }
 
-$cmdcompletenative = {
+$script:cmdcompletenative = {
     param(
         $wordToComplete,
         $commandAst,
@@ -63,7 +63,7 @@ $cmdcompletenative = {
     [System.Management.Automation.CompletionCompleters]::CompleteCommand($wordToComplete)
 }
 
-$dotnetcomplete = {
+$script:dotnetcomplete = {
     param(
         $wordToComplete,
         $commandAst,

@@ -11,6 +11,7 @@ if ($IsWindows -or $IsLegacy) {
 
 if ($IsLinux -or $IsMacOS) {
     $env:MANPAGER = 'nvim +Man!'
+    $env:INVALID_FILENAME_CHARS = "`0/"
 }
 
 if (Test-Path ~/.fzfrc) {

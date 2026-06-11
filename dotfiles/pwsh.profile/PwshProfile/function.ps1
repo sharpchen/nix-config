@@ -900,7 +900,7 @@ function timespan {
             $hour, $min, $sec = $splits
             [timespan]::new($hour, $min, $sec)
         } else {
-            throw 'not implemented for this count of components'
+            Write-Error 'not implemented for this count of components'
         }
     }
 }

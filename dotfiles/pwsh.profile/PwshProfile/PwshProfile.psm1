@@ -14,4 +14,8 @@ if ($IsLinux) {
     . "$PSScriptRoot/linux.ps1"
 }
 
-Export-ModuleMember -Function * -Alias *
+if ($IsCoreCLR -and (Get-Command ffmpeg -ErrorAction Ignore)) {
+    . "$PSScriptRoot/ffmpeg.ps1"
+}
+
+Export-ModuleMember -Function * -Alias * -Variable *
