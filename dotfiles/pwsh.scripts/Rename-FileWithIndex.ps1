@@ -14,7 +14,7 @@ param (
 begin {
     $idxPattern = '^\d+'
     $orderedFiles = $Files | Sort-Object { [int][regex]::Match($_.Name, $idxPattern).Value }
-    $invalidChar = [regex]::Escape(':"<>|?*/\')
+    $invalidChar = [regex]::Escape($env:INVALID_FILENAME_CHARS)
 }
 
 end {
@@ -28,7 +28,7 @@ end {
     $maxIdxDigitCount = [regex]::Match($maxFile.Name, $idxPattern).Value.Length
 
     if ($orderedFiles.Count -ne $names.Count) {
-        throw "Count of names and files doesn't match"
+        Write-Error "Count of names and files doesn't match" -ErrorAction Stop
     }
 
     for ($idx = 0; $idx -lt $orderedFiles.Count; $idx++) {
