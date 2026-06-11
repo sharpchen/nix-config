@@ -18,6 +18,7 @@ local function setup()
       -- 'markdown'
     }),
     on_attach = function(client, bufnr)
+      lsp.event.disable_formatter(client)
       if vim.bo[bufnr].filetype == 'markdown' then
         lsp.event.disable_formatter(client)
         vim.schedule(function() vim.lsp.stop_client(client.id) end)

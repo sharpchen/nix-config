@@ -17,18 +17,19 @@ local function make_comment(word)
   return snip(
     word,
     dyn(1, function()
-      local ok, cs = pcall(
-        function()
-          return vim.filetype.get_option(
-            require('utils.static').buf.cursor_ft(),
-            'commentstring'
-          )
-        end
-      )
+      local ok, ft = pcall(require('utils.static').buf.cursor_ft)
+
+      if ok then
+        ok, cs = pcall(vim.filetype.get_option, ft, 'commentstring')
+      end
+
       ---@cast cs string
-      if not ok then return sn(nil, {}) end
-      local format = cs:gsub('%%s', word:upper() .. ': {}'):trim()
-      return sn(nil, fmt(format, { ins(1) }))
+      if not ok or cs == '' then
+        return sn(nil, {})
+      else
+        local format = cs:gsub('%%s', word:upper() .. ': {}'):trim()
+        return sn(nil, fmt(format, { ins(1) }))
+      end
     end)
   )
 end

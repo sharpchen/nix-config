@@ -18,7 +18,8 @@ return {
         },
         jq = {
           command = 'jq',
-          args = function(_, ctx) return { '--indent', ctx.shiftwidth, '.', '$FILENAME' } end,
+          stdin = true,
+          args = function(_, ctx) return { '--indent', ctx.shiftwidth, '.' } end,
         },
         shfmt = {
           inherit = true,

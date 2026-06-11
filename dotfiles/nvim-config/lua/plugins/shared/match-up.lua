@@ -5,7 +5,7 @@ return {
   'andymass/vim-matchup',
   -- NOTE: remove lazy-loading if anything goes wrong
   event = 'BufRead',
-  -- lazy = false,
+  lazy = false,
   config = function()
     ---@diagnostic disable-next-line: param-type-mismatch
     require('match-up').setup {
@@ -13,7 +13,7 @@ return {
         stopline = 500,
       },
       matchparen = {
-        enabled = 0,
+        -- enabled = 0,
         offscreen = {
           method = 'status_manual',
         },
@@ -22,6 +22,11 @@ return {
         keepjumps = true,
       },
     }
+
+    -- this requires non-lazy loading
+    vim.api.nvim_create_autocmd('ColorScheme', {
+      callback = function(ctx) vim.api.nvim_set_hl(0, 'MatchWord', {}) end,
+    })
 
     vim.api.nvim_create_autocmd('FileType', {
       pattern = { 'xaml', 'msbuild', 'slnx', 'axaml' },

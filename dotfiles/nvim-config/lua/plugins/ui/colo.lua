@@ -30,7 +30,6 @@ local function setup()
         ['@keyword.coroutine'] = { fg = p.current.declarative },
         SymbolUsageText = { fg = p.current.comment, italic = false },
         SnacksPickerMatch = { fg = p.current.property, bold = true },
-        MatchParen = { bg = 'none', fg = '#C57BDB' },
         StatusLine = { bg = p.current.variable, fg = p.current.panelBackground },
         StatusLineNC = { bg = p.current.comment, fg = p.current.panelBackground },
         ['@lsp.type.keyword.lua'] = {},

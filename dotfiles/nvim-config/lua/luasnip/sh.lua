@@ -21,4 +21,5 @@ return {
       { ins(1, 'cmd'), ins(0) }
     )
   ),
+  snip('ne', fmt('!= {}', { ins(0) })),
 }

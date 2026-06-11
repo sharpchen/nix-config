@@ -19,4 +19,7 @@ return {
   snip('LL', fmt('|> {}', { ins(0) })),
   snip('hh', fmt('<- {}', { ins(0) })),
   snip('HH', fmt('<| {}', { ins(0) })),
+  snip('ge', fmt('>= {}', { ins(0) })),
+  snip('le', fmt('<= {}', { ins(0) })),
+  snip('ne', fmt('<> {}', { ins(0) })),
 }

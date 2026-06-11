@@ -23,11 +23,12 @@ return {
         end,
       })
 
-      if lsp.use_vtsls then
-        require('plugins.language-service.lsp.vtsls')
-      else
-        lsp.setup('tsgo')
-      end
+      lsp.setup('tsgo', {
+        on_attach = function(client)
+          if not vim.lsp.is_enabled('oxfmt') then lsp.event.disable_formatter(client) end
+          lsp.event.disable_semantic(client)
+        end,
+      })
 
       lsp.setup('taplo')
       lsp.setup('quick_lint_js', {

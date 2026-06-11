@@ -3,7 +3,8 @@
 return {
   'HiPhish/rainbow-delimiters.nvim',
   event = 'BufReadPost',
-  enabled = not IsFirenvim,
+  enabled = false,
+  -- enabled = not IsFirenvim,
   submodules = false,
   config = function()
     ---@type rainbow_delimiters.config

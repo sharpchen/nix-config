@@ -66,4 +66,5 @@ return {
   snip('ll', fmt('=> {}', { ins(0) })),
   snip('ge', fmt('>= {}', { ins(0) })),
   snip('le', fmt('<= {}', { ins(0) })),
+  snip('ne', fmt('!= {}', { ins(0) })),
 }
