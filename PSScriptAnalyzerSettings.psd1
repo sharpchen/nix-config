@@ -1,3 +1,4 @@
 @{
     IncludeRules = @('PSAvoidTrailingWhitespace')
+    ExcludeRules = @('PSUseApprovedVerbs')
 }
