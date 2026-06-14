@@ -650,6 +650,7 @@ function hisdel {
             $Pattern = [regex]::Escape($Pattern)
         }
     }
+
     end {
         switch -Regex -File $history {
             $pattern {
@@ -661,6 +662,29 @@ function hisdel {
         }
         Set-Content -Path $history -Value $filtered
         Write-Host "hisdel: $count entries deleted." -ForegroundColor Yellow
+    }
+}
+
+function hisget {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Pattern,
+        [switch]$Escape
+    )
+
+    begin {
+        $history = (Get-PSReadLineOption).HistorySavePath
+        if ($Escape) {
+            $Pattern = [regex]::Escape($Pattern)
+        }
+    }
+
+    end {
+        switch -Regex -File $history {
+            $pattern {
+                $_
+            }
+        }
     }
 }
 

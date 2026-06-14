@@ -2,7 +2,9 @@ $script:braces = ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}'), ('<
 
 Set-PSReadLineOption -EditMode Vi
 
-Set-PSReadLineKeyHandler -Key Tab -Function Complete
+# Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }
+Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 Set-PSReadLineKeyHandler -Key 'Ctrl+p' -Function HistorySearchBackward
@@ -172,6 +174,3 @@ Set-PSReadLineKeyHandler -Chord ' ,p' -ViMode Command -ScriptBlock {
         [Microsoft.PowerShell.PSConsoleReadLine]::Insert((Get-Clipboard -Raw))
     }
 }
-
-Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }
-Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
