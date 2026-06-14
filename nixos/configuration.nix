@@ -30,7 +30,12 @@
   time.timeZone = "Asia/Shanghai";
   networking.timeServers = lib.mkBefore [ "ntp.ntsc.ac.cn" ];
 
-  programs.nix-ld.enable = true;
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+    ];
+  };
 
   system.stateVersion = "24.11"; # you don't have to change this value
 }
