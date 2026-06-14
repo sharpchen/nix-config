@@ -21,6 +21,9 @@
         git fetch $remote \"refs/pull/$pr_id/head:pr_$pr_id\"; \
     }; f"
 
+[log]
+    date = iso
+
 [url "git@github.com:"]
     insteadOf = https://github.com/
 [fetch]
