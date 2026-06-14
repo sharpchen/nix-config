@@ -25,7 +25,7 @@ return {
 
       lsp.setup('tsgo', {
         on_attach = function(client)
-          if not vim.lsp.is_enabled('oxfmt') then lsp.event.disable_formatter(client) end
+          if vim.lsp.is_enabled('oxfmt') then lsp.event.disable_formatter(client) end
           lsp.event.disable_semantic(client)
         end,
       })
@@ -49,7 +49,9 @@ return {
       lsp.setup('cssls')
       lsp.setup('html')
       lsp.setup('oxlint')
-      lsp.setup('oxfmt')
+      lsp.setup('oxfmt', {
+        workspace_required = false,
+      })
       lsp.setup('vimls')
       lsp.setup('postgres_lsp')
       lsp.setup('marksman')

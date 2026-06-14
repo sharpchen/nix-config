@@ -11,6 +11,7 @@ return {
     require('match-up').setup {
       treesitter = {
         stopline = 500,
+        disable_virtual_text = true,
       },
       matchparen = {
         -- enabled = 0,

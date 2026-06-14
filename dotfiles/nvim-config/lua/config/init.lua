@@ -22,12 +22,7 @@ require('config.lazy')
 require('utils.lsp')
 require('utils.dap')
 
-local ok = false
-local count = 0
-while not ok and count <= 5 do
-  count = count + 1
-  local colo = Env.light and Random { 'xamabah', 'Eva-Light', 'github_light_default' }
-    or Random { 'Eva-Dark', 'habamax', 'vscode' }
+local colo = Env.light and Random { 'xamabah', 'Eva-Light' }
+  or Random { 'Eva-Dark', 'habamax', 'vscode' }
 
-  ok = pvimcmd { cmd = 'colo', args = { colo } }
-end
+if not pvimcmd { cmd = 'colo', args = { colo } } then vim.cmd.colo('default') end
