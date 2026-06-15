@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   home.packages = with pkgs; [
     nodejs_22
@@ -14,10 +14,5 @@
     vscode-js-debug
   ];
 
-  home.file.".npmrc" = {
-    text = # ini
-      ''
-        registry=https://registry.npmmirror.com
-      '';
-  };
+  home.file.".npmrc".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.npmrc";
 }

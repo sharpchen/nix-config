@@ -128,3 +128,5 @@ if (& { scoop prefix windows-terminal *> $null; 0 -eq $LASTEXITCODE }) {
 
 mklink -SpecialParent APPDATA -ChildPath 'zed/settings.json' -Target $PSScriptRoot/dotfiles/zed.settings.json
 mklink -SpecialParent APPDATA -ChildPath 'zed/keymap.json' -Target $PSScriptRoot/dotfiles/zed.keymap.json
+mklink -SpecialParent APPDATA -ChildPath 'uv/uv.toml' -Target $PSScriptRoot/dotfiles/uv.toml
+mklink ~/.npmrc $PSScriptRoot/dotfiles/.npmrc

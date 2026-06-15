@@ -1,0 +1,24 @@
+# default mirror
+[[index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+default = true
+
+# fallback to other mirrors
+[[index]]
+url = "https://pypi.mirrors.ustc.edu.cn/simple/"
+
+[[index]]
+url = "https://mirrors.volces.com/pypi/simple/"
+
+[[index]]
+url = "https://mirrors.cloud.tencent.com/pypi/simple/"
+
+[[index]]
+url = "https://mirrors.aliyun.com/pypi/simple/"
+
+[[index]]
+url = "https://mirrors.huaweicloud.com/repository/pypi/simple/"
+
+# pytorch mirror
+[[index]]
+url = "https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/"
