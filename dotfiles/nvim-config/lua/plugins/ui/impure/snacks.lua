@@ -166,7 +166,7 @@ return {
           end,
           confirm = function(self, item, _)
             self:close()
-            vim.fn.chdir(vim.fs.joinpath(lazy_path, item.file))
+            vim.cmd.tchdir(vim.fs.joinpath(lazy_path, item.file))
           end,
         }
       end, { desc = 'search plugin source file installed by lazy' })
@@ -186,7 +186,7 @@ return {
           layout = { preset = 'select' },
           confirm = function(self, item, _)
             self:close()
-            vim.fn.chdir(vim.fs.joinpath(cwd, item.file))
+            vim.cmd.tchdir(vim.fs.joinpath(cwd, item.file))
           end,
         }
       end, { desc = 'find projects' })
@@ -266,12 +266,22 @@ return {
           end
         )
       end
-      vim.keymap.set(
-        'n',
-        '<A-c>',
-        function() return has_dock() and '<cmd>lua Snacks.bufdelete()<CR>' or ':bd<CR>' end,
-        { silent = true, expr = true }
-      )
+
+      local function tab_has_only_unamed_buf()
+        return vim
+          .iter(vim.fn.tabpagebuflist())
+          :all(function(buf) return vim.api.nvim_buf_get_name(buf) == '' end)
+      end
+
+      vim.keymap.set('n', '<A-c>', function()
+        if has_dock() then
+          return '<cmd>lua Snacks.bufdelete()<CR>'
+        elseif vim.fn.tabpagenr('$') > 1 and not tab_has_only_unamed_buf() then
+          return '<cmd>lua Snacks.bufdelete()<CR>'
+        else
+          return ':bd<CR>'
+        end
+      end, { silent = true, expr = true })
 
       vim.keymap.set(
         'n',

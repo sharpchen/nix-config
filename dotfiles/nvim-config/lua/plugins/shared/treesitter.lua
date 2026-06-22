@@ -117,6 +117,30 @@ return {
             vim.cmd('normal! zz')
           end
         end)
+
+        vim.keymap.set(
+          { 'n', 'x', 'o' },
+          ']z',
+          function()
+            require('nvim-treesitter-textobjects.move').goto_next_start(
+              '@comment.chunk',
+              'textobjects'
+            )
+          end,
+          { desc = 'goto next comment' }
+        )
+
+        vim.keymap.set(
+          { 'n', 'x', 'o' },
+          '[z',
+          function()
+            require('nvim-treesitter-textobjects.move').goto_previous_start(
+              '@comment.chunk',
+              'textobjects'
+            )
+          end,
+          { desc = 'goto previous comment' }
+        )
       end
     end,
   },

@@ -325,3 +325,26 @@ vim.api.nvim_create_user_command(
   end,
   { desc = 'reverse selected lines', range = true }
 )
+
+vim.api.nvim_create_autocmd('CmdlineEnter', {
+  pattern = { '/', '\\?' },
+  callback = function() vim.opt.hlsearch = true end,
+})
+
+vim.api.nvim_create_autocmd('CmdlineLeave', {
+  pattern = { '/', '\\?' },
+  callback = function() vim.opt.hlsearch = false end,
+})
+
+-- vim.treesitter.query.add_predicate('foo?', function(match, id, buf_or_str, expr, metadata)
+--   local capture_id = expr[2]
+--   local pattern = expr[3]
+--   local nodes = match[capture_id]
+--
+--   if not nodes or #nodes == 0 then return false end
+--
+--   for _, node in ipairs(nodes) do
+--   end
+--
+--   return true
+-- end, { force = false })

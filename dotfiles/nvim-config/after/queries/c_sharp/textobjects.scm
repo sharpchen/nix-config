@@ -1,5 +1,11 @@
 ; inherits: c_sharp
 
+((comment) @comment.chunk
+  (#lua-match? @comment.chunk "^/%*"))
+
+((comment)+ @comment.chunk
+  (#not-any-lua-match? @comment.chunk "^/%*"))
+
 ; already merged to nvim-treesitter-textobjects:
 ; ; method without body(abstract method/metadata)
 ; (method_declaration

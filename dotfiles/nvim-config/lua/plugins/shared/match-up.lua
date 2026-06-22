@@ -3,7 +3,8 @@
 ---@type LazySpec
 return {
   'andymass/vim-matchup',
-  -- NOTE: remove lazy-loading if anything goes wrong
+  -- enabled = false,
+  -- -- NOTE: remove lazy-loading if anything goes wrong
   event = 'BufRead',
   lazy = false,
   config = function()
@@ -22,11 +23,25 @@ return {
       motion = {
         keepjumps = true,
       },
+      text_obj = {
+        enabled = 0,
+      },
     }
 
     -- this requires non-lazy loading
     vim.api.nvim_create_autocmd('ColorScheme', {
       callback = function(ctx) vim.api.nvim_set_hl(0, 'MatchWord', {}) end,
+    })
+
+    -- disable on ps1 as it's laggy
+    -- TODO: maybe optionally enable for languages don't use {} for scoping
+    -- should set opts.matchparen.enabled = 0
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = { 'ps1' },
+      callback = function(ctx)
+        vim.b.matchup_matchparen_enabled = 0
+        vim.b.matchup_matchparen_fallback = 0
+      end,
     })
 
     vim.api.nvim_create_autocmd('FileType', {
