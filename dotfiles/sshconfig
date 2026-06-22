@@ -1,7 +1,18 @@
 HashKnownHosts yes
 
+# NOTE use github.com as default host
+# because default ssh clone url uses this.
 Host github.com
-    Hostname ssh.github.com
     User git
+    HostName ssh.github.com
     Port 443 # standard HTTPS port
+    IdentityFile ~/.ssh/id_ed25519_github_main
+    IdentitiesOnly yes # do not fallback to other keys
 
+# NOTE: to test connection, run `ssh -T git@github-pvt`
+Host github-pvt
+    User git
+    HostName ssh.github.com
+    Port 443 # standard HTTPS port
+    IdentityFile ~/.ssh/id_ed25519_github_pvt
+    IdentitiesOnly yes # do not fallback to other keys
