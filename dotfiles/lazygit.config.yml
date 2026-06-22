@@ -63,11 +63,11 @@ gui:
   # Format used when displaying time e.g. commit time.
 
   # Uses Go's time format syntax: https://pkg.go.dev/time#Time.Format
-  timeFormat: 02 Jan 06
+  timeFormat: 2006-01-02 15:04:05
   # Format used when displaying time if the time is less than 24 hours ago.
 
   # Uses Go's time format syntax: https://pkg.go.dev/time#Time.Format
-  shortTimeFormat: 3:04PM
+  shortTimeFormat: 15:04:05
   # Config relating to colors and styles.
 
   # See https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#color-attributes
@@ -93,7 +93,8 @@ gui:
 
     # See https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#highlighting-the-selected-line
     selectedLineBgColor:
-      - blue
+      - default
+      # - white
     # Background color of selected line when view doesn't have focus.
 
     inactiveViewSelectedLineBgColor:
@@ -121,7 +122,7 @@ gui:
     # Default text color
 
     defaultFgColor:
-      - default
+      - white
   # Config relating to the commit length indicator
 
   commitLength:
@@ -549,7 +550,7 @@ keybinding:
     markCommitAsBaseForRebase: B
     tagCommit: T
     checkoutCommit: <space>
-    resetCherryPick: <c-R>
+    # resetCherryPick: <ctrl+shift+t>
     copyCommitAttributeToClipboard: "y"
     openLogMenu: <c-l>
     openInBrowser: o
