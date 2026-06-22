@@ -46,27 +46,7 @@ $global:PSDefaultParameterValues = @{
     'Update-Help:UICulture'            = 'en-US'
     'Update-Help:ProgressAction'       = 'SilentlyContinue'
     'Invoke-WebRequest:ProgressAction' = 'SilentlyContinue'
-}
-
-function prompt {
-    $left = "`e[1;32m"
-    $right = "`e[0m"
-    if ($IsLinux -or $IsMacOS) {
-        $ps1 = "PS $($pwd.ProviderPath -replace '/home/[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1)) "
-    } else {
-        $pattern = 'C:\\Users\\[a-zA-Z0-9]+'
-        $path = if ($pwd.ProviderPath -match $pattern) {
-            "~$($pwd.ProviderPath -replace $pattern, [string]::Empty)"
-        } else {
-            $pwd.ProviderPath
-        }
-        $ps1 = "PS $path$('>' * ($nestedPromptLevel + 1)) "
-    }
-    if ($PSVersionTable.PSEdition -eq 'Core') {
-        return $left + $ps1 + $right
-    } else {
-        return $ps1
-    }
+    'Clear-RecycleBin:ProgressAction'  = 'SilentlyContinue'
 }
 
 # Set-PSReadLineOption -PredictionViewStyle ListView

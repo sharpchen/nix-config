@@ -1,4 +1,4 @@
-$script:filecomplete = {
+$__filecomplete = {
     param(
         $commandName,
         $parameterName,
@@ -10,7 +10,7 @@ $script:filecomplete = {
         Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
-$script:filecompletenative = {
+$__filecompletenative = {
     param(
         $wordToComplete,
         $commandAst,
@@ -20,7 +20,7 @@ $script:filecompletenative = {
         Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
-$script:foldercomplete = {
+$__foldercomplete = {
     param(
         $commandName,
         $parameterName,
@@ -32,7 +32,7 @@ $script:foldercomplete = {
         Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
-$script:foldercompletenative = {
+$__foldercompletenative = {
     param(
         $wordToComplete,
         $commandAst,
@@ -43,7 +43,7 @@ $script:foldercompletenative = {
         Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
 }
 
-$script:cmdcomplete = {
+$__cmdcomplete = {
     param(
         $commandName,
         $parameterName,
@@ -54,7 +54,7 @@ $script:cmdcomplete = {
     [System.Management.Automation.CompletionCompleters]::CompleteCommand($wordToComplete)
 }
 
-$script:cmdcompletenative = {
+$__cmdcompletenative = {
     param(
         $wordToComplete,
         $commandAst,
@@ -63,7 +63,7 @@ $script:cmdcompletenative = {
     [System.Management.Automation.CompletionCompleters]::CompleteCommand($wordToComplete)
 }
 
-$script:dotnetcomplete = {
+$__dotnetcomplete = {
     param(
         $wordToComplete,
         $commandAst,
@@ -81,15 +81,15 @@ $script:dotnetcomplete = {
 }
 
 # native complete
-Register-ArgumentCompleter -CommandName dn -ScriptBlock $dotnetcomplete
-Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock $dotnetcomplete
-Register-ArgumentCompleter -Native -CommandName ll -ScriptBlock $foldercompletenative
-Register-ArgumentCompleter -Native -CommandName file -ScriptBlock $filecompletenative
-Register-ArgumentCompleter -Native -CommandName which -ScriptBlock $cmdcompletenative
+Register-ArgumentCompleter -CommandName dn -ScriptBlock $__dotnetcomplete
+Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock $__dotnetcomplete
+Register-ArgumentCompleter -Native -CommandName ll -ScriptBlock $__foldercompletenative
+Register-ArgumentCompleter -Native -CommandName file -ScriptBlock $__filecompletenative
+Register-ArgumentCompleter -Native -CommandName which -ScriptBlock $__cmdcompletenative
 
 # non-native complete
-Register-ArgumentCompleter -CommandName rd -ParameterName LiteralPath -ScriptBlock $foldercomplete
-Register-ArgumentCompleter -CommandName unpack -ParameterName LiteralPath -ScriptBlock $filecomplete
-Register-ArgumentCompleter -CommandName unpack -ParameterName Destination -ScriptBlock $foldercomplete
-Register-ArgumentCompleter -CommandName epubpack -ParameterName Folder -ScriptBlock $foldercomplete
-Register-ArgumentCompleter -CommandName play -ParameterName LiteralPath -ScriptBlock $filecomplete
+Register-ArgumentCompleter -CommandName rd -ParameterName LiteralPath -ScriptBlock $__foldercomplete
+Register-ArgumentCompleter -CommandName unpack -ParameterName LiteralPath -ScriptBlock $__filecomplete
+Register-ArgumentCompleter -CommandName unpack -ParameterName Destination -ScriptBlock $__foldercomplete
+Register-ArgumentCompleter -CommandName epubpack -ParameterName Folder -ScriptBlock $__foldercomplete
+Register-ArgumentCompleter -CommandName play -ParameterName LiteralPath -ScriptBlock $__filecomplete

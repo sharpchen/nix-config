@@ -18,4 +18,13 @@ if ($IsCoreCLR -and (Get-Command ffmpeg -ErrorAction Ignore)) {
     . "$PSScriptRoot/ffmpeg.ps1"
 }
 
-Export-ModuleMember -Function * -Alias * -Variable *
+$export = @{
+    Function = Get-ChildItem function: |
+        Where-Object { $_.Source -eq 'PwshProfile' -and $_.Name -notmatch '^__' } |
+        ForEach-Object Name
+
+    Variable = Get-Variable -Scope Script | Where-Object Name -NotMatch '^__' |  ForEach-Object Name
+    Alias    = '*'
+}
+
+Export-ModuleMember @export

@@ -4,9 +4,26 @@
 
 using namespace System.Collections.Generic
 
-$script:ff_flags = '-loglevel', 'error', '-hide_banner'
+$script:__ff_flags = '-loglevel', 'error', '-hide_banner'
 # flags for concat demuxer -f concat only, not concat filter!
-$script:ff_concat_flags = $script:ff_flags + '-safe', '0'
+$script:__ff_concat_flags = $script:__ff_flags + '-safe', '0'
+
+function __media-type-info {
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Path
+    )
+
+    $null = Get-Item $Path -ErrorAction Stop
+    $null = Get-Command file -ErrorAction Stop
+
+    $mimetype = file $Path --mime-type -b
+
+    [pscustomobject]@{
+        IsVideo = $mimetype -match '^video/'
+        IsAudio = $mimetype -match '^audio/'
+    }
+}
 
 function ff-concat {
     [CmdletBinding(DefaultParameterSetName = 'SameCodec')]
@@ -78,7 +95,7 @@ function ff-concat {
                 $filterComplex += "concat=n=$($files.Count):v=1:a=1[vout][aout]"
 
                 # use -map to explicitly specify output streams
-                ffmpeg @script:ff_flags `
+                ffmpeg @script:__ff_flags `
                     @inputFlags `
                     -filter_complex $filterComplex `
                     -map '[vout]' -map '[aout]' $OutFile `
@@ -95,7 +112,7 @@ function ff-concat {
             }
             default {
                 # this approach requires all medias have same codec
-                ffmpeg @script:ff_concat_flags `
+                ffmpeg @script:__ff_concat_flags `
                     -f concat `
                     -i $tempFile `
                     -c copy `
@@ -149,7 +166,7 @@ function ff-slide {
     end {
         "file '$lastFile'" >> $tempFile # has to add last file again without duration
 
-        ffmpeg @script:ff_concat_flags `
+        ffmpeg @script:__ff_concat_flags `
             -f concat `
             -i $tempFile `
             -vsync vfr `
@@ -183,7 +200,7 @@ function ff-cat-stream {
     }
 
     process {
-        ffprobe @script:ff_flags -show_streams -of json -i $Path | ConvertFrom-Json | ForEach-Object streams
+        ffprobe @script:__ff_flags -show_streams -of json -i $Path | ConvertFrom-Json | ForEach-Object streams
     }
 }
 
@@ -199,7 +216,7 @@ function ff-cat-format {
     }
 
     process {
-        ffprobe @script:ff_flags -show_format -of json -i $Path | ConvertFrom-Json | ForEach-Object format
+        ffprobe @script:__ff_flags -show_format -of json -i $Path | ConvertFrom-Json | ForEach-Object format
     }
 }
 
@@ -224,7 +241,7 @@ function ff-audio_with_poster {
     # see: https://trac.ffmpeg.org/wiki/Slideshow#Addingaudio
     # -r 1 meaning output video has 1 framerate
     # you might need -strict -2 if the audio format isn't supported in mp4
-    ffmpeg @script:ff_flags `
+    ffmpeg @script:__ff_flags `
         -loop 1 `
         -i $Image `
         -i $Audio `
@@ -283,13 +300,12 @@ function ff-resample {
     )
 
     $null = Get-Command ffmpeg -ErrorAction Stop
-    $null = Get-Command file -ErrorAction Stop
 
-    $mimetype = file $InputObject --mime-type -b
+    $mediainfo = __media-type-info $InputObject
     # use -c:a flac probably because flac can handle higher sample rate
     $flags = '-i', $InputObject
 
-    if ($mimetype -match 'video') {
+    if ($mediainfo.IsVideo) {
         $flags += '-c:v', 'copy'
     }
 
@@ -299,6 +315,41 @@ function ff-resample {
         -ar $SampleRate `
         $OutFile `
         2>variable:err 1>$null
+
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error ($err -join [System.Environment]::NewLine) -ErrorAction Stop
+    }
+}
+
+function ff-silent {
+    param (
+        [Alias('FullName', 'i')]
+        [Parameter(Mandatory)]
+        [string]$InputObject,
+
+        [ValidateScript({ Test-Path $_ -IsValid })]
+        [Alias('o')]
+        [Parameter(Mandatory)]
+        [string]$OutFile
+    )
+
+    $null = Get-Command ffmpeg -ErrorAction Stop
+
+    $mediainfo = __media-type-info $InputObject
+
+    $flags = '-i', $InputObject
+
+    if ($mediainfo.IsVideo) {
+        # -an removes audio stream entirely
+        $flags += '-c:v', 'copy', '-an'
+    } elseif ($mediainfo.IsAudio) {
+        # using filter to keep the audio stream but silent it
+        # otherwise the audio should have no length at all
+        $flags += '-af', 'volume=0' 
+    }
+
+
+    ffmpeg @script:__ff_flags @flags $OutFile 2>variable:err 1>$null
 
     if ($LASTEXITCODE -ne 0) {
         Write-Error ($err -join [System.Environment]::NewLine) -ErrorAction Stop

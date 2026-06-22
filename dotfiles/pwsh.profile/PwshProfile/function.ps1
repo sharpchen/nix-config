@@ -408,8 +408,10 @@ function default {
 
 function get {
     param(
+        [ValidateScript({ $_ -is [string] -or $_ -is [int] })]
         [Parameter(Position = 0, Mandatory)]
-        [string]$PropertyPath,
+        $PropertyPath,
+
         [Parameter(ValueFromPipeline, Mandatory)]
         [psobject]$InputObject
     )
@@ -421,17 +423,28 @@ function get {
         $val = $InputObject
 
         $count = 0
-        while (
-            $count -lt $propertyNames.Count -and
-            $null -ne ($prop = $val."$($propertyNames[$count])")
-        ) {
-            if ($propertyNames[$count] -eq 'GetType') {
-                $val = $val.GetType()
-            } elseif ($prop -is [System.Management.Automation.PSMethod]) {
-                $val = $prop.Invoke()
+        while ($count -lt $propertyNames.Count) {
+            $propName = $propertyNames[$count]
+            # parsing index
+            $refint = $null
+            if ([int]::TryParse($propName, [ref]$refint)) {
+                $propValue = $val[$refint]
             } else {
-                $val = $prop
+                $propValue = $val."$propName"
             }
+
+            if ($null -eq $propValue) {
+                break
+            }
+
+            if ($propName -eq 'GetType') {
+                $val = $val.GetType()
+            } elseif ($propValue -is [System.Management.Automation.PSMethod]) {
+                $val = $propValue.Invoke()
+            } else {
+                $val = $propValue
+            }
+
             $count++
         }
         # return only when the whole path was enumerated
@@ -981,5 +994,107 @@ function div {
 
     process {
         $InputObject / $Value
+    }
+}
+
+function enter-git-profile {
+    param(
+        [Parameter(Mandatory)]
+        [string]$UserName,
+        [string]$Email = '<>' # empty email
+    )
+
+    # see: https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables
+    $env:GIT_AUTHOR_NAME = $UserName
+    $env:GIT_AUTHOR_EMAIL = $Email
+
+    $global:_GIT_PROFILE_ENTERED = $true
+
+    PwshProfile\prompt-prepend "(git-username: $UserName) "
+
+
+    Write-Host ($PSStyle.Bold + "$($MyInvocation.MyCommand.Name): You should make sure your repo has proper remote url corresponds to the ssh host.") -ForegroundColor DarkBlue
+}
+
+function quit-git-profile {
+    if ($global:_GIT_PROFILE_ENTERED) {
+        PwshProfile\prompt-reset
+
+        Write-Host ($PSStyle.Bold + "$($MyInvocation.MyCommand.Name): profile for user '$($env:GIT_AUTHOR_NAME)' exited.") -ForegroundColor DarkBlue
+
+        $env:GIT_AUTHOR_NAME = $null
+        $env:GIT_AUTHOR_EMAIL = $null
+        $global:_GIT_PROFILE_ENTERED = $null
+    } else {
+        Write-Error 'not within a git profile.'
+    }
+}
+
+function global:prompt {
+    if ($IsLinux -or $IsMacOS) {
+        $ps1 = "PS $($PWD.ProviderPath -replace '/home/[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1)) "
+    } else {
+        $pattern = 'C:\\Users\\[a-zA-Z0-9]+'
+        $path = if ($PWD.ProviderPath -match $pattern) {
+            "~$($PWD.ProviderPath -replace $pattern, [string]::Empty)"
+        } else {
+            $PWD.ProviderPath
+        }
+        $ps1 = "PS $path$('>' * ($nestedPromptLevel + 1)) "
+    }
+
+    if ($IsCoreCLR) {
+        $ps1 = $PSStyle.Bold + $PSStyle.Foreground.Green + $ps1
+    }
+
+    if (Test-Path .git -PathType Container) {
+        $remote = git remote get-url origin 2>$null
+        if ($remote -notmatch '^https?://' -and $remote -notmatch [regex]::Escape('git@github.com')) {
+            $ps1 = '(non-default git ssh remote!) ' + $ps1
+        }
+    }
+
+    return "`n$ps1"
+}
+
+$function:_ORIGINAL_PROMPT = $function:prompt
+
+function prompt-append {
+    $global:_PROMPT_APPENDED += "$args"
+    $global:_PREV_PROMPT = $function:prompt
+    function global:prompt {
+        (& $global:_PREV_PROMPT) + $global:_PROMPT_APPENDED
+    }
+}
+
+function prompt-prepend {
+    $global:_PROMPT_PREPENDED += "$args"
+    $global:_PREV_PROMPT = $function:prompt
+    function global:prompt {
+        $global:_PROMPT_PREPENDED + (& $global:_PREV_PROMPT)
+    }
+}
+
+function prompt-reset {
+    $function:prompt = $function:_ORIGINAL_PROMPT
+    $global:_PROMPT_PREPENDED = $null
+    $global:_PROMPT_APPENDED = $null
+}
+
+function Mimetype-Get {
+    [Alias('mimetype')]
+    param(
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [Alias('FullName')]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]$LiteralPath
+    )
+
+    begin {
+        $null = Get-Command file -ErrorAction Stop
+    }
+
+    process {
+        file $LiteralPath --mime-type -b
     }
 }

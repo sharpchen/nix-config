@@ -191,14 +191,14 @@ function enterfirmware {
 
 function colo {
     param(
-        [ValidateSet('Dark', 'Light')]
+        [ValidateSet('dark', 'light')]
         [Parameter(Position = 0, Mandatory)]
         $Mode
     )
 
     begin {
         $modeRegistry = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'
-        $useLightMode = [int]($Mode -eq 'Light')
+        $useLightMode = [int]($Mode -eq 'light')
     }
 
     end {

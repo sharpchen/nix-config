@@ -1,4 +1,4 @@
-$script:braces = ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')
+$script:__braces = ('"', '"'), ("'", "'"), ('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')
 
 Set-PSReadLineOption -EditMode Vi
 
@@ -21,7 +21,7 @@ Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {
     $line = $pos = $null
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$pos)
 
-    $inMiddleOfBraces = foreach ($pair in $script:braces) {
+    $inMiddleOfBraces = foreach ($pair in $script:__braces) {
         if ($pair[0] -eq $line[$pos - 1] -and $pair[1] -eq $line[$pos]) {
             $true
             break
@@ -84,8 +84,8 @@ Set-PSReadLineKeyHandler -Chord 'y,y' -ViMode Command -ScriptBlock {
     }
 }
 
-foreach ($brace in $script:braces) {
-    Set-PSReadLineKeyHandler -Chord $brace[0] -ScriptBlock {
+foreach ($__brace in $script:__braces) {
+    Set-PSReadLineKeyHandler -Chord $__brace[0] -ScriptBlock {
         # NOTE: $pos is 1-based length of the line
         $line = $pos = $null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$pos)
@@ -93,37 +93,37 @@ foreach ($brace in $script:braces) {
         if (
             ($pos -ne $line.Length) -and # not at the end of line
             ($line[$pos] -match '\w') -and # next to a word char
-            ($line[$pos] -ne $brace[1]) -and # not next to closing brace
+            ($line[$pos] -ne $__brace[1]) -and # not next to closing brace
             ($line[$pos] -ne [Environment]::NewLine) # not next to newline on multi-line editing
         ) {
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[0])
-        } elseif ($brace[0] -ne $brace[1]) {
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[0])
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[1])
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($__brace[0])
+        } elseif ($__brace[0] -ne $__brace[1]) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($__brace[0])
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($__brace[1])
             [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($pos + 1)
         } else {
             $left = $pos - 1
             $right = $pos
-            if ($line[$left] -eq $brace[0] -and $line[$right] -eq $brace[1] ) {
+            if ($line[$left] -eq $__brace[0] -and $line[$right] -eq $__brace[1] ) {
                 [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($right + 1)
             } else {
-                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[0])
-                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[1])
+                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($__brace[0])
+                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($__brace[1])
                 [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($pos + 1)
             }
         }
     }.GetNewClosure()
 
-    if ($brace[0] -ne $brace[1]) {
-        Set-PSReadLineKeyHandler -Chord $brace[1] -ScriptBlock {
+    if ($__brace[0] -ne $__brace[1]) {
+        Set-PSReadLineKeyHandler -Chord $__brace[1] -ScriptBlock {
             $line = $pos = $null
             [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$pos)
             $left = $pos - 1
             $right = $pos
-            if ($line[$left] -eq $brace[0] -and $line[$right] -eq $brace[1] ) {
+            if ($line[$left] -eq $__brace[0] -and $line[$right] -eq $__brace[1] ) {
                 [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($right + 1)
             } else {
-                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($brace[1])
+                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($__brace[1])
                 [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($pos + 1)
             }
         }.GetNewClosure()
@@ -135,7 +135,7 @@ Set-PSReadLineKeyHandler -Key Backspace -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$pos)
 
     $deleted = $false
-    foreach ($brace in $script:braces) {
+    foreach ($brace in $script:__braces) {
         $left = $pos - 1
         $right = $pos
         if ($line[$left] -eq $brace[0] -and $line[$right] -eq $brace[1] ) {
