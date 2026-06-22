@@ -1,7 +1,9 @@
 [[ $- != *i* ]] && return
 
-export PS1="\n\[\e[1;32m\][\u@\h:\w]\$\[\e[0m\] "
-export HISTCONTROL=ignorespace:ignoredups:erasedups
+HISTCONTROL=ignorespace:ignoredups:erasedups
+
+# hugging face mirror
+export HF_ENDPOINT='https://hf-mirror.com'
 
 alias ls='command ls -l --all --almost-all --human-readable --color=auto --sort=size --group-directories-first --time-style=long-iso -v'
 alias ll='command ls -l --all --almost-all --human-readable --color=auto --sort=size --group-directories-first --time-style=long-iso -v'
@@ -489,5 +491,79 @@ split() {
             IFS="${delimiter}" read -ra parts <<<"${line}"
             printf '%s\n' "${parts[@]}"
         done
+    fi
+}
+
+_PROMPT_STRING_BASE='\[\e[1;32m\][\u@\h:\w]\$\[\e[0m\]'
+PS1="\n\$(_git_ssh_validation_warn)${_PROMPT_STRING_BASE} "
+_ORIGINAL_PROMPT="$PS1"
+
+_git_ssh_validation_warn() {
+    if [[ -d .git ]]; then
+        local remote
+        remote=$(git remote get-url origin 2>/dev/null)
+        if [[ ! "$remote" =~ ^https?:// ]] && [[ ! "$remote" =~ git@github\.com ]]; then
+            echo -e '(non-default git ssh remote!) '
+        fi
+    fi
+}
+
+prompt-reset() {
+    PS1="$_ORIGINAL_PROMPT"
+    unset _PROMPT_PREPENDED
+    unset _PROMPT_APPENDED
+}
+
+prompt-append() {
+    _PROMPT_APPENDED="$_PROMPT_APPENDED$*"
+    PS1="\n$_PROMPT_STRING_BASE$_PROMPT_APPENDED "
+}
+
+prompt-prepend() {
+    _PROMPT_PREPENDED="$_PROMPT_PREPENDED$*"
+    PS1="\n$_PROMPT_PREPENDED$_PROMPT_STRING_BASE "
+}
+
+enter-git-profile() {
+    local username email
+    while getopts "u:e:" opt; do
+        case "$opt" in
+        u)
+            username="$OPTARG"
+            ;;
+        e)
+            email="$OPTARG"
+            ;;
+        *)
+            _err "unsupported option: $opt"
+            return 1
+            ;;
+        esac
+    done
+
+    export GIT_AUTHOR_NAME="$username"
+    export GIT_AUTHOR_EMAIL="${email:-<>}"
+    export GIT_COMMITTER_NAME="$username"
+    export GIT_COMMITTER_EMAIL="${email:-<>}"
+
+    _GIT_PROFILE_ENTERED=1
+
+    prompt-reset
+    prompt-prepend "(git-username: $username) "
+
+    _warn "You should make sure your repo has proper remote url corresponds to the ssh host."
+}
+
+quit-git-profile() {
+    if [[ _GIT_PROFILE_ENTERED -eq 1 ]]; then
+        prompt-reset
+        _warn "profile for user '$GIT_AUTHOR_NAME' exited."
+        unset GIT_AUTHOR_NAME
+        unset GIT_AUTHOR_EMAIL
+        unset GIT_COMMITTER_NAME
+        unset GIT_COMMITTER_EMAIL
+        unset _GIT_PROFILE_ENTERED
+    else
+        _err "not within a git profile."
     fi
 }
