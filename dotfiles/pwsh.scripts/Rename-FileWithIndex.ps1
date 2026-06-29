@@ -14,7 +14,6 @@ param (
 begin {
     $idxPattern = '^\d+'
     $orderedFiles = $Files | Sort-Object { [int][regex]::Match($_.Name, $idxPattern).Value }
-    $invalidChar = [regex]::Escape($env:INVALID_FILENAME_CHARS)
 }
 
 end {
@@ -35,11 +34,8 @@ end {
         $file = $orderedFiles[$idx]
         $fileIdx = [int][regex]::Match($file.Name, $idxPattern).Value
 
-        $nameFromSource = if ($Names[$idx] -match "[$invalidChar]") {
-            $Names[$idx] -replace "[$invalidChar]", '_'
-        } else {
-            $Names[$idx]
-        }
+        # replace invalid char to dash _
+        $nameFromSource = $Names[$idx].Split([System.IO.Path]::GetInvalidFileNameChars()) -join '_'
 
         $idxStr = if ($NoIndexPadding) {
             "$fileIdx"
