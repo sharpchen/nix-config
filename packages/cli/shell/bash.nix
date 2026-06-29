@@ -42,9 +42,6 @@ in
 {
   programs.bash = {
     enable = true;
-    sessionVariables = {
-      EDITOR = "nvim";
-    };
     # prepend content for auto-gen rc by hm
     initExtra = builtins.concatStringsSep "\n" [
       (builtins.readFile ../../../dotfiles/.bashrc)

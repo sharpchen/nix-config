@@ -4,6 +4,7 @@ HISTCONTROL=ignorespace:ignoredups:erasedups
 
 # hugging face mirror
 export HF_ENDPOINT='https://hf-mirror.com'
+export EDITOR='nvim --cmd "lua vim.env.MINIMAL_NVIM = 1"'
 
 alias ls='command ls -l --all --almost-all --human-readable --color=auto --sort=size --group-directories-first --time-style=long-iso -v'
 alias ll='command ls -l --all --almost-all --human-readable --color=auto --sort=size --group-directories-first --time-style=long-iso -v'
@@ -502,7 +503,7 @@ _git_ssh_validation_warn() {
     if [[ -d .git ]]; then
         local remote
         remote=$(git remote get-url origin 2>/dev/null)
-        if [[ ! "$remote" =~ ^https?:// ]] && [[ ! "$remote" =~ git@github\.com ]]; then
+        if [[ $? -eq 0 ]] && [[ ! "$remote" =~ ^https?:// ]] && [[ ! "$remote" =~ git@github\.com ]]; then
             echo -e '(non-default git ssh remote!) '
         fi
     fi
