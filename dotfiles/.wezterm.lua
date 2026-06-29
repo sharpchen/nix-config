@@ -25,7 +25,7 @@ local font = random {
 }
 
 local function regular()
-  config.font_size = 12
+  config.font_size = 10
   config.font = wezterm.font_with_fallback {
     font,
     'Nerd Font Symbols',
