@@ -1049,7 +1049,11 @@ function global:prompt {
 
     if (Test-Path .git -PathType Container) {
         $remote = git remote get-url origin 2>$null
-        if ($remote -notmatch '^https?://' -and $remote -notmatch [regex]::Escape('git@github.com')) {
+        if (
+            $LASTEXITCODE -eq 0 -and
+            $remote -notmatch '^https?://' -and
+            $remote -notmatch [regex]::Escape('git@github.com')
+        ) {
             $ps1 = '(non-default git ssh remote!) ' + $ps1
         }
     }
@@ -1096,5 +1100,35 @@ function Mimetype-Get {
 
     process {
         file $LiteralPath --mime-type -b
+    }
+}
+
+function recent {
+    param(
+        [Alias('FullName')]
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string]$LiteralPath,
+
+        [uint]$Day
+    )
+
+    begin {
+        if ($Day) {
+            $sort = {
+                Where-Object { $_.CreationTime -lt ((Get-Date).AddDays(-$Day)) } |
+                    Sort-Object  CreationTime -Descending
+            }.GetSteppablePipeline($MyInvocation.CommandOrigin)
+        } else {
+            $sort = { Sort-Object  CreationTime -Descending }.GetSteppablePipeline($MyInvocation.CommandOrigin)
+        }
+        $sort.Begin($PSCmdlet)
+    }
+
+    process {
+        $sort.Process((Get-Item -LiteralPath $LiteralPath))
+    }
+
+    end {
+        $sort.End()
     }
 }

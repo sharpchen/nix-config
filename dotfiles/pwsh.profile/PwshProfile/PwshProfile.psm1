@@ -20,7 +20,7 @@ if ($IsCoreCLR -and (Get-Command ffmpeg -ErrorAction Ignore)) {
 
 $export = @{
     Function = Get-ChildItem function: |
-        Where-Object { $_.Source -eq 'PwshProfile' -and $_.Name -notmatch '^__' } |
+        Where-Object { $_.Source -eq 'PwshProfile' -and ($_.Name -notmatch '^__' -or $_.Name -in '__md') } |
         ForEach-Object Name
 
     Variable = Get-Variable -Scope Script | Where-Object Name -NotMatch '^__' |  ForEach-Object Name
