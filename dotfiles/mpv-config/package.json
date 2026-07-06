@@ -1,0 +1,16 @@
+{
+  "name": "mpv-scripts",
+  "license": "UNLICENSED",
+  "author": "sharpchen",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0",
+    "globals": "^17.7.0",
+    "oxfmt": "^0.57.0",
+    "typescript": "6.0.3"
+  }
+}

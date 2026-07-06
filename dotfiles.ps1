@@ -101,8 +101,11 @@ if (Get-Command ya -ErrorAction SilentlyContinue) {
 }
 
 mklink ~/.wslconfig $PSScriptRoot/dotfiles/.wslconfig
-mklink (Join-Path (scoop prefix mpv) 'portable_config/mpv.conf') $PSScriptRoot/dotfiles/mpv.conf
-mklink (Join-Path (scoop prefix mpv) 'portable_config/input.conf') $PSScriptRoot/dotfiles/mpv.input.conf
+
+if (& { scoop prefix mpv *> $null; 0 -eq $LASTEXITCODE }) {
+    mklink (Join-Path (scoop prefix mpv) 'portable_config') $PSScriptRoot/dotfiles/mpv-config
+}
+
 mklink ~/.fzfrc $PSScriptRoot/dotfiles/.fzfrc
 
 if (& { scoop prefix vscodium *> $null; 0 -eq $LASTEXITCODE }) {

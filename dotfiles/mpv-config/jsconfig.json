@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "ignoreDeprecations": "6.0",
+    "module": "nodenext",
+    "lib": ["ES5"],
+    "checkJs": true,
+    "types": ["mpv-script"],
+    "baseUrl": "./lib"
+  },
+  "exclude": ["node_modules"]
+}
