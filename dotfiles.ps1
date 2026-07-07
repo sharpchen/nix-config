@@ -23,22 +23,31 @@ function mklink {
         [string]$SpecialParent
     )
 
-    $Target = Resolve-Path $Target
-    switch ($PSCmdlet.ParameterSetName) {
+    $Target = (Resolve-Path -LiteralPath $Target).Path
+
+    $linkPath = switch ($PSCmdlet.ParameterSetName) {
         'Normal' {
-            mkdir (Split-Path $Path) -ErrorAction SilentlyContinue
-            New-Item -ItemType SymbolicLink -Force -Value $Target -Path $Path
+            $Path
         }
         default {
             switch ($SpecialParent) {
                 'HOME' {
-                    New-Item -ItemType SymbolicLink -Force -Value $Target -Path (Join-Path $HOME $ChildPath)
+                    Join-Path $HOME $ChildPath
                 }
                 default {
-                    New-Item -ItemType SymbolicLink -Force -Value $Target -Path (Join-Path (Get-Item -Path "env:/$SpecialParent").Value $ChildPath)
+                    Join-Path (Get-Item -Path "env:/$SpecialParent").Value $ChildPath
                 }
             }
         }
+    }
+
+    $item = Get-Item -LiteralPath $linkPath -ErrorAction Ignore
+    # skip if the link already targets to expected one
+    if (!$item -or $item.Target -ne $Target) {
+        if ($PSCmdlet.ParameterSetName -eq 'Normal') {
+            mkdir (Split-Path $Path) -ErrorAction SilentlyContinue
+        }
+        New-Item -ItemType SymbolicLink -Force -Value $Target -Path $linkPath
     }
 }
 
