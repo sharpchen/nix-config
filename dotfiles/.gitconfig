@@ -16,9 +16,9 @@
     exclude = update-index --assume-unchanged
     include = update-index --no-assume-unchanged
     list-excluded = "!git ls-files -v | grep '^h' | cut -c 3-"
-    github-fetch-pr = "!f() { \
+    pr-fetch-github = "!f() { \
         remote=$1; pr_id=$2; \
-        git fetch $remote \"refs/pull/$pr_id/head:pr_$pr_id\"; \
+        git fetch ${remote} \"refs/pull/$pr_id/head:pr_${pr_id}\"; \
     }; f"
 
 [log]
