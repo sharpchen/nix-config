@@ -1012,7 +1012,6 @@ function enter-git-profile {
 
     PwshProfile\prompt-prepend "(git-username: $UserName) "
 
-
     Write-Host ($PSStyle.Bold + "$($MyInvocation.MyCommand.Name): You should make sure your repo has proper remote url corresponds to the ssh host.") -ForegroundColor DarkBlue
 }
 
@@ -1106,21 +1105,43 @@ function Mimetype-Get {
 function recent {
     param(
         [Alias('FullName')]
+        [ValidateScript({ Test-Path -LiteralPath $_ })]
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [string]$LiteralPath,
 
-        [uint]$Day
+        [uint]$Day,
+        [uint]$Hour,
+        [uint]$Minute,
+        [uint]$Week
     )
 
     begin {
-        if ($Day) {
+        if(!$PSBoundParameters.ContainsKey('Day') -and
+            !$PSBoundParameters.ContainsKey('Hour') -and
+            !$PSBoundParameters.ContainsKey('Minute') -and
+            !$PSBoundParameters.ContainsKey('Week')
+        ) {
+            $sort = { Sort-Object  CreationTime -Descending }.GetSteppablePipeline($MyInvocation.CommandOrigin)
+        } else {
+            if (!$PSBoundParameters.ContainsKey('Day')) {
+                $Day = 0
+            }
+            if (!$PSBoundParameters.ContainsKey('Hour')) {
+                $Hour = 0
+            }
+            if (!$PSBoundParameters.ContainsKey('Minute')) {
+                $Minute = 0
+            }
+            if ($PSBoundParameters.ContainsKey('Week')) {
+                $Day += $Week * 7
+            }
+
             $sort = {
-                Where-Object { $_.CreationTime -lt ((Get-Date).AddDays(-$Day)) } |
+                Where-Object { $_.CreationTime -gt ([datetime]::Now - [timespan]::new($Day, $Hour, $Minute, 0)) } |
                     Sort-Object  CreationTime -Descending
             }.GetSteppablePipeline($MyInvocation.CommandOrigin)
-        } else {
-            $sort = { Sort-Object  CreationTime -Descending }.GetSteppablePipeline($MyInvocation.CommandOrigin)
         }
+
         $sort.Begin($PSCmdlet)
     }
 
