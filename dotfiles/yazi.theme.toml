@@ -1,0 +1,7 @@
+[status]
+sep_left = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+[mode]
+normal_main = { fg = 'black', bg = 'magenta' }
+normal_alt = { fg = 'black', bg = 'gray' }

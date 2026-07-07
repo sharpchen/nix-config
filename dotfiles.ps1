@@ -94,6 +94,7 @@ mklink ~/.config/wezterm/wezterm.lua $PSScriptRoot/dotfiles/.wezterm.lua
 # yazi
 mklink -SpecialParent APPDATA -ChildPath 'yazi/config/yazi.toml' -Target $PSScriptRoot/dotfiles/yazi.toml
 mklink -SpecialParent APPDATA -ChildPath 'yazi/config/keymap.toml' -Target $PSScriptRoot/dotfiles/yazi.keymap.toml
+mklink -SpecialParent APPDATA -ChildPath 'yazi/config/theme.toml' -Target $PSScriptRoot/dotfiles/yazi.theme.toml
 if (Get-Command ya -ErrorAction SilentlyContinue) {
     ya pkg add yazi-rs/plugins:toggle-pane
     ya pkg add yazi-rs/plugins:jump-to-char

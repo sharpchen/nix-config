@@ -28,4 +28,6 @@
     config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/yazi.toml";
   home.file.".config/yazi/keymap.toml".source =
     config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/yazi.keymap.toml";
+  home.file.".config/yazi/theme.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/yazi.theme.toml";
 }

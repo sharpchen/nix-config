@@ -31,8 +31,9 @@ ueberzug_offset = [0, 0, 0, 0]
 
 [opener]
 edit = [
-    { run = "nvim --cmd 'lua vim.env.MINIMAL_NVIM = 1' %s", block = true, for = "unix" },
-    { run = "nvim --cmd 'lua vim.env.MINIMAL_NVIM = 1' %s", block = true, orphan = true, for = "windows" },
+    # NOTE: Windows only allows " for quoting command components
+    { run = "nvim --cmd \"lua vim.env.MINIMAL_NVIM = 1\" %s", block = true, for = "unix" },
+    { run = "nvim --cmd \"lua vim.env.MINIMAL_NVIM = 1\" %s", block = true, orphan = true, for = "windows" },
 ]
 open = [
     { run = 'gio open "$1"', desc = "Open", for = "linux" },
@@ -64,6 +65,10 @@ rules = [
     ] },
     # Text
     { mime = "text/*", use = [
+        "edit",
+        "reveal",
+    ] },
+    { mime = "inode/empty", use = [
         "edit",
         "reveal",
     ] },
