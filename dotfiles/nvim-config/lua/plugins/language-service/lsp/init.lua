@@ -23,6 +23,7 @@ return {
         end,
       })
 
+      -- require('plugins.language-service.lsp.vtsls')
       lsp.setup('tsgo', {
         on_attach = function(client)
           if vim.lsp.is_enabled('oxfmt') then lsp.event.disable_formatter(client) end
@@ -32,6 +33,7 @@ return {
 
       lsp.setup('taplo')
       lsp.setup('quick_lint_js', {
+        filetypes = lsp.config.ft_exclude('quick_lint_js', { 'typescript' }),
         on_attach = function(client, _)
           if vim.fs.root(0, 'tree-sitter.json') then vim.lsp.stop_client(client.id) end
         end,
@@ -48,6 +50,8 @@ return {
       })
       lsp.setup('cssls')
       lsp.setup('html')
+
+      -- see: https://github.com/oxc-project/oxc/tree/main/crates/oxc_language_server
       lsp.setup('oxlint')
       lsp.setup('oxfmt', {
         workspace_required = false,

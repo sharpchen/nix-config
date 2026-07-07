@@ -73,6 +73,14 @@ M.config = {}
 function M.config.ft_extend(ls, extra)
   return vim.list_extend(extra, vim.lsp.config[ls].filetypes or {})
 end
+
+--- remove filetypes for language-server
+---@param ls string name of language-server
+---@param extra string[] extra filetypes
+---@return string[]
+function M.config.ft_exclude(ls, extra)
+  return table.except(vim.lsp.config[ls].filetypes or {}, extra)
+end
 --#endregion
 
 return M

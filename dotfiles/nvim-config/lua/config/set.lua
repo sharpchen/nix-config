@@ -293,8 +293,19 @@ if not IsGUI then
 end
 
 function _findfunc(arglead)
-  local files =
-    vim.fn.systemlist('fd --type file --full-path --color never --hidden --exclude .git')
+  local files = vim.fn.systemlist {
+    'fd',
+    '--type',
+    'file',
+    '--full-path',
+    '--color',
+    'never',
+    '--hidden',
+    '--exclude',
+    '.git',
+    '--exclude',
+    'node_modules',
+  }
 
   local matches = vim.fn.matchfuzzy(
     files,

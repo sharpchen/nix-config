@@ -65,6 +65,11 @@ return {
     'Mofiqul/vscode.nvim',
     lazy = false,
     priority = 1000,
+    opts = {
+      group_overrides = {
+        StatusLine = { bg = '#007acc', fg = 'white' },
+      },
+    },
   },
   {
     'habamax/vim-habamax',
