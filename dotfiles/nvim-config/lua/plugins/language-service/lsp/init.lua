@@ -16,13 +16,13 @@ return {
         end,
       })
 
-      require('plugins.language-service.lsp.vtsls')
-      -- Lsp.setup('tsgo', {
-      --   on_attach = function(client)
-      --     if vim.lsp.is_enabled('oxfmt') then Lsp.event.disable_formatter(client) end
-      --     Lsp.event.disable_semantic(client)
-      --   end,
-      -- })
+      -- require('plugins.language-service.lsp.vtsls')
+      Lsp.setup('tsgo', {
+        on_attach = function(client)
+          if vim.lsp.is_enabled('oxfmt') then Lsp.event.disable_formatter(client) end
+          Lsp.event.disable_semantic(client)
+        end,
+      })
 
       Lsp.setup('taplo')
       Lsp.setup('bashls') -- settings: https://github.com/bash-lsp/bash-language-server/blob/main/server/src/config.ts

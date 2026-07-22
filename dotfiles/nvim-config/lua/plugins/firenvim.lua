@@ -62,6 +62,7 @@ return {
         'https?://www.keybr.com/.*',
         'https://monkeytype.com/.*',
         'https?://www.typescriptlang.org/.*',
+        'https?://entertrained.app/'
       })
       :fold({}, function(sum, curr)
         sum[curr] = {
