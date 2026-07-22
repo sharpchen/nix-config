@@ -500,7 +500,7 @@ PS1="\n\$(_git_ssh_validation_warn)${_PROMPT_STRING_BASE} "
 _ORIGINAL_PROMPT="$PS1"
 
 _git_ssh_validation_warn() {
-    if [[ -d .git ]]; then
+    if [[ $_GIT_PROFILE_ENTERED -eq 1 ]] && [[ -d .git ]]; then
         local remote
         remote=$(git remote get-url origin 2>/dev/null)
         if [[ $? -eq 0 ]] && [[ ! "$remote" =~ ^https?:// ]] && [[ ! "$remote" =~ git@github\.com ]]; then
@@ -517,12 +517,12 @@ prompt-reset() {
 
 prompt-append() {
     _PROMPT_APPENDED="$_PROMPT_APPENDED$*"
-    PS1="\n$_PROMPT_STRING_BASE$_PROMPT_APPENDED "
+    PS1="\n$_PROMPT_STRING_BASE$_PROMPT_APPENDED"
 }
 
 prompt-prepend() {
     _PROMPT_PREPENDED="$_PROMPT_PREPENDED$*"
-    PS1="\n$_PROMPT_PREPENDED$_PROMPT_STRING_BASE "
+    PS1="\n$_PROMPT_PREPENDED$_PROMPT_STRING_BASE"
 }
 
 enter-git-profile() {
@@ -542,6 +542,8 @@ enter-git-profile() {
         esac
     done
 
+    # see: https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables
+    # NOTE: both author and committer should be set otherwise the commit can include your default user in gitconfig!
     export GIT_AUTHOR_NAME="$username"
     export GIT_AUTHOR_EMAIL="${email:-<>}"
     export GIT_COMMITTER_NAME="$username"
