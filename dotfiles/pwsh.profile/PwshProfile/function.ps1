@@ -127,12 +127,10 @@ function pinfo {
 function play {
     [CmdletBinding(DefaultParameterSetName = '__AllParameterSets')]
     param (
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName, ValueFromPipeline)]
         [Alias('FullName')]
-        [string]$LiteralPath,
-
-        [Parameter(ParameterSetName = 'ByDate')]
-        [switch]$ByDate
+        [string]$LiteralPath
     )
 
     begin {
@@ -146,14 +144,10 @@ function play {
 
     end {
         if ($MyInvocation.ExpectingInput) {
-            if ($ByDate) {
-                $playlist = $playlist | Sort-Object { (Get-Item -LiteralPath $_).CreationTime } -Descending
-            }
             if ($playlist.Count -gt 0) {
                 $null = Start-Job { $input | mpv --force-window --playlist=- } -InputObject $playlist
             }
         } else {
-            $null = Get-Item -LiteralPath $LiteralPath -ErrorAction Stop
             $null = Start-Job { mpv --force-window $args } -ArgumentList $LiteralPath
         }
     }
@@ -486,6 +480,7 @@ function epubpack {
 }
 
 # TODO: support encrypted archive
+# TODO: migrate to `7z l -slt -ba <file>` instead if bsdtar isn't sufficient
 function unpack {
     # NOTE: to enforce pwsh accept a shorter syntax
     # __AllParameterSets can be a arbitrary name other than defined ParameterSetNames
@@ -736,6 +731,8 @@ function ydl {
         } elseif (Get-Command node -ErrorAction Ignore) {
             $flags += '--js-runtimes', 'node'
         }
+
+        $flags += '--windows-filenames'
     }
 
     end {
@@ -1005,24 +1002,30 @@ function enter-git-profile {
     )
 
     # see: https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables
+    # NOTE: both author and committer should be set otherwise the commit can include your default user in gitconfig!
     $env:GIT_AUTHOR_NAME = $UserName
     $env:GIT_AUTHOR_EMAIL = $Email
+    $env:GIT_COMMITTER_NAME = $UserName
+    $env:GIT_COMMITTER_EMAIL = $Email
 
     $global:_GIT_PROFILE_ENTERED = $true
 
+    PwshProfile\prompt-reset
     PwshProfile\prompt-prepend "(git-username: $UserName) "
 
-    Write-Host ($PSStyle.Bold + "$($MyInvocation.MyCommand.Name): You should make sure your repo has proper remote url corresponds to the ssh host.") -ForegroundColor DarkBlue
+    Write-Host ($PSStyle.Bold + "$($MyInvocation.MyCommand.Name): You should make sure your repo has proper remote url corresponds to the ssh host.") -ForegroundColor Yellow
 }
 
 function quit-git-profile {
     if ($global:_GIT_PROFILE_ENTERED) {
         PwshProfile\prompt-reset
 
-        Write-Host ($PSStyle.Bold + "$($MyInvocation.MyCommand.Name): profile for user '$($env:GIT_AUTHOR_NAME)' exited.") -ForegroundColor DarkBlue
+        Write-Host ($PSStyle.Bold + "$($MyInvocation.MyCommand.Name): profile for user '$($env:GIT_AUTHOR_NAME)' exited.") -ForegroundColor Yellow
 
         $env:GIT_AUTHOR_NAME = $null
         $env:GIT_AUTHOR_EMAIL = $null
+        $env:GIT_COMMITTER_NAME = $null
+        $env:GIT_COMMITTER_EMAIL = $null
         $global:_GIT_PROFILE_ENTERED = $null
     } else {
         Write-Error 'not within a git profile.'
@@ -1043,10 +1046,10 @@ function global:prompt {
     }
 
     if ($IsCoreCLR) {
-        $ps1 = $PSStyle.Bold + $PSStyle.Foreground.Green + $ps1
+        $ps1 = $PSStyle.Bold + $PSStyle.Foreground.Green + $ps1 + $PSStyle.Reset
     }
 
-    if (Test-Path .git -PathType Container) {
+    if (!$global:_GIT_PROFILE_ENTERED -and (Test-Path .git -PathType Container)) {
         $remote = git remote get-url origin 2>$null
         if (
             $LASTEXITCODE -eq 0 -and
@@ -1057,31 +1060,42 @@ function global:prompt {
         }
     }
 
-    return "`n$ps1"
+    if (!$global:_PROMPT_NO_NEWLINE) {
+        $ps1 = "`n$ps1"
+    }
+
+    return $ps1
 }
 
-$function:_ORIGINAL_PROMPT = $function:prompt
+# NOTE: $function:prompt is a view of the function, feels like FileSystemInfo
+# function re-declaration doesn't change the reference of $function:prompt
+# you can't really access the backing function object
+$global:_ORIGINAL_PROMPT = [scriptblock]::Create($function:prompt.ToString())
 
 function prompt-append {
+    # otherwise prompt will add one more redundant newline
+    # this newline should be handled by the new prompt
+    $global:_PROMPT_NO_NEWLINE = $true
     $global:_PROMPT_APPENDED += "$args"
-    $global:_PREV_PROMPT = $function:prompt
     function global:prompt {
-        (& $global:_PREV_PROMPT) + $global:_PROMPT_APPENDED
+        "`n$(& $global:_ORIGINAL_PROMPT)$($global:_PROMPT_APPENDED)"
     }
 }
 
 function prompt-prepend {
+    $global:_PROMPT_NO_NEWLINE = $true
     $global:_PROMPT_PREPENDED += "$args"
-    $global:_PREV_PROMPT = $function:prompt
     function global:prompt {
-        $global:_PROMPT_PREPENDED + (& $global:_PREV_PROMPT)
+        "`n$($global:_PROMPT_PREPENDED)$(& $global:_ORIGINAL_PROMPT)"
     }
 }
 
 function prompt-reset {
-    $function:prompt = $function:_ORIGINAL_PROMPT
+    # but you can indeed assign new function by $function:
+    $function:prompt = $global:_ORIGINAL_PROMPT
     $global:_PROMPT_PREPENDED = $null
     $global:_PROMPT_APPENDED = $null
+    $global:_PROMPT_NO_NEWLINE = $false
 }
 
 function Mimetype-Get {

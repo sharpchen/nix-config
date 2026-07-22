@@ -15,6 +15,7 @@ Set-Alias tojson ConvertTo-Json
 Set-Alias csv ConvertFrom-Csv
 Set-Alias tocsv ConvertTo-Csv
 Set-Alias eval Invoke-Expression
+Set-Alias unset Remove-Variable
 
 function ll {
     Get-ChildItem @args -Force

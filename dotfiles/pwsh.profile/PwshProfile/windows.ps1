@@ -77,15 +77,11 @@ function pathadd {
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 0)]
         [string]$Directory,
-        [EnvironmentVariableTarget]$Target
+        [EnvironmentVariableTarget]$Target = [System.EnvironmentVariableTarget]::User
     )
     begin {
         $add = (Resolve-Path $Directory).Path
         $sep = [IO.Path]::PathSeparator
-
-        if (-not $Target) {
-            $target = [System.EnvironmentVariableTarget]::User
-        }
     }
 
     end {
@@ -108,14 +104,11 @@ function pathdel {
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 0)]
         [string]$Directory,
-        [EnvironmentVariableTarget]$Target
+        [EnvironmentVariableTarget]$Target = [System.EnvironmentVariableTarget]::User
     )
     begin {
         $del = (Resolve-Path $Directory).Path
         $sep = [IO.Path]::PathSeparator
-        if (-not $Target) {
-            $target = [System.EnvironmentVariableTarget]::User
-        }
     }
 
     end {
@@ -131,24 +124,91 @@ function pathdel {
 
 function pathclean {
     param(
-        [EnvironmentVariableTarget]$Target
+        [EnvironmentVariableTarget]$Target = [System.EnvironmentVariableTarget]::User
     )
 
     begin {
         $sep = [IO.Path]::PathSeparator
-        if (-not $Target) {
-            $target = [System.EnvironmentVariableTarget]::User
-        }
     }
 
     end {
         $paths = [System.Environment]::GetEnvironmentVariable('Path', $target) -split $sep
-        $valid = $paths | Where-Object { Test-Path -LiteralPath $_ }
+        $valid = $paths | Where-Object { Test-Path -LiteralPath $_ -PathType Container }
         [System.Environment]::SetEnvironmentVariable(
             'Path',
             $valid -join $sep,
             $target
         )
+    }
+}
+
+$__env_complete = {
+    param (
+        $commandName,
+        $parameterName,
+        $wordToComplete,
+        $commandAst,
+        $fakeBoundParameters
+    )
+
+    $target = if ($fakeBoundParameters.ContainsKey('Target')) {
+        $fakeBoundParameters['Target']
+    } else {
+        [System.EnvironmentVariableTarget]::User
+    }
+
+    [System.Environment]::GetEnvironmentVariables($target).Keys
+}
+
+function env-set {
+    [Alias('envset')]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
+    param(
+        [ArgumentCompleter({
+                param (
+                    $commandName,
+                    $parameterName,
+                    $wordToComplete,
+                    $commandAst,
+                    $fakeBoundParameters
+                )
+                & $__env_complete @PSBoundParameters
+            })]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Name,
+
+        [Parameter(Mandatory, Position = 1)]
+        [string]$Value,
+
+        [EnvironmentVariableTarget]$Target = [System.EnvironmentVariableTarget]::User
+    )
+
+    if ($PSCmdlet.ShouldProcess("Setting $Target environment varible '$Name' with value '$Value'", $null, $null)) {
+        [System.Environment]::SetEnvironmentVariable($Name, $Value, $Target)
+    }
+}
+
+function env-unset {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
+    param(
+        [ArgumentCompleter({
+                param (
+                    $commandName,
+                    $parameterName,
+                    $wordToComplete,
+                    $commandAst,
+                    $fakeBoundParameters
+                )
+                & $__env_complete @PSBoundParameters
+            })]
+        [Parameter(Mandatory, Position = 0)]
+        [string]$Name,
+
+        [EnvironmentVariableTarget]$Target = [System.EnvironmentVariableTarget]::User
+    )
+
+    if ($PSCmdlet.ShouldProcess("Removing $Target environment varible '$Name'", $null, $null)) {
+        [System.Environment]::SetEnvironmentVariable($Name, $null, $Target)
     }
 }
 
