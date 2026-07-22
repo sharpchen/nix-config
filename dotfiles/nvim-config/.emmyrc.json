@@ -12,5 +12,8 @@
     "globals": [
       "vim"
     ]
+  },
+  "completion": {
+    "autoRequire": false
   }
 }

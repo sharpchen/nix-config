@@ -3,44 +3,31 @@
 return {
   {
     'neovim/nvim-lspconfig',
-    event = { 'BufReadPre', 'BufNewFile' },
+    -- event = { 'BufReadPre', 'BufNewFile' },
+    -- don't lazy load otherwise lsp config from 'exrc' might got overridden
+    lazy = false,
     dependencies = { 'b0o/schemastore.nvim' },
     config = function()
-      local lsp = require('utils.lsp')
-
-      local ok, blink = pcall(require, 'blink.cmp')
-      if ok then
-        vim.lsp.config('*', {
-          ---@diagnostic disable-next-line: param-type-not-match
-          capabilities = blink.get_lsp_capabilities(),
-        })
-      end
       -- NOTE: use LspAttach instead of on_attach for default use
       vim.api.nvim_create_autocmd('LspAttach', {
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
-          if client then lsp.event.default_attach(client, args.buf) end
+          if client then Lsp.event.default_attach(client, args.buf) end
         end,
       })
 
-      -- require('plugins.language-service.lsp.vtsls')
-      lsp.setup('tsgo', {
-        on_attach = function(client)
-          if vim.lsp.is_enabled('oxfmt') then lsp.event.disable_formatter(client) end
-          lsp.event.disable_semantic(client)
-        end,
-      })
+      require('plugins.language-service.lsp.vtsls')
+      -- Lsp.setup('tsgo', {
+      --   on_attach = function(client)
+      --     if vim.lsp.is_enabled('oxfmt') then Lsp.event.disable_formatter(client) end
+      --     Lsp.event.disable_semantic(client)
+      --   end,
+      -- })
 
-      lsp.setup('taplo')
-      lsp.setup('quick_lint_js', {
-        filetypes = lsp.config.ft_exclude('quick_lint_js', { 'typescript' }),
-        on_attach = function(client, _)
-          if vim.fs.root(0, 'tree-sitter.json') then vim.lsp.stop_client(client.id) end
-        end,
-      })
-      lsp.setup('bashls') -- settings: https://github.com/bash-lsp/bash-language-server/blob/main/server/src/config.ts
-      lsp.setup('emmet_language_server')
-      lsp.setup('jsonls', {
+      Lsp.setup('taplo')
+      Lsp.setup('bashls') -- settings: https://github.com/bash-lsp/bash-language-server/blob/main/server/src/config.ts
+      Lsp.setup('emmet_language_server')
+      Lsp.setup('jsonls', {
         settings = {
           json = {
             schemas = require('schemastore').json.schemas(),
@@ -48,32 +35,28 @@ return {
           },
         },
       })
-      lsp.setup('cssls')
-      lsp.setup('html')
+      Lsp.setup('cssls')
+      Lsp.setup('html')
 
       -- see: https://github.com/oxc-project/oxc/tree/main/crates/oxc_language_server
-      lsp.setup('oxlint')
-      lsp.setup('oxfmt', {
+      Lsp.setup('oxlint')
+      Lsp.setup('oxfmt', {
         workspace_required = false,
       })
-      lsp.setup('vimls')
-      lsp.setup('postgres_lsp')
-      lsp.setup('marksman')
-      lsp.setup('eslint')
-      lsp.setup('clangd', {
-        on_attach = lsp.event.disable_semantic,
+      Lsp.setup('vimls')
+      Lsp.setup('postgres_lsp')
+      Lsp.setup('marksman')
+      Lsp.setup('eslint')
+      Lsp.setup('clangd', {
+        on_attach = Lsp.event.disable_semantic,
       })
       -- lsp.setup('csharp_ls', {
       --   on_init = lsp.event.disable_semantic,
       --   filetypes = lsp.config.ft_extend('csharp_ls', { 'axaml-cs' }),
       -- })
-      -- vim.lsp.config('roslyn_ls', {
-      --   on_init = function(client) lsp.event.disable_semantic(client) end,
-      --   filetypes = lsp.config.ft_extend('roslyn_ls', { 'axaml-cs' }),
-      -- })
 
-      lsp.setup('zuban')
-      lsp.setup('ruff')
+      Lsp.setup('zuban')
+      Lsp.setup('ruff')
 
       -- require('plugins.language-service.lsp.lua_ls')
       require('plugins.language-service.lsp.emmylua')
@@ -83,13 +66,18 @@ return {
       if Env.has_dotnet then
         if Env.has_pwsh then require('plugins.language-service.lsp.pwsh_es') end
 
-        require('plugins.language-service.lsp.msbuild_ls')
-
-        lsp.setup('fsautocomplete', {
-          on_attach = lsp.event.disable_semantic,
+        Lsp.setup('roslyn_ls', {
+          on_attach = function(client) Lsp.event.disable_semantic(client) end,
+          filetypes = Lsp.config.ft_extend('roslyn_ls', { 'axaml-cs' }),
         })
 
-        lsp.setup('avalonia_ls', {
+        require('plugins.language-service.lsp.msbuild_ls')
+
+        Lsp.setup('fsautocomplete', {
+          on_attach = Lsp.event.disable_semantic,
+        })
+
+        Lsp.setup('avalonia_ls', {
           name = 'avalonia_ls',
           cmd = { 'AvaloniaLanguageServer' },
           filetypes = { 'axaml' },
@@ -114,7 +102,8 @@ return {
     'seblyng/roslyn.nvim',
     ft = { 'cs', 'axaml-cs' },
     dependencies = { 'neovim/nvim-lspconfig' },
-    enabled = Env.has_dotnet
+    enabled = false
+      and Env.has_dotnet
       and (
         vim.fn.executable('roslyn-language-server') == 1
         or vim.fn.executable('Microsoft.CodeAnalysis.LanguageServer') == 1

@@ -10,7 +10,7 @@ return {
       custom_textobjects = {
         f = ts_spec { a = '@function.outer', i = '@function.inner' },
         c = ts_spec { a = '@class.outer', i = '@class.inner' },
-        C = ts_spec { a = '@comment.outer', i = '@comment.outer' },
+        C = ts_spec { a = '@comment.outer', i = '@comment.inner' },
         o = ts_spec {
           a = { '@conditional.outer', '@loop.outer' },
           i = { '@conditional.inner', '@loop.inner' },

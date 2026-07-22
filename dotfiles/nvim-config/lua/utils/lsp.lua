@@ -83,4 +83,13 @@ function M.config.ft_exclude(ls, extra)
 end
 --#endregion
 
+function M.client_names(buf)
+  buf = buf or 0
+
+  return vim
+    .iter(vim.lsp.get_clients { bufnr = buf })
+    :map(function(c) return c.name end)
+    :totable()
+end
+
 return M

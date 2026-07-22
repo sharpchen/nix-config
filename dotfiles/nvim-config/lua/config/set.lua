@@ -359,3 +359,16 @@ vim.api.nvim_create_autocmd('CmdlineLeave', {
 --
 --   return true
 -- end, { force = false })
+
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter' }, {
+  callback = function(ctx)
+    if
+      vim.bo[ctx.buf].buftype == '' -- a normal buffer
+      and not vim.bo[ctx.buf].modified -- without unsaved changes
+      and vim.fn.expand('%') ~= '' -- has a backing filename
+      and vim.fn.getcmdwintype() == '' -- not in cmdline
+    then
+      vim.cmd.checktime(ctx.buf)
+    end
+  end,
+})

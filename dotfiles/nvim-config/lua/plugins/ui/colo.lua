@@ -33,6 +33,7 @@ local function setup()
         StatusLine = { bg = p.current.variable, fg = p.current.panelBackground },
         StatusLineNC = { bg = p.current.comment, fg = p.current.panelBackground },
         ['@lsp.type.keyword.lua'] = {},
+        TodoFgNOTE = { fg = p.current.text },
       }
 
       return vim.tbl_extend(

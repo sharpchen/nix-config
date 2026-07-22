@@ -32,7 +32,13 @@ _G.IsNixOS = M.is_nixos
 _G.IsGUI = M.is_gui
 
 local now = os.date('*t') --[[@as std.osdate]]
-M.light = now.hour > 7 and now.hour < 17
+
+if now.month >= 6 and now.month <= 10 then
+  M.light = now.hour >= 5 and now.hour < 20
+else
+  M.light = now.hour >= 7 and now.hour < 17
+end
+
 M.new_line = M.is_windows and '\r\n' or '\n'
 
 ---generate a command args array for running on new bash process

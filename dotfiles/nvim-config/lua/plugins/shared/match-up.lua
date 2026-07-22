@@ -3,7 +3,7 @@
 ---@type LazySpec
 return {
   'andymass/vim-matchup',
-  -- enabled = false,
+  enabled = false,
   -- -- NOTE: remove lazy-loading if anything goes wrong
   event = 'BufRead',
   lazy = false,
