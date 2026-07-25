@@ -36,7 +36,7 @@ let
       bleopt highlight_variable=
       bleopt prompt_eol_mark="↵"
       # see: https://github.com/akinomyoga/ble.sh/discussions/683#discussioncomment-16115650
-      # bleopt complete_auto_complete_opts+=syntax-disabled
+      bleopt complete_auto_complete_opts+=syntax-disabled
     '';
 in
 {
