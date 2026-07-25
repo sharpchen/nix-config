@@ -359,7 +359,7 @@ quitOnTopLevelReturn: false
 
 os:
   # Command for editing a file. Should contain "{{filename}}".
-  edit: ""
+  edit: "nvim --cmd \"lua vim.env.MINIMAL_NVIM = 1\" {{filename}}"
   # Command for editing a file at a given line number. Should contain
 
   # "{{filename}}", and may optionally contain "{{line}}".
@@ -370,11 +370,13 @@ os:
   editAtLineAndWait: ""
   # For opening a directory in an editor
 
+  editInTerminal: true
+
   openDirInEditor: ""
   # A built-in preset that sets all of the above settings. Supported presets
 
   # are defined in the getPreset function in editor_presets.go.
-  editPreset: "nvim"
+  editPreset: ""
   # Command for opening a file, as if the file is double-clicked. Should
 
   # contain "{{filename}}", but doesn't support "{{line}}".
