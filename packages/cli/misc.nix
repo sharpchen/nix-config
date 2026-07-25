@@ -14,7 +14,7 @@
     ffmpeg
     # nix-prefetch
     # nix-prefetch-github
-    evil-helix
+    # evil-helix
     postgresql
     zoxide
     # devenv

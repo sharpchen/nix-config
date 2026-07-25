@@ -15,7 +15,6 @@ in
     netcoredbg
     csharpier
     roslyn-ls
-    # rzls
     fsautocomplete
     fantomas
     ilspycmd

@@ -5,7 +5,6 @@
     oxlint
     oxfmt
     pnpm
-    quick-lint-js
     emmet-language-server
     vtsls
     typescript-go
