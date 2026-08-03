@@ -9,6 +9,20 @@
 // custom settings, run `zed: open default settings` from the
 // command palette
 {
+  "format_on_save": "off",
+  "diagnostics": {
+    "inline": {
+      "enabled": true,
+    },
+  },
+  "languages": {
+    "TypeScript": {
+      "tab_size": 2,
+    },
+    "JavaScript": {
+      "tab_size": 2,
+    },
+  },
   "disable_ai": true,
   "project_panel": {
     "dock": "right",
@@ -28,8 +42,8 @@
   },
   "theme": {
     "mode": "light",
-    "light": "One Light",
-    "dark": "Ayu Dark",
+    "light": "Eva-Light",
+    "dark": "Eva-Dark",
   },
   "vim_mode": true,
   "vim": {
@@ -40,4 +54,5 @@
     "toggle_relative_line_numbers": true,
     "highlight_on_yank_duration": 300,
   },
+  "show_signature_help_after_edits": true,
 }
