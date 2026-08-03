@@ -1,5 +1,10 @@
 var File = {}
 var Directory = {}
+var Path = {}
+
+exports.File = File
+exports.Directory = Directory
+exports.Path = Path
 
 /**
  * @param {string} path
@@ -12,9 +17,9 @@ File.exists = function (path) {
 
 /**
  * @param {string} filePath
- * @returns {string | undefined}
+ * @returns {string | undefined} undefined if not found
  */
-File.getExtension = function (filePath) {
+Path.extension = function (filePath) {
   var dot = filePath.lastIndexOf('.')
   return dot !== -1 ? filePath.substring(dot) : undefined
 }
@@ -23,7 +28,7 @@ File.getExtension = function (filePath) {
  * @param {string} path
  * @returns {void}
  */
-File.delete = function (path) {
+File.deleteAsync = function (path) {
   if (!File.exists(path)) {
     return
   }
@@ -40,18 +45,17 @@ File.delete = function (path) {
  * @param {string} path
  * @returns {void}
  */
-File.trash = function (path) {
+File.trashAsync = function (path) {
   if (!File.exists(path)) {
     return
   }
 
   if (Env.IsWindows) {
     // escape single quote for actual value of __path__ placeholder
-    var escapedPath = path.replace("'", "''")
+    var escapedPath = path.replace(/'/g, "''")
     var ps1 = [
       'Add-Type -AssemblyName Microsoft.VisualBasic',
-      "[Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile('__path__', 'OnlyErrorDialogs', 'SendToRecycleBin')".replace(
-        '__path__',
+      "[Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile('{}', 'OnlyErrorDialogs', 'SendToRecycleBin')".format(
         escapedPath
       ),
     ].join('\n')
@@ -78,19 +82,14 @@ Directory.exists = function (path) {
 
 /**
  * @param {string} path
+ * @param {{includeExtention?: boolean}} [opts]
+ * @returns {string} Last component of the path, doesn't inlcude extension
+ * if {path} is a file and {opts.includeExtention} is false(default)
  */
-function assertFile(path) {
-  if (!File.exists(path)) {
-    throw new Error(path + ' does not exist.')
-  }
-}
-
-/**
- * @param {string} filePath
- * @returns {string}
- */
-function basename(filePath) {
-  var splits = mp.utils.split_path(filePath)
+Path.basename = function (path, opts) {
+  opts = opts || {}
+  opts.includeExtention = opts.includeExtention !== undefined ? opts.includeExtention : false
+  var splits = mp.utils.split_path(path)
   var filename = splits[1]
 
   if (filename === '') {
@@ -98,65 +97,88 @@ function basename(filePath) {
     // foo/bar/
     // note that directory separator is always / in mpv
     return (
-      filePath
+      path
         .split('/')
         .filter(function (c) {
           return c !== ''
         })
-        .pop() || filePath
+        .pop() || path
     )
   } else {
     // path/to/foo.txt or foo.txt
-    var dot = filename.lastIndexOf('.')
-    return dot !== -1 ? filename.substring(0, dot) : filename
+    if (!opts.includeExtention) {
+      var dot = filename.lastIndexOf('.')
+      return dot !== -1 ? filename.substring(0, dot) : filename
+    } else {
+      return filename
+    }
   }
+}
+
+/**
+ * Generate a new file path from basename of the file(no extension), with value interpolated
+ * For `opts.format`, use `{base}` for basename of the path, `{}` for opts.value
+ * NOTE: only one value can be interpolated, so only one `{}` is allowed
+ * @param {string} path
+ * @param {{format: string, value: string}} opts
+ * @returns {string}
+ * @example
+ * ```js
+   // returns foo/bar/file-part001.mp4
+   filePathFromFormat('foo/bar/file.mp4', {
+      format: '{base}-part{}',
+      value: "001"
+   })
+ * ```
+ */
+Path.filePathFromFormat = function (path, opts) {
+  assert(!path.includes('{base}'), '{{path}} should not contain "{{base}}": {}'.format(path))
+  assert(!path.endsWith('/'), '{{path}} is not a file: {}'.format(path))
+  var basename = Path.basename(path)
+  var dirname = Path.dirname(path)
+  var extension = Path.extension(path) || ''
+  return (
+    opts.format.replace('{base}', mp.utils.join_path(dirname, basename)).format(opts.value) +
+    extension
+  )
+}
+
+/**
+ * @param {string} path
+ * @returns {string}
+ */
+Path.dirname = function (path) {
+  return mp.utils.split_path(path)[0]
 }
 
 /**
  * attempt to generate a new file path with number index based on given path
  * until the file path doesn't exist
+ * @example
+ * ```js
+ * // returns foo/bar/file-part001.mp4 etc.
+ * tryFilePathWithIndex('foo/bar/file.mp4', {
+ *      format: '{{}}-part{}',
+ *      indexPad: 3,
+ * })
+ * ```
  * @param {string} filePath
- * @param {{prefix?: string, suffix?: string, indexPad?: number }} opts
+ * @param {{ format: string, indexPad?: number }} opts
  * @returns {string}
  */
-function newFilePathWithIndex(filePath, opts) {
-  opts.prefix = opts.prefix || ''
-  opts.suffix = opts.suffix || ''
+Path.tryFilePathWithIndex = function (filePath, opts) {
   opts.indexPad = opts.indexPad || 0
 
   assertFile(filePath)
 
-  var splits = mp.utils.split_path(filePath)
-  var dirname = splits[0]
-  var filename = splits[1]
-  var ext = File.getExtension(filename) || ''
-  var base = basename(filename)
-
   var idx = 0
   do {
     idx++
-    var newBaseName = [
-      opts.prefix,
-      opts.prefix !== '' ? idx.toString().padLeft(opts.indexPad, '0') : '',
-      base,
-      opts.suffix,
-      opts.suffix !== '' ? idx.toString().padLeft(opts.indexPad, '0') : '',
-    ]
-      .filter(function (p) {
-        return p !== ''
-      })
-      .join('_') // prefix_idx_basename_suffix_idx
-
-    var newName = newBaseName + ext
-    var newPath = mp.utils.join_path(dirname, newName)
+    var newPath = Path.filePathFromFormat(filePath, {
+      format: opts.format,
+      value: idx.toString().padLeft(opts.indexPad, '0'),
+    })
   } while (File.exists(newPath))
 
   return newPath
-}
-
-module.exports = {
-  File: File,
-  Directory: Directory,
-  basename: basename,
-  newFilePathWithIndex: newFilePathWithIndex,
 }

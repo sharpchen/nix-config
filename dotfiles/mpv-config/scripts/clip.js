@@ -1,121 +1,127 @@
 /**
- * @typedef {Object} Chapter
- * @property {string} title
- * @property {number} time
+ * @typedef {Object} ScriptOpts
+ * @property { 'dual' | 'single' | 'multiple' } mode
  */
 
-var FS = require('fileSystem')
-
-/** @type { [number | undefined, number | undefined] } */
-var timeMarks = [undefined, undefined]
-
-function markCurrent() {
-  var time = mp.get_property_number('time-pos')
-
-  if (!time) {
-    mp.osd_message('No valid time-pos captured.', 5)
-    return
-  }
-
-  /** @type {Chapter[]} */
-  var chapters = []
-
-  timeMarks.shift() // discard one old mark
-  timeMarks.push(time)
-
-  // update chapter-list on every new mark
-  if (timeMarks[0] !== void 0 && timeMarks[1] !== void 0) {
-    var start = Math.min(timeMarks[0], timeMarks[1])
-    var end = Math.max(timeMarks[0], timeMarks[1])
-
-    mp.osd_message('clip-start: ' + start, 5)
-    chapters.push({
-      time: start,
-      title: 'clip-start',
-    })
-
-    mp.osd_message('clip-end: ' + end, 5)
-    chapters.push({
-      time: end,
-      title: 'clip-end',
-    })
-  } else {
-    // if only the new mark is valid
-    chapters.push({
-      time: time,
-      title: 'clip-start',
-    })
-
-    mp.osd_message('clip-start: ' + time, 5)
-  }
-
-  mp.set_property_native('chapter-list', chapters)
+/**
+ * @type {ScriptOpts}
+ */
+var _opts = {
+  mode: 'dual',
 }
 
-function markClear() {
-  timeMarks = [undefined, undefined]
-  mp.set_property_native('chapter-list', [])
-}
+var m = require('mark')
+var _dual = new m.DualMark()
+var _single = new m.SingleMark()
+var _multiple = new m.MultipleMark()
 
-function clipFromMarks() {
-  if (timeMarks[0] === void 0 || timeMarks[1] === void 0) {
-    mp.osd_message('You need two valid time marks to create a clip!', 5)
-    return
+/**
+ * @type { import('../lib/mark.js').DualMark | import('../lib/mark.js').SingleMark | import('../lib/mark.js').MultipleMark }
+ */
+var _mark = _dual
+
+mp.options.read_options(_opts, undefined, function (changed) {
+  if (changed.mode) {
+    mp.osd_message('{}-mode: {}'.format(mp.get_script_name(), _opts.mode), 5)
+
+    switch (_opts.mode) {
+      case 'dual':
+        _mark = _dual
+        break
+      case 'single':
+        _mark = _single
+        break
+      case 'multiple':
+        _mark = _multiple
+        break
+    }
   }
-
-  var start = Math.min(timeMarks[0], timeMarks[1])
-  var end = Math.max(timeMarks[0], timeMarks[1])
-
-  if (end - start < 0.1) {
-    mp.osd_message('Interval too short, aborting.', 5)
-    return
-  }
-
-  var inputPath = mp.get_property('path')
-  if (inputPath && FS.File.exists(inputPath)) {
-    var outPath = FS.newFilePathWithIndex(inputPath, {
-      prefix: 'clip',
-      indexPad: 3,
-    })
-
-    mp.command_native_async(
-      {
-        name: 'subprocess',
-        args: [
-          'ffmpeg',
-          '-i',
-          inputPath,
-          '-c',
-          'copy',
-          '-ss',
-          start.toString(),
-          '-to',
-          end.toString(),
-          outPath,
-        ],
-        capture_stderr: true,
-      },
-      function (ok, out, err) {
-        // @ts-ignore
-        if (ok && out.status === 0) {
-          mp.osd_message('Created: ' + outPath, 5)
-        } else {
-          mp.osd_message('Creation FAILED: ' + outPath, 5)
-          mp.msg.error(err)
-        }
-      }
-    )
-  } else {
-    mp.osd_message('Failed to get current file path', 5)
-  }
-}
-
-mp.add_key_binding('M', 'clip-mark-set', markCurrent)
-
-mp.add_key_binding(undefined, 'clip-mark-clear', function () {
-  markClear()
 })
 
-mp.add_key_binding('C', 'clip-create', function () {
-  clipFromMarks()
+mp.add_key_binding('t-m', 'toggle-mark-mode', function () {
+  // NOTE: `change-list` used in this function is asynchronous
+  // so the operation on toggle should be set on callback of `read_options`
+  require('option').cycle({
+    qualifiedName: '{}-mode'.format(mp.get_script_name()),
+    current: function () {
+      return _opts.mode
+    },
+    values: ['dual', 'single', 'multiple'],
+  })
+})
+
+mp.add_key_binding('M', 'clip-mark-set', function () {
+  // pin osc layer so we can see marks as we set
+  mp.commandv('change-list', 'script-opts', 'append', 'osc-visibility=always')
+  var time = mp.get_property_number('time-pos')
+  assertNonNull(time)
+  _mark.push(time)
+})
+
+mp.add_key_binding('d-m', 'clip-mark-clear', function () {
+  require('input').confirm({
+    prompt: 'Are you sure to clear marks?',
+    action: function () {
+      _mark.clear()
+      mp.set_property_native('chapter-list', [])
+      mp.commandv('change-list', 'script-opts', 'append', 'osc-visibility=auto')
+    },
+  })
+})
+
+mp.add_key_binding('C-C', 'clip-mark-apply', function () {
+  var inputPath = mp.get_property('path')
+  assertNonNull(inputPath, 'inputPath')
+  switch (_opts.mode) {
+    case 'dual':
+      // prompt output name
+      mp.input.select({
+        prompt: 'How to clip?',
+        items: ['clamp', 'splits'],
+        submit: function (id) {
+          switch (id) {
+            case 1:
+              // @ts-ignore
+              _mark.clip(inputPath)
+              break
+            case 2:
+              // @ts-ignore
+              _mark.clipRanges(inputPath)
+              break
+          }
+        },
+      })
+      break
+    case 'single':
+      mp.input.select({
+        prompt: 'How to clip?',
+        items: ['from_start', 'to_end', 'splits'],
+        submit: function (id) {
+          switch (id) {
+            case 1:
+              // @ts-ignore
+              _mark.clipFromStart(inputPath)
+              break
+            case 2:
+              // @ts-ignore
+              _mark.clipToEnd(inputPath)
+              break
+            case 3:
+              // @ts-ignore
+              _mark.clipRanges(inputPath)
+              break
+          }
+        },
+      })
+      break
+    case 'multiple':
+      require('input').confirm({
+        prompt: 'Clip marks into splits?',
+        action: function () {
+          // @ts-ignore
+          _mark.clipRanges(inputPath)
+        },
+      })
+      break
+  }
 })

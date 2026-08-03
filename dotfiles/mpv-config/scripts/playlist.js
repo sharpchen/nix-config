@@ -24,5 +24,5 @@ mp.add_key_binding('del', 'playlist-trash-current', function () {
   var currentPath = mp.get_property('path') // order matters here
   assertNonNull(currentPath, 'currentPath')
   removeCurrentEntry()
-  FS.File.trash(currentPath)
+  FS.File.trashAsync(currentPath)
 })
