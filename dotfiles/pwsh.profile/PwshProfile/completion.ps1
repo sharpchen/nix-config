@@ -1,73 +1,105 @@
-$__filecomplete = {
-    param(
-        $commandName,
-        $parameterName,
-        $wordToComplete,
-        $commandAst,
-        $fakeBoundParameters
+using namespace System.Collections
+using namespace System.Management.Automation
+
+$global:__comp_file = {
+    param (
+        [string]$commandName,
+        [string]$parameterName,
+        [string]$wordToComplete,
+        [Language.CommandAst]$commandAst,
+        [IDictionary]$fakeBoundParameters
     )
     Get-ChildItem -Filter "*$wordToComplete*" -File -Force |
-        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
+        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore |
+        ForEach-Object {
+            "'$($_ -replace "'", "''")'"
+        }
 }
 
-$__filecompletenative = {
+$global:__comp_file_native = {
     param(
-        $wordToComplete,
-        $commandAst,
-        $cursorPosition
+        [string]$wordToComplete,
+        [Language.CommandAst]$commandAst,
+        [int]$cursorPosition
     )
     Get-ChildItem -Filter "*$wordToComplete*" -File -Force |
-        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
+        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore |
+        ForEach-Object {
+            "'$($_ -replace "'", "''")'"
+        }
 }
 
-$__foldercomplete = {
-    param(
-        $commandName,
-        $parameterName,
-        $wordToComplete,
-        $commandAst,
-        $fakeBoundParameters
-    )
-    Get-ChildItem -Filter "*$wordToComplete*" -Directory -Force |
-        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
-}
-
-$__foldercompletenative = {
-    param(
-        $wordToComplete,
-        $commandAst,
-        $cursorPosition
+$global:__comp_folder = {
+    param (
+        [string]$commandName,
+        [string]$parameterName,
+        [string]$wordToComplete,
+        [Language.CommandAst]$commandAst,
+        [IDictionary]$fakeBoundParameters
     )
 
     Get-ChildItem -Filter "*$wordToComplete*" -Directory -Force |
-        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore
+        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore |
+        ForEach-Object {
+            "'$($_ -replace "'", "''")'"
+        }
+}
+
+$global:__comp_folder_native = {
+    param(
+        [ArgumentCompleterFactoryAttribute]
+        [string]$wordToComplete,
+        [Language.CommandAst]$commandAst,
+        [int]$cursorPosition
+    )
+
+    Get-ChildItem -Filter "*$wordToComplete*" -Directory -Force |
+        Resolve-Path -Relative -RelativeBasePath $PWD -ErrorAction Ignore |
+        ForEach-Object {
+            "'$($_ -replace "'", "''")'"
+        }
 }
 
 $__dotnetcomplete = {
     param(
-        $wordToComplete,
-        $commandAst,
-        $cursorPosition
+        [string]$wordToComplete,
+        [Language.CommandAst]$commandAst,
+        [int]$cursorPosition
     )
 
     dotnet complete --position $cursorPosition $commandAst.ToString() | ForEach-Object {
-        [System.Management.Automation.CompletionResult]::new(
+        [CompletionResult]::new(
             $_,               # completionText
             $_,               # listItemText
-            [System.Management.Automation.CompletionResultType]::ParameterValue,
+            [CompletionResultType]::ParameterValue,
             $_                # toolTip
         )
     }
 }
 
+$global:__comp_sys_env = {
+    param (
+        [string]$commandName,
+        [string]$parameterName,
+        [string]$wordToComplete,
+        [Language.CommandAst]$commandAst,
+        [IDictionary]$fakeBoundParameters
+    )
+
+    $target = if ($fakeBoundParameters.ContainsKey('Target')) {
+        $fakeBoundParameters['Target']
+    } else {
+        [System.EnvironmentVariableTarget]::User
+    }
+
+    [System.Environment]::GetEnvironmentVariables($target).Keys
+}
+
 # native complete
 Register-ArgumentCompleter -CommandName dn -ScriptBlock $__dotnetcomplete
 Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock $__dotnetcomplete
-Register-ArgumentCompleter -Native -CommandName ll -ScriptBlock $__foldercompletenative
-Register-ArgumentCompleter -Native -CommandName file -ScriptBlock $__filecompletenative
+Register-ArgumentCompleter -Native -CommandName ll -ScriptBlock $global:__comp_folder_native
+Register-ArgumentCompleter -Native -CommandName file -ScriptBlock $global:__comp_file_native
 
 # non-native complete
-Register-ArgumentCompleter -CommandName rd -ParameterName LiteralPath -ScriptBlock $__foldercomplete
-Register-ArgumentCompleter -CommandName unpack -ParameterName LiteralPath -ScriptBlock $__filecomplete
-Register-ArgumentCompleter -CommandName unpack -ParameterName Destination -ScriptBlock $__foldercomplete
-Register-ArgumentCompleter -CommandName epubpack -ParameterName Folder -ScriptBlock $__foldercomplete
+Register-ArgumentCompleter -CommandName rd -ParameterName LiteralPath -ScriptBlock $global:__comp_folder

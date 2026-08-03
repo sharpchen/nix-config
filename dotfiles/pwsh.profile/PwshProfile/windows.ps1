@@ -1,3 +1,6 @@
+using namespace System.Management.Automation
+using namespace System.Collections
+
 Set-Alias reboot Restart-Computer
 Set-Alias uptime Get-Uptime
 
@@ -142,38 +145,11 @@ function pathclean {
     }
 }
 
-$__env_complete = {
-    param (
-        $commandName,
-        $parameterName,
-        $wordToComplete,
-        $commandAst,
-        $fakeBoundParameters
-    )
-
-    $target = if ($fakeBoundParameters.ContainsKey('Target')) {
-        $fakeBoundParameters['Target']
-    } else {
-        [System.EnvironmentVariableTarget]::User
-    }
-
-    [System.Environment]::GetEnvironmentVariables($target).Keys
-}
-
 function env-set {
     [Alias('envset')]
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     param(
-        [ArgumentCompleter({
-                param (
-                    $commandName,
-                    $parameterName,
-                    $wordToComplete,
-                    $commandAst,
-                    $fakeBoundParameters
-                )
-                & $__env_complete @PSBoundParameters
-            })]
+        [ArgumentCompleter({ & $global:__comp_sys_env @args })]
         [Parameter(Mandatory, Position = 0)]
         [string]$Name,
 
@@ -191,16 +167,7 @@ function env-set {
 function env-unset {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     param(
-        [ArgumentCompleter({
-                param (
-                    $commandName,
-                    $parameterName,
-                    $wordToComplete,
-                    $commandAst,
-                    $fakeBoundParameters
-                )
-                & $__env_complete @PSBoundParameters
-            })]
+        [ArgumentCompleter({ & $global:__comp_sys_env @args })]
         [Parameter(Mandatory, Position = 0)]
         [string]$Name,
 

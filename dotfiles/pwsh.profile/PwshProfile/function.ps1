@@ -1,3 +1,7 @@
+using namespace System.Collections
+using namespace System.Collections.Generic
+using namespace System.Management.Automation
+
 function pinfo {
     param (
         [Parameter(Position = 0, Mandatory, ValueFromPipeline)]
@@ -12,16 +16,16 @@ function pinfo {
 
         [ArgumentCompleter({
                 param (
-                    $commandName,
-                    $parameterName,
-                    $wordToComplete,
-                    $commandAst,
-                    $fakeBoundParameters
+                    [string]$commandName,
+                    [string]$parameterName,
+                    [string]$wordToComplete,
+                    [Language.CommandAst]$commandAst,
+                    [IDictionary]$fakeBoundParameters
                 )
 
                 if ($fakeBoundParameters.ContainsKey('Command')) {
                     $cmd = Get-Command $fakeBoundParameters['Command']
-                    if ($cmd -is [System.Management.Automation.AliasInfo]) {
+                    if ($cmd -is [AliasInfo]) {
                         $cmd = Get-Command $cmd.Definition
                     }
                     $cmd.ParameterSets.Name
@@ -33,7 +37,7 @@ function pinfo {
 
     begin {
         $cmd = Get-Command $Command
-        if ($cmd -is [System.Management.Automation.AliasInfo]) {
+        if ($cmd -is [AliasInfo]) {
             $cmd = Get-Command $cmd.Definition
         }
         $eachSet = @()
@@ -62,7 +66,7 @@ function pinfo {
             $parameterSets = $cmd.ParameterSets
         }
         foreach ($pset in $parameterSets) {
-            $childParameters = [System.Collections.Generic.List[pscustomobject]]@()
+            $childParameters = [List[pscustomobject]]@()
             $pset.Parameters | Where-Object { $_.Name -notin $CommonParams } |
                 ForEach-Object {
                     $name, $attr = $_.Name, $_.Attributes
@@ -127,15 +131,22 @@ function pinfo {
 function play {
     [CmdletBinding(DefaultParameterSetName = '__AllParameterSets')]
     param (
+        [ArgumentCompleter({ & $global:__comp_file @args })]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [Parameter(Mandatory, Position = 0, ValueFromPipelineByPropertyName, ValueFromPipeline)]
         [Alias('FullName')]
-        [string]$LiteralPath
+        [string]$LiteralPath,
+
+        [switch]$NoResume
     )
 
     begin {
         $null = Get-Command mpv -ErrorAction Stop
-        $playlist = [System.Collections.Generic.List[string]]::new()
+        $playlist = [List[string]]::new()
+        $flags = , '--force-window'
+        if ($NoResume) {
+            $flags += '--resume-playback=no'
+        }
     }
 
     process {
@@ -145,10 +156,10 @@ function play {
     end {
         if ($MyInvocation.ExpectingInput) {
             if ($playlist.Count -gt 0) {
-                $null = Start-Job { $input | mpv --force-window --playlist=- } -InputObject $playlist
+                $null = Start-Job { $input | mpv @flags --playlist=- } -InputObject $playlist
             }
         } else {
-            $null = Start-Job { mpv --force-window $args } -ArgumentList $LiteralPath
+            $null = Start-Job { mpv @flags $args } -ArgumentList $LiteralPath
         }
     }
 }
@@ -433,7 +444,7 @@ function get {
 
             if ($propName -eq 'GetType') {
                 $val = $val.GetType()
-            } elseif ($propValue -is [System.Management.Automation.PSMethod]) {
+            } elseif ($propValue -is [PSMethod]) {
                 $val = $propValue.Invoke()
             } else {
                 $val = $propValue
@@ -452,7 +463,9 @@ function epubpack {
     param (
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Container })]
         [Parameter(Position = 0, Mandatory)]
+        [ArgumentCompleter({ & $global:__comp_folder @args })]
         [string]$Folder,
+
         [Parameter(Position = 1)]
         [ValidateScript({ Test-Path -IsValid $_ })]
         [string]$OutFile
@@ -486,10 +499,12 @@ function unpack {
     # __AllParameterSets can be a arbitrary name other than defined ParameterSetNames
     [CmdletBinding(DefaultParameterSetName = '__AllParameterSets')]
     param (
+        [ArgumentCompleter({ & $global:__comp_file @args })]
         [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
         [Parameter(Position = 0, Mandatory)]
         [string]$LiteralPath,
 
+        [ArgumentCompleter({ & $global:__comp_folder @args })]
         [ValidateScript({ Test-Path $_ -IsValid })]
         [Parameter(Position = 1, ParameterSetName = 'Destination')]
         [string]$Destination,
@@ -653,7 +668,7 @@ function hisdel {
     begin {
         $count = 0
         $history = (Get-PSReadLineOption).HistorySavePath
-        $filtered = [System.Collections.Generic.List[string]]::new()
+        $filtered = [List[string]]::new()
         if ($Escape) {
             $Pattern = [regex]::Escape($Pattern)
         }

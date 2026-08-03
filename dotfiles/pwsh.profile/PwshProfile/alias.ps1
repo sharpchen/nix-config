@@ -16,6 +16,7 @@ Set-Alias csv ConvertFrom-Csv
 Set-Alias tocsv ConvertTo-Csv
 Set-Alias eval Invoke-Expression
 Set-Alias unset Remove-Variable
+Set-Alias rename Rename-Item
 
 function ll {
     Get-ChildItem @args -Force
@@ -78,9 +79,12 @@ function so {
 if (Get-Command yazi -ErrorAction Ignore) {
     function y {
         $tmp = [System.IO.Path]::GetTempFileName()
-        yazi $args --cwd-file="$tmp"
+        yazi @args --cwd-file="$tmp"
         $cwd = Get-Content -Path $tmp -Encoding UTF8
-        if (-not [String]::IsNullOrEmpty($cwd) -and $cwd -ne $PWD.Path) {
+        if (![String]::IsNullOrEmpty($cwd) -and
+            $cwd -ne $PWD.Path -and
+            (Test-Path -LiteralPath $cwd -PathType Container)
+        ) {
             Set-Location -LiteralPath ([System.IO.Path]::GetFullPath($cwd))
         }
         Remove-Item -Path $tmp
