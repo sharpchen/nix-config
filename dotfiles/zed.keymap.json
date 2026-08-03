@@ -74,6 +74,10 @@
       "n": ["workspace::SendKeystrokes", "n z z"],
       "N": ["workspace::SendKeystrokes", "N z z"],
       "alt-`": "terminal_panel::Toggle",
+      "space h r": "git::Restore",
+      "space h R": "git::RestoreFile",
+      "space h b": "git::Blame",
+      "space h i": "editor::ToggleSelectedDiffHunks",
     },
   },
   {
@@ -146,4 +150,3 @@
     },
   },
 ]
-
