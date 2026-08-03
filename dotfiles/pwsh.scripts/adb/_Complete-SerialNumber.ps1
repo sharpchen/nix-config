@@ -1,9 +1,9 @@
 param (
-    $commandName,
-    $parameterName,
-    $wordToComplete,
-    $commandAst,
-    $fakeBoundParameters
+    [string]$commandName,
+    [string]$parameterName,
+    [string]$wordToComplete,
+    [System.Management.Automation.Language.CommandAst]$commandAst,
+    [System.Collections.IDictionary]$fakeBoundParameters
 )
 
 $flags = 'devices', '-l'

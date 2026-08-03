@@ -1,14 +1,5 @@
 param(
-    [ArgumentCompleter({
-            param (
-                $commandName,
-                $parameterName,
-                $wordToComplete,
-                $commandAst,
-                $fakeBoundParameters
-            )
-            & "$PSScriptRoot/_Complete-Packages.ps1" @PSBoundParameters
-        })]
+    [ArgumentCompleter({ & "$PSScriptRoot/_Complete-Packages.ps1" @args })]
     [Parameter(Mandatory)]
     [string]$Name,
 
@@ -16,16 +7,7 @@ param(
 
     [ushort]$Port = 5037,
 
-    [ArgumentCompleter({
-            param (
-                $commandName,
-                $parameterName,
-                $wordToComplete,
-                $commandAst,
-                $fakeBoundParameters
-            )
-            & "$PSScriptRoot/_Complete-SerialNumber.ps1" @PSBoundParameters
-        })]
+    [ArgumentCompleter({ & "$PSScriptRoot/_Complete-SerialNumber.ps1" @args })]
     [string]$SerialNumber
 )
 

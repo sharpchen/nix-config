@@ -2,16 +2,7 @@
 param (
     [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
     [string]$Recovery,
-    [ArgumentCompleter({
-            param (
-                $commandName,
-                $parameterName,
-                $wordToComplete,
-                $commandAst,
-                $fakeBoundParameters
-            )
-            & "$PSScriptRoot/_Complete-SerialNumber.ps1" @PSBoundParameters
-        })]
+    [ArgumentCompleter({ & "$PSScriptRoot/_Complete-SerialNumber.ps1" @args })]
     [string]$SerialNumber,
     [ushort]$Port = 5037
 )
