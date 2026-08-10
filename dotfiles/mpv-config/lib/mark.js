@@ -166,7 +166,7 @@ DualMark.prototype.clipRanges = function (inputPath) {
   assertNonNull(duration, 'duration')
 
   var clone = this.pos.concat()
-  clone.splice(0, 0, 0) // prepend time start 0
+  clone.unshift(0) // prepend time start 0
   clone.push(duration)
 
   for (var i = 0; i < clone.length - 1; i++) {
@@ -220,7 +220,7 @@ MultipleMark.prototype.clipRanges = function (inputPath) {
   assertNonNull(duration, 'duration')
 
   var clone = this.pos.concat()
-  clone.splice(0, 0, 0) // prepend time start 0
+  clone.unshift(0) // prepend time start 0
   clone.push(duration)
 
   for (var i = 0; i < clone.length - 1; i++) {
