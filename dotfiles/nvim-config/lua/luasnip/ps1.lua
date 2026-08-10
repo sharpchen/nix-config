@@ -47,12 +47,12 @@ return {
     fmta(
       [[
 Register-ArgumentCompleter -CommandName <> -ParameterName <> -ScriptBlock {
-    param(
-        $commandName,
-        $parameterName,
-        $wordToComplete,
-        $commandAst,
-        $fakeBoundParameters
+    param (
+          [string]$commandName,
+          [string]$parameterName,
+          [string]$wordToComplete,
+          [System.Management.Automation.Language.CommandAst]$commandAst,
+          [System.Collections.IDictionary]$fakeBoundParameters
     )
 }
   ]],
@@ -65,9 +65,9 @@ Register-ArgumentCompleter -CommandName <> -ParameterName <> -ScriptBlock {
       [[
 Register-ArgumentCompleter -Native -CommandName <> -ScriptBlock {
     param(
-        $wordToComplete,
-        $commandAst,
-        $cursorPosition
+        [string]$wordToComplete,
+        [System.Management.Automation.Language.CommandAst]$commandAst,
+        [int]$cursorPosition
     )
 }
   ]],
