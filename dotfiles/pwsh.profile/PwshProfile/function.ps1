@@ -587,8 +587,8 @@ function cptree {
     )
 
     begin {
-        $root = Convert-Path $LiteralPath
-        $dest = Convert-Path $Destination
+        $root = Convert-Path $LiteralPath -ErrorAction Stop
+        $dest = Convert-Path $Destination -ErrorAction Stop
         if (-not $ExcludeRoot) {
             $dest = Join-Path $dest (Split-Path $root -Leaf)
         }
@@ -888,48 +888,48 @@ function replace {
         [string]$InputObject,
 
         [Parameter(Position = 0)]
-        [string]$Pattern,
+        [string]$pattern,
 
         [Parameter(Position = 1)]
-        [string]$Replace,
+        [string]$replace,
 
         [ValidateScript({ $_ -gt 0 })]
         [Alias('n')]
-        [int]$Count,
+        [int]$count,
 
         [Alias('c')]
         [switch]$CaseSensitive,
 
         [Alias('l')]
-        [switch]$Literal
+        [switch]$literal
     )
 
     begin {
-        if ($Literal) {
-            $Pattern = [regex]::Escape($Pattern)
+        if ($literal) {
+            $pattern = [regex]::Escape($pattern)
         }
         if ($CaseSensitive) {
-            $regex = [regex]::new($Pattern)
+            $regex = [regex]::new($pattern)
         } else {
-            $regex = [regex]::new($Pattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+            $regex = [regex]::new($pattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
         }
     }
 
     process {
         if ($PSBoundParameters.ContainsKey('Count')) {
-            $regex.Replace($InputObject, $Replace, $Count)
+            $regex.Replace($InputObject, $replace, $count)
         } else {
-            $regex.Replace($InputObject, $Replace)
+            $regex.Replace($InputObject, $replace)
         }
     }
 }
 
 function def {
     param(
-        [string]$Command
+        [string]$cmd
     )
 
-    $cmd = Get-Command $Command -All -ErrorAction Stop
+    $cmd = Get-Command $cmd -All -ErrorAction Stop
 
     $cmd.Definition
 }
@@ -1132,41 +1132,39 @@ function Mimetype-Get {
 }
 
 function recent {
-    param(
-        [Alias('FullName')]
-        [ValidateScript({ Test-Path -LiteralPath $_ })]
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [string]$LiteralPath,
+    param (
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [System.IO.FileSystemInfo]$InputObject,
 
-        [uint]$Day,
-        [uint]$Hour,
-        [uint]$Minute,
-        [uint]$Week
+        [uint]$day,
+        [uint]$hour,
+        [uint]$minute,
+        [uint]$week
     )
 
     begin {
-        if(!$PSBoundParameters.ContainsKey('Day') -and
+        if (!$PSBoundParameters.ContainsKey('Day') -and
             !$PSBoundParameters.ContainsKey('Hour') -and
             !$PSBoundParameters.ContainsKey('Minute') -and
             !$PSBoundParameters.ContainsKey('Week')
         ) {
-            $sort = { Sort-Object  CreationTime -Descending }.GetSteppablePipeline($MyInvocation.CommandOrigin)
+            $sort = { Sort-Object CreationTime -Descending }.GetSteppablePipeline($MyInvocation.CommandOrigin)
         } else {
             if (!$PSBoundParameters.ContainsKey('Day')) {
-                $Day = 0
+                $day = 0
             }
             if (!$PSBoundParameters.ContainsKey('Hour')) {
-                $Hour = 0
+                $hour = 0
             }
             if (!$PSBoundParameters.ContainsKey('Minute')) {
-                $Minute = 0
+                $minute = 0
             }
             if ($PSBoundParameters.ContainsKey('Week')) {
-                $Day += $Week * 7
+                $day += $week * 7
             }
 
             $sort = {
-                Where-Object { $_.CreationTime -gt ([datetime]::Now - [timespan]::new($Day, $Hour, $Minute, 0)) } |
+                Where-Object { $_.CreationTime -gt ([datetime]::Now - [timespan]::new($day, $hour, $minute, 0)) } |
                     Sort-Object  CreationTime -Descending
             }.GetSteppablePipeline($MyInvocation.CommandOrigin)
         }
@@ -1175,7 +1173,7 @@ function recent {
     }
 
     process {
-        $sort.Process((Get-Item -LiteralPath $LiteralPath))
+        $sort.Process($InputObject)
     }
 
     end {

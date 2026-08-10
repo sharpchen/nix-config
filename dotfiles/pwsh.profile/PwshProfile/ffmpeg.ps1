@@ -123,9 +123,9 @@ function ff-concat {
                     @inputFlags `
                     -filter_complex $filterComplex `
                     -map '[vout]' -map '[aout]' $OutFile `
-                    2>variable:err 1>$null
+                    2>variable:__ff_err 1>$null
 
-                __ff_error $LASTEXITCODE $err
+                __ff_error $LASTEXITCODE $__ff_err
 
                 if ($Passthru) {
                     Get-Item $OutFile
@@ -139,9 +139,9 @@ function ff-concat {
                     -i $tempFile `
                     -c copy `
                     $OutFile `
-                    2>variable:err 1>$null
+                    2>variable:__ff_err 1>$null
 
-                __ff_error $LASTEXITCODE $err
+                __ff_error $LASTEXITCODE $__ff_err
 
                 if ($Passthru) {
                     Get-Item $OutFile
@@ -193,9 +193,9 @@ function ff-slide {
             -vsync vfr `
             -pix_fmt yuv420p `
             $OutFile `
-            2>variable:err 1>$null
+            2>variable:__ff_err 1>$null
 
-        __ff_error $LASTEXITCODE $err
+        __ff_error $LASTEXITCODE $__ff_err
     }
 
     clean {
@@ -271,9 +271,9 @@ function ff-audio_with_poster {
         -r 1 `
         -shortest `
         $OutFile `
-        2>variable:err 1>$null
+        2>variable:__ff_err 1>$null
 
-    __ff_error $LASTEXITCODE $err
+    __ff_error $LASTEXITCODE $__ff_err
 }
 
 function ff-metadata_update {
@@ -333,9 +333,9 @@ function ff-resample {
         -sample_fmt $SampleFormat `
         -ar $SampleRate `
         $OutFile `
-        2>variable:err 1>$null
+        2>variable:__ff_err 1>$null
 
-    __ff_error $LASTEXITCODE $err
+    __ff_error $LASTEXITCODE $__ff_err
 }
 
 function ff-silent {
@@ -366,9 +366,9 @@ function ff-silent {
     }
 
 
-    ffmpeg @script:__ff_flags @flags $OutFile 2>variable:err 1>$null
+    ffmpeg @script:__ff_flags @flags $OutFile 2>variable:__ff_err 1>$null
 
-    __ff_error $LASTEXITCODE $err
+    __ff_error $LASTEXITCODE $__ff_err
 }
 
 function ff-loudness-get {
@@ -488,13 +488,51 @@ function ff-loudness-normalize {
             }
 
             # it seems confirm prompt is redirected as well
-            ffmpeg @script:__ff_flags @flags -y $out 2>variable:err 1>$null
+            ffmpeg @script:__ff_flags @flags -y $out 2>variable:__ff_err 1>$null
 
-            __ff_error $LASTEXITCODE $err
+            __ff_error $LASTEXITCODE $__ff_err
         }
     }
 
     clean {
         Remove-Item $measure_log -ErrorAction Ignore
+    }
+}
+
+function ff-repeat {
+    param (
+        [Alias('i')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [Parameter(Mandatory)]
+        [string]$LiteralPath,
+
+        [Alias('n')]
+        [Parameter(Mandatory)]
+        [ValidateScript({ $_ -gt 0 })]
+        [ushort]$Count,
+
+        [Alias('o')]
+        [ValidateScript({ $_ -is [scriptblock] -or (Test-Path $_ -IsValid) })]
+        [Parameter(Mandatory)]
+        $OutFile
+    )
+
+    begin {
+        $null = Get-Command ffmpeg -ErrorAction Stop
+        $out = if ($OutFile -is [scriptblock]) {
+            $OutFile.InvokeWithContext($null, [psvariable]::new('_', (Get-Item -LiteralPath $LiteralPath)))
+        } else {
+            $OutFile
+        }
+
+        if (Test-Path -LiteralPath $out) {
+            Write-Error "$($MyInvocation.MyCommand.Name): $out already exists, aborting." -ErrorAction Stop
+        }
+    }
+
+    end {
+        # -stream_loop specifies the additional loops, $Count is the total expected loops
+        ffmpeg @script:__ff_flags -stream_loop ($Count - 1) -i $LiteralPath -c copy $out 2>variable:__ff_err 1>$null
+        __ff_error $LASTEXITCODE $__ff_err
     }
 }
