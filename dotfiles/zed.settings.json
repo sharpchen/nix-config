@@ -9,6 +9,7 @@
 // custom settings, run `zed: open default settings` from the
 // command palette
 {
+  "semantic_tokens": "combined",
   "format_on_save": "off",
   "diagnostics": {
     "inline": {
