@@ -17,15 +17,18 @@ local function random(arr)
 end
 
 local font = random {
-  'IBM Plex Mono',
+  -- 'IBM Plex Mono',
   -- 'SF Mono',
   -- 'Cascadia Mono',
   -- 'Roboto Mono',
-  -- 'JetBrains Mono NL',
+  'JetBrains Mono NL',
 }
 
 local function regular()
+  config.line_height = 1.2
   config.font_size = 10
+  config.freetype_load_target = 'Light'
+  config.freetype_render_target = 'HorizontalLcd'
   config.font = wezterm.font_with_fallback {
     font,
     'Nerd Font Symbols',
