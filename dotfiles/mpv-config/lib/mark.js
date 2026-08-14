@@ -1,12 +1,6 @@
 var FS = require('fileSystem')
 
 /**
- * @typedef {Object} Chapter
- * @property {string} title
- * @property {number} time
- */
-
-/**
  * @constructor
  */
 function SingleMark() {
@@ -100,7 +94,7 @@ function DualMark() {
  * @param {number} time
  */
 DualMark.prototype.push = function (time) {
-  /** @type {Chapter[]} */
+  /** @type {mpv.Chapter[]} */
   var chapters = []
 
   this.pos.shift() // discard one old mark

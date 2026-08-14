@@ -17,11 +17,66 @@ File.exists = function (path) {
 
 /**
  * @param {string} filePath
- * @returns {string | undefined} undefined if not found
+ * @returns {string} undefined if not found
  */
 Path.extension = function (filePath) {
   var dot = filePath.lastIndexOf('.')
-  return dot !== -1 ? filePath.substring(dot) : undefined
+  return dot !== -1 ? filePath.substring(dot) : ''
+}
+
+Path.getTempPath = function () {
+  switch (mp.get_property('platform')) {
+    case 'windows':
+      var tmp = mp.utils.getenv('TEMP')
+      if (tmp && !tmp.isNullOrEmpty()) return tmp
+      tmp = mp.utils.getenv('TMP')
+      if (tmp && !tmp.isNullOrEmpty()) return tmp
+      throw new Error('Temp path not found on Windows.')
+    default:
+      var tmp = mp.utils.getenv('TMPDIR')
+      if (tmp && !tmp.isNullOrEmpty()) return tmp
+      return '/tmp/'
+  }
+}
+
+/**
+ * @returns {string}
+ */
+Path.getTempFilePath = function () {
+  var prefix = 'mpv-'
+  var ext = '.tmp'
+  var tempBase = Path.getTempPath()
+  var path
+  // NOTE: this is not thread safe as it doesn't lock the file on trying
+  // but we have a prefix here makes it very unlikely
+  do {
+    path = mp.utils.join_path(
+      tempBase,
+      prefix + Math.floor(Math.random() * 0xffffff).toString(16) + ext
+    )
+  } while (File.exists(path))
+
+  return mp.command_native({
+    name: 'normalize-path',
+    filename: path,
+  })
+}
+
+/**
+ * @param {...string} args
+ * @returns {string}
+ */
+Path.join = function () {
+  // NOTE: args is actually IArguments here
+  var path = arguments[0]
+  var nextIdx = 1
+
+  while (nextIdx < arguments.length) {
+    path = mp.utils.join_path(path, arguments[nextIdx])
+    nextIdx++
+  }
+
+  return path || ''
 }
 
 /**
@@ -35,7 +90,7 @@ File.deleteAsync = function (path) {
 
   mp.command_native_async({
     name: 'subprocess',
-    args: [Env.IsWindows ? 'del' : 'rm', path],
+    args: Env.IsWindows ? ['cmd', '/c', 'del', path] : ['rm', path],
     playback_only: false,
     detach: true,
   })

@@ -7,6 +7,7 @@ interface String {
   endsWith(suffix: string): boolean
   startsWith(prefix: string): boolean
   includes(str: string): boolean
+  isNullOrEmpty(): boolean
 }
 
 interface Array<T> {
@@ -21,3 +22,10 @@ declare function assertPathValid(path: string): void
 declare function logAndShow(loglevel: mp.LogLevel, msg: string): void
 
 declare const Env: typeof import('env')
+
+declare namespace mpv {
+  interface Chapter {
+    time: number
+    title: string
+  }
+}

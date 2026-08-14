@@ -61,7 +61,7 @@ mp.add_key_binding('M', 'clip-mark-set', function () {
 mp.add_key_binding('d-m', 'clip-mark-clear', function () {
   require('input').confirm({
     prompt: 'Are you sure to clear marks?',
-    action: function () {
+    yes: function () {
       _mark.clear()
       mp.set_property_native('chapter-list', [])
       mp.commandv('change-list', 'script-opts', 'append', 'osc-visibility=auto')
@@ -117,7 +117,7 @@ mp.add_key_binding('C-C', 'clip-mark-apply', function () {
     case 'multiple':
       require('input').confirm({
         prompt: 'Clip marks into splits?',
-        action: function () {
+        yes: function () {
           // @ts-ignore
           _mark.clipRanges(inputPath)
         },

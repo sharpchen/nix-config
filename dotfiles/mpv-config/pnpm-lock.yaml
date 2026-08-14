@@ -12,8 +12,8 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.6.0)
       '@types/mpv-script':
-        specifier: ^0.32.13
-        version: 0.32.13
+        specifier: ^0.32.15
+        version: 0.32.15
       eslint:
         specifier: ^10.6.0
         version: 10.6.0
@@ -222,8 +222,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/mpv-script@0.32.13':
-    resolution: {integrity: sha512-Xo3u0poUrMOgi1MbojQOa6YhABvoaa/9X92cCzFLOOsJi46VJp654aTYQdT2QPGkh4hUUHoQT/Fl6+TCZ3egcA==}
+  '@types/mpv-script@0.32.15':
+    resolution: {integrity: sha512-ldBcRcQyh8nLhIU+6bDSRjeXVPtKlUmJr/SmFF1LRmhb2kdo/DcQQLOXqFa4UWEwU4Lf/B7Llh9peUJVxyt7zw==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -601,7 +601,7 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/mpv-script@0.32.13': {}
+  '@types/mpv-script@0.32.15': {}
 
   acorn-jsx@5.3.2(acorn@8.17.0):
     dependencies:

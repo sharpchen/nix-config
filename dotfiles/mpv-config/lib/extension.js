@@ -148,6 +148,11 @@ String.prototype.includes = function (str) {
   return this.indexOf(str) !== -1
 }
 
+String.prototype.isNullOrEmpty = function () {
+  var value = this.valueOf()
+  return value === undefined || value === null || value.length === 0
+}
+
 /**
  * @param {any[]} items
  * @returns {number}

@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/mpv-script": "^0.32.13",
+    "@types/mpv-script": "^0.32.15",
     "eslint": "^10.6.0",
     "globals": "^17.7.0",
     "oxfmt": "^0.57.0",
