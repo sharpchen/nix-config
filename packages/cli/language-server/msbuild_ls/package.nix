@@ -12,14 +12,14 @@ let
 in
 buildDotnetModule rec {
   pname = repo;
-  version = "0.6.6";
+  version = "0.7.0";
   src = fetchFromGitHub {
     inherit owner repo;
     rev = "v${version}";
-    hash = "sha256-dhE94gnH8s758a9JmdMXV2/7nzm4JD6mcVaq75NRXLQ=";
+    hash = "sha256-4ylX5+3zMvZMV1QbsOoTpDUaskbA7lhymq21cEroK3k=";
   };
 
-  nugetDeps = ./deps.nix;
+  nugetDeps = ./deps.json;
   projectFile = "src/LanguageServer/LanguageServer.csproj";
   inherit dotnet-sdk;
   useDotnetFromEnv = true;
