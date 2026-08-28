@@ -143,3 +143,4 @@ mklink -SpecialParent APPDATA -ChildPath 'zed/settings.json' -Target $PSScriptRo
 mklink -SpecialParent APPDATA -ChildPath 'zed/keymap.json' -Target $PSScriptRoot/dotfiles/zed.keymap.json
 mklink -SpecialParent APPDATA -ChildPath 'uv/uv.toml' -Target $PSScriptRoot/dotfiles/uv.toml
 mklink ~/.npmrc $PSScriptRoot/dotfiles/.npmrc
+mklink ~/yt-dlp.conf $PSScriptRoot/dotfiles/yt-dlp.conf
