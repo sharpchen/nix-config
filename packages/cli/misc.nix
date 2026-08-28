@@ -65,4 +65,5 @@
   home.file.".ssh/config".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/sshconfig";
   home.file.".fzfrc".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/.fzfrc";
   home.file."yt-dlp.conf".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/yt-dlp.conf";
+  home.file.".config/btop/btop.conf".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles}/btop.conf";
 }

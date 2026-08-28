@@ -144,3 +144,7 @@ mklink -SpecialParent APPDATA -ChildPath 'zed/keymap.json' -Target $PSScriptRoot
 mklink -SpecialParent APPDATA -ChildPath 'uv/uv.toml' -Target $PSScriptRoot/dotfiles/uv.toml
 mklink ~/.npmrc $PSScriptRoot/dotfiles/.npmrc
 mklink ~/yt-dlp.conf $PSScriptRoot/dotfiles/yt-dlp.conf
+
+if (& { scoop prefix btop *> $null; 0 -eq $LASTEXITCODE }) {
+    mklink (Join-Path (scoop prefix btop) btop.conf) $PSScriptRoot/dotfiles/btop.conf
+}
