@@ -156,10 +156,10 @@ function play {
     end {
         if ($MyInvocation.ExpectingInput) {
             if ($playlist.Count -gt 0) {
-                $null = Start-Job { $input | mpv @flags --playlist=- } -InputObject $playlist
+                $null = Start-Job { $input | mpv @using:flags --playlist=- } -InputObject $playlist
             }
         } else {
-            $null = Start-Job { mpv @flags $args } -ArgumentList $LiteralPath
+            $null = Start-Job { mpv @using:flags $args } -ArgumentList $LiteralPath
         }
     }
 }
@@ -522,7 +522,7 @@ function unpack {
                 & $tar xf $LiteralPath --cd $PWD
             }
             'Destination' {
-                if (-not (Test-Path $Destination)) {
+                if (-not (Test-Path -LiteralPath $Destination)) {
                     $null = New-Item -ItemType Directory -Path $Destination
                 }
 
@@ -558,8 +558,8 @@ function unpack {
                     } | Select-Object -First 1 # terminate pipeline early
 
                 if ($rootEntries -gt 1) {
-                    $basename = (Get-Item $LiteralPath).BaseName
-                    if (-not (Test-Path $basename -PathType Container)) {
+                    $basename = (Get-Item -LiteralPath $LiteralPath).BaseName
+                    if (-not (Test-Path -LiteralPath $basename -PathType Container)) {
                         $null = New-Item -ItemType Directory -Path $basename
                     }
                     & $tar xf $LiteralPath --cd $basename
@@ -648,6 +648,22 @@ function connectdb {
     }
 }
 
+function sqlite-open {
+    param (
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [Parameter(Mandatory)]
+        [string]$DB
+    )
+
+    begin {
+        $null = Get-Command sqlit -ErrorAction Stop
+    }
+
+    end {
+        sqlit connect sqlite --file-path $DB
+    }
+}
+
 function pubip {
     try {
         (Invoke-WebRequest myip.90daili.com).Content |
@@ -732,7 +748,12 @@ function ydl {
 
     begin {
         $ydl = Get-Command yt-dlp -ErrorAction Stop
-        $flags = @()
+
+        if (!(Test-Path '~/yt-dlp.conf' -PathType Leaf)) {
+            Write-Error '~/yt-dlp.conf does not exist.' -ErrorAction Stop
+        }
+
+        $flags = '--config-locations', '~/yt-dlp.conf'
         if ($Format) {
             $flags += '-f', $Format
         }
@@ -746,8 +767,6 @@ function ydl {
         } elseif (Get-Command node -ErrorAction Ignore) {
             $flags += '--js-runtimes', 'node'
         }
-
-        $flags += '--windows-filenames'
     }
 
     end {
@@ -925,13 +944,13 @@ function replace {
 }
 
 function def {
-    param(
+    param (
         [string]$cmd
     )
 
-    $cmd = Get-Command $cmd -All -ErrorAction Stop
+    $commands = Get-Command $cmd -All -ErrorAction Stop
 
-    $cmd.Definition
+    $commands.Definition
 }
 
 function timespan {
@@ -1047,6 +1066,23 @@ function quit-git-profile {
     }
 }
 
+function __format-timespan {
+    param(
+        [timespan]$duration
+    )
+
+    if ($duration.TotalMilliseconds -lt 1000) {
+        '{0:N0}ms' -f $duration.TotalMilliseconds
+    } elseif ($duration.TotalSeconds -lt 60) {
+        '{0:N2}s' -f $duration.TotalSeconds
+    } elseif ($duration.TotalMinutes -lt 60) {
+        '{0}m {1}s' -f $duration.Minutes, $duration.Seconds
+    } else {
+        # if Hours exceeds 24, Days would carry over, should use TotalHours instead
+        '{0}h {1}m {2}s' -f [int][Math]::Floor($duration.TotalHours), $duration.Minutes, $duration.Seconds
+    }
+}
+
 function global:prompt {
     if ($IsLinux -or $IsMacOS) {
         $ps1 = "PS $($PWD.ProviderPath -replace '/home/[a-zA-Z0-9]+', '~')$('>' * ($nestedPromptLevel + 1)) "
@@ -1073,6 +1109,10 @@ function global:prompt {
         ) {
             $ps1 = '(non-default git ssh remote!) ' + $ps1
         }
+    }
+
+    if ($his = Get-History -Count 1) {
+        $ps1 = "[$(__format-timespan $his.Duration)] $ps1"
     }
 
     if (!$global:_PROMPT_NO_NEWLINE) {
@@ -1139,7 +1179,10 @@ function recent {
         [uint]$day,
         [uint]$hour,
         [uint]$minute,
-        [uint]$week
+        [uint]$week,
+
+        [ValidateSet('CreationTime', 'LastWriteTime', 'LastAccessTime')]
+        [string]$by = 'CreationTime'
     )
 
     begin {
@@ -1164,7 +1207,7 @@ function recent {
             }
 
             $sort = {
-                Where-Object { $_.CreationTime -gt ([datetime]::Now - [timespan]::new($day, $hour, $minute, 0)) } |
+                Where-Object { $_."$by" -gt ([datetime]::Now - [timespan]::new($day, $hour, $minute, 0)) } |
                     Sort-Object  CreationTime -Descending
             }.GetSteppablePipeline($MyInvocation.CommandOrigin)
         }

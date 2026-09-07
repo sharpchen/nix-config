@@ -528,11 +528,55 @@ function ff-repeat {
         if (Test-Path -LiteralPath $out) {
             Write-Error "$($MyInvocation.MyCommand.Name): $out already exists, aborting." -ErrorAction Stop
         }
+
+        # -stream_loop specifies the additional loops, $Count is the total expected loops
+        $flags = '-stream_loop', ($Count - 1), '-i' , $LiteralPath
+        $mimetype = PwshProfile\Mimetype-Get $LiteralPath
+        # flac requires re-encoding to update the header, don't include -c copy here
+        if ($mimetype -ne 'audio/flac') {
+            $flags += '-c', 'copy'
+        }
     }
 
     end {
-        # -stream_loop specifies the additional loops, $Count is the total expected loops
-        ffmpeg @script:__ff_flags -stream_loop ($Count - 1) -i $LiteralPath -c copy $out 2>variable:__ff_err 1>$null
+        ffmpeg @script:__ff_flags @flags $out 2>variable:__ff_err 1>$null
+        __ff_error $LASTEXITCODE $__ff_err
+    }
+}
+
+function ff-rotate {
+    param (
+        [Alias('i')]
+        [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+        [Parameter(Mandatory)]
+        [string]$LiteralPath,
+
+        [Alias('d')]
+        [ArgumentCompletions(90, 180, 360, -90)]
+        [Parameter(Mandatory)]
+        [int]$Degree,
+
+        [Alias('o')]
+        [ValidateScript({ $_ -is [scriptblock] -or (Test-Path $_ -IsValid) })]
+        [Parameter(Mandatory)]
+        $OutFile
+    )
+
+    begin {
+        $null = Get-Command ffmpeg -ErrorAction Stop
+        $out = if ($OutFile -is [scriptblock]) {
+            $OutFile.InvokeWithContext($null, [psvariable]::new('_', (Get-Item -LiteralPath $LiteralPath)))
+        } else {
+            $OutFile
+        }
+
+        if (Test-Path -LiteralPath $out) {
+            Write-Error "$($MyInvocation.MyCommand.Name): $out already exists, aborting." -ErrorAction Stop
+        }
+    }
+
+    end {
+        ffmpeg @script:__ff_flags -display_rotation $Degree -i $LiteralPath -codec copy $out 2>variable:__ff_err 1>$null
         __ff_error $LASTEXITCODE $__ff_err
     }
 }
