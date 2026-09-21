@@ -1,6 +1,6 @@
 [[ $- != *i* ]] && return
 
-HISTCONTROL=ignorespace:ignoredups:erasedups
+HISTCONTROL=ignorespace:ignoredups
 
 # hugging face mirror
 export HF_ENDPOINT='https://hf-mirror.com'
