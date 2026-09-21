@@ -9,8 +9,12 @@ if HasNix then
       lsp.setup('powershell_es', {
         on_attach = function(client) lsp.event.disable_semantic(client) end,
         bundle_path = lsp.path.pwsh_es,
-        -- see: https://github.com/PowerShell/vscode-powershell/blob/main/src/settings.ts
+        init_options = {
+          -- see: https://github.com/PowerShell/PowerShellEditorServices/blob/ba8b42071c097536d240e857b2b1cf3dcd1e1fbc/src/PowerShellEditorServices/Server/PsesLanguageServer.cs#L157-L158
+          enableProfileLoading = false,
+        },
         settings = {
+          -- see: https://github.com/PowerShell/PowerShellEditorServices/blob/ba8b42071c097536d240e857b2b1cf3dcd1e1fbc/src/PowerShellEditorServices/Services/Workspace/LanguageServerSettings.cs#L464
           powershell = {
             codeFormatting = {
               preset = 'OTBS',

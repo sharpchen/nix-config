@@ -9,7 +9,7 @@ local M = {
 
 if HasNix then
   async.cmd(
-    require('utils.env').shell.bash_cmd('which netcoredbg'),
+    require('utils.env').shell.bash_cmd('type -p netcoredbg'),
     function(result) M.path.netcoredbg = result end
   )
   async.cmd(nix_store_query('js-debug'), function(result)

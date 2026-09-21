@@ -39,7 +39,11 @@ return {
     })
 
     vim.api.nvim_create_autocmd('BufEnter', {
-      pattern = 'github.com_*.txt',
+      pattern = {
+        'github.com_*.txt',
+        'gitlab.com_*.txt',
+        'codeberg.org_*.txt',
+      },
       callback = function(args) vim.bo.filetype = 'markdown' end,
     })
 
@@ -51,23 +55,19 @@ return {
       end,
     })
 
-    local disable = vim
+    local enable = vim
       .iter({
-        'https?://github.com.*/blob/*.',
-        'https?://chat.*',
-        'https?://gemini.*',
-        'https?://www.overleaf.com/.*',
-        'https?://live.bilibili.com/.*',
-        'https?://grok.*',
-        'https?://www.keybr.com/.*',
-        'https://monkeytype.com/.*',
-        'https?://www.typescriptlang.org/.*',
-        'https?://entertrained.app/'
+        'https?://github\\.com/.*',
+        'https?://gitlab\\.com/.*',
+        'https?://codeberg\\.org/.*',
       })
       :fold({}, function(sum, curr)
         sum[curr] = {
-          takeover = 'never',
           priority = 1,
+          cmdline = 'neovim',
+          content = 'text',
+          selector = 'textarea:not([readonly], [aria-readonly]), div[role="textbox"]',
+          takeover = 'always',
         }
         return sum
       end)
@@ -76,13 +76,9 @@ return {
       globalSettings = { alt = 'all' },
       localSettings = vim.tbl_extend('error', {
         ['.*'] = {
-          cmdline = 'neovim',
-          content = 'text',
-          priority = 0,
-          selector = 'textarea',
-          takeover = 'always',
+          takeover = 'never',
         },
-      }, disable),
+      }, enable),
     }
   end,
 }

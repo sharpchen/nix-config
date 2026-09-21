@@ -233,15 +233,17 @@ vim.keymap.set({ 'n', 'x', 'o' }, '<A-m>', function()
 end)
 
 ---@param target string
----@param opts { word: boolean, escape: boolean }
+---@param opts { word: boolean, escape: boolean, to_qf?: boolean }
 function _global(target, opts)
   opts.escape = opts.escape or true
+  opts.to_qf = opts.to_qf or false
 
   local pattern = opts.escape and target:gsub([[\]], [[\\]]):gsub('/', [[\/]]) or target
 
   pattern = opts.word and string.format([[\V\<%s\>]], pattern)
     or string.format([[\V%s]], pattern)
 
+  ---@type { linenr: integer, line: string }[]
   local line_infos = {}
   for linenr = 1, vim.api.nvim_buf_line_count(0) do
     local line = vim.api.nvim_buf_get_lines(0, linenr - 1, linenr, true)[1]
@@ -255,19 +257,39 @@ function _global(target, opts)
 
   local digits = tostring(line_infos[#line_infos].linenr):len()
 
-  local lines = {}
+  if not opts.to_qf then
+    local lines = {}
 
-  for _, l in ipairs(line_infos) do
-    table.insert(lines, { tostring(l.linenr):padleft(digits + 2), 'LineNrAbove' })
-    table.insert(lines, { string.format(' %s\n', l.line) })
+    for _, l in ipairs(line_infos) do
+      table.insert(lines, { tostring(l.linenr):padleft(digits + 2), 'LineNrAbove' })
+      table.insert(lines, { string.format(' %s\n', l.line) })
+    end
+
+    vim.api.nvim_echo(lines, false, {})
+  else
+    ---@type vim.quickfix.entry[]
+    local entires = {}
+    local buf = vim.api.nvim_get_current_buf()
+
+    for _, l in ipairs(line_infos) do
+      ---@type vim.quickfix.entry
+      local entry = { bufnr = buf, lnum = l.linenr, text = l.line }
+      table.insert(entires, entry)
+    end
+
+    vim.fn.setqflist({}, ' ', { nr = '$', items = entires })
+    vim.cmd.copen()
   end
-
-  vim.api.nvim_echo(lines, false, {})
 end
 
 vim.keymap.set('n', '<leader>gl', function()
   local cword = vim.fn.expand('<cword>')
   if cword ~= '' then _global(cword, { word = true }) end
+end, { desc = '[gl]obal on cursor word' })
+
+vim.keymap.set('n', '<leader>gL', function()
+  local cword = vim.fn.expand('<cword>')
+  if cword ~= '' then _global(cword, { word = true, to_qf = true }) end
 end, { desc = '[gl]obal on cursor word' })
 
 vim.keymap.set('x', '<leader>gl', function()

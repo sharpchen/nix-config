@@ -124,7 +124,7 @@ return {
           end,
           confirm = function(self, item)
             self:close()
-            if not pvimcmd { cmd = 'Oil', args = { item.file } } then
+            if item and not pvimcmd { cmd = 'Oil', args = { item.file } } then
               vim.cmd('e ' .. item.file)
             end
           end,
@@ -166,7 +166,7 @@ return {
           end,
           confirm = function(self, item, _)
             self:close()
-            vim.cmd.tchdir(vim.fs.joinpath(lazy_path, item.file))
+            if item then vim.cmd.tchdir(vim.fs.joinpath(lazy_path, item.file)) end
           end,
         }
       end, { desc = 'search plugin source file installed by lazy' })
@@ -186,7 +186,7 @@ return {
           layout = { preset = 'select' },
           confirm = function(self, item, _)
             self:close()
-            vim.cmd.tchdir(vim.fs.joinpath(cwd, item.file))
+            if item then vim.cmd.tchdir(vim.fs.joinpath(cwd, item.file)) end
           end,
         }
       end, { desc = 'find projects' })

@@ -1,2 +1,4 @@
-; TODO: missing colors
-; T this[int index] { get; }
+; inherits: c_sharp
+
+(indexer_declaration
+  type: (identifier) @type)

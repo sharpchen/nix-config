@@ -69,11 +69,15 @@ return {
     opts = {
       group_overrides = {
         StatusLine = { bg = '#007acc', fg = 'white' },
+        TreesitterContext = { link = 'CursorLine' },
       },
     },
   },
   {
     'habamax/vim-habamax',
+    -- pin since it had new color for function name I don't like
+    -- see: https://github.com/habamax/vim-habamax/commit/282a0cb779f908b2debe084cd0a3b847bc28343d
+    commit = 'f553b4305f9aaa95b89118c5ec1e5d9a07707811',
     lazy = false,
     priority = 1000,
   },

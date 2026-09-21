@@ -55,14 +55,18 @@ return {
       },
     }
 
-    vim.keymap.set('n', '<leader>k', function()
-      ---@diagnostic disable-next-line: param-type-mismatch
-      conform.format {
-        bufnr = 0,
-        timeout_ms = 5000,
-        async = false,
-        lsp_format = 'fallback',
-      }
-    end, { desc = 'format current file' })
+    vim.keymap.set(
+      '',
+      '<leader>k',
+      function()
+        conform.format {
+          bufnr = 0,
+          timeout_ms = 5000,
+          async = false,
+          lsp_format = 'fallback',
+        }
+      end,
+      { desc = 'format current file' }
+    )
   end,
 }

@@ -22,8 +22,6 @@ return {
         'xml',
         'css',
         'bash',
-        'diff',
-        'lua',
         'luap',
         'luadoc',
         'vim',
@@ -47,7 +45,6 @@ return {
         'toml',
         'yaml',
         'regex',
-        'markdown',
         'markdown_inline',
       }
 
@@ -168,6 +165,7 @@ return {
         '[t',
         function() require('treesitter-context').go_to_context(vim.v.count1) end
       )
+      vim.keymap.set('n', '<leader>tt', '<cmd>TSContext toggle<CR>')
     end,
   },
   {

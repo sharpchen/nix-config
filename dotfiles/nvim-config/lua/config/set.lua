@@ -238,6 +238,8 @@ vim.api.nvim_create_user_command(
 )
 
 vim.api.nvim_create_user_command('W', 'noautocmd w', { desc = 'pure write' })
+vim.api.nvim_create_user_command('WA', 'noautocmd wa', { desc = 'pure write' })
+vim.api.nvim_create_user_command('Wa', 'noautocmd wa', { desc = 'pure write' })
 
 vim.api.nvim_create_autocmd('ColorScheme', {
   pattern = { 'habamax', 'xamabah' },
@@ -256,6 +258,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
     highlight.set('NormalFloat', { bg = normal.bg })
     highlight.set('@variable', { fg = normal.fg })
     highlight.set('Operator', { link = 'Keyword' })
+    highlight.set('TreesitterContext', { link = 'CursorLine' })
   end,
 })
 
@@ -360,15 +363,17 @@ vim.api.nvim_create_autocmd('CmdlineLeave', {
 --   return true
 -- end, { force = false })
 
-vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter' }, {
-  callback = function(ctx)
-    if
-      vim.bo[ctx.buf].buftype == '' -- a normal buffer
-      and not vim.bo[ctx.buf].modified -- without unsaved changes
-      and vim.fn.expand('%') ~= '' -- has a backing filename
-      and vim.fn.getcmdwintype() == '' -- not in cmdline
-    then
-      vim.cmd.checktime(ctx.buf)
-    end
-  end,
-})
+if vim.fn.has('nvim-0.13') ~= 1 then
+  vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter' }, {
+    callback = function(ctx)
+      if
+        vim.bo[ctx.buf].buftype == '' -- a normal buffer
+        and not vim.bo[ctx.buf].modified -- without unsaved changes
+        and vim.fn.expand('%') ~= '' -- has a backing filename
+        and vim.fn.getcmdwintype() == '' -- not in cmdline
+      then
+        vim.cmd.checktime(ctx.buf)
+      end
+    end,
+  })
+end

@@ -1,6 +1,4 @@
-local M = {
-  use_vtsls = vim.fn.executable('tsgo') ~= 0 and vim.fn.executable('vtsls') == 1,
-}
+local M = {}
 
 _G.Lsp = M
 
@@ -9,15 +7,7 @@ _G.Lsp = M
 ---@param config? Partial<vim.lsp.Config>
 function M.setup(ls, config)
   if config then vim.lsp.config[ls] = config end
-  if
-    vim.lsp.config[ls]
-    and (
-      type(vim.lsp.config[ls].cmd) == 'function'
-      or vim.fn.executable(vim.lsp.config[ls].cmd[1]) == 1
-    )
-  then
-    vim.lsp.enable(ls)
-  end
+  vim.lsp.enable(ls)
 end
 
 M.path = {
