@@ -22,7 +22,9 @@ set keymap vi-command
 "\e[B": next-history
 "k": previous-history
 "j": next-history
+"\C-o": operate-and-get-next
 
 set keymap vi-insert
 "\e[A": history-search-backward
 "\e[B": history-search-forward
+"\C-o": operate-and-get-next
