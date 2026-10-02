@@ -9,6 +9,9 @@
 // custom settings, run `zed: open default settings` from the
 // command palette
 {
+  "buffer_line_height": "comfortable",
+  "buffer_font_weight": 400.0,
+  "buffer_font_family": "JetBrains Mono NL",
   "semantic_tokens": "combined",
   "format_on_save": "off",
   "diagnostics": {
@@ -29,7 +32,7 @@
     "dock": "right",
   },
   "ui_font_size": 16,
-  "buffer_font_size": 16,
+  "buffer_font_size": 17.0,
   "auto_update": false,
   "cursor_blink": false,
   "telemetry": {
