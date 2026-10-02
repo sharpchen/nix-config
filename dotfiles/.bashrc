@@ -516,21 +516,35 @@ prompt-reset() {
 }
 
 prompt-append() {
+    local new_prompt
     _PROMPT_APPENDED="$_PROMPT_APPENDED$*"
-    PS1="\n$_PROMPT_STRING_BASE$_PROMPT_APPENDED"
+    new_prompt="\n$_PROMPT_STRING_BASE$_PROMPT_APPENDED"
+    # add extra space padding
+    if [[ "${new_prompt: -1}" == " " ]]; then
+        PS1="${new_prompt}"
+    else
+        PS1="${new_prompt} "
+    fi
 }
 
 prompt-prepend() {
     _PROMPT_PREPENDED="$_PROMPT_PREPENDED$*"
-    PS1="\n$_PROMPT_PREPENDED$_PROMPT_STRING_BASE"
+    new_prompt="\n$_PROMPT_PREPENDED$_PROMPT_STRING_BASE"
+    # add extra space padding
+    if [[ "${new_prompt: -1}" == " " ]]; then
+        PS1="${new_prompt}"
+    else
+        PS1="${new_prompt} "
+    fi
 }
 
 enter-git-profile() {
-    local username email
+    local user_name email
+    OPTIND=1
     while getopts "u:e:" opt; do
         case "$opt" in
         u)
-            username="$OPTARG"
+            user_name="$OPTARG"
             ;;
         e)
             email="$OPTARG"
@@ -544,15 +558,15 @@ enter-git-profile() {
 
     # see: https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables
     # NOTE: both author and committer should be set otherwise the commit can include your default user in gitconfig!
-    export GIT_AUTHOR_NAME="$username"
+    export GIT_AUTHOR_NAME="${user_name:?username unset}"
     export GIT_AUTHOR_EMAIL="${email:-<>}"
-    export GIT_COMMITTER_NAME="$username"
+    export GIT_COMMITTER_NAME="${user_name:?username unset}"
     export GIT_COMMITTER_EMAIL="${email:-<>}"
 
     _GIT_PROFILE_ENTERED=1
 
     prompt-reset
-    prompt-prepend "(git-username: $username) "
+    prompt-prepend "(git-username: $user_name) "
 
     _warn "You should make sure your repo has proper remote url corresponds to the ssh host."
 }
