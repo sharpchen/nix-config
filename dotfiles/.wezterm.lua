@@ -26,7 +26,7 @@ local font = random {
 
 local function regular()
   config.line_height = 1.2
-  config.font_size = 10
+  config.font_size = 13 -- best font size to avoid fuzzy rendering for now...
   config.freetype_load_target = 'Light'
   config.freetype_render_target = 'HorizontalLcd'
   config.font = wezterm.font_with_fallback {
@@ -186,14 +186,22 @@ local function keymaps()
   }
   config.mouse_bindings = {
     {
+      -- disable copy on content selected
+      event = { Up = { streak = 1, button = 'Left' } },
+      mods = 'NONE',
+      action = wezterm.action.Nop,
+    },
+    {
       event = { Down = { streak = 1, button = 'Right' } },
       mods = 'NONE',
       action = wezterm.action_callback(function(window, pane)
         local has_selection = window:get_selection_text_for_pane(pane) ~= ''
         if has_selection then
+          -- copy selected content on right click
           window:perform_action(action.CopyTo('ClipboardAndPrimarySelection'), pane)
           window:perform_action(action.ClearSelection, pane)
         else
+          -- paste from clipboard on right click
           window:perform_action(action { PasteFrom = 'Clipboard' }, pane)
         end
       end),
