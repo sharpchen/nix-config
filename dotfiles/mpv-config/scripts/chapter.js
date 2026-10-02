@@ -1,7 +1,7 @@
 var FS = require('fileSystem')
 
 /**
- * @type {mpv.Chapter[]}
+ * @type {mp.ChapterListItem[]}
  */
 var _chapters = []
 

@@ -4,11 +4,13 @@ require('env')
 require('extension')
 require('globals')
 
+// TODO: add --log-file here
+
 var errorLayer = mp.create_osd_overlay('ass-events')
 
 mp.enable_messages('fatal')
 
-/** @type {__TimeoutId} */
+/** @type {mp.TimeoutId} */
 var timeout
 // show error on osd immediately
 mp.register_event('log-message', function (e) {

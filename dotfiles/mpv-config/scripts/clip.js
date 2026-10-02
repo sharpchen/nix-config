@@ -1,13 +1,15 @@
 /**
  * @typedef {Object} ScriptOpts
- * @property { 'dual' | 'single' | 'multiple' } mode
+ * @property { 'dual' | 'single' | 'multiple' } mark_mode
+ * @property {ffmpeg.ClipMode} clip_mode
  */
 
 /**
  * @type {ScriptOpts}
  */
 var _opts = {
-  mode: 'dual',
+  mark_mode: 'dual',
+  clip_mode: 'quick',
 }
 
 var m = require('mark')
@@ -21,10 +23,9 @@ var _multiple = new m.MultipleMark()
 var _mark = _dual
 
 mp.options.read_options(_opts, undefined, function (changed) {
-  if (changed.mode) {
-    mp.osd_message('{}-mode: {}'.format(mp.get_script_name(), _opts.mode), 5)
-
-    switch (_opts.mode) {
+  if (changed.mark_mode) {
+    mp.osd_message('{}-mark_mode: {}'.format(mp.get_script_name(), _opts.mark_mode), 5)
+    switch (_opts.mark_mode) {
       case 'dual':
         _mark = _dual
         break
@@ -36,17 +37,30 @@ mp.options.read_options(_opts, undefined, function (changed) {
         break
     }
   }
+  if (changed.clip_mode) {
+    mp.osd_message('{}-clip_mode: {}'.format(mp.get_script_name(), _opts.clip_mode), 5)
+  }
 })
 
 mp.add_key_binding('t-m', 'toggle-mark-mode', function () {
   // NOTE: `change-list` used in this function is asynchronous
   // so the operation on toggle should be set on callback of `read_options`
   require('option').cycle({
-    qualifiedName: '{}-mode'.format(mp.get_script_name()),
+    qualifiedName: '{}-mark_mode'.format(mp.get_script_name()),
     current: function () {
-      return _opts.mode
+      return _opts.mark_mode
     },
     values: ['dual', 'single', 'multiple'],
+  })
+})
+
+mp.add_key_binding('t-c', 'toggle-clip-mode', function () {
+  require('option').cycle({
+    qualifiedName: '{}-clip_mode'.format(mp.get_script_name()),
+    current: function () {
+      return _opts.clip_mode
+    },
+    values: ['quick', 'precise'],
   })
 })
 
@@ -72,7 +86,7 @@ mp.add_key_binding('d-m', 'clip-mark-clear', function () {
 mp.add_key_binding('C-C', 'clip-mark-apply', function () {
   var inputPath = mp.get_property('path')
   assertNonNull(inputPath, 'inputPath')
-  switch (_opts.mode) {
+  switch (_opts.mark_mode) {
     case 'dual':
       // prompt output name
       mp.input.select({
@@ -100,15 +114,15 @@ mp.add_key_binding('C-C', 'clip-mark-apply', function () {
           switch (id) {
             case 1:
               // @ts-ignore
-              _mark.clipFromStart(inputPath)
+              _mark.clipFromStart(inputPath, _opts.clip_mode)
               break
             case 2:
               // @ts-ignore
-              _mark.clipToEnd(inputPath)
+              _mark.clipToEnd(inputPath, _opts.clip_mode)
               break
             case 3:
               // @ts-ignore
-              _mark.clipRanges(inputPath)
+              _mark.clipRanges(inputPath, _opts.clip_mode)
               break
           }
         },
@@ -119,7 +133,7 @@ mp.add_key_binding('C-C', 'clip-mark-apply', function () {
         prompt: 'Clip marks into splits?',
         yes: function () {
           // @ts-ignore
-          _mark.clipRanges(inputPath)
+          _mark.clipRanges(inputPath, _opts.clip_mode)
         },
       })
       break

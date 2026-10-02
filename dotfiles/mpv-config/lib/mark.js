@@ -25,10 +25,12 @@ SingleMark.prototype.clip = function () {
 
 /**
  * @param {string} inputPath
+ * @param {ffmpeg.ClipMode} mode
  */
-SingleMark.prototype.clipFromStart = function (inputPath) {
+SingleMark.prototype.clipFromStart = function (inputPath, mode) {
   assertNonNull(this.pos, 'SingleMark.pos')
   require('ffmpeg').clip({
+    mode: mode,
     start: 0,
     end: this.pos,
     inputPath: inputPath,
@@ -45,13 +47,15 @@ SingleMark.prototype.clipFromStart = function (inputPath) {
 /**
  *
  * @param {string} inputPath
+ * @param {ffmpeg.ClipMode} mode
  */
-SingleMark.prototype.clipToEnd = function (inputPath) {
+SingleMark.prototype.clipToEnd = function (inputPath, mode) {
   assertNonNull(this.pos, 'SingleMark.pos')
   var duration = mp.get_property_number('duration')
   assertNonNull(duration, 'duration')
 
   require('ffmpeg').clip({
+    mode: mode,
     start: this.pos,
     end: duration,
     inputPath: inputPath,
@@ -67,15 +71,16 @@ SingleMark.prototype.clipToEnd = function (inputPath) {
 
 /**
  * @param {string} inputPath
+ * @param {ffmpeg.ClipMode} mode
  */
-SingleMark.prototype.clipRanges = function (inputPath) {
+SingleMark.prototype.clipRanges = function (inputPath, mode) {
   assertNonNull(this.pos, 'SingleMark.pos')
   var duration = mp.get_property_number('duration')
   assertNonNull(duration, 'duration')
 
-  this.clipFromStart(inputPath)
+  this.clipFromStart(inputPath, mode)
 
-  this.clipToEnd(inputPath)
+  this.clipToEnd(inputPath, mode)
 }
 
 /**
@@ -94,7 +99,7 @@ function DualMark() {
  * @param {number} time
  */
 DualMark.prototype.push = function (time) {
-  /** @type {mpv.Chapter[]} */
+  /** @type {mp.ChapterListItem[]} */
   var chapters = []
 
   this.pos.shift() // discard one old mark
@@ -129,8 +134,9 @@ DualMark.prototype.clear = function () {
 
 /**
  * @param {string} inputPath
+ * @param {ffmpeg.ClipMode} mode
  */
-DualMark.prototype.clip = function (inputPath) {
+DualMark.prototype.clip = function (inputPath, mode) {
   if (this.pos[0] === undefined || this.pos[1] === undefined) {
     throw new Error('Invalid position: at least one of position from DualMark.pos is undefined.')
   }
@@ -139,6 +145,7 @@ DualMark.prototype.clip = function (inputPath) {
   var end = Math.max(this.pos[0], this.pos[1])
 
   require('ffmpeg').clip({
+    mode: mode,
     start: start,
     end: end,
     inputPath: inputPath,
@@ -154,8 +161,9 @@ DualMark.prototype.clip = function (inputPath) {
 
 /**
  * @param {string} inputPath
+ * @param {ffmpeg.ClipMode} mode
  */
-DualMark.prototype.clipRanges = function (inputPath) {
+DualMark.prototype.clipRanges = function (inputPath, mode) {
   var duration = mp.get_property_number('duration')
   assertNonNull(duration, 'duration')
 
@@ -172,6 +180,7 @@ DualMark.prototype.clipRanges = function (inputPath) {
     assertNonNull(end, 'end')
 
     require('ffmpeg').clip({
+      mode: mode,
       start: start,
       end: end,
       inputPath: inputPath,
@@ -208,8 +217,9 @@ MultipleMark.prototype.push = function (time) {
 }
 /**
  * @param {string} inputPath
+ * @param {ffmpeg.ClipMode} mode
  */
-MultipleMark.prototype.clipRanges = function (inputPath) {
+MultipleMark.prototype.clipRanges = function (inputPath, mode) {
   var duration = mp.get_property_number('duration')
   assertNonNull(duration, 'duration')
 
@@ -226,6 +236,7 @@ MultipleMark.prototype.clipRanges = function (inputPath) {
     assertNonNull(end, 'end')
 
     require('ffmpeg').clip({
+      mode: mode,
       start: start,
       end: end,
       inputPath: inputPath,

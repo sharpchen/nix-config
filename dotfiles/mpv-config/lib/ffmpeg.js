@@ -3,6 +3,14 @@ var ff_conat_cmd = ff_cmd.concat(['-safe', '0'])
 var FS = require('fileSystem')
 
 /**
+ * @param {string[]} cmd
+ */
+function ff_log(cmd) {
+  // TODO: do logging on each call of ffmpeg
+  mp.msg.log('info', '[ffmpeg]: executing {}'.format(JSON.stringify(cmd)))
+}
+
+/**
  * @typedef {Object} confirmOpts
  * @property {string} okMessageFormat
  * @property {string[]} cmd
@@ -59,6 +67,7 @@ function confirmOverwrite(outPath, opts) {
  * @property {number} end
  * @property {string} inputPath
  * @property {string} outPath
+ * @property {ffmpeg.ClipMode} mode
  */
 
 /**
@@ -67,19 +76,26 @@ function confirmOverwrite(outPath, opts) {
 exports.clip = function (opts) {
   assertFile(opts.inputPath)
   assertPathValid(opts.outPath)
+  // see: https://trac.ffmpeg.org/wiki/Seeking#Input
+  var cmd = ff_cmd.concat([
+    '-ss',
+    opts.start.toString(),
+    '-to',
+    opts.end.toString(),
+    '-i',
+    opts.inputPath,
+  ])
+
+  if (opts.mode === 'quick') {
+    // without -c copy it would re-encode and clip more precisely
+    cmd.push('-c', 'copy')
+  }
+
+  cmd.push(opts.outPath)
+
   confirmOverwrite(opts.outPath, {
     okMessageFormat: 'clip created: {}',
-    cmd: ff_cmd.concat([
-      '-i',
-      opts.inputPath,
-      '-c',
-      'copy',
-      '-ss',
-      opts.start.toString(),
-      '-to',
-      opts.end.toString(),
-      opts.outPath,
-    ]),
+    cmd: cmd,
   })
 }
 
@@ -141,5 +157,32 @@ exports.writeChapters = function (opts) {
     finally: function () {
       FS.File.deleteAsync(temp)
     },
+  })
+}
+
+/**
+ * @typedef {Object} RotateOpts
+ * @property {number} degree counter-clockwise degree
+ * @property {string} inputPath
+ * @property {string} outPath
+ */
+
+/**
+ * @param {RotateOpts} opts
+ */
+exports.rotate = function (opts) {
+  assertFile(opts.inputPath)
+  assertPathValid(opts.outPath)
+  confirmOverwrite(opts.outPath, {
+    okMessageFormat: 'rotation applied to {}',
+    cmd: ff_cmd.concat([
+      '-display_rotation',
+      opts.degree.toString(),
+      '-i',
+      opts.inputPath,
+      '-c',
+      'copy',
+      opts.outPath,
+    ]),
   })
 }
